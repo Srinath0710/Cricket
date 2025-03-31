@@ -27,8 +27,20 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "@angular/material/prebuilt-themes/azure-blue.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css",
+              "src/styles.css",
+              "src/assets/css/theme.css"
             ],
+            
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "sass"
+              ]
+            },
            
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -90,8 +102,20 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "@angular/material/prebuilt-themes/azure-blue.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css",
+              "src/styles.css",
+              "src/assets/css/theme.css"
             ],
+            
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "sass"
+              ]
+            },
             "scripts": []
           }
         }

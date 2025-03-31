@@ -2,6 +2,22 @@
 
 
 @import "primeicons/primeicons.css";
+.clear-width,
+.clear-width:active,
+.clear-width:hover,
+.clear-width:focus {
+    width: 50px;
+    height: 30px;
+    margin-left: 3px;
+    text-align: center;
+    background-color: transparent;
+    border: none !important;
+}
+.table-counts {
+    color: #1100D1;
+
+}
+
 body {
     background-color: #eceffd;
     font-family: "Poppins", sans-serif;
@@ -33,11 +49,7 @@ body {
 
 }
 
-/* .text-center img {
-    max-width: 100px;
-    display: block;
-    margin: 0 auto;
-} */
+
 
 h3 {
     font-weight: 600;
@@ -47,6 +59,7 @@ h3 {
     display: flex;
     flex-direction: column;
     position: relative;
+    margin: 0 27%;
 }
 label {
     font-size: 14px;
@@ -79,15 +92,15 @@ label {
 
 /* Button Styling */
 .btn-primary {
-    background-color: #9948ff;
+    background-color: #2a4993;
     border: none;
-    border-radius: 8px;
+    border-radius: 7px;
     padding: 12px;
-    font-size: 16px;
-    width: 100%;
+    font-size: 11px;
+    /* width: 9%; */
     transition: all 0.3s ease-in-out;
     color: white;
-    margin-top: 4%;
+    margin-top: 0%;
 }
 
 .btn-primary:hover {
@@ -103,7 +116,7 @@ label {
 .login_form{
     width: 31%;
     position: relative;
-    left: 57%;
+    left: 12%;
 }
 .login_img{
     height: 56%;
@@ -113,4 +126,357 @@ label {
 }
 .text-danger {
     text-transform: capitalize;
+}
+
+    /* PLAYERS SCREEN */
+
+.page-wrapper {
+    position: absolute;
+    left: 0px;
+    padding-left: 55px;
+    top: 62px;
+    width: 100%;
+    transition: all 0.2s ease-in-out;
+}
+.modal .card {
+    box-shadow: unset;
+}
+.page-header {
+    font-size: 12px;
+    text-align: center;
+}
+.main-page-header {
+    display: flex;
+    height: 42px;
+    margin-bottom: 20px;
+}
+.main-page-title {
+    flex: 4;
+    height: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: capitalize;
+}
+
+.main-page-title-manage {
+    flex: 8;
+    height: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: capitalize;
+
+}
+.page-tile-img {
+    display: flex;
+    padding: 9px;
+    align-items: flex-start;
+    gap: 10px;
+    border-radius: 3px;
+    background: #DDE3E9;
+}
+.page-title {
+    display: inline-flex;
+    font-size: 16px;
+    font-weight: 700;
+
+}
+.modal-footer.text-center {
+    justify-content: center;
+}
+.main-page-title-manage {
+    flex: 8;
+    height: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: capitalize;
+
+}
+
+.manage-title-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+.sub-manage-title {
+    font-size: 12px;
+    font-weight: 400;
+}
+.field {
+    padding-bottom: 10px;
+}   
+
+.form-group {
+    margin: 0 5%;
+}
+.formContainer .formItem input {
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    font-family: "Titillium Web";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 22px;
+    color: #2B384A;
+}
+.drop-error {
+    display: block;
+}
+.main-page-action {
+    flex: auto;
+    height: inherit;
+    display: flex;
+
+}
+.main-page-action-flex2 {
+    flex: auto;
+}
+.list-search-dropdown .p-inputtext:focus,
+.drop-error .p-inputtext:focus {
+
+    box-shadow: unset;
+}
+.list-search-dropdown {
+    float: left;
+    margin-right: 10px;
+}
+.list-search-dropdown .p-dropdown {
+    font-size: 12px;
+    width: 20vw !important;
+
+    display: flex;
+    height: 43px;
+    padding: 6px 12px;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    align-self: stretch;
+    border-radius: 4px;
+    border: 1px solid var(--Grey, #545454);
+    background: var(--Grey, #545454);
+    color: #fff
+}
+.list-search-dropdown .p-dropdown-empty-message,
+.list-search-dropdown .p-dropdown .p-dropdown-label,
+.list-search-dropdown .p-dropdown .p-dropdown-label.p-placeholder,
+.list-search-dropdown .p-dropdown-trigger {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Titillium Web' !important;
+    color: #fff;
+}
+
+.list-search-dropdown .p-multiselect-item,
+.list-search-dropdown .p-dropdown-item,
+.list-search-dropdown .inputtext {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Titillium Web' !important;
+    color: black;
+}
+
+.list-search-dropdown .p-multiselect {
+    display: flex;
+    height: 43px;
+    width: 20vw !important;
+    padding: 6px 12px;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    align-self: stretch;
+    border-radius: 4px;
+    border: 1px solid var(--Grey, #545454);
+    background: var(--Grey, #545454);
+    color: #fff;
+    font-size: 12px;
+
+}
+
+.list-search-dropdown .p-multiselect-empty-message,
+.list-search-dropdown .p-multiselect .p-multiselect-label.p-placeholder,
+.list-search-dropdown .p-multiselect-trigger {
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Titillium Web' !important;
+    color: #fff;
+}
+.back-button {
+    display: inline-flex;
+    width: 101.924px;
+    height: 43px;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    border: 0.5px solid #545454;
+    background: rgba(84, 84, 84, 0.00);
+    color: var(--Grey, #545454);
+
+    font-family: "Titillium Web";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+
+    /* background: var(--SportRed, #790000); */
+}
+.top-btn {
+    position: absolute;
+    right: 15px;
+}
+.page-content {
+    padding: 15px 0px;
+}
+.table_buttons {
+    height: 20px;
+    margin-top: -1vh;
+}
+.p-input-icon-right {
+    width: 100%;
+}
+.search-padding {
+    /* padding-left: 10px; */
+    border-right: 1px;
+}
+.filter-image {
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 10px;
+    margin-top: 5px !important;
+
+}
+.display-inline {
+
+    display: inline;
+}
+.table-counts {
+    color: #1100D1;
+
+}
+.table-row {
+    border-radius: 6px, 6px, 0px, 0px;
+}
+.image-person-name {
+    display: flex;
+}
+.person-image-team-player {
+    width: 60px;
+    position: relative;
+    right: 5px;
+}
+.player-img {
+    width: 40px;
+    height: 40px;
+    top: 2px;
+    left: 2px;
+    gap: 0px;
+    border-radius: 50%;
+    opacity: 0px;
+    margin-right: 0px;
+    object-fit: fill;
+}
+.player-verified-status {
+    position: absolute;
+    left: 0px;
+    float: right;
+    top: 25px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: solid 0.5px white; */
+    height: 11px;
+    width: 11px;
+    border-radius: 50%;
+    color: #fff;
+
+}
+.p-success {
+    background: rgb(105, 139, 92);
+
+}
+.p-danger {
+    background: rgb(244, 15, 11);
+
+}
+.person-player-name {
+    flex: 8;
+    position: relative;
+    padding-left: 5px;
+    display: flex;
+}
+.image-person-name {
+    display: flex;
+}
+.country-image {
+    flex: auto;
+}
+.country-grid-image {
+    width: 18px;
+    height: 18px;
+    gap: 0px;
+    opacity: 0px;
+
+}
+.person-name {
+    flex: 8;
+    position: relative;
+    padding-left: 5px;
+    display: table-cell;
+}
+
+.flex-row>a>img {
+    height: 25px;
+}
+.formContainer .formItemLabel {
+    font-family: "Titillium Web";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 22px;
+    color: #838697;
+    padding-bottom: 5px;
+}
+
+.formContainer .formItem input {
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    font-family: "Titillium Web";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 22px;
+    color: #2B384A;
+}
+.search-width{
+    max-width: 125px;
+}
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    --bs-table-color-type: var(--bs-table-striped-color);
+    --bs-table-bg-type: #fff;
+}
+
+.p-datatable .p-datatable-header {
+    border: none !important;
+    background-color: #fff;
+    border-radius: 6px 6px 0px 0px;
+
+}
+
+.p-datatable-wrapper {
+    border-radius: 6px 6px 0px 0px;
+    /* background: var(--Grey, #545454); */
+    border: none !important;
+    margin-left: 0.1%;
+}
+
+.main-page-header {
+    display: flex;
+    height: 42px;
+    margin-bottom: 20px;        
 }
