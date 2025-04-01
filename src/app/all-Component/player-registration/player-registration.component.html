@@ -1,0 +1,119 @@
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <main>
+      <div class="card margin-card">
+        <div class="card-body">
+          <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+            <div class="main-page-title page-title playerbackground">
+              <i class="fa fa-user-circle" aria-hidden="true"></i>
+              All Players
+            </div>
+            <!-- <p-dropdown 
+      [options]="cities" 
+       [(ngModel)]="selectedCity" 
+       optionLabel="name" 
+    placeholder="Select a City" /> -->
+             <form class="flex-grow-1 mx-3 search-width">
+              <div class="form-group">
+                <span class="p-input-icon-left ml-auto">
+                  <span class="p-input-icon-right input-icons search-padding">
+                    <input pInputText type="text" 
+                      class="form-control width-search p-input-icon-right" placeholder="{{'  Search'}}"
+                     />
+                    <i class="pi pi-search"></i>
+                  </span>
+                </span>
+              </div>
+            </form>
+
+             <!-- <ng-template pTemplate="caption">
+              <div class="form-group">
+
+              <div class="flex table_buttons"> 
+                  <span class="p-input-icon-left ml-auto">
+                      <span class="p-input-icon-right input-icons search-padding">
+                          <input pInputText type="text" [(ngModel)]="searchKeyword"
+                              class="form-control width-search p-input-icon-right"
+                              placeholder="{{'  Search'}}" />
+                          <i class="pi pi-search"></i>
+                      </span>
+                  </span>
+                 <button class=" clear-width table-counts" 
+                      (click)="searchKeyword = ''">Clear</button>
+              
+              </div>
+              </div>
+          </ng-template>  -->
+
+            <!-- <button class="btn btn-primary">
+              <i class="fa fa-plus"></i> New Player
+            </button> -->
+        
+       
+          <div class="card flex justify-center">
+            <p-button icon="fa fa-plus" label="New Player" (click)="showDialog()"></p-button>
+        </div>
+        </div>
+        
+        <!-- <div class="card flex justify-center" >
+            <p-dialog header="" [modal]="true" [(visible)]="visible"
+                [style]="{ width: '50rem' }" 
+                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+                [maximizable]="true" >
+                <p >
+                  HII...<br>
+                </p>
+                <h1 >Trending View</h1> 
+
+            </p-dialog>
+        </div> -->
+
+          <p-table [value]="players" class="custom-table mt-3">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="custom-header">Player Name</th>
+                <th class="custom-header">DOB</th>
+                <th class="custom-header">Nationality</th>
+                <th class="custom-header">Bat Style</th>
+                <th class="custom-header">Bowl Spec</th>
+                <th class="custom-header">Reg No</th>
+                <th class="custom-header">Mobile</th>
+                <th class="custom-header">Ext Ref Id</th>
+                <th class="custom-header">Status</th>
+                <th class="custom-header">Action</th>
+              </tr>
+            </ng-template>
+          
+            <ng-template pTemplate="body" let-player>
+              <tr>
+                <td>{{ player.name }}</td>
+                <td>{{ player.dob }}</td>
+                <td>{{ player.nationality }}</td>
+                <td>{{ player.batStyle }}</td>
+                <td>{{ player.bowlSpec }}</td>
+                <td>{{ player.regNo }}</td>
+                <td>{{ player.mobile }}</td>
+                <td>{{ player.extRefId }}</td>
+                <td>
+                  <span [ngClass]="{'text-success': player.status === 'Active', 'text-danger': player.status !== 'Active'}">
+                    {{ player.status }}
+                  </span>
+                </td>
+                <td>
+                  <button pButton icon="pi pi-pencil" class="p-button-warning p-button-sm" (click)="editPlayer(player)"></button>
+                  <button pButton icon="pi pi-eye" class="p-button-info p-button-sm" (click)="viewPlayer(player)"></button>
+                  <button pButton [icon]="player.status === 'Active' ? 'pi pi-times' : 'pi pi-check'"
+                    [class.p-button-danger]="player.status === 'Active'"
+                    [class.p-button-success]="player.status !== 'Active'" class="p-button-sm"
+                    (click)="toggleStatus(player)"></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          
+          
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

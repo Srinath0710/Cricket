@@ -1,0 +1,50 @@
+.margin-card {
+    margin: 20px 0;
+  }
+  .playerbackground {
+    color: #000000;
+    padding: 8px 14px;
+    font-weight: bold;
+    border-radius: 5px;
+
+  }
+  .main-page-title {
+    flex: 4;
+    height: inherit;
+    display: inline-flex
+;
+    align-items: center;
+    gap: 8px;
+    text-transform: capitalize;
+}
+.custom-table {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse; /* Ensures borders don't double up */
+  }
+  
+  .custom-header {
+    /* background-color: oklab(0.69 -0.13 -0.08);  */
+    background-color: #0067b8; 
+    color: white !important;
+    font-weight: bold;
+    padding: 12px;
+    border-bottom: 2px solid white;
+  }
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th:last-child, td:last-child {
+    border-right: none; 
+  }
+  
+  tr:hover {
+    background-color: #f5f5f5; 
+  }
+  
