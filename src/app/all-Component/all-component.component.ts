@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { HeaderComponent } from './header/header.component';
 
 @Component({
   selector: 'app-all-component',
@@ -9,7 +10,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   styleUrl: './all-component.component.css',
    imports: [
      SidebarComponent,
-  //   HeaderComponent,
+     HeaderComponent,
      CommonModule,
      RouterModule
    ],
