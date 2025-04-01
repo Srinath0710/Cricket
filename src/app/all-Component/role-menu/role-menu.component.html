@@ -1,0 +1,429 @@
+<article [ngClass]="{'inactive' : showPermission}">
+    <div class="page-wrapper">
+        <div class="content container-fluid">
+            <main class="">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="page-header main-page-header">
+                            <div class="main-page-title page-title text-center" *ngIf="!ShowForm">
+                                <span class="page-tile-img">
+                                    <i class="material-symbols-outlined">user_attributes</i>
+                                </span> all roles
+                            </div>
+                            <div class="main-page-title-manage page-title text-center" *ngIf="ShowForm">
+                                <span class="page-tile-img">
+                                    <i class="material-symbols-outlined">user_attributes</i>
+                                </span>
+                                <div class="manage-title-name">
+                                    <div
+                                        *ngIf="roleMenuForm?.get('role_id')?.value == '' || roleMenuForm?.get('role_id')?.value == null">
+                                        add role </div>
+                                    <div
+                                        *ngIf="roleMenuForm?.get('role_id')?.value != null && roleMenuForm?.get('role_id')?.value != ''">
+                                        edit role</div>
+                                    <div class="sub-manage-title">Roles</div>
+                                </div>
+                            </div>
+                            <div class="main-page-action ">
+                                <a class="back-button top-btn" *ngIf="ShowForm" (click)="combinedClick()"
+                                    (click)="resetForm()"><img
+                                        [src]="envImagePath+'/images/ion_chevron-back-outline.svg'">
+                                    Back</a>
+                                <a class="btn add-btn top-btn" *ngIf="!ShowForm" (click)="resetForm()"
+                                    (click)="showAddForm()">
+                                    <i class="fa fa-plus  "></i>
+                                    New Role</a>
+                            </div>
+                        </div>
+                        <!--grid code -->
+                        <div class="page-content">
+
+                            <p-toast [showTransformOptions]="'translateY(100%)'" [showTransitionOptions]="'1000ms'"
+                                [hideTransitionOptions]="'700ms'" position="top-center" key="tc"
+                                [showTransformOptions]="'translateX(100%)'">
+                            </p-toast>
+
+                            <p-table [ngClass]="{inactive : ShowForm}" #country [value]="gridLoadData" dataKey="role_id"
+                                [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50
+                             ,100]" [paginator]="true"
+                                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                [globalFilterFields]="['role_name','record_status']"
+                                [tableStyle]="{  'min-width': '20rem'}" styleClass="p-datatable-gridlines">
+
+                                <ng-template pTemplate="caption">
+                                    <div class="flex table_buttons">
+                                        <!-- Adjust the height as needed -->
+                                        <span class="p-input-icon-left ml-auto">
+                                            <span class="p-input-icon-right input-icons search-padding">
+                                                <input pInputText type="text" [(ngModel)]="searchKeyword"
+                                                    class="form-control width-search p-input-icon-right"
+                                                    (input)="filterGlobal($event, 'contains')"
+                                                    placeholder="{{'  Search'}}" />
+                                                <i class="pi pi-search"></i>
+                                            </span>
+                                        </span>
+                                        <button class=" clear-width table-counts" (click)="clear(country)"
+                                            (click)="searchKeyword = ''">Clear</button>
+                                        <span class="float-end  ">
+                                            <p class="display-inline table-counts">Roles: {{totalData}}</p>
+                                            <img class="display-inline m-2"
+                                                [src]="envImagePath+'/images/circum_view-list.svg'">
+                                            <img [src]="envImagePath+'/images/clarity_grid-view-line.svg'">
+
+                                        </span>
+                                    </div>
+                                </ng-template>
+
+
+                                <ng-template pTemplate="header">
+                                    <tr class="table-row">
+
+                                        <th class="col-2 position-relative" pSortableColumn="role_name">Role Name
+                                            <p-sortIcon field="role_name"></p-sortIcon>
+                                        </th>
+                                        <th class="col-2 position-relative" pSortableColumn="record_status">Status
+                                            <p-sortIcon field="record_status"></p-sortIcon>
+                                        </th>
+
+                                        <th class="col-2 position-relative">
+                                            <div class="flex align-items-center">
+                                                Action
+                                            </div>
+                                        </th>
+                                    </tr>
+
+
+                                </ng-template>
+                                <ng-template pTemplate="body" let-role>
+                                    <tr>
+                                        <td class="col-2"><strong>{{role.role_name}}</strong></td>
+
+                                        <!-- <td class="col-2`">{{role.role_description}}</td> -->
+
+                                        <td class="col-2">
+                                            <p-tag [value]="role.record_status"
+                                                [severity]="getSeverity(role.record_status)"></p-tag>
+                                        </td>
+                                        <td class="col-2">
+                                            <div class="status-icons d-flex flex-row">
+
+                                                <a class="m-1" (click)="resetForm()"
+                                                    (click)="edit(role.role_id,role.role_name,role.role_description,role.parent_role_id)"
+                                                    pTooltip="edit" pTooltip="Edit" tooltipPosition="top"
+                                                    placeholder="Top">
+                                                    <img [src]="envImagePath+'/images/Component 5.svg'">
+
+                                                </a>
+                                                <a class="m-1" (click)="permissionOpen(role.role_id,role.role_name)"
+                                                    pTooltip="edit" pTooltip="Permission" tooltipPosition="top"
+                                                    placeholder="Top">
+                                                    <img [src]="envImagePath+'/images/view-icon.svg'">
+
+                                                </a>
+                                                <a pTooltip="Active" tooltipPosition="top" placeholder="Top" class="m-1"
+                                                    (click)="showConfirm('activate_role',role.role_id,role.record_status,'active')">
+                                                    <img [src]="envImagePath+'/images/Component 6.svg'">
+                                                </a>
+                                                <a pTooltip="InActive" tooltipPosition="top" placeholder="Top"
+                                                    class="m-1"
+                                                    (click)="showConfirm('deactivate_role',role.role_id,role.record_status,'inactive')">
+                                                    <img [src]="envImagePath+'/images/Component 7.svg'">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="10" class="text-center ">No Records Found</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                        <!--grid code end-->
+                    </div>
+                    <!--form code start -->
+                    <div id="add_client" class="formContainer  " [ngClass]="{inactive : !ShowForm}">
+                        <div class="modal-content ">
+                            <div class="modal-body  ">
+                                <form [formGroup]="roleMenuForm">
+                                    <div class="form-scroller row">
+
+
+                                        <div class="field col-3">
+                                            <div class="form-group formItem">
+                                                <label class="formItemLabel">Role Name
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input class="form-control" maxlength="50" type="text"
+                                                    placeholder="Enter Role Name" formControlName="role_name">
+                                                <small
+                                                    *ngIf="roleMenuForm?.get('role_name')?.invalid &&(roleMenuForm?.get('role_name')?.touched) || (roleMenuForm?.get('role_name')?.invalid && submitted)"
+                                                    class="text-danger">* Role Name Is Required
+                                                </small>
+
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="field col-3">
+                                            <div class="form-group formItem">
+                                                <label class="formItemLabel">Description
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input class="form-control" maxlength="150" type="text"
+                                                    placeholder="Enter Description" formControlName="role_description">
+                                                <small
+                                                    *ngIf="roleMenuForm?.get('role_description')?.invalid &&(roleMenuForm?.get('role_description')?.touched) || (roleMenuForm?.get('role_description')?.invalid && submitted)"
+                                                    class="text-danger">* Description Is Required
+                                                </small>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="field col-3">
+                                            <div class="form-group formItem">
+                                                <label class="formItemLabel">Parent Role<span
+                                                        class="text-danger">*</span></label>
+                                                <p-dropdown [options]="roleDropdownData" class="drop-error "
+                                                    formControlName="parent_role" optionValue="role_id"
+                                                    optionLabel="role_name"
+                                                    [ngModel]="roleMenuForm.get('parent_role')?.value"
+                                                    placeholder="Select Parent Role" appendTo="body"
+                                                    [panelStyleClass]="'custom-dropdown-panel'">
+
+                                                    <ng-template let-role pTemplate="item">
+                                                        <div class="flex align-items-center gap-2">
+
+                                                            <div>{{ role.role_name }}
+                                                            </div>
+                                                        </div>
+                                                    </ng-template>
+                                                </p-dropdown>
+
+                                                <small
+                                                    *ngIf="roleMenuForm?.get('parent_role')?.invalid &&(roleMenuForm?.get('parent_role')?.touched) || (roleMenuForm?.get('parent_role')?.invalid && submitted)"
+                                                    class="text-danger">* Parent Role Is Required
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                    <div class="submit-section">
+
+
+                                        <button class="save-btn submit-btn  margin-right" (click)="addNewRole()"
+                                            (click)="addAnother=false">
+
+                                            Save
+                                        </button>
+                                        <button class="save-another-btn submit-btn margin-right" (click)="addNewRole()"
+                                            (click)="addAnother=true">
+                                            Save & Add Another
+                                        </button>
+                                        <button class="clear-button submit-btn margin-right"
+                                            *ngIf="roleMenuForm?.get('role_id')?.value == '' || roleMenuForm?.get('role_id')?.value == null"
+                                            (click)="resetForm()">
+                                            Clear
+                                        </button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--form code end-->
+                </div>
+            </main>
+        </div>
+    </div>
+</article>
+<article [ngClass]="{'inactive' : !showPermission}">
+    <div *ngIf="showPermission">
+        <div class="page-wrapper ">
+            <div class="">
+                <section class="content container-fluid ">
+                    <main class=" card">
+                        <div class="card-body">
+
+                            <div class="">
+                                <div class="">
+                                    <div class="">
+                                        <div class="page-header main-page-header">
+                                            <div class="main-page-title-manage page-title text-center">
+                                                <span class="page-tile-img">
+                                                    <i class="material-symbols-outlined">user_attributes</i>
+                                                </span>
+                                                <div class="manage-title-name">
+                                                    <div>{{display_name}}</div>
+                                                    <div class="sub-manage-title">Menu Permission</div>
+                                                </div>
+                                            </div>
+                                            <div class="main-page-action-manage ">
+                                                <a class="manage-btn float-end" (click)="hidePermisssionTab()">
+                                                    <i class="fa fa-home"></i>
+                                                    All Roles</a>
+                                            </div>
+                                        </div>
+
+                                        <div id="permission" class="formContainer" role="dialog"
+                                            [ngClass]="{'inactive' : !showPermission}">
+                                            <div class="" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <form #permissionform="ngForm">
+                                                            <div class="row">
+                                                                <div class="formItems">
+                                                                    <div class="formAccodian">
+                                                                        <div class="formAccodianHead selectAllBlock">
+                                                                            <div
+                                                                                class="col-lg-8 col-lg-8 col-md-8 col-sm-12 mcColumn noPadding">
+                                                                                <span class="formAccodianTitle"> Select
+                                                                                    Menu Item</span>
+                                                                            </div>
+                                                                            <div
+                                                                                class="mcXL-4 col-lg-4 col-md-4 col-sm-12 mcColumn noPadding">
+                                                                                <div
+                                                                                    class="col-lg-3 col-md-3 col-sm-3 textBlue mcColumn">
+                                                                                    Is Applicable</div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-scroller row">
+
+                                                                            <div class="formAccodianList"
+                                                                                *ngFor="let modulesList of modules">
+                                                                                <div class="formAccodianList_main"
+                                                                                    data-id="{{modulesList.module_id}}">
+                                                                                    <div
+                                                                                        class="mcXL-8 col-lg-12 col-md-12 col-sm-12 mcColumn noPadding">
+                                                                                        <span
+                                                                                            class="formAccodianListTitle wicon"
+                                                                                            [ngClass]="{'minimize' : modulesList.active == 1}"
+                                                                                            (click)="accordianclick(modulesList.module_id)"><i
+                                                                                                class="fa fa-circle-plus"></i>
+                                                                                            {{modulesList.module_name}}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="formAccodiansubList"
+                                                                                    *ngFor="let files of menusData; index as i"
+                                                                                    [ngModelGroup]="i.toString()"
+                                                                                    [ngClass]="{'active' : modulesList.active == 1}">
+                                                                                    <div class="formAccodiansubList_main"
+                                                                                        data-id="{{files.menu_id}}"
+                                                                                        *ngIf="files.module_id == modulesList.module_id">
+                                                                                        <div
+                                                                                            class="mcXL-8 col-lg-8 col-md-8 col-sm-12 mcColumn noPadding">
+                                                                                            <span
+                                                                                                class="formAccodiansubListTitle">{{files.menu_name}}</span>
+                                                                                            <input class="form-control "
+                                                                                                class="document_table"
+                                                                                                type="hidden"
+                                                                                                name="menu_id"
+                                                                                                [(ngModel)]="files.menu_id">
+                                                                                        </div>
+
+                                                                                        <div
+                                                                                            class="mcXL-4 col-lg-4 col-md-4 col-sm-12 mcColumn noPadding">
+                                                                                            <div
+                                                                                                class="col-lg-3 col-md-3 col-sm-3 mcColumn">
+                                                                                                <input
+                                                                                                    class="form-control "
+                                                                                                    class="document_table"
+                                                                                                    type="checkbox"
+                                                                                                    name="is_checked"
+                                                                                                    [(ngModel)]="files.is_checked">
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="table-responsive m-t-15">
+
+                                                                    <div class="submit-section">
+                                                                        <button type="submit"
+                                                                            (click)=menuRolePermission(permissionform)
+                                                                            class="save-btn submit-btn  margin-right">Submit</button>
+                                                                    </div>
+                                                                    <!-- POPUP MODAL -->
+                                                                    <div id="menuPopup" class="popup">
+                                                                        <div class="popup-content">
+                                                                            <h2>Select Default Menu</h2>
+
+                                                                            <select [(ngModel)]="selectedMenuId" name="defaultMenu" required>
+                                                                                <option *ngFor="let menu of selectedMenus" [value]="menu.menu_id">
+                                                                                  {{ menu.name }}  
+                                                                                </option>
+                                                                              </select>
+
+                                                                            <div class="popup-actions">
+                                                                                <button (click)="closePopup()"
+                                                                                    class="cancel-btn">Cancel</button>
+                                                                                <button [disabled]="!selectedMenuId"
+                                                                                    (click)="confirmSelection(permissionform)"
+                                                                                    class="confirm-btn">
+                                                                                    Confirm
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </section>
+            </div>
+        </div>
+    </div>
+</article>
+<div class="card flex justify-content-center">
+    <p-toast position="center" key="confirm" (onClose)="onReject()" [baseZIndex]="5000">
+        <ng-template let-message pTemplate="message">
+            <div class="flex flex-column" style="flex: 1">
+                <div class="text-center">
+                    <i class="fa fa-exclamation-triangle" style="font-size: 3rem"></i>
+                    <h4>{{message.summary}}</h4>
+                    <p>{{message.detail}}</p>
+                </div>
+                <div class="row ">
+                    <div class="col-6 p-fluid">
+
+                        <button type="button col-12" pButton (click)="onConfirm()" label="Yes"
+                            class="p-button-success"></button>
+                    </div>
+                    <div class="col-6 p-fluid ">
+
+                        <button type="button col-12" pButton (click)="onReject()" label="No"
+                            class="p-button-secondary"></button>
+                    </div>
+                    <!--<div class="col-6">-->
+                    <!--<button type="button" pButton (click)="onReject()" label="No" class="p-button-secondary"></button>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </ng-template>
+    </p-toast>
+</div>
+<div *ngIf="visibleShowConfirm" class="backdrop"></div>

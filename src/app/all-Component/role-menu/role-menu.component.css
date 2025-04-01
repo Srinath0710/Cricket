@@ -1,0 +1,146 @@
+table.dataTable{
+	max-width: 100% !important;
+	width: 100% !important;
+}
+.modal-title{
+	font-size: 22px;
+}
+.inactive{
+	display: none !important;
+}
+.formContainer{
+	padding-left: 20px;
+    padding-right: 20px;
+}
+.totalRecords{
+	font-size: 16px;
+}
+
+
+
+.formAccodian{
+	float: left;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.formAccodianHead{
+    background-color: #d5d5d5;
+    float: left;
+    padding: 5px;
+    width: 100%;
+}
+
+.formAccodianTitle{
+    font-weight: bold;
+}
+.formAccodianListTitle{
+    
+}
+.formAccodianListTitle.wicon,.formAccodiansubListTitle.wicon{
+	
+    padding-left: 0;
+    cursor: pointer;
+}
+.formAccodianListTitle.wicon .fa,.formAccodiansubListTitle.wicon .fa{
+	color: #6d6d6d;
+    font-size: 16px;
+	top: 2px;
+    left: -2px;
+}
+.formAccodianListTitle.wicon.minimize,.formAccodiansubListTitle.wicon.minimize{
+     color : #037CD9;
+}
+.formAccodianListTitle.wicon.minimize .fa,.formAccodiansubListTitle.wicon.minimize .fa{
+	color : #037CD9;
+	font-size: 16px;
+	top: 2px;
+    left: -2px;
+}
+
+.formAccodianList{
+    float: left;
+    padding: 5px;
+    width: 100%;
+    border-bottom: 1px dashed #8c8c8c;
+}
+
+.formAccodianList:last-child{
+    border-bottom: 1px solid #c9c9c9;
+}
+
+.formAccodiansubList,.formAccodiansubsubList{
+    display: none;
+    float: left;  
+    width: 100%;
+}
+.formAccodiansubList_main{
+	padding-bottom: 5px;
+    padding-top: 5px;
+}
+.formAccodianList_main{
+    float: left;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    width: 100%;
+}
+.formAccodiansubList.active,.formAccodiansubsubList.active{
+    display: block;
+}
+.formAccodiansubListTitle{
+     padding-left: 25px;
+}
+.formAccodiansubsubList .formAccodiansubListTitle{
+     padding-left: 40px;
+} 
+.formAccodiansubListTitle.wicon{
+     margin-left: 25px;
+}
+.mcColumn,.mcColumns{ padding-left:5px;padding-right:5px;float:left; }
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+}
+
+.popup-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.popup-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-left: 60px;
+}
+
+.cancel-btn {
+    background: #ff4d4d;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.confirm-btn {
+    background: #286622;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 14px;
+    margin-right: 80px;
+
+}

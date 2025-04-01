@@ -1,10 +1,4 @@
-/* Import Google font - Poppins */
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Nunito Sans";
-} */
+
 :root {
     --white-color: #fff;
     --blue-color: #4070f4;
@@ -34,8 +28,7 @@ body.dark {
     top: 0;
     width: 100%;
     left: 0;
-    background-color: rgb(95, 95, 95);
-    background-image: url("/assets/images/Header_Bg.png");
+    background-color: #0067b8;
 
     display: flex;
     align-items: center;
@@ -372,11 +365,6 @@ transition: all 0.5s ease;
 
 }
 
-/* .submenu-border{
-border:0.5px solid rgb(190, 184, 184);
-
-} */
-
 :root {
     font-family: "Titillium Web", sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -445,8 +433,6 @@ border:0.5px solid rgb(190, 184, 184);
     height: 100%;
     top: 0;
     left: 0;
-    /* width: 15rem; */
-
     display: flex;
     flex-direction: column;
     z-index: 200;
@@ -460,7 +446,6 @@ border:0.5px solid rgb(190, 184, 184);
 
 .layout-sidebar-active .layout-sidebar,
 .layout-sidebar-active.layout-sidebar {
-    /* top: 45px !important; */
     background: #42434d61;
 }
 
@@ -498,7 +483,6 @@ border:0.5px solid rgb(190, 184, 184);
     text-transform: uppercase;
     font-weight: 700;
     color: #fff;
-    /* padding: 1rem 2rem */
 }
 
 .layout-sidebar .layout-menu .layout-root-menuitem>a {
@@ -648,11 +632,6 @@ border:0.5px solid rgb(190, 184, 184);
     .layout-container.layout-slim .layout-content-wrapper {
         margin-left: 5rem
     }
-
-    .layout-container.layout-slim .layout-menu .layout-root-menuitem>.layout-menuitem-root-text {
-        /* display: none */
-    }
-
     .layout-container.layout-slim .layout-menu .layout-root-menuitem>a {
         display: flex;
         align-items: center;
