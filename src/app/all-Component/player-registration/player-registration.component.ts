@@ -5,6 +5,9 @@ import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { Table, TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+import { CalendarModule } from 'primeng/calendar';  
 
 @Component({
   selector: 'app-player-registration',
@@ -16,50 +19,70 @@ import { Table, TableModule } from 'primeng/table';
     CommonModule,
     ButtonModule,
     TableModule,
+     ButtonModule, 
+     InputTextModule,
+     DialogModule,
+     CalendarModule 
     ]
 })
 
 
 export class PlayerRegistrationComponent {
 // players: FormGroup<any> | undefined;
-associationForm: FormGroup;
 searchKeyword: string = '';
 visible: boolean = false;
-
+isEditing: boolean = false;
 public ShowForm: any = false;
-
-
-
-formGroup: FormGroup | undefined;
-
+position:'right'  = 'right';
+formGroup!: FormGroup ;
 
 constructor(private fb: FormBuilder) {
-  this.associationForm = this.fb.group({
-    association: ['', Validators.required]
+
+} 
+ngOnInit(){
+  this.formGroup = this.fb.group({
+    name: ['', Validators.required],
+    dob: [null],
+    nationality: [''],
+    batStyle: ['', Validators.required],
+    bowlSpec: ['', Validators.required],
+    status: ['Active'],
   });
 }
-ngOnInit(){
-
-}
-
-
 showDialog() {
+  this.isEditing = false;
+  this.formGroup.reset();
   this.visible = true;
 }
+
 gridload(){
 
 }
+player = {
+  name: '',
+  dob: null,
+  nationality: '',
+  batStyle: '',
+  bowlSpec: ''
+};
 players = [
-  { name: 'Virat', dob: '1995-06-15', nationality: 'IND', batStyle: 'Right-hand', bowlSpec: 'Fast', regNo: '12345', mobile: '98343210', extRefId: 'A1B2C3', status: 'Active' },
-  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Left-hand', bowlSpec: 'Spin', regNo: '67890', mobile: '987653211', extRefId: 'D4E5F6', status: 'Inactive' },
-  { name: 'Raina', dob: '1998-08-20', nationality: 'IND', batStyle: 'Left-hand', bowlSpec: 'Spin', regNo: '67890', mobile: '987653211', extRefId: 'D4E5F6', status: 'Inactive' },
-  { name: 'Smith', dob: '1998-08-20', nationality: 'IND', batStyle: 'Left-hand', bowlSpec: 'Spin', regNo: '67890', mobile: '987653211', extRefId: 'D4E5F6', status: 'Inactive' },
-  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Left-hand', bowlSpec: 'Spin', regNo: '67890', mobile: '987653211', extRefId: 'D4E5F6', status: 'Inactive' },
+  { name: 'Virat', dob: '1995-06-15', nationality: 'IND', batStyle: 'Righthand', bowlSpec: 'Fast',BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
+  { name: 'Dhoni', dob: '1998-08-10', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
+  { name: 'Raina', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', Bowlspe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Inactive' },
+  { name: 'Smith', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Inactive' },
+  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
+  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
+  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
 ];
 
-editPlayer(player: any) {
-  console.log('Edit Player:', player);
+editPlayer(player: any, ) {
+  console.log('Editing Player:', player);
+  this.isEditing = true;
+  this.formGroup.patchValue({ ...player });
+  this.visible = true;
 }
+
+  
 viewPlayer(player: any) {
   console.log('Viewing Player:', player);
 }
@@ -67,8 +90,20 @@ toggleStatus(player: any) {
   player.status = player.status === 'Active' ? 'Inactive' : 'Active';
   console.log(`Player status changed to: ${player.status}`);
 }
-// filterGlobal($event:any, stringVal:any) {
-//   this.dt.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-// }
+
+onSubmit() {
+  if (this.formGroup.invalid) return;
+
+  const playerData = this.formGroup.value;
+
+  if (this.isEditing ) {
+    this.players = Object.assign({}, playerData);
+    } 
+    else {
+      this.players.push(Object.assign({}, playerData));
+    }
+
+  this.visible = false; 
+}
 
 }
