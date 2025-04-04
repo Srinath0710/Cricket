@@ -25,6 +25,7 @@ body {
     margin: 0;
 }
 
+
 .login-container {
     height: 100vh;
     display: flex;
@@ -133,17 +134,17 @@ label {
 
 .page-wrapper {
     position: absolute;
-    left: 0px;
+    left: 17px;
     padding-left: 55px;
-    top: 62px;
-    width: 100%;
+    top:50px;
+    width: 97%;
     transition: all 0.2s ease-in-out;
 }
 .modal .card {
     box-shadow: unset;
 }
 .page-header {
-    font-size: 12px;
+    font-size: 23px;
     text-align: center;
 }
 .main-page-header {
@@ -509,7 +510,7 @@ label {
     border-radius: 8px;
     overflow: hidden;
     width: 100%;
-    border-collapse: collapse; /* Ensures borders don't double up */
+    border-collapse: collapse;
   }
   
   .custom-header {
@@ -524,6 +525,7 @@ label {
     text-align: center;
     border-right: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
+    border-color: #082142;
   }
   
   th:last-child, td:last-child {
@@ -552,14 +554,13 @@ label {
   }
     /* ACTION BUTTON */
 
-    
+
 .action-column, .action-column-header {
   position: sticky;
   right: 0;
+  top:0px;
   /* background: white; */
   z-index: 20;
-  min-width: 150px;
-  text-align: center;
 }
 
 .action-column {
@@ -567,13 +568,10 @@ label {
   right: 0;
   background: white; 
   z-index: 10; 
-  min-width: 100px; 
-  text-align: center;
 }
 
 
 .button-group {
   display: flex;
   gap: 5px;
-  justify-content: center;
 }
