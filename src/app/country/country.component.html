@@ -1,0 +1,221 @@
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <main>
+      <div class="card margin-card">
+        <div class="card-body">
+          <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+            <div class="main-page-title page-title playerbackground">
+              <i class="fa fa-user-circle" aria-hidden="true"></i>
+              All Countries
+            </div>
+
+            <form class="flex-grow-1 mx-3 search-width">
+              <div class="form-group">
+                <span class="p-input-icon-left ml-auto">
+                  <span class="p-input-icon-right input-icons search-padding">
+                    <input pInputText type="text" class="form-control width-search p-input-icon-right"
+                      placeholder="{{'  Search'}}" />
+                  </span>
+                </span>
+              </div>
+            </form>
+
+            <div class="card flex justify-center">
+              <p-button icon="fas fa-plus" label="Add Country" (click)="showAddCountryDialog()"
+                styleClass="custom-btn-color"></p-button>
+            </div>
+          </div>
+
+          <p-table [value]="countries" [tableStyle]="{ 'min-width': '50rem' }" scrollable="true" [paginator]="true"
+            [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" [globalFilterFields]="['name']">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="custom-header">Country Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th class="custom-header">Country Code <p-sortIcon field="code"></p-sortIcon></th>
+                <th class="custom-header">Status <p-sortIcon field="status"></p-sortIcon></th>
+                <th class="custom-header action-column-header">Actions</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-country>
+              <tr>
+                <td>{{ country.name }}</td>
+                <td>{{ country.code }}</td>
+                <td>
+                  <span [ngClass]="{
+                        'text-success': country.status === 'Active',
+                        'text-danger': country.status !== 'Active'
+                      }">
+                    {{ country.status }}
+                  </span>
+                </td>
+                <td class="action-column">
+                  <div class="action-icon" (click)="viewCountry(country)" >
+                    <span >
+                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                  <div class="action-icon">
+                    <span (click)="toggleStatus(country)">
+                      <i class="fa" [ngClass]="country.active ? 'fa-times' : 'fa-check-square'"></i>
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </main>
+
+    <p-dialog
+    header="{{ viewMode ? 'View Country' : 'Add Country' }}"
+    [(visible)]="displayModal"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    position="right"
+    [dismissableMask]="true"
+    [closable]="true"
+  >
+    <form *ngIf="newCountry" class="p-fluid">
+      
+      <!-- Row 1 -->
+      <div class="p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label for="region">Region*</label>
+          <p-dropdown
+            id="region"
+            [options]="regions"
+            [(ngModel)]="newCountry.region"
+            name="region"
+            placeholder="Select Region"
+            [showClear]="true"
+            [disabled]="viewMode"
+          ></p-dropdown>
+        </div>
+  
+        <div class="p-field p-col-12 p-md-6">
+          <label for="name">Country Name*</label>
+          <input
+            id="name"
+            pInputText
+            [(ngModel)]="newCountry.name"
+            name="name"
+            [disabled]="viewMode"
+          />
+        </div>
+      </div>
+  
+      <!-- Row 2 -->
+      <div class="p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label>Profile Image</label>
+          <p-fileUpload
+            mode="basic"
+            name="profileImage"
+            accept="image/*"
+            maxFileSize="1000000"
+            (onSelect)="onImageSelect($event)"
+            chooseLabel="Upload Image"
+            *ngIf="!viewMode"
+          ></p-fileUpload>
+          <div class="image-preview" *ngIf="imagePreview">
+            <img
+              [src]="imagePreview"
+              alt="Profile Preview"
+              class="preview-image"
+              style="max-width: 100px; max-height: 100px"
+            />
+          </div>
+        </div>
+  
+        <div class="p-field p-col-12 p-md-6">
+          <label for="timezone">Time Zone*</label>
+          <p-dropdown
+            id="timezone"
+            [options]="timezones"
+            [(ngModel)]="newCountry.timezone"
+            name="timezone"
+            placeholder="Select Time Zone"
+            [showClear]="true"
+            [disabled]="viewMode"
+          ></p-dropdown>
+        </div>
+      </div>
+  
+      <!-- Row 3 -->
+      <div class="p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label for="capital">Capital*</label>
+          <input
+            id="capital"
+            pInputText
+            [(ngModel)]="newCountry.capital"
+            name="capital"
+            [disabled]="viewMode"
+          />
+        </div>
+  
+        <div class="p-field p-col-12 p-md-6">
+          <label for="iso2">ISO Code 2*</label>
+          <input
+            id="iso2"
+            pInputText
+            [(ngModel)]="newCountry.iso2"
+            name="iso2"
+            maxlength="2"
+            [disabled]="viewMode"
+          />
+        </div>
+      </div>
+  
+      <!-- Row 4 -->
+      <div class="p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+          <label for="phoneCode">Phone Code*</label>
+          <input
+            id="phoneCode"
+            pInputText
+            [(ngModel)]="newCountry.phoneCode"
+            name="phoneCode"
+            [disabled]="viewMode"
+          />
+        </div>
+  
+        <div class="p-field p-col-12 p-md-6">
+          <label for="subregion">Sub Region*</label>
+          <input
+            id="subregion"
+            pInputText
+            [(ngModel)]="newCountry.subregion"
+            name="subregion"
+            [disabled]="viewMode"
+          />
+        </div>
+      </div>
+  
+      <!-- Footer -->
+      <div class="p-dialog-footer" *ngIf="!viewMode">
+        <button
+          pButton
+          type="button"
+          label="Clear"
+          class="p-button-secondary"
+          (click)="clearForm()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Save Changes"
+          class="p-button-success"
+          (click)="addCountry(true)"
+        ></button>
+      </div>
+    </form>
+  </p-dialog>
+  
+
+
+
+  </div>
+</div>
