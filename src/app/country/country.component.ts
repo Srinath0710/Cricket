@@ -65,7 +65,8 @@ export class CountryComponent {
   imagePreview: string | null = null;
   selectedCountry: Country | null = null;
   newCountry: Country = this.getEmptyCountry();
-editCountry: any;
+  dialogWidth: string = '50vw';
+  isEditMode: boolean = false;
 
   getEmptyCountry(): Country {
     return {
@@ -83,7 +84,7 @@ editCountry: any;
 
   showAddCountryDialog() {
     this.clearForm();
-    this.viewMode = false;
+    this.isEditMode = false;
     this.displayModal = true;
   }
 
@@ -128,8 +129,8 @@ editCountry: any;
     this.imagePreview = null;
   }
 
-  toggleStatus(index: number) {
-    this.countries[index].status = this.countries[index].status === 'Active' ? 'Inactive' : 'Active';
+  toggleStatus(country: Country): void {
+    country.status = country.status === 'Active' ? 'Inactive' : 'Active';
   }
 
   deleteCountry(index: number) {
@@ -138,9 +139,10 @@ editCountry: any;
     }
   }
 
-  viewCountry(country: Country) {
-    this.viewMode = true;
+  editCountry(country: Country) {
+    this.isEditMode = true; 
     this.newCountry = { ...country };
+    this.imagePreview = country.image || null;
     this.displayModal = true;
   }
 }

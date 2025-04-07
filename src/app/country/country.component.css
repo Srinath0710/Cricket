@@ -1,119 +1,102 @@
 .page-wrapper {
   padding: 20px;
+  background-color: #f9fafb;
 }
+
 .margin-card {
   margin-top: 20px;
 }
+
 .badge {
   padding: 5px 10px;
   border-radius: 12px;
   font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
 }
+
 .bg-success {
   background-color: #28a745;
   color: white;
 }
+
 .bg-danger {
   background-color: #dc3545;
   color: white;
 }
+
 .preview-image {
-  max-width: 100%;
+  max-width: 100px;
   border-radius: 8px;
-  margin-top: 10px;
+  max-height: 100px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
+
 .custom-header {
-  /* background-color: oklab(0.69 -0.13 -0.08);  */
-  background-color: #8aa6bd; 
+  background-color: #8aa6bd;
   color: #111827 !important;
   font-size: 14px;
   font-weight: 600;
   padding: 12px;
   border-bottom: 2px solid white;
 }
+
 .player-image {
-  width: 30px; 
+  width: 30px;
   height: 30px;
-  border-radius: 50%; 
+  border-radius: 50%;
   margin-right: -11px;
   vertical-align: middle;
 }
-/* Add blue vertical lines between columns */
+
 ::ng-deep .p-datatable-thead > tr > th,
 ::ng-deep .p-datatable-tbody > tr > td {
-  border-right: 1px solid #b5c8ed !important; 
+  border-right: 1px solid #b5c8ed !important;
 }
 
-/* Remove right border from the last column */
 ::ng-deep .p-datatable-thead > tr > th:last-child,
 ::ng-deep .p-datatable-tbody > tr > td:last-child {
   border-right: none !important;
 }
-/* Add hover effect for better UX */
+
 ::ng-deep .p-datatable-tbody > tr:hover {
-  background-color: #d0d3e5 !important; 
+  background-color: #d0d3e5 !important;
 }
 
-
-/* 
-.p-button {
-display: inline-flex;
-cursor: pointer;
-user-select: none;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-position: relative;
-color: var(--p-button-primary-color);
-background: #5459d7;
-border: 1px solid #5459d7;
-padding-block: var(--p-button-padding-y);
-padding-inline: var(--p-button-padding-x);
-font-size: 1rem;
-font-family: inherit;
-font-feature-settings: inherit;
-transition: background var(--p-button-transition-duration), color var(--p-button-transition-duration), border-color var(--p-button-transition-duration), outline-color var(--p-button-transition-duration), box-shadow var(--p-button-transition-duration);
-border-radius: var(--p-button-border-radius);
-outline-color: transparent;
-gap: var(--p-button-gap);
-} */
+.action-icon {
+  color: #3f51b5;
+  background-color: #eee;
+  border: 1px solid #e3e3e3;
+  border-radius: 24px;
+  float: left;
+  font-size: 14px;
+  line-height: 24px;
+  min-height: 26px;
+  text-align: center;
+  margin-right: 6px;
+  width: 26px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
 
 .action-icon:hover {
-background-color: #3f51b5;
-border-color: #fff;
-color: #fff;
+  background-color: #3f51b5;
+  border-color: #fff;
+  color: #fff;
 }
-.action-icon {
-color: #777;
-font-size: 16px;
-display: inline-block;
-}
-.action-icon {
-background-color: #eee;
-border: 1px solid #e3e3e3;
-border-radius: 24px;
-float: left;
-font-size: 14px;
-line-height: 24px;
-min-height: 26px;
-text-align: center;
-margin-right:6px;
-width: 26px;
-cursor:pointer;
-margin-bottom:5px;
-}
-.action-icon{
-color: #3f51b5;
-}
+
 .width-search {
   width: 100%;
   padding: 8px;
 }
+
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;
     align-items: stretch;
   }
+
   .width-search {
     width: 100%;
   }
@@ -133,20 +116,38 @@ color: #3f51b5;
     opacity: 1;
   }
 }
-.p-dialog .p-fluid .p-grid {
-  margin: 0 -0.5rem; /* Adjust grid spacing */
+
+.p-dialog .p-formgrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  padding: 1rem 0;
 }
 
-.p-dialog .p-field {
-  padding: 0 0.5rem;
-  margin-bottom: 1rem;
+.p-dialog .form-box {
+  min-height: 140px;
+  background-color: #fff;
+  padding: 1rem;
+  border: 1px solid #d3dce6;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.p-dialog label {
-  display: block;
+.p-dialog .form-box label {
+  font-weight: 600;
+  font-size: 0.95rem;
   margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #495057;
+}
+
+.p-dialog input.p-inputtext,
+.p-dialog .p-dropdown,
+.p-dialog .p-multiselect {
+  width: 100%;
+  height: 40px;
+  font-size: 0.95rem;
 }
 
 .p-dialog .required-field label:after {
@@ -154,39 +155,38 @@ color: #3f51b5;
   color: #e55353;
 }
 
-/* Image upload section */
-.p-dialog .image-upload-section {
+/* Image Upload Section */
+.profile-upload {
+  grid-column: span 2;
+  min-height: 140px;
+  padding: 1rem;
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  background-color: #f1f5f9;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
-.p-dialog .image-preview {
+.profile-upload label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.profile-upload input[type='file'] {
+  margin-bottom: 0.5rem;
+}
+
+.profile-upload img {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   margin-top: 0.5rem;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 0.5rem;
-  text-align: center;
-  background-color: #f8f9fa;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.p-dialog .preview-image {
-  max-width: 100%;
-  max-height: 120px;
-  border-radius: 4px;
-}
-
-.p-dialog .crop-checkbox {
-  margin-top: 0.5rem;
-}
-
-/* Form inputs */
-.p-dialog input.p-inputtext,
-.p-dialog .p-dropdown {
-  width: 100%;
-}
-
-/* Footer buttons */
 .p-dialog .p-dialog-footer {
   display: flex;
   justify-content: flex-end;
@@ -199,18 +199,23 @@ color: #3f51b5;
   margin-left: 0.5rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 960px) {
-  .p-dialog .p-col-4 {
-    width: 100%;
-  }
+::ng-deep .p-dialog .p-button {
+  background-color: #3f51b5 !important;
+  border-color: #3f51b5 !important;
+  color: white !important;
 }
 
-/* Keep all your existing styles below this line */
-.page-wrapper {
-  padding: 20px;
+::ng-deep .p-dialog .p-button:hover {
+  background-color: #2c3e90 !important;
+  border-color: #2c3e90 !important;
 }
-.margin-card {
-  margin-top: 20px;
+
+@media (max-width: 960px) {
+  .p-dialog .p-formgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-upload {
+    grid-column: span 1;
+  }
 }
-/* ... rest of your existing CSS ... */

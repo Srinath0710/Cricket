@@ -575,3 +575,9 @@ label {
   display: flex;
   gap: 5px;
 }
+.p-select,.p-inputtext{
+    width: 100% !important;
+}
+.p-paginator-rpp-dropdown{
+    width:100px !important;
+}

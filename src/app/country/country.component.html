@@ -50,14 +50,14 @@
                   </span>
                 </td>
                 <td class="action-column">
-                  <div class="action-icon" (click)="viewCountry(country)" >
+                  <div class="action-icon" (click)="editCountry(country)" >
                     <span >
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                     </span>
                   </div>
                   <div class="action-icon">
                     <span (click)="toggleStatus(country)">
-                      <i class="fa" [ngClass]="country.active ? 'fa-times' : 'fa-check-square'"></i>
+                      <i class="fa" [ngClass]="country.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
                     </span>
                   </div>
                 </td>
@@ -69,153 +69,147 @@
     </main>
 
     <p-dialog
-    header="{{ viewMode ? 'View Country' : 'Add Country' }}"
-    [(visible)]="displayModal"
-    [modal]="true"
-    [style]="{ width: '50vw' }"
-    position="right"
-    [dismissableMask]="true"
-    [closable]="true"
-  >
-    <form *ngIf="newCountry" class="p-fluid">
-      
-      <!-- Row 1 -->
-      <div class="p-formgrid p-grid">
-        <div class="p-field p-col-12 p-md-6">
-          <label for="region">Region*</label>
-          <p-dropdown
-            id="region"
-            [options]="regions"
-            [(ngModel)]="newCountry.region"
-            name="region"
-            placeholder="Select Region"
-            [showClear]="true"
-            [disabled]="viewMode"
-          ></p-dropdown>
-        </div>
-  
-        <div class="p-field p-col-12 p-md-6">
-          <label for="name">Country Name*</label>
-          <input
-            id="name"
-            pInputText
-            [(ngModel)]="newCountry.name"
-            name="name"
-            [disabled]="viewMode"
-          />
-        </div>
+  header="{{ viewMode ? 'Edit Country' : 'Add Country' }}"
+  [(visible)]="displayModal"
+  [modal]="true"
+  [draggable]="false"
+  [style]="{ width: dialogWidth, height: '100vh'}"
+  position="right"
+  [dismissableMask]="true"
+  [closable]="true"
+>
+<form *ngIf="newCountry" class="container">
+  <div class="row"> <!-- <--- ADDED g-3 for spacing -->
+
+    <div class="col-md-6">
+      <label for="region">Region*</label>
+      <div>
+      <p-dropdown
+        id="region"
+        [options]="regions"
+        [(ngModel)]="newCountry.region"
+        name="region"
+        placeholder="Select Region"
+        [showClear]="true"
+        [disabled]="viewMode"
+      ></p-dropdown>
+    </div>
+    </div>
+
+    <div class="col-md-6">
+      <label for="name">Country Name*</label>
+      <input
+        id="name"
+        pInputText
+        [(ngModel)]="newCountry.name"
+        name="name"
+        [disabled]="viewMode"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <label for="timezone">Time Zone*</label>
+      <p-dropdown
+        id="timezone"
+        [options]="timezones"
+        [(ngModel)]="newCountry.timezone"
+        name="timezone"
+        placeholder="Select Time Zone"
+        [showClear]="true"
+        [disabled]="viewMode"
+      ></p-dropdown>
+    </div>
+
+    <div class="col-md-6">
+      <label for="capital">Capital*</label>
+      <input
+        id="capital"
+        pInputText
+        [(ngModel)]="newCountry.capital"
+        name="capital"
+        [disabled]="viewMode"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <label for="iso2">ISO Code 2*</label>
+      <input
+        id="iso2"
+        pInputText
+        [(ngModel)]="newCountry.iso2"
+        name="iso2"
+        maxlength="2"
+        [disabled]="viewMode"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <label for="phoneCode">Phone Code*</label>
+      <input
+        id="phoneCode"
+        pInputText
+        [(ngModel)]="newCountry.phoneCode"
+        name="phoneCode"
+        [disabled]="viewMode"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <label for="subregion">Sub Region*</label>
+      <input
+        id="subregion"
+        pInputText
+        [(ngModel)]="newCountry.subregion"
+        name="subregion"
+        [disabled]="viewMode"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <label style="font-weight: 500;">Profile Image</label>
+      <div *ngIf="!viewMode" class="mb-2">
+        <p-fileUpload
+          mode="basic"
+          name="profileImage"
+          accept="image/*"
+          maxFileSize="1000000"
+          (onSelect)="onImageSelect($event)"
+          chooseLabel="Upload Image"
+        ></p-fileUpload>
       </div>
-  
-      <!-- Row 2 -->
-      <div class="p-formgrid p-grid">
-        <div class="p-field p-col-12 p-md-6">
-          <label>Profile Image</label>
-          <p-fileUpload
-            mode="basic"
-            name="profileImage"
-            accept="image/*"
-            maxFileSize="1000000"
-            (onSelect)="onImageSelect($event)"
-            chooseLabel="Upload Image"
-            *ngIf="!viewMode"
-          ></p-fileUpload>
-          <div class="image-preview" *ngIf="imagePreview">
-            <img
-              [src]="imagePreview"
-              alt="Profile Preview"
-              class="preview-image"
-              style="max-width: 100px; max-height: 100px"
-            />
-          </div>
-        </div>
-  
-        <div class="p-field p-col-12 p-md-6">
-          <label for="timezone">Time Zone*</label>
-          <p-dropdown
-            id="timezone"
-            [options]="timezones"
-            [(ngModel)]="newCountry.timezone"
-            name="timezone"
-            placeholder="Select Time Zone"
-            [showClear]="true"
-            [disabled]="viewMode"
-          ></p-dropdown>
-        </div>
+
+      <div *ngIf="imagePreview">
+        <img
+          [src]="imagePreview"
+          alt="Profile Preview"
+          style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid #ccc;"
+        />
       </div>
-  
-      <!-- Row 3 -->
-      <div class="p-formgrid p-grid">
-        <div class="p-field p-col-12 p-md-6">
-          <label for="capital">Capital*</label>
-          <input
-            id="capital"
-            pInputText
-            [(ngModel)]="newCountry.capital"
-            name="capital"
-            [disabled]="viewMode"
-          />
-        </div>
-  
-        <div class="p-field p-col-12 p-md-6">
-          <label for="iso2">ISO Code 2*</label>
-          <input
-            id="iso2"
-            pInputText
-            [(ngModel)]="newCountry.iso2"
-            name="iso2"
-            maxlength="2"
-            [disabled]="viewMode"
-          />
-        </div>
-      </div>
-  
-      <!-- Row 4 -->
-      <div class="p-formgrid p-grid">
-        <div class="p-field p-col-12 p-md-6">
-          <label for="phoneCode">Phone Code*</label>
-          <input
-            id="phoneCode"
-            pInputText
-            [(ngModel)]="newCountry.phoneCode"
-            name="phoneCode"
-            [disabled]="viewMode"
-          />
-        </div>
-  
-        <div class="p-field p-col-12 p-md-6">
-          <label for="subregion">Sub Region*</label>
-          <input
-            id="subregion"
-            pInputText
-            [(ngModel)]="newCountry.subregion"
-            name="subregion"
-            [disabled]="viewMode"
-          />
-        </div>
-      </div>
-  
-      <!-- Footer -->
-      <div class="p-dialog-footer" *ngIf="!viewMode">
-        <button
-          pButton
-          type="button"
-          label="Clear"
-          class="p-button-secondary"
-          (click)="clearForm()"
-        ></button>
-        <button
-          pButton
-          type="button"
-          label="Save Changes"
-          class="p-button-success"
-          (click)="addCountry(true)"
-        ></button>
-      </div>
-    </form>
-  </p-dialog>
-  
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="row mt-4" *ngIf="!viewMode">
+    <div class="col-12 text-end">
+      <button
+        pButton
+        type="button"
+        label="Clear"
+        class="p-button-secondary me-2"
+        (click)="clearForm()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Save"
+        class="p-button-success"
+        (click)="addCountry(true)"
+      ></button>
+    </div>
+  </div>
+</form>
 
 
-
+</p-dialog>
   </div>
 </div>
