@@ -108,6 +108,9 @@ label {
 .btn-primary:hover {
     background-color: #4c51bf;
 }
+.p-drawer-right .p-drawer {
+    width: 50% !important;
+  }
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -576,7 +579,7 @@ label {
   gap: 5px;
 }
 .p-select,.p-inputtext{
-    width: 100% !important;
+    width: 40% !important;
 }
 .p-paginator-rpp-dropdown{
     width:100px !important;
