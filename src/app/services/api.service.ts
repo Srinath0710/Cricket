@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
     providedIn: 'root',
 })
 export class ApiService {
-    protected domain = environment.apiUrl;
+    protected domain = environment.angularUrl;
     private apiUrl: any;
     private menuId: any = '0';
     public menuList = [];
