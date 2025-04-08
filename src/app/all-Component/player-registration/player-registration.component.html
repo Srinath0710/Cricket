@@ -15,7 +15,6 @@
                     <input pInputText type="text" 
                       class="form-control width-search p-input-icon-right" placeholder="{{'  Search'}}"
                      />
-                    <!-- <i class="pi pi-search"></i> -->
                   </span>
                 </span>
               </div>
@@ -65,18 +64,63 @@
           
             <div class="card flex justify-center">
               <p-button 
-                icon="fas fa-plus" 
-                label="New Player" 
-                (click)="showDialog()" 
-                styleClass="custom-btn-color">
-              </p-button>
+              icon="fas fa-plus" 
+              label="New Player" 
+              (click)="showDialog()" 
+              styleClass="new-button p-button-text">
+            </p-button>
             </div>
-            
-            
-          </div>
-          
+          </div> 
+                  <!-- View Players In Grid Load-->
+                  <p-dialog [(visible)]="visibleDialog" [style]="{ width: '30vw' }" [closable]="false" [modal]="true">
+  
+                    <div class="player-info position-relative">
+                      <div class="view-name">{{ selectedPlayer?.name | uppercase }}</div>
+                      <button 
+                      type="button" 
+                      pButton 
+                      icon="pi pi-times" 
+                      class="p-button-rounded p-button-text close-btn"
+                      (click)="visibleDialog = false"
+                      style="position: absolute; right: 1rem; top: 1rem; color: #e53935;" 
+                      aria-label="Close">
+                    </button>
+                    
+                    </div>
+                  
+                    <!-- Grid Info -->
+                    <div class="player-grid">
+                      <div class="info-block">
+                        <label>Gender</label>
+                        <div>{{ selectedPlayer?.gender || 'M' }}</div>
+                      </div>
+                      <div class="info-block">
+                        <label>Date of Birth</label>
+                        <div>{{ selectedPlayer?.dob }}</div>
+                      </div>
+                      <div class="info-block">
+                        <label>Player Role</label>
+                        <div>{{ selectedPlayer?.role || selectedPlayer?.bowlSpec }}</div>
+                      </div>
+                      <div class="info-block">
+                        <label>Batting Style</label>
+                        <div>{{ selectedPlayer?.batStyle }}</div>
+                      </div>
+                      <div class="info-block">
+                        <label>Bowling Style</label>
+                        <div>{{ selectedPlayer?.bowlSpec }}</div>
+                      </div>
+                      <div class="info-block">
+                        <label>Bowling Type</label>
+                        <div>{{ selectedPlayer?.bowlingType || 'Fast' }}</div>
+                      </div>
+                    </div>
+                  
+                  </p-dialog>
+                  
+
           <p-table 
-          [value]="players" 
+          [value]="playerList" 
           [tableStyle]="{ 'min-width': '50rem' }" 
           scrollable="true" 
           [paginator]="true" 
@@ -86,8 +130,8 @@
           >
           <ng-template pTemplate="header">
             <tr>
-              <th class="custom-header">Player Name
-                <p-sortIcon field="player_name"></p-sortIcon>
+              <th class="custom-header" pSortableColumn="name">Player Name
+                <p-sortIcon field="name"></p-sortIcon>
 
               </th>
               <th class="custom-header">DOB
@@ -109,45 +153,67 @@
             </tr>
           </ng-template>
         
-          <ng-template pTemplate="body" let-player>
-            <tr  >
+          <ng-template pTemplate="body" let-player let-rowIndex="rowIndex">
+            <tr [ngClass]="{ 'even-row': rowIndex % 2 == 1 }">
+            
               <td>
                 {{ player.name }}
-                <img [src]="player.imageUrl" class="player-image" />
+                <img [src]="player.imageUrl" class="gird-image" />
               </td>
-               <td>{{ player.dob }}</td>
+          
+           
+              <td>{{ player.dob }}</td>
               <td>{{ player.nationality }}</td>
               <td>{{ player.batStyle }}</td>
-              <td>{{ player.bowlSpec }}</td>
+              <td>{{ player.roles }}</td>
               <td>
-                <span [ngClass]="{'text-success': player.status === 'Active', 'text-danger': player.status !== 'Active'}">
+                <span
+                  [ngStyle]="{
+                    'background-color': player.status === 'Active' ? '#0ea5e9' : 'rgb(255 33 33)',
+                    'color': 'white',
+                    'padding': '4px 8px',
+                    'border-radius': '4px',
+                    'display': 'inline-block'
+                  }">
                   {{ player.status }}
                 </span>
               </td> 
               <td class="action-column">
-                <div class="action-icon">
-                  <span (click)="editPlayer(player)"><i class="fa fa-pencil-square"aria-hidden="true"></i>
-                </span></div>
-                <div class="action-icon">
-                  <span (click)="editPlayer(player)"><i class="fa fa-eye"aria-hidden="true"></i>
-                </span></div>
+                <div class="action-icon" (click)="editPlayer(player)">
+                  <span >
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <div class="action-icon" (click)="viewShowDialog()" (click)="viewPlayer(player)">
+                  <span >
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </div>
                 <div class="action-icon">
                   <span (click)="toggleStatus(player)">
-                    <i class="fa" [ngClass]="player.active ? 'fa-times' : 'fa-check-square'" 
-                      aria-hidden="true">
+                    <i class="fa" [ngClass]="player.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
+                  </span>
+                </div>
+              </td>
+              
+              <!-- <td class="action-column">
+                <div class="action-icon">
+                  <span (click)="editPlayer(player)"><i class="fa fa-pencil-square "aria-hidden="true"></i>
+                </span></div>
+                <div class="action-icon" (click)="viewShowDialog()" (click)="viewPlayer(player)">
+                  <span ><i class="fa fa-eye"aria-hidden="true"></i>
+                </span>
+              </div>
+                <div class="action-icon">
+                  <span (click)="toggleStatus(player)">
+                    <i class="fa" 
+                       [ngClass]="player.active ? 'fa-times' : 'fa-check-square'" 
+                       aria-hidden="true">
                     </i>
                   </span>
                 </div>
                 
-                  <!-- <button  icon="" class="p-button-info p-button-sm" 
-                    (click)="viewPlayer(player)">
-                  </button>
-                  <button  [icon]="player.status === 'Active' ? 'pi pi-times' : 'pi pi-check'"
-                    [class.p-button-danger]="player.status === 'Active'"
-                    [class.p-button-success]="player.status !== 'Active'" class="p-button-sm"
-                    (click)="toggleStatus(player)">
-                  </button> -->
-              </td>
+              </td> -->
             </tr>
           </ng-template>
         </p-table>

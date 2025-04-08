@@ -21,9 +21,8 @@
   
     <div class="navbar_content">
       <span  *ngIf="itealTimeoutEnable==1"class="timmer-clock">{{remainingTime}}</span>
-  
-      <i class='fa fa-sign-out' id="darkLight" data-bs-toggle="modal" data-bs-target="#logout_pop_up"></i> 
       <span class="user_name">{{userData.user_name}}</span>
+      <i class="pi pi-power-off"  id="darkLight" data-bs-toggle="modal" data-bs-target="#logout_pop_up"></i> 
       <!-- <i class='fa fa-bell'></i> -->
       <img [src]="envImagePath+'/images/no-image-avathar.jpeg'" alt=""  class="profile" />
     </div>
@@ -33,16 +32,16 @@
         <div class="modal-content">
             <div class="modal-body ">
                 <div class="form-header logout-color-header">
-                <img  [src]="envImagePath+'/images/out-icon-34626.jpg'" width="150px" height="100px">
+                <img  [src]="envImagePath+'/login_image.jpg'" width="150px" height="100px">
                 </div>
                 <div class="login-name">{{userData.user_name}}</div>
                 <div class="form-header">
-                    <h1>Are You Sure Want To Signout</h1>
+                    <h3>Confirm logout from your account</h3>
                 </div>
                 <div class="modal-btn delete-action">
                     <div class="row">
                         <div class="col-6">
-                            <a (click)="logOut()" class="btn btn-primary continue-btn" data-bs-dismiss="modal">Sign Out</a>
+                            <a (click)="logOut()" class="btn btn-primary continue-btn" data-bs-dismiss="modal">Log Out</a>
                         </div>
                         <div class="col-6">
                             <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>

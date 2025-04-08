@@ -3,6 +3,7 @@ import { AllComponentComponent } from "./all-component.component";
 import { PlayerRegistrationComponent } from "./player-registration/player-registration.component";
 import { RoleMenuComponent } from "./role-menu/role-menu.component";
 import { CountryComponent } from "../country/country.component";
+import { OfficialsComponent } from "./officials/officials.component";
 export const AllComponentRoutes: Route[] = [
     {
         path: '',
@@ -24,7 +25,11 @@ export const AllComponentRoutes: Route[] = [
             {
                 path: 'country',
                 component: CountryComponent
-            }
+            },
+            {
+                path: 'official',
+                component: OfficialsComponent
+            },
           
         ]
     },

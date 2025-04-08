@@ -4,7 +4,7 @@
                 <div class="card">
                     <div class="card-body row">
                         <div class="col-6 text-center pt-3 ">
-                            <img [src]="envImagePath+'/smartiapps_logo.png'">
+                            <img [src]="envImagePath+'/depo.jpg'" style="width: 100%;" >
                         </div>
                         <div class="col-6 login_form">
                             <h3 class="text-center pt-3">LOGIN</h3>
@@ -51,7 +51,7 @@
                             </form>
         
                             <!-- MFA Login Form -->
-                            <form [formGroup]="loginForm" (ngSubmit)="loginUser()" *ngIf="isMFAvisible">
+                            <!-- <form [formGroup]="loginForm" (ngSubmit)="loginUser()" *ngIf="isMFAvisible">
                                 <div *ngIf="!qrCodeVisible && isMFAvisible" class="text-center">
                                     <img [src]="qrImage" alt="Qr" width="100px" height="100px">
                                 </div>
@@ -80,7 +80,7 @@
                                 <div class="form-group text-center mt-3">
                                     <button class="btn btn-primary" type="submit">Login</button>
                                 </div>
-                            </form>
+                            </form> -->
                         </div>
                         
                     </div>

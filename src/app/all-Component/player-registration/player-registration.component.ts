@@ -11,6 +11,9 @@ import { CalendarModule } from 'primeng/calendar';
 import { PlayerConstants } from '../constants/player.constant';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
+import { Players } from './player-registration.model';
+import { ApiService } from '../../services/api.service';
+import { URLCONSTANT } from '../../services/url-constant';
 
 @Component({
   selector: 'app-player-registration',
@@ -28,7 +31,10 @@ import { HttpClient } from '@angular/common/http';
      CalendarModule,
      HttpClientModule
 
-    ]
+    ],
+    providers: [
+      { provide: URLCONSTANT }
+    ],
 })
 
 
@@ -40,8 +46,13 @@ isEditing: boolean = false;
 public ShowForm: any = false;
 position:'right'  = 'right';
 formGroup!: FormGroup ;
+backScreen: any
+selectedPlayer: any = null;
+visibleDialog: boolean = false;
+players:Players[]=[];
+playerList: any[] = [];
 
-constructor(private fb: FormBuilder) {
+constructor(private fb: FormBuilder,private apiService:ApiService,private httpClient:HttpClient,private urlConstant: URLCONSTANT) {
 
 } 
 ngOnInit(){
@@ -53,7 +64,7 @@ ngOnInit(){
     bowlSpec: ['', Validators.required],
     status: ['Active'],
   });
-  // this.loadPlayers();
+  this.gridload();
 }
 showDialog() {
   this.isEditing = false;
@@ -62,29 +73,15 @@ showDialog() {
 }
 
 gridload(){
+  this.apiService.get(this.urlConstant.playerList).subscribe(res => {
+    console.log(res);
+    this.playerList = res.data;
+  
+  });
+  error: (err: any) => {
+    console.error('Error loading player list:', err);
+  }
 }
-
-// loadPlayers() {
-//   this.http.get<any[]>('assets/data/players.json').subscribe({
-//     next: (data) => {
-//       console.log('Loaded player data:', data);
-//       this.players = data;
-//     },
-//     error: (err) => {
-//       console.error('Failed to load JSON:', err);
-//     }
-//   });
-// }
-
-players = [
-  { name: 'Virat Kholi', dob: '1995-06-15', nationality: 'IND', batStyle: 'Righthand', bowlSpec: 'Fast',BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active',imageUrl: 'assets/virat.png' },
-  { name: 'Dhoni', dob: '1998-08-10', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
-  { name: 'Raina', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', Bowlspe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Inactive' },
-  { name: 'Smith', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Inactive' },
-  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
-  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
-  { name: 'Dhoni', dob: '1998-08-20', nationality: 'IND', batStyle: 'Lefthand', bowlSpec: 'Spin', BowlSpe:'medium',Bowls:'fast',Bowl:'spin',Bowl1:'spin',Bowl2:'spin',Bowl3:'spin',Bowl4:'spin',Bowl5:'spin', status: 'Active' },
-];
 
 editPlayer(player: any, ) {
   console.log('Editing Player:', player);
@@ -93,12 +90,16 @@ editPlayer(player: any, ) {
   this.visible = true;
 }
 
-  
-viewPlayer(player: any) {
-  console.log('Viewing Player:', player);
+viewShowDialog() {
+  this.visibleDialog = true
+  this.backScreen = "overlay1"
+}
+viewPlayer(player:any) {
+  this.selectedPlayer = player;
+  this.visibleDialog = true;
 }
 toggleStatus(player: any) {
-  player.status = player.status === 'Active' ? 'Inactive' : 'Active';
+  player.status = player.status === 'Active' ? 'InActive' : 'Active';
   console.log(`Player status changed to: ${player.status}`);
 }
 

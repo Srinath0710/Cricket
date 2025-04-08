@@ -1,84 +1,54 @@
 
   .custom-header {
-    /* background-color: oklab(0.69 -0.13 -0.08);  */
-    background-color: #8aa6bd; 
-    color: #111827 !important;
+    background-color: #a1bbd0; 
+    color: #000000 !important;
     font-size: 14px;
     font-weight: 600;
     padding: 12px;
     border-bottom: 2px solid white;
   }
-  .player-image {
-    width: 30px; 
-    height: 30px;
-    border-radius: 50%; 
-    margin-right: -11px;
-    vertical-align: middle;
-  }
-  /* Add blue vertical lines between columns */
-::ng-deep .p-datatable-thead > tr > th,
-::ng-deep .p-datatable-tbody > tr > td {
-    border-right: 1px solid #b5c8ed !important; 
-}
 
 /* Remove right border from the last column */
 ::ng-deep .p-datatable-thead > tr > th:last-child,
 ::ng-deep .p-datatable-tbody > tr > td:last-child {
     border-right: none !important;
 }
-/* Add hover effect for better UX */
-::ng-deep .p-datatable-tbody > tr:hover {
-    background-color: #d0d3e5 !important; 
-}
 
-
-/* 
-.p-button {
-  display: inline-flex;
-  cursor: pointer;
-  user-select: none;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-  color: var(--p-button-primary-color);
-  background: #5459d7;
-  border: 1px solid #5459d7;
-  padding-block: var(--p-button-padding-y);
-  padding-inline: var(--p-button-padding-x);
-  font-size: 1rem;
-  font-family: inherit;
-  font-feature-settings: inherit;
-  transition: background var(--p-button-transition-duration), color var(--p-button-transition-duration), border-color var(--p-button-transition-duration), outline-color var(--p-button-transition-duration), box-shadow var(--p-button-transition-duration);
-  border-radius: var(--p-button-border-radius);
-  outline-color: transparent;
-  gap: var(--p-button-gap);
-} */
-
-.action-icon:hover {
+::ng-deep .new-button {
   background-color: #3f51b5;
-  border-color: #fff;
-  color: #fff;
+  color: white;
+  border: none;
+  height: 41px;
 }
-.action-icon {
-  color: #777;
-  font-size: 16px;
-  display: inline-block;
-}
-.action-icon {
-  background-color: #eee;
-  border: 1px solid #e3e3e3;
-  border-radius: 24px;
-  float: left;
-  font-size: 14px;
-  line-height: 24px;
-  min-height: 26px;
+/* Header Style */
+.dialog-header {
+  background-color: #3f51b5;
+  color: white;
+  width: 95%;
   text-align: center;
-  margin-right:6px;
-  width: 26px;
-  cursor:pointer;
-  margin-bottom:5px;
+  border-radius: 10px;
+  margin-left: 24px;
+
 }
-.action-icon{
-  color: #3f51b5;
+
+/* Wrapper Padding */
+.player-details-wrapper {
+  padding: 1.5rem;
+}
+
+.dialog-header {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+::ng-deep .p-dialog {
+  border-radius: 14px !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+  display: none; 
+}
+.even-row {
+  background-color: #f1f5f9; 
 }

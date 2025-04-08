@@ -7,7 +7,7 @@
 }
 
 body {
-    background-color: #e7f2fd;
+    background-color: #ededed;
     transition: all 0.5s ease;
 }
 
@@ -943,7 +943,7 @@ transition: all 0.5s ease;
     }
 
     .layout-container.layout-horizontal .layout-menu .layout-root-menuitem>a:hover {
-        background: #42434d61;
+        background: #8a8b8c61;
     }
 
     .layout-container.layout-horizontal .layout-menu .layout-root-menuitem>ul {
