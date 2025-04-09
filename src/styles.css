@@ -673,7 +673,7 @@ label {
       color: #b71c1c !important;
     }
   
-    .player-grid {
+    .tabel-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1.25rem 2rem;

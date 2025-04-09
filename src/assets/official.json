@@ -1,0 +1,37 @@
+{
+    "data": [
+      {
+        "name": "ABC",
+        "country": "IND",
+        "type": "UMP",
+        "batStyle": "Righthand",
+        "roles": "BAT",
+        "status": "Active"
+      },
+      {
+        "name": "sri",
+        "country": "AUS",
+        "type": "UMP",
+        "batStyle": "Lefthand",
+        "roles": "ALL ROUNDER",
+        "status": "Active"
+      },
+      {
+        "name": "Kholi",
+        "country": "END",
+        "type": "EDITER",
+        "batStyle": "Lefthand",
+        "roles": "BAT",
+        "status": "Active"
+      },
+      {
+        "name": "Smith",
+        "country": "WI",
+        "type": "VIDEO RECODER",
+        "batStyle": "Righthand",
+        "roles": "BAT",
+        "status": "Active"
+      }
+      
+    ]
+  }

@@ -89,7 +89,7 @@
                     </div>
                   
                     <!-- Grid Info -->
-                    <div class="player-grid">
+                    <div class="tabel-grid">
                       <div class="info-block">
                         <label>Gender</label>
                         <div>{{ selectedPlayer?.gender || 'M' }}</div>
@@ -189,31 +189,12 @@
                     <i class="fa fa-eye" aria-hidden="true"></i>
                   </span>
                 </div>
-                <div class="action-icon">
-                  <span (click)="toggleStatus(player)">
+                <div class="action-icon"(click)="toggleStatus(player)">
+                  <span >
                     <i class="fa" [ngClass]="player.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
                   </span>
                 </div>
               </td>
-              
-              <!-- <td class="action-column">
-                <div class="action-icon">
-                  <span (click)="editPlayer(player)"><i class="fa fa-pencil-square "aria-hidden="true"></i>
-                </span></div>
-                <div class="action-icon" (click)="viewShowDialog()" (click)="viewPlayer(player)">
-                  <span ><i class="fa fa-eye"aria-hidden="true"></i>
-                </span>
-              </div>
-                <div class="action-icon">
-                  <span (click)="toggleStatus(player)">
-                    <i class="fa" 
-                       [ngClass]="player.active ? 'fa-times' : 'fa-check-square'" 
-                       aria-hidden="true">
-                    </i>
-                  </span>
-                </div>
-                
-              </td> -->
             </tr>
           </ng-template>
         </p-table>
