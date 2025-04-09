@@ -5,8 +5,9 @@
           <div class="card-body">
             <div class="page-header main-page-header d-flex align-items-center justify-content-between">
               <div class="main-page-title page-title playerbackground">
-                <i class="fa fa-universal-access" aria-hidden="true"></i>
-                     All Official
+                <i class="fa-solid fa-users" aria-hidden="true"></i>
+                  <!-- <i class="fa fa-user-circle" aria-hidden="true"></i> -->
+                     Compititions
               </div>
                <form class="flex-grow-1 mx-3 search-width">
                 <div class="form-group">
@@ -24,17 +25,17 @@
               <div class="card flex justify-center">
                 <p-button 
                 icon="fas fa-plus" 
-                label="New Official" 
+                label="New compitition" 
                 (click)="showDialog()" 
                 styleClass="new-button p-button-text">
               </p-button>
               </div>
             </div> 
-                    <!-- View Official In Grid Load-->
+                    <!-- View compititions In Grid Load-->
                     <p-dialog [(visible)]="visibleDialog" [style]="{ width: '30vw' }" [closable]="false" [modal]="true">
     
                       <div class="tabel-info position-relative">
-                        <div class="view-name">{{ selectedOfficial?.name | uppercase }}</div>
+                        <div class="view-name">{{ selectedcompitition?.name | uppercase }}</div>
                         <button 
                         type="button" 
                         pButton 
@@ -47,86 +48,96 @@
                       
                       </div>
                     
-                      <!-- Grid Info -->    
+                      <!-- Grid Info -->
                       <div class="tabel-grid">
                         <div class="info-block">
-                          <label>Country</label>
-                          <div>{{ selectedOfficial?.country}}</div>
+                          <label>Start Date</label>
+                          <div>{{ selectedcompitition?.start_date}}</div>
                         </div>
                         <div class="info-block">
-                          <label>Official Type</label>
-                          <div>{{ selectedOfficial?.type }}</div>
+                          <label>End Date</label>
+                          <div>{{ selectedcompitition?.end_date }}</div>
                         </div>
-                        
+                        <div class="info-block">
+                          <label>Match Type</label>
+                          <div>{{ selectedcompitition?.match_type }}</div>
+                        </div>
+                       
                       </div>
                     
                     </p-dialog>
                     
   
             <p-table 
-            [value]="officialList" 
+            [value]="compititionList" 
             [tableStyle]="{ 'min-width': '50rem' }" 
             scrollable="true" 
             [paginator]="true" 
             [rows]="5" 
             [rowsPerPageOptions]="[5,10,20]"
-            [globalFilterFields]="['Official_name']"
+            [globalFilterFields]="['Compitition_name']"
             >
             <ng-template pTemplate="header">
               <tr>
-                <th class="custom-header" pSortableColumn="name">Official Name
+                <th class="custom-header" pSortableColumn="name">Competition Name
                   <p-sortIcon field="name"></p-sortIcon>
   
                 </th>
-                <th class="custom-header">Country   
-                  <p-sortIcon field="Official_name"></p-sortIcon>
+                <th class="custom-header">Start Date
+                  <p-sortIcon field="start_date"></p-sortIcon>
                 </th>
-                <th class="custom-header">Official Type
-                  <p-sortIcon field="Official_name"></p-sortIcon>
+                <th class="custom-header">End Date
+                  <p-sortIcon field="Compitition_name"></p-sortIcon>
                 </th>
+                <th class="custom-header">Match Type
+                  <p-sortIcon field="Compitition_name"></p-sortIcon>
+                </th>
+
                 <th class="custom-header">Status
-                  <p-sortIcon field="Official_name"></p-sortIcon>
+                  <p-sortIcon field="Compitition_name"></p-sortIcon>
                 </th>
                 <th class="custom-header action-column-header">Actions</th>       
               </tr>
             </ng-template>
           
-            <ng-template pTemplate="body" let-official let-rowIndex="rowIndex">
+            <ng-template pTemplate="body" let-compitition let-rowIndex="rowIndex">
               <tr [ngClass]="{ 'even-row': rowIndex % 2 == 1 }">
               
                 <td>
-                  {{ official.name }}
-                  <img [src]="official.imageUrl" class="gird-image" />
+                  {{ compitition.name }}
+                  <img [src]="compitition.imageUrl" class="gird-image" />
                 </td>
-
-                <td>{{ official.country }}</td>
-                <td>{{ official.type }}</td>
+            
+             
+                <td>{{ compitition.start_date }}</td>
+                <td>{{ compitition.end_date }}</td>
+                <td>{{ compitition.match_type }}</td>
                 <td>
                   <span
                     [ngStyle]="{
-                      'background-color': official.status === 'Active' ? '#0ea5e9' : 'rgb(255 33 33)',
+                      'background-color': compitition.status === 'Active' ? '#0ea5e9' : 'rgb(255 33 33)',
                       'color': 'white',
                       'padding': '4px 8px',
                       'border-radius': '4px',
                       'display': 'inline-block'
                     }">
-                    {{ official.status }}
+                    {{ compitition.status }}
                   </span>
                 </td> 
                 <td class="action-column">
-                  <div class="action-icon" (click)="editofficial(official)">
+                  <div class="action-icon" (click)="editCompitition(compitition)">
                     <span >
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                     </span>
                   </div>
-                  <div class="action-icon" (click)="viewShowDialog()" (click)="viewofficial(official)">
+                  <div class="action-icon" (click)="viewShowDialog()" (click)="viewCompitition(compitition)">
                     <span >
                       <i class="fa fa-eye" aria-hidden="true"></i>
                     </span>
                   </div>
-                  <div class="action-icon"(click)="toggleStatus(official)">
+                  <div class="action-icon"(click)="toggleStatus(compitition)">
                     <span >
-                      <i class="fa" [ngClass]="official.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
+                      <i class="fa" [ngClass]="compitition.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
                     </span>
                   </div>
                 </td>

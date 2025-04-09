@@ -85,6 +85,8 @@ body.dark {
     display: flex;
     align-items: center;
     column-gap: 25px;
+    color: white;
+
 }
 
 .navbar_content i {

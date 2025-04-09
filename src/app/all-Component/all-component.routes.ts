@@ -4,6 +4,7 @@ import { PlayerRegistrationComponent } from "./player-registration/player-regist
 import { RoleMenuComponent } from "./role-menu/role-menu.component";
 import { CountryComponent } from "../country/country.component";
 import { OfficialsComponent } from "./officials/officials.component";
+import { CompetitionComponent } from "./competition/competition.component";
 export const AllComponentRoutes: Route[] = [
     {
         path: '',
@@ -29,6 +30,10 @@ export const AllComponentRoutes: Route[] = [
             {
                 path: 'official',
                 component: OfficialsComponent
+            },
+            {
+                path: 'compitition',
+                component: CompetitionComponent
             },
           
         ]

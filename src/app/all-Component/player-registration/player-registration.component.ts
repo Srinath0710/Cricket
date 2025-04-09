@@ -51,7 +51,6 @@ selectedPlayer: any = null;
 visibleDialog: boolean = false;
 players:Players[]=[];
 playerList: any[] = [];
-
 constructor(private fb: FormBuilder,private apiService:ApiService,private httpClient:HttpClient,private urlConstant: URLCONSTANT) {
 
 } 
@@ -63,6 +62,7 @@ ngOnInit(){
     batStyle: ['', Validators.required],
     bowlSpec: ['', Validators.required],
     status: ['Active'],
+    
   });
   this.gridload();
 }

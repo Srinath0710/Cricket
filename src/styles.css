@@ -682,7 +682,7 @@ label {
       border-radius: 0 0 12px 12px;
     }  
     
-  .player-info {
+  .tabel-info {
       background-color: #a1bbd0;
       padding: 1.25rem;
       letter-spacing: 0.5px;
@@ -690,7 +690,7 @@ label {
       margin-bottom: 1.5rem;
       border-radius: 12px;
     }
-    .player-info .avatar {
+    .tabel-info .avatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
