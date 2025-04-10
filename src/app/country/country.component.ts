@@ -87,6 +87,7 @@ export class CountryComponent {
     this.isEditMode = false;
     this.displayModal = true;
   }
+  
 
   onImageSelect(event: any) {
     const file = event.files[0];
@@ -140,9 +141,13 @@ export class CountryComponent {
   }
 
   editCountry(country: Country) {
-    this.isEditMode = true; 
+    this.isEditMode = true;
     this.newCountry = { ...country };
     this.imagePreview = country.image || null;
     this.displayModal = true;
   }
+
+ 
+  
+  
 }
