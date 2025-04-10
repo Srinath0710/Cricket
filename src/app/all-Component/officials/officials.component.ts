@@ -13,6 +13,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { SidebarModule } from 'primeng/sidebar';
 @Component({
   selector: 'app-officials',
   templateUrl: './officials.component.html',
@@ -29,7 +30,8 @@ import { TagModule } from 'primeng/tag';
      DialogModule,
      CalendarModule,
      HttpClientModule,
-     DrawerModule
+     DrawerModule,
+     SidebarModule
     ],
      providers: [
       { provide: URLCONSTANT }
@@ -47,18 +49,24 @@ export class OfficialsComponent {
     visibleDialog: boolean = false;
     official:officials[]=[];
     officialList: any[] = [];
-    
+    sidebarVisible: boolean = false;
+    isEditMode: boolean = false;
+
     constructor(private fb: FormBuilder,private apiService:ApiService,private httpClient:HttpClient,private urlConstant: URLCONSTANT) {
     
     } 
+  
+    
     ngOnInit(){
     
       this.gridload();
     }
     showDialog() {
-      this.isEditing = false;
-      this.formGroup.reset();
-      this.visible = true;
+      this.sidebarVisible = true;
+      this.isEditMode = false;
+    }
+    onSidebarHide() {
+      this.sidebarVisible = false;
     }
     
     gridload(){
@@ -106,6 +114,6 @@ export class OfficialsComponent {
     
       this.visible = false; 
     }
-    
+
     }
     
