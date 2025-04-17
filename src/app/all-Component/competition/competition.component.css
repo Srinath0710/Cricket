@@ -6,6 +6,7 @@
     font-weight: 600;
     padding: 12px;
     border-bottom: 2px solid white;
+    position: relative;
   }
 
 /* Remove right border from the last column */
@@ -52,3 +53,22 @@
 .even-row {
   background-color: #f1f5f9; 
 }
+
+.modal-popup{
+  position: relative;
+    z-index: 10;
+}
+.nav-tabs .nav-link.active {
+  border-bottom: 2px solid #007bff;
+  font-weight: 600;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.tab-content .card {
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+}
+

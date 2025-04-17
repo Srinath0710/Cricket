@@ -1,151 +1,263 @@
 <div class="page-wrapper">
-    <div class="content container-fluid">
-      <main>
-        <div class="card margin-card">
-          <div class="card-body">
-            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-              <div class="main-page-title page-title playerbackground">
-                <i class="fa-solid fa-users" aria-hidden="true"></i>
-                  <!-- <i class="fa fa-user-circle" aria-hidden="true"></i> -->
-                     Compititions
+  <div class="content container-fluid">
+    
+    <main>
+      <div class="card margin-card">
+        <div class="card-body">
+          <article  [ngClass]="{'inactive' : showTabs}">
+          <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+            <div class="main-page-title page-title playerbackground">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+                <!-- <i class="fa fa-user-circle" aria-hidden="true"></i> -->
+                   Compititions
+            </div>
+             <form class="flex-grow-1 mx-3 search-width">
+              <div class="form-group">
+                <span class="p-input-icon-left ml-auto">
+                  <span class="p-input-icon-right input-icons search-padding">
+                    <input pInputText type="text" 
+                      class="form-control width-search p-input-icon-right" placeholder="{{'  Search'}}"
+                     />
+                  </span>
+                </span>
               </div>
-               <form class="flex-grow-1 mx-3 search-width">
-                <div class="form-group">
-                  <span class="p-input-icon-left ml-auto">
-                    <span class="p-input-icon-right input-icons search-padding">
-                      <input pInputText type="text" 
-                        class="form-control width-search p-input-icon-right" placeholder="{{'  Search'}}"
-                       />
-                    </span>
+              
+            </form> 
+          
+            <div class="card flex justify-center">
+              <p-button 
+              icon="fas fa-plus" 
+              label="New compitition" 
+              (click)="showDialog()" 
+              styleClass="new-button p-button-text">
+            </p-button>
+            </div>
+          </div> 
+                  <!-- View compititions In Grid Load-->
+                  <p-dialog [(visible)]="visibleDialog" [style]="{ width: '30vw' }" [closable]="false" [modal]="true">
+  
+                    <div class="tabel-info position-relative">
+                      <div class="view-name">{{ selectedcompitition?.name | uppercase }}</div>
+                      <button 
+                      type="button" 
+                      pButton 
+                      icon="pi pi-times" 
+                      class="p-button-rounded p-button-text close-btn"
+                      (click)="visibleDialog = false"
+                      style="position: absolute; right: 1rem; top: 1rem; color: #e53935;" 
+                      aria-label="Close">
+                    </button>
+                    
+                    </div>
+                  
+                    <!-- Grid Info -->
+                    <div class="tabel-grid">
+                      <div class="info-block">
+                        <label>Start Date</label>
+                        <div>{{ selectedcompitition?.start_date}}</div>
+                      </div>
+                      <div class="info-block">
+                        <label>End Date</label>
+                        <div>{{ selectedcompitition?.end_date }}</div>
+                      </div>
+                      <div class="info-block">
+                        <label>Match Type</label>
+                        <div>{{ selectedcompitition?.match_type }}</div>
+                      </div>
+                     
+                    </div>
+                  
+                  </p-dialog>
+                  
+
+          <p-table 
+          [value]="compititionList" 
+          [tableStyle]="{ 'min-width': '50rem' }" 
+          scrollable="true" 
+          [paginator]="true" 
+          [rows]="5" 
+          [rowsPerPageOptions]="[5,10,20]"
+          [globalFilterFields]="['Compitition_name']"
+          >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="custom-header" pSortableColumn="name">Competition Name
+                <p-sortIcon field="name"></p-sortIcon>
+
+              </th>
+              <th class="custom-header">Start Date
+                <p-sortIcon field="start_date"></p-sortIcon>
+              </th>
+              <th class="custom-header">End Date
+                <p-sortIcon field="Compitition_name"></p-sortIcon>
+              </th>
+              <th class="custom-header">Match Type
+                <p-sortIcon field="Compitition_name"></p-sortIcon>
+              </th>
+
+              <th class="custom-header">Status
+                <p-sortIcon field="Compitition_name"></p-sortIcon>
+              </th>
+              <th class="custom-header action-column-header">Actions</th>       
+            </tr>
+          </ng-template>
+        
+          <ng-template pTemplate="body" let-compitition let-rowIndex="rowIndex">
+            <tr [ngClass]="{ 'even-row': rowIndex % 2 == 1 }">
+            
+              <td>
+                {{ compitition.name }}
+                <img [src]="compitition.imageUrl" class="gird-image" />
+              </td>
+          
+           
+              <td>{{ compitition.start_date }}</td>
+              <td>{{ compitition.end_date }}</td>
+              <td>{{ compitition.match_type }}</td>
+              <td>
+                <span
+                  [ngStyle]="{
+                    'background-color': compitition.status === 'Active' ? '#0ea5e9' : 'rgb(255 33 33)',
+                    'color': 'white',
+                    'padding': '4px 8px',
+                    'border-radius': '4px',
+                    'display': 'inline-block'
+                  }">
+                  {{ compitition.status }}
+                </span>
+              </td> 
+              <td class="action-column">
+                <div class="action-icon" (click)="viewGridTab()">
+                  <span >
+                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
                   </span>
                 </div>
-                
-              </form> 
-            
-              <div class="card flex justify-center">
-                <p-button 
-                icon="fas fa-plus" 
-                label="New compitition" 
-                (click)="showDialog()" 
-                styleClass="new-button p-button-text">
-              </p-button>
-              </div>
-            </div> 
-                    <!-- View compititions In Grid Load-->
-                    <p-dialog [(visible)]="visibleDialog" [style]="{ width: '30vw' }" [closable]="false" [modal]="true">
-    
-                      <div class="tabel-info position-relative">
-                        <div class="view-name">{{ selectedcompitition?.name | uppercase }}</div>
-                        <button 
-                        type="button" 
-                        pButton 
-                        icon="pi pi-times" 
-                        class="p-button-rounded p-button-text close-btn"
-                        (click)="visibleDialog = false"
-                        style="position: absolute; right: 1rem; top: 1rem; color: #e53935;" 
-                        aria-label="Close">
-                      </button>
-                      
-                      </div>
-                    
-                      <!-- Grid Info -->
-                      <div class="tabel-grid">
-                        <div class="info-block">
-                          <label>Start Date</label>
-                          <div>{{ selectedcompitition?.start_date}}</div>
-                        </div>
-                        <div class="info-block">
-                          <label>End Date</label>
-                          <div>{{ selectedcompitition?.end_date }}</div>
-                        </div>
-                        <div class="info-block">
-                          <label>Match Type</label>
-                          <div>{{ selectedcompitition?.match_type }}</div>
-                        </div>
-                       
-                      </div>
-                    
-                    </p-dialog>
-                    
-  
-            <p-table 
-            [value]="compititionList" 
-            [tableStyle]="{ 'min-width': '50rem' }" 
-            scrollable="true" 
-            [paginator]="true" 
-            [rows]="5" 
-            [rowsPerPageOptions]="[5,10,20]"
-            [globalFilterFields]="['Compitition_name']"
-            >
-            <ng-template pTemplate="header">
-              <tr>
-                <th class="custom-header" pSortableColumn="name">Competition Name
-                  <p-sortIcon field="name"></p-sortIcon>
-  
-                </th>
-                <th class="custom-header">Start Date
-                  <p-sortIcon field="start_date"></p-sortIcon>
-                </th>
-                <th class="custom-header">End Date
-                  <p-sortIcon field="Compitition_name"></p-sortIcon>
-                </th>
-                <th class="custom-header">Match Type
-                  <p-sortIcon field="Compitition_name"></p-sortIcon>
-                </th>
-
-                <th class="custom-header">Status
-                  <p-sortIcon field="Compitition_name"></p-sortIcon>
-                </th>
-                <th class="custom-header action-column-header">Actions</th>       
-              </tr>
-            </ng-template>
-          
-            <ng-template pTemplate="body" let-compitition let-rowIndex="rowIndex">
-              <tr [ngClass]="{ 'even-row': rowIndex % 2 == 1 }">
-              
-                <td>
-                  {{ compitition.name }}
-                  <img [src]="compitition.imageUrl" class="gird-image" />
-                </td>
-            
-             
-                <td>{{ compitition.start_date }}</td>
-                <td>{{ compitition.end_date }}</td>
-                <td>{{ compitition.match_type }}</td>
-                <td>
-                  <span
-                    [ngStyle]="{
-                      'background-color': compitition.status === 'Active' ? '#0ea5e9' : 'rgb(255 33 33)',
-                      'color': 'white',
-                      'padding': '4px 8px',
-                      'border-radius': '4px',
-                      'display': 'inline-block'
-                    }">
-                    {{ compitition.status }}
+                <div class="action-icon" (click)="editCompitition(compitition)">
+                  <span >
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
                   </span>
-                </td> 
-                <td class="action-column">
-                  <div class="action-icon" (click)="editCompitition(compitition)">
-                    <span >
-                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                    </span>
+                </div>
+                <div class="action-icon" (click)="viewShowDialog()" (click)="viewCompitition(compitition)">
+                  <span >
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <div class="action-icon"(click)="toggleStatus(compitition)">
+                  <span >
+                    <i class="fa" [ngClass]="compitition.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </article>
+        <article [ngClass]="{'inactive' : !showTabs}">
+          <div *ngIf="showTabs">
+              <div class="page-wrapper ">
+                  <div class="">
+                      <section class="content container-fluid modal-popup">
+                          <main class=" card">
+                              <div class="card-body">
+      
+                                  <div class="">
+                                      <div class="">
+                                          <div class="">
+                                              <div class="page-header main-page-header">
+                                                  <div class="main-page-title-manage page-title text-center">
+                                                      <span class="page-tile-img">
+                                                          <i class="material-symbols-outlined">TOUR</i>
+                                                      </span>
+
+                                                  </div>
+                                                  <div class="main-page-action-manage ">
+                                                      <a class="manage-btn float-end">
+                                                          <i class="fa fa-home"></i>
+                                                          All Competitions</a>
+                                                  </div>
+                                              </div>
+      
+                                              <div class="container-fluid px-4 py-3">
+                                                <div class="card p-4 border-0 shadow-sm">
+                                                  <!-- Top Header Section -->
+                                                  <div class="row align-items-center">
+                                                    <!-- Title Section -->
+                                                    <div class="col-md-4 d-flex align-items-center mb-3 mb-md-0">
+                                                      <div>
+                                                        <h4 class="fw-bold mb-1">{{ selectedcompitition?.name?.toUpperCase() }}</h4>
+                                                        <div class="text-muted">Chhattisgarh State Cricket Association</div>
+                                                      </div>
+                                                    </div>
+                                              
+                                                    <!-- Match Info -->
+                                                    <div class="col-md-8">
+                                                      <div class="row text-center">
+                                                        <div class="col-sm-6 col-lg-3 mb-2">
+                                                          <div class="text-muted">Match Type</div>
+                                                          <div class="fw-semibold">{{ selectedcompitition?.match_type }}</div>
+                                                        </div>
+                                                        <div class="col-sm-6 col-lg-3 mb-2">
+                                                          <div class="text-muted">Gender</div>
+                                                          <div class="fw-semibold">Men</div> <!-- You can bind gender if available -->
+                                                        </div>
+                                                        <div class="col-sm-6 col-lg-3 mb-2">
+                                                          <div class="text-muted">Category</div>
+                                                          <div class="fw-semibold">Senior</div> <!-- You can bind category if available -->
+                                                        </div>
+                                                        <div class="col-sm-6 col-lg-3 mb-2">
+                                                          <div class="text-muted">Date</div>
+                                                          <div class="fw-semibold">{{ selectedcompitition?.start_date }} – {{ selectedcompitition?.end_date }}</div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                              
+                                                  <!-- Navigation Tabs -->
+                                                  <ul class="nav nav-tabs nav-tabs-bottom mt-4">
+                                                    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#ground">Ground</a></li>
+                                                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#teams">Teams</a></li>
+                                                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#squads">Squads</a></li>
+                                                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#officials">Officials</a></li>
+                                                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#key_members">Key Members</a></li>
+                                                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#settings">Settings</a></li>
+                                                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#matches">Matches</a></li>
+                                                  </ul>
+                                              
+                                                  <!-- Tab Content -->
+                                                  <div class="tab-content py-4">
+                                                    <div class="tab-pane fade show active" id="ground">
+                                                      <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <div><strong>1 Ground</strong></div>
+                                                        <button class="btn btn-outline-primary btn-sm">
+                                                          <i class="bi bi-folder2-open me-1"></i> Manage Ground
+                                                        </button>
+                                                      </div>
+                                              
+                                                      <!-- Example Ground Card -->
+                                                      <div class="card p-3">
+                                                        <img src="ground.jpg" alt="Ground" class="img-fluid mb-2" />
+                                                        <h6 class="mb-0">Rawalpindi Cricket Stadium</h6>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              
+                                              
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+      
+                          </main>
+                      </section>
                   </div>
-                  <div class="action-icon" (click)="viewShowDialog()" (click)="viewCompitition(compitition)">
-                    <span >
-                      <i class="fa fa-eye" aria-hidden="true"></i>
-                    </span>
-                  </div>
-                  <div class="action-icon"(click)="toggleStatus(compitition)">
-                    <span >
-                      <i class="fa" [ngClass]="compitition.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+              </div>
           </div>
+      </article>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
+
   </div>
+</div>

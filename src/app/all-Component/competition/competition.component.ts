@@ -12,6 +12,7 @@ import { TagModule } from 'primeng/tag';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { Compitition } from './competition.model';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-competition',
@@ -28,7 +29,8 @@ import { Compitition } from './competition.model';
      InputTextModule,
      DialogModule,
      CalendarModule,
-     HttpClientModule
+     HttpClientModule,
+     ToastModule
 
     ],
     providers: [
@@ -47,7 +49,9 @@ export class CompetitionComponent {
     visibleDialog: boolean = false;
     compitition:Compitition[]=[];
     compititionList: any[] = [];
-    
+    showTabs = false;
+    public activeTab = '';
+
     constructor(private fb: FormBuilder,private apiService:ApiService,private httpClient:HttpClient,private urlConstant: URLCONSTANT) {
     
     } 
@@ -72,7 +76,7 @@ export class CompetitionComponent {
       }
     }
     
-    editCompitition(compitition: any, ) {
+    editCompitition(compitition: any) {
       console.log('Editing Compitition:', compitition);
       this.isEditing = true;
       this.formGroup.patchValue({ ...compitition });
@@ -106,6 +110,13 @@ export class CompetitionComponent {
     
       this.visible = false; 
     }
-    
+    changeTabs(tabName: string) {
+      this.activeTab = tabName;
+  }
+  viewGridTab(){
+    console.log("HII")
+    console.log(this.showTabs)
+    this.showTabs = true;
+  }
     }
     

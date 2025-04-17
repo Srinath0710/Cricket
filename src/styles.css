@@ -586,7 +586,7 @@ label {
 
 
 .action-column, .action-column-header {
-  position: sticky;
+  /* position: sticky; */
   right: 0;
   top:0px;
   /* background: white; */
