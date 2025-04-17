@@ -1,0 +1,24 @@
+::ng-deep .new-button {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    height: 41px;
+  }
+  .add-button {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    height: 41px;
+  }
+  .form-control{
+    width: 80%;
+  }
+  .drop{
+    width: 80%;
+  }
+  .text-danger {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+  

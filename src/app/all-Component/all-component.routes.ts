@@ -6,6 +6,8 @@ import { CountryComponent } from "../country/country.component";
 import { OfficialsComponent } from "./officials/officials.component";
 import { CompetitionComponent } from "./competition/competition.component";
 import { TeamsComponent } from "../teams/teams.component";
+import { StateComponent } from "./state/state.component";
+import { AllCitiesComponent } from "./all-cities/all-cities.component";
 export const AllComponentRoutes: Route[] = [
     {
         path: '',
@@ -40,6 +42,15 @@ export const AllComponentRoutes: Route[] = [
                 path: 'teams',
                 component: TeamsComponent
             },
+            {
+                path: 'state',
+                component: StateComponent
+            },
+            {
+                path: 'allcities',
+                component: AllCitiesComponent
+            },
+         
         ]
 
     },
