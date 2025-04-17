@@ -1,0 +1,137 @@
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <main>
+      <div class="card margin-card">
+        <div class="card-body">
+          <!-- Header -->
+          <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+            <div class="main-page-title page-title playerbackground">
+              <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+              All Teams
+            </div>
+
+            <!-- Search Bar -->
+            <form class="flex-grow-1 mx-3 search-width">
+              <div class="form-group">
+                <input pInputText type="text" class="form-control width-search" placeholder="Search Teams" />
+              </div>
+            </form>
+
+            <!-- Add Team Button -->
+            <div class="card flex justify-center">
+              <p-button icon="fas fa-plus" label="Add Team" (click)="showAddTeamDialog()"
+                styleClass="custom-btn-color blue-btn"></p-button>
+            </div>
+          </div>
+
+          <!-- Teams Table -->
+          <p-table [value]="teams" [tableStyle]="{ 'min-width': '50rem' }" scrollable="true" [paginator]="true"
+            [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" [globalFilterFields]="['teamName']">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="custom-header">Team Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th class="custom-header">Age Group <p-sortIcon field="name"></p-sortIcon></th>
+                <th class="custom-header">Team Format <p-sortIcon field="name"></p-sortIcon></th>
+                <th class="custom-header">Country <p-sortIcon field="name"></p-sortIcon></th>
+                <th class="custom-header">Status <p-sortIcon field="status"></p-sortIcon></th>
+                <th class="custom-header action-column-header">Actions</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-team>
+              <tr>
+                <td>{{ team.teamName }}</td>
+                <td>{{ team.ageGroup }}</td>
+                <td>{{ team.format }}</td>
+                <td>{{ team.country }}</td>
+                <td>
+                  <span [ngClass]="{ 'text-success': team.status === 'Active', 'text-danger': team.status !== 'Active' }">
+                    {{ team.status }}
+                  </span>
+                </td>
+                <td class="action-column">
+                  <div class="action-icon" (click)="editTeams(team)">
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                  </div>
+                  <div class="action-icon" (click)="viewTeams(team)">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </div>
+                  <div class="action-icon" (click)="toggleStatus(team)">
+                    <i class="fa" [ngClass]="team.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </main>
+
+    <!-- Sidebar Modal -->
+
+    <p-sidebar 
+      [(visible)]="displayModal"
+      position="right"
+      [style]="{ width: '100vw' }"
+      [modal]="true"
+      [baseZIndex]="10000"
+      [closeOnEscape]="false"
+      appendTo="body"
+      styleClass="custom-sidebar"
+      [showCloseIcon]="false">
+      
+      <div (click)="$event.stopPropagation()">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0">{{ viewMode ? 'View Team' : isEditMode ? 'Edit Team' : 'Add Team' }}</h4>
+        
+        </div>
+
+        <!-- Team Form -->
+        <form *ngIf="newTeams" #form="ngForm" class="px-3">
+          <!-- Team Name -->
+          <div class="mb-3">
+            <label for="teamName">Team Name*</label>
+            <input id="teamName" type="text" pInputText [(ngModel)]="newTeams.teamName" name="teamName"
+              [disabled]="viewMode" required #teamNameRef="ngModel" />
+            <small class="text-danger" *ngIf="teamNameRef.invalid && teamNameRef.touched">Team Name is required</small>
+          </div>
+
+          <!-- Age Group -->
+          <div class="mb-3">
+            <label for="ageGroup">Age Group*</label>
+            <input id="ageGroup" type="text" pInputText [(ngModel)]="newTeams.ageGroup" name="ageGroup"
+              [disabled]="viewMode" required #ageGroupRef="ngModel" />
+            <small class="text-danger" *ngIf="ageGroupRef.invalid && ageGroupRef.touched">Age Group is required</small>
+          </div>
+
+          <!-- Format -->
+          <div class="mb-3">
+            <label for="format">Format*</label>
+            <input id="format" type="text" pInputText [(ngModel)]="newTeams.format" name="format"
+              [disabled]="viewMode" required #formatRef="ngModel" />
+            <small class="text-danger" *ngIf="formatRef.invalid && formatRef.touched">Format is required</small>
+          </div>
+
+          <!-- Country Dropdown -->
+          <div class="mb-3">
+            <label for="country">Country*</label>
+            <p-dropdown [options]="countriesList" [(ngModel)]="newTeams.country" name="country"
+              placeholder="Select Country" [showClear]="true" [disabled]="viewMode"
+              required #countryRef="ngModel"></p-dropdown>
+            <small class="text-danger" *ngIf="countryRef.invalid && countryRef.touched">Country is required</small>
+          </div>
+
+          <!-- Footer Buttons -->
+          <div class="mt-4 text-end" *ngIf="!viewMode">
+            <button pButton type="button" label="Cancel" class="p-button-secondary me-2"
+              (click)="cancelForm()"></button>
+            <button pButton type="submit" label="Save" class="blue-btn me-2"
+              [disabled]="form.invalid" (click)="addTeams(true)"></button>
+            <button pButton type="button" label="Clear" class="blue-btn" (click)="clearForm()"></button>
+          </div>
+        </form>
+      </div>
+    </p-sidebar>
+  </div>
+</div>

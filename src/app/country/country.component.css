@@ -6,43 +6,17 @@
   margin-top: 20px;
 }
 
-/* .badge {
-  padding: 5px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: inline-block;
-} */
-
-.bg-success {
-  background-color: #28a745;
-  color: white;
-}
-
-.bg-danger {
-  background-color: #dc3545;
-  color: white;
-}
-
-.preview-image {
-  max-width: 100px;
-  border-radius: 8px;
-  max-height: 100px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
+/* Header Style */
 .custom-header {
-  background-color: #8aa6bd;
-  color: #111827 !important;
+  background-color: #a1bbd0;
+  color: #000000 !important;
   font-size: 14px;
   font-weight: 600;
   padding: 12px;
   border-bottom: 2px solid white;
 }
 
-
-
+/* Table Styling */
 ::ng-deep .p-datatable-thead > tr > th,
 ::ng-deep .p-datatable-tbody > tr > td {
   border-right: 1px solid #b5c8ed !important;
@@ -57,9 +31,37 @@
   background-color: #d0d3e5 !important;
 }
 
+.even-row {
+  background-color: #f1f5f9;
+}
 
+/* Status Button */
+.bg-success {
+  background-color: #28a745;
+  color: white;
+}
 
-::ng-deep .p-dialog.p-dialog-right {
+.bg-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Button Styling */
+::ng-deep .new-button {
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  height: 41px;
+}
+
+.search-width {
+  max-width: 125px;
+}
+
+/* Dialog Styling */
+::ng-deep .p-dialog {
+  border-radius: 14px !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
   animation: slideInRight 0.3s ease-out;
 }
 
@@ -74,6 +76,21 @@
   }
 }
 
+::ng-deep .p-dialog .p-dialog-header {
+  display: none;
+}
+
+.dialog-header {
+  background-color: #3f51b5;
+  color: white;
+  width: 95%;
+  text-align: center;
+  border-radius: 10px;
+  margin-left: 24px;
+  margin-bottom: 1rem;
+}
+
+/* Dialog Body Layout */
 .p-dialog .p-formgrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -112,6 +129,30 @@
   color: #e55353;
 }
 
+/* Footer Buttons */
+.p-dialog .p-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 0 0 0;
+  border-top: 1px solid #dee2e6;
+  margin-top: 1rem;
+}
+
+.p-dialog .p-dialog-footer button {
+  margin-left: 0.5rem;
+}
+
+::ng-deep .p-dialog .p-button {
+  background-color: #3f51b5 !important;
+  border-color: #3f51b5 !important;
+  color: white !important;
+}
+
+::ng-deep .p-dialog .p-button:hover {
+  background-color: #2c3e90 !important;
+  border-color: #2c3e90 !important;
+}
+
 /* Image Upload Section */
 .profile-upload {
   grid-column: span 2;
@@ -144,29 +185,6 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.p-dialog .p-dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  padding: 1rem 0 0 0;
-  border-top: 1px solid #dee2e6;
-  margin-top: 1rem;
-}
-
-.p-dialog .p-dialog-footer button {
-  margin-left: 0.5rem;
-}
-
-::ng-deep .p-dialog .p-button {
-  background-color: #3f51b5 !important;
-  border-color: #3f51b5 !important;
-  color: white !important;
-}
-
-::ng-deep .p-dialog .p-button:hover {
-  background-color: #2c3e90 !important;
-  border-color: #2c3e90 !important;
-}
-
 @media (max-width: 960px) {
   .p-dialog .p-formgrid {
     grid-template-columns: 1fr;
@@ -175,4 +193,24 @@
   .profile-upload {
     grid-column: span 1;
   }
+
+  .dialog-header {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+/* Blue Button Styling */
+::ng-deep .blue-btn,
+::ng-deep .blue-btn .p-button,
+::ng-deep .p-button.blue-btn {
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+  color: #fff !important;
+}
+
+/* Upload Image Blue Style */
+::ng-deep .blue-upload-btn.p-fileupload .p-button {
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+  color: #fff !important;
 }

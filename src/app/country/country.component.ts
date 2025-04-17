@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
+import { Sidebar } from 'primeng/sidebar';
 
 interface Country {
   name: string;
@@ -34,12 +35,16 @@ interface Country {
     FormsModule,
     DropdownModule,
     FileUploadModule,
-    InputTextModule
+    InputTextModule,
+    Sidebar
   ],
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.css']
 })
 export class CountryComponent {
+CancelForm() {
+throw new Error('Method not implemented.');
+}
   countries: Country[] = [
     { name: 'Afghanistan', code: 'AF', status: 'Active' },
     { name: 'Albania', code: 'AL', status: 'Active' },
@@ -83,15 +88,15 @@ export class CountryComponent {
   }
 
   showAddCountryDialog() {
-    this.clearForm();
+    this.cancelForm();
     this.isEditMode = false;
     this.displayModal = true;
   }
   
 
-  onImageSelect(event: any) {
-    const file = event.files[0];
-    if (file) {
+  onImageSelect(event: any): void {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')){
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
@@ -105,7 +110,7 @@ export class CountryComponent {
       this.newCountry.code = this.newCountry.iso2;
       this.countries.push({ ...this.newCountry });
       if (addAnother) {
-        this.clearForm();
+        this.cancelForm();
       } else {
         this.displayModal = false;
       }
@@ -115,7 +120,6 @@ export class CountryComponent {
   validateForm(): boolean {
     const c = this.newCountry;
     if (!c.name || !c.region || !c.timezone || !c.capital || !c.iso2 || !c.phoneCode || !c.subregion) {
-      alert('Please fill all required fields');
       return false;
     }
     if (c.iso2.length !== 2) {
@@ -124,11 +128,14 @@ export class CountryComponent {
     }
     return true;
   }
-
-  clearForm() {
-    this.newCountry = this.getEmptyCountry();
-    this.imagePreview = null;
-  }
+  cancelForm() {
+    this.displayModal = false; 
+     }
+     clearForm() {
+      this.newCountry = this.getEmptyCountry();
+      this.imagePreview = null;
+    }
+     
 
   toggleStatus(country: Country): void {
     country.status = country.status === 'Active' ? 'Inactive' : 'Active';

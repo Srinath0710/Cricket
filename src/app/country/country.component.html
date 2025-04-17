@@ -5,7 +5,6 @@
         <div class="card-body">
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
-              <!-- <i class="fa fa-user-circle" aria-hidden="true"></i>  -->
               <i class="fa-solid fa-globe" aria-hidden="true"></i>
               All Countries
             </div>
@@ -23,7 +22,7 @@
 
             <div class="card flex justify-center">
               <p-button icon="fas fa-plus" label="Add Country" (click)="showAddCountryDialog()"
-                styleClass="custom-btn-color"></p-button>
+                styleClass="custom-btn-color blue-btn"></p-button>
             </div>
           </div>
 
@@ -52,9 +51,7 @@
                 </td>
                 <td class="action-column">
                   <div class="action-icon" (click)="editCountry(country)">
-                    <span>
-                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                    </span>
+                    <span><i class="fa fa-pencil-square" aria-hidden="true"></i></span>
                   </div>
                   <div class="action-icon">
                     <span (click)="toggleStatus(country)">
@@ -69,78 +66,123 @@
       </div>
     </main>
 
-    <p-dialog header="{{ isEditMode ? 'Edit Country' : 'Add Country'}}"
-    [(visible)]="displayModal" [modal]="true"
-      [draggable]="false" [style]="{ width: '75vw', height: '100vh'}" position="right" [dismissableMask]="true"
-      [closable]="true">
-      <form *ngIf="newCountry" class="container">
-        <div class="row gy-3"> <!-- <--- ADDED g-3 for spacing -->
+    <p-sidebar 
+      [(visible)]="displayModal"
+      position="right"
+      [style]="{ width: '100vw' }"
+      [modal]="true"
+      [baseZIndex]="10000"
+      [closeOnEscape]="false"
+      appendTo="body"
+      styleClass="custom-sidebar"
+      [showCloseIcon]="false">
 
-          <div class="col-md-6">
-            <label for="region">Region*</label>
-            <div>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">{{ isEditMode ? 'Edit Country' : 'Add Country' }}</h4>
+      </div>
+
+      <div (click)="$event.stopPropagation()">
+        <form *ngIf="newCountry" #countryForm="ngForm" class="container">
+          <div class="gy-3">
+
+            <!-- Region -->
+            <div class="mb-6">
+              <label for="region">Region*</label>
               <p-dropdown id="region" [options]="regions" [(ngModel)]="newCountry.region" name="region"
-                placeholder="Select Region" [showClear]="true" [disabled]="viewMode"></p-dropdown>
+                placeholder="Select Region" [showClear]="true" required #regionRef="ngModel" [disabled]="viewMode"
+                [ngClass]="{ 'p-invalid': regionRef.invalid && regionRef.touched }">
+              </p-dropdown>
+              <div *ngIf="regionRef.invalid && regionRef.touched" class="text-danger mt-1">
+                Region is required.
+              </div>
+            </div>
+
+            <!-- Country Name -->
+            <div class="mb-3">
+              <label for="name">Country Name*</label>
+              <input id="name" pInputText [(ngModel)]="newCountry.name" name="name" required
+                #nameRef="ngModel" [disabled]="viewMode"
+                [ngClass]="{ 'p-invalid': nameRef.invalid && nameRef.touched }" />
+              <div *ngIf="nameRef.invalid && nameRef.touched" class="text-danger mt-1">
+                Country Name is required.
+              </div>
+            </div>
+
+            <!-- Capital -->
+            <div class="mb-3">
+              <label for="capital">Capital*</label>
+              <input id="capital" pInputText [(ngModel)]="newCountry.capital" name="capital" required
+                #capitalRef="ngModel" [disabled]="viewMode"
+                [ngClass]="{ 'p-invalid': capitalRef.invalid && capitalRef.touched }" />
+              <div *ngIf="capitalRef.invalid && capitalRef.touched" class="text-danger mt-1">
+                Capital is required.
+              </div>
+            </div>
+
+            <!-- ISO2 -->
+            <div class="mb-3">
+              <label for="iso2">ISO Code 2*</label>
+              <input id="iso2" pInputText [(ngModel)]="newCountry.iso2" name="iso2" maxlength="2" required
+                pattern="[A-Za-z]{2}" #iso2Ref="ngModel" [disabled]="viewMode"
+                [ngClass]="{ 'p-invalid': iso2Ref.invalid && iso2Ref.touched }" />
+              <div *ngIf="iso2Ref.errors?.['required'] && iso2Ref.touched" class="text-danger mt-1">
+                ISO Code 2 is required.
+              </div>
+              <div *ngIf="iso2Ref.errors?.['pattern'] && iso2Ref.touched" class="text-danger mt-1">
+                Must be exactly 2 letters.
+              </div>
+            </div>
+
+            <!-- Phone Code -->
+            <div class="mb-3">
+              <label for="phoneCode">Phone Code*</label>
+              <input id="phoneCode" pInputText [(ngModel)]="newCountry.phoneCode" name="phoneCode" required
+                #phoneCodeRef="ngModel" [disabled]="viewMode"
+                [ngClass]="{ 'p-invalid': phoneCodeRef.invalid && phoneCodeRef.touched }" />
+              <div *ngIf="phoneCodeRef.invalid && phoneCodeRef.touched" class="text-danger mt-1">
+                Phone Code is required.
+              </div>
+            </div>
+
+            <!-- Subregion -->
+            <div class="mb-3">
+              <label for="subregion">Sub Region*</label>
+              <input id="subregion" pInputText [(ngModel)]="newCountry.subregion" name="subregion" required
+                #subregionRef="ngModel" [disabled]="viewMode"
+                [ngClass]="{ 'p-invalid': subregionRef.invalid && subregionRef.touched }" />
+              <div *ngIf="subregionRef.invalid && subregionRef.touched" class="text-danger mt-1">
+                Sub Region is required.
+              </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-3">
+              <label style="font-weight: 500;">Profile Image</label>
+              <div *ngIf="!viewMode" class="mb-2">
+                <p-fileUpload mode="basic" name="profileImage" accept="image/*" maxFileSize="1000000"
+                  (onSelect)="onImageSelect($event)" chooseLabel="Upload Image" styleClass="blue-upload-btn">
+                </p-fileUpload>
+              </div>
+
+              <div *ngIf="imagePreview">
+                <img [src]="imagePreview" alt="Profile Preview"
+                  style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid #ccc;" />
+              </div>
             </div>
           </div>
 
-          <div class="col-md-6">
-            <label for="name">Country Name*</label>
-            <input id="name" pInputText [(ngModel)]="newCountry.name" name="name" [disabled]="viewMode" />
-          </div>
-
-          <div class="col-md-6">
-            <label for="timezone">Time Zone*</label>
-            <p-dropdown id="timezone" [options]="timezones" [(ngModel)]="newCountry.timezone" name="timezone"
-              placeholder="Select Time Zone" [showClear]="true" [disabled]="viewMode"></p-dropdown>
-          </div>
-
-          <div class="col-md-6">
-            <label for="capital">Capital*</label>
-            <input id="capital" pInputText [(ngModel)]="newCountry.capital" name="capital" [disabled]="viewMode" />
-          </div>
-
-          <div class="col-md-6">
-            <label for="iso2">ISO Code 2*</label>
-            <input id="iso2" pInputText [(ngModel)]="newCountry.iso2" name="iso2" maxlength="2" [disabled]="viewMode" />
-          </div>
-
-          <div class="col-md-6">
-            <label for="phoneCode">Phone Code*</label>
-            <input id="phoneCode" pInputText [(ngModel)]="newCountry.phoneCode" name="phoneCode"
-              [disabled]="viewMode" />
-          </div>
-
-          <div class="col-md-6">
-            <label for="subregion">Sub Region*</label>
-            <input id="subregion" pInputText [(ngModel)]="newCountry.subregion" name="subregion"
-              [disabled]="viewMode" />
-          </div>
-
-          <div class="col-md-6">
-            <label style="font-weight: 500;">Profile Image</label>
-            <div *ngIf="!viewMode" class="mb-2">
-              <p-fileUpload mode="basic" name="profileImage" accept="image/*" maxFileSize="1000000"
-                (onSelect)="onImageSelect($event)" chooseLabel="Upload Image"></p-fileUpload>
-            </div>
-
-            <div *ngIf="imagePreview">
-              <img [src]="imagePreview" alt="Profile Preview"
-                style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid #ccc;" />
+          <!-- Form Footer -->
+          <div class="row mt-4" *ngIf="!viewMode">
+            <div class="col-12 text-end">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-2"
+                (click)="cancelForm()"></button>
+              <button pButton type="button" label="Save" class="blue-btn"
+                (click)="addCountry(true)" [disabled]="!countryForm.form.valid"></button>
+              <button pButton type="button" label="Clear" class="blue-btn" (click)="clearForm()"></button>
             </div>
           </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="row mt-4" *ngIf="!viewMode">
-          <div class="col-12 text-end">
-            <button pButton type="button" label="Clear" class="p-button-secondary me-2" (click)="clearForm()"></button>
-            <button pButton type="button" label="Save" class="p-button-success" (click)="addCountry(true)"></button>
-          </div>
-        </div>
-      </form>
-
-    </p-dialog>
-    
+        </form>
+      </div>
+    </p-sidebar>
   </div>
 </div>
