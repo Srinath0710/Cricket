@@ -199,15 +199,6 @@
     margin-left: 0;
   }
 }
-/* Blue Button Styling */
-::ng-deep .blue-btn,
-::ng-deep .blue-btn .p-button,
-::ng-deep .p-button.blue-btn {
-  background-color: #007bff !important;
-  border-color: #007bff !important;
-  color: #fff !important;
-}
-
 /* Upload Image Blue Style */
 ::ng-deep .blue-upload-btn.p-fileupload .p-button {
   background-color: #007bff !important;
