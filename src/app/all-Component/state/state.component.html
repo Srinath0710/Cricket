@@ -27,7 +27,7 @@
               styleClass="new-button p-button-text"></p-button>
             </div>
           </div>
-
+                                                                                                                                               
           <p-table [value]="states" [tableStyle]="{ 'min-width': '50rem' }" scrollable="true" [paginator]="true"
             [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" [globalFilterFields]="['name']">
             <ng-template pTemplate="header">
@@ -92,6 +92,7 @@
                   [(ngModel)]="newSidebarState.country"
                   name="country"
                   placeholder="Select a Country"
+                  optionLabel="name"
                   required
                   #countryRef="ngModel">
                 </p-dropdown>
