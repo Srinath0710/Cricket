@@ -150,7 +150,8 @@ export class SidebarComponent implements OnInit {
         this.modules = [];
       var menu_list = modules
       var parent_menu = parent_menu_list
-this.router.navigateByUrl('/'+menusList[0].menu_link)
+      console.log(menusList[0].menu_link);
+// this.router.navigateByUrl('/'+menusList[0].menu_link)
      this.apiService.menuList=menusList;
       for (let i = 0; i < parent_menu_list.length; i++) {
         parent_menu[i]['sub_menu'] = []

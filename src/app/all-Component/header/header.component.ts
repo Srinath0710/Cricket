@@ -35,10 +35,10 @@ export class HeaderComponent implements OnInit{
   
   }
   ngOnInit(){
-    if(this.itealTimeoutEnable==1){
-      this.setupInactivityTimeout();
+    // if(this.itealTimeoutEnable==1){
+    //   this.setupInactivityTimeout();
 
-    }
+    // }
 
 
       // this.spinnerService.sidebaremitterr.subscribe((data:any) => {
