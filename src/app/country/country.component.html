@@ -20,165 +20,196 @@
               </div>
             </form>
 
-            <div class="card flex justify-center">
-              <p-button icon="fas fa-plus" label="Add Country" (click)="showAddCountryDialog()"
-                styleClass="custom-btn-color blue-btn"></p-button>
+            <div class="card flex justify-center ">
+              <p-button icon="fas fa-plus" label="Add Country" *ngIf="!ShowForm" styleClass="new-button p-button-text"
+                (click)="resetForm()" (click)="showAddForm()"></p-button>
             </div>
+
           </div>
 
-          <p-table [value]="countries" [tableStyle]="{ 'min-width': '50rem' }" scrollable="true" [paginator]="true"
-            [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" [globalFilterFields]="['name']">
+          <p-table [value]="countriesData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
             <ng-template pTemplate="header">
               <tr>
-                <th class="custom-header">Country Name <p-sortIcon field="name"></p-sortIcon></th>
-                <th class="custom-header">Country Code <p-sortIcon field="code"></p-sortIcon></th>
-                <th class="custom-header">Status <p-sortIcon field="status"></p-sortIcon></th>
+                <th pSortableColumn="country_name">Country Name <p-sortIcon field="country_name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="iso_code_3">ISO Code 3 <p-sortIcon field="iso_code_3"></p-sortIcon>
+                </th>
+                <th pSortableColumn="region_name">Region Name <p-sortIcon field="region_name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="sub_region">Sub Region<p-sortIcon field="sub_region"></p-sortIcon>
+                </th>
+                <th pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                </th>
                 <th class="custom-header action-column-header">Actions</th>
               </tr>
             </ng-template>
 
             <ng-template pTemplate="body" let-country>
               <tr>
-                <td>{{ country.name }}</td>
-                <td>{{ country.code }}</td>
+                <td>{{ country.country_name }}</td>
+                <td>{{ country.iso_code_3 }}</td>
+                <td>{{ country.region_name }}</td>
+                <td>{{ country.sub_region }}</td>
                 <td>
                   <span [ngClass]="{
-                        'text-success': country.status === 'Active',
-                        'text-danger': country.status !== 'Active'
+                        'text-success': country.record_status === 'Active',
+                        'text-danger': country.record_status === 'InActive'
                       }">
-                    {{ country.status }}
+                    {{ country.record_status }}
                   </span>
                 </td>
                 <td class="action-column">
-                  <div class="action-icon" (click)="editCountry(country)">
-                    <span><i class="fa fa-pencil-square" aria-hidden="true"></i></span>
+                  <div class="action-icon" (click)="EditCountry(country.country_id)">
+                    <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
                   </div>
-                  <div class="action-icon">
-                    <span (click)="toggleStatus(country)">
-                      <i class="fa" [ngClass]="country.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
+                  <!-- <i class="fa fa-pencil-square" aria-hidden="true"></i -->
+                  
+                  
+                  <div class="action-icon" (click)="confirmActivation(country.country_id)">
+                    <span><i class="fa fa-check"></i></span>
+                  </div>
+                  
+                  <div class="action-icon"(click)="confirmDeactivation(country.country_id)">
+                    <span> <i class="fa fa-times" ></i>
                     </span>
                   </div>
+
                 </td>
               </tr>
             </ng-template>
           </p-table>
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[5,10, 20, 30]" (onPageChange)="onPageChange($event)">
+          </p-paginator>
+
         </div>
       </div>
     </main>
+                  <!-- Confirmation POPUP -->
 
-    <p-sidebar 
-      [(visible)]="displayModal"
-      position="right"
-      [style]="{ width: '100vw' }"
-      [modal]="true"
-      [baseZIndex]="10000"
-      [closeOnEscape]="false"
-      appendTo="body"
-      styleClass="custom-sidebar"
-      [showCloseIcon]="false">
+    <p-confirmDialog 
+    [style]="{width: '400px'}"
+    [baseZIndex]="10000"
+    [draggable]="false"
+    [closable]="false"
+    [styleClass]="'p-confirm-dialog-custom'">
+  </p-confirmDialog>
+  
+    <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
+      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" styleClass="custom-sidebar" [showCloseIcon]="false">
 
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0">{{ isEditMode ? 'Edit Country' : 'Add Country' }}</h4>
       </div>
 
       <div (click)="$event.stopPropagation()">
-        <form *ngIf="newCountry" #countryForm="ngForm" class="container">
-          <div class="gy-3">
-
-            <!-- Region -->
-            <div class="mb-6">
+        <form [formGroup]="addCountryForm">
+          <div class="row gy-3">
+            <div class="col-md-6">
               <label for="region">Region*</label>
-              <p-dropdown id="region" [options]="regions" [(ngModel)]="newCountry.region" name="region"
-                placeholder="Select Region" [showClear]="true" required #regionRef="ngModel" [disabled]="viewMode"
-                [ngClass]="{ 'p-invalid': regionRef.invalid && regionRef.touched }">
+              <p-dropdown [options]="regionsData" class="drop-error " formControlName="region_id"
+                optionValue="region_id" optionLabel="region_name" [ngModel]="addCountryForm.get('region_id')?.value"
+                placeholder="select region" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+
+                <ng-template let-region1 pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+
+                    <div>{{ region1.region_name }}
+                    </div>
+                  </div>
+                </ng-template>
               </p-dropdown>
-              <div *ngIf="regionRef.invalid && regionRef.touched" class="text-danger mt-1">
-                Region is required.
-              </div>
+              <small
+                *ngIf="addCountryForm.get('region_id')?.invalid &&(addCountryForm.get('region_id')?.touched) || (addCountryForm.get('region_id')?.invalid && submitted)"
+                class="text-danger">*Region Is Required
+              </small>
             </div>
 
-            <!-- Country Name -->
-            <div class="mb-3">
-              <label for="name">Country Name*</label>
-              <input id="name" pInputText [(ngModel)]="newCountry.name" name="name" required
-                #nameRef="ngModel" [disabled]="viewMode"
-                [ngClass]="{ 'p-invalid': nameRef.invalid && nameRef.touched }" />
-              <div *ngIf="nameRef.invalid && nameRef.touched" class="text-danger mt-1">
-                Country Name is required.
-              </div>
+
+            <div class="col-md-6">
+              <label class="">Country Name
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Country Name"
+                formControlName="country_name">
+              <small
+                *ngIf="addCountryForm?.get('country_name')?.invalid &&(addCountryForm?.get('country_name')?.touched) || (addCountryForm.get('country_name')?.invalid && submitted)"
+                class="text-danger">* Country
+                Name Is Required
+              </small>
+            </div>
+            <div class="col-md-6">
+                <label class="formItemLabel">Time Zone
+                  <span class="text-danger">*</span></label>
+                <p-dropdown [options]="timezoneData" class="drop-error "
+                  [ngModel]="addCountryForm.get('time_zone_id')?.value" formControlName="time_zone_id"
+                  optionValue="time_zone_id" optionLabel="time_zone_anme" [styleClass]="" [filter]="true"
+                  filterBy="time_zone_anme" [showClear]="false" placeholder="Select Time Zone" appendTo="body"
+                  [panelStyleClass]="'custom-dropdown-panel'">
+
+                  <ng-template let-timezone pTemplate="item">
+                    <div class="flex align-items-center gap-2 ">
+
+                      <div>{{ timezone.time_zone_anme }}
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <small
+                  *ngIf="addCountryForm.get('time_zone_id')?.invalid &&(addCountryForm.get('time_zone_id')?.touched) || (addCountryForm.get('time_zone_id')?.invalid && submitted)"
+                  class="text-danger">* Time Zone Is Required
+                </small>
+            </div>
+            <div class="col-md-6">
+              <label class="">Iso Code 2
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="2" type="text" placeholder="Enter Iso Code 2"
+                formControlName="iso_code_2">
+              <small
+                *ngIf="addCountryForm?.get('iso_code_2')?.invalid &&(addCountryForm?.get('iso_code_2')?.touched) || (addCountryForm.get('iso_code_2')?.invalid && submitted)"
+                class="text-danger">* Iso Code 2 Is Required
+              </small>
             </div>
 
-            <!-- Capital -->
-            <div class="mb-3">
-              <label for="capital">Capital*</label>
-              <input id="capital" pInputText [(ngModel)]="newCountry.capital" name="capital" required
-                #capitalRef="ngModel" [disabled]="viewMode"
-                [ngClass]="{ 'p-invalid': capitalRef.invalid && capitalRef.touched }" />
-              <div *ngIf="capitalRef.invalid && capitalRef.touched" class="text-danger mt-1">
-                Capital is required.
-              </div>
+            <div class="col-md-6">
+              <label class="">Iso Code 3
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="3" type="text" placeholder="Enter Iso Code 3"
+                formControlName="iso_code_3">
+              <small
+                *ngIf="addCountryForm?.get('iso_code_3')?.invalid &&(addCountryForm?.get('iso_code_3')?.touched) || (addCountryForm.get('iso_code_3')?.invalid && submitted)"
+                class="text-danger">* Iso Code 3 Is Required
+              </small>
             </div>
 
-            <!-- ISO2 -->
-            <div class="mb-3">
-              <label for="iso2">ISO Code 2*</label>
-              <input id="iso2" pInputText [(ngModel)]="newCountry.iso2" name="iso2" maxlength="2" required
-                pattern="[A-Za-z]{2}" #iso2Ref="ngModel" [disabled]="viewMode"
-                [ngClass]="{ 'p-invalid': iso2Ref.invalid && iso2Ref.touched }" />
-              <div *ngIf="iso2Ref.errors?.['required'] && iso2Ref.touched" class="text-danger mt-1">
-                ISO Code 2 is required.
-              </div>
-              <div *ngIf="iso2Ref.errors?.['pattern'] && iso2Ref.touched" class="text-danger mt-1">
-                Must be exactly 2 letters.
-              </div>
-            </div>
-
-            <!-- Phone Code -->
-            <div class="mb-3">
-              <label for="phoneCode">Phone Code*</label>
-              <input id="phoneCode" pInputText [(ngModel)]="newCountry.phoneCode" name="phoneCode" required
-                #phoneCodeRef="ngModel" [disabled]="viewMode"
-                [ngClass]="{ 'p-invalid': phoneCodeRef.invalid && phoneCodeRef.touched }" />
-              <div *ngIf="phoneCodeRef.invalid && phoneCodeRef.touched" class="text-danger mt-1">
-                Phone Code is required.
-              </div>
-            </div>
-
-            <!-- Subregion -->
-            <div class="mb-3">
-              <label for="subregion">Sub Region*</label>
-              <input id="subregion" pInputText [(ngModel)]="newCountry.subregion" name="subregion" required
-                #subregionRef="ngModel" [disabled]="viewMode"
-                [ngClass]="{ 'p-invalid': subregionRef.invalid && subregionRef.touched }" />
-              <div *ngIf="subregionRef.invalid && subregionRef.touched" class="text-danger mt-1">
-                Sub Region is required.
-              </div>
-            </div>
-
-            <!-- Image Upload -->
-            <div class="mb-3">
-              <label style="font-weight: 500;">Profile Image</label>
-              <div *ngIf="!viewMode" class="mb-2">
-                <p-fileUpload mode="basic" name="profileImage" accept="image/*" maxFileSize="1000000"
-                  (onSelect)="onImageSelect($event)" chooseLabel="Upload Image" styleClass="blue-upload-btn">
-                </p-fileUpload>
-              </div>
-
-              <div *ngIf="imagePreview">
-                <img [src]="imagePreview" alt="Profile Preview"
-                  style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid #ccc;" />
-              </div>
+            <div class="col-md-6">
+              <label class="">Sub Region
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Sub Region "
+                formControlName="sub_region">
+              <small
+                *ngIf="addCountryForm.get('sub_region')?.invalid &&(addCountryForm.get('sub_region')?.touched) || (addCountryForm.get('sub_region')?.invalid && submitted)"
+                class="text-danger">*Sub Region Is Required
+              </small>
             </div>
           </div>
 
-          <!-- Form Footer -->
           <div class="row mt-4" *ngIf="!viewMode">
             <div class="col-12 text-end">
               <button pButton type="button" label="Cancel" class="p-button-secondary me-2"
                 (click)="cancelForm()"></button>
-              <button pButton type="button" label="Save" class="blue-btn"
-                (click)="addCountry(true)" [disabled]="!countryForm.form.valid"></button>
-              <button pButton type="button" label="Clear" class="blue-btn" (click)="clearForm()"></button>
+
+
+              <button pButton type="button" label="Save" class="blue-btn" (click)="onAddCountry()">
+              </button>
+
+              <button pButton type="button" label="Clear" class="blue-btn"
+                *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null"
+                (click)="resetForm()">
+              </button>
             </div>
           </div>
         </form>

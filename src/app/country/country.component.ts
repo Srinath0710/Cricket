@@ -1,27 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { Sidebar } from 'primeng/sidebar';
-
-interface Country {
-  name: string;
-  code?: string;
-  status: string;
-  region?: string;
-  timezone?: string;
-  capital?: string;
-  iso2?: string;
-  phoneCode?: string;
-  subregion?: string;
-  image?: string;
-}
+import { ApiService } from '../services/api.service';
+import { URLCONSTANT } from '../services/url-constant';
+import { PaginatorModule } from 'primeng/paginator';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { TagModule } from 'primeng/tag';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-country',
@@ -36,125 +30,312 @@ interface Country {
     DropdownModule,
     FileUploadModule,
     InputTextModule,
-    Sidebar
+    ReactiveFormsModule,
+    Sidebar,
+    PaginatorModule,
+    TagModule,
+    ConfirmDialogModule,
+    ToastModule
+    
   ],
   templateUrl: './country.component.html',
-  styleUrls: ['./country.component.css']
+  styleUrls: ['./country.component.css'],
+  providers: [
+    { provide: URLCONSTANT },
+    { provide: MessageService },
+    { provide: ConfirmationService }
+  ],
 })
-export class CountryComponent {
-CancelForm() {
-throw new Error('Method not implemented.');
-}
-  countries: Country[] = [
-    { name: 'Afghanistan', code: 'AF', status: 'Active' },
-    { name: 'Albania', code: 'AL', status: 'Active' },
-    { name: 'Algeria', code: 'DZ', status: 'Active' }
-  ];
 
-  regions = [
-    { label: 'Africa', value: 'Africa' },
-    { label: 'Americas', value: 'Americas' },
-    { label: 'Asia', value: 'Asia' },
-    { label: 'Europe', value: 'Europe' },
-    { label: 'Oceania', value: 'Oceania' }
-  ];
-
-  timezones = [
-    { label: 'UTC-12:00', value: 'UTC-12:00' },
-    { label: 'UTC-11:00', value: 'UTC-11:00' },
-    { label: 'UTC-10:00', value: 'UTC-10:00' }
-  ];
-
-  displayModal: boolean = false;
-  viewMode: boolean = false;
-  imagePreview: string | null = null;
-  selectedCountry: Country | null = null;
-  newCountry: Country = this.getEmptyCountry();
-  dialogWidth: string = '50vw';
+export class CountryComponent implements OnInit {
+  public addCountryForm!: FormGroup<any>;
+  user_id = localStorage.getItem('user_id');
+  client_id = localStorage.getItem('client_id');
+  public ShowForm: any = false;
   isEditMode: boolean = false;
+  viewMode: boolean = false;
+  region_id: any;
+  loading = false;
+  regionsData = [];
+  timezoneData = [];
+  countriesData = [];
+  first: number = 1;
+  oldfirst: number = 1;
+  pageData: number = 0;
+  rows: number = 5;
+  totalData: any = 0;
+  filedata: any;
 
-  getEmptyCountry(): Country {
-    return {
-      name: '',
-      code: '',
-      status: 'Active',
-      region: '',
-      timezone: '',
-      capital: '',
-      iso2: '',
-      phoneCode: '',
-      subregion: ''
-    };
+  submitted: boolean = true;
+  time_zone_id: any;
+
+
+  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,private confirmationService: ConfirmationService) {
+    // this.statuses = [
+    //     {label: 'Active', value: 'active'},
+    //     {label: 'Inactive', value: 'inactive'},
+    // ];
+
   }
+  ngOnInit() {
+    this.gridLoad();
+    this.timezoneDropdown();
+    this.addCountryForm = this.formBuilder.group({
+      country_id: [''],
+      iso_code_2: ['', [Validators.required]],
+      iso_code_3: ['', [Validators.required]],
+      country_name: ['', [Validators.required]],
+      region_id: ['', [Validators.required]],
+      sub_region: ['', [Validators.required]],
+      time_zone_id: ['', [Validators.required]],
+      country_image: ['']
 
-  showAddCountryDialog() {
-    this.cancelForm();
-    this.isEditMode = false;
-    this.displayModal = true;
+    })
   }
-  
+  //   ngAfterViewInit() {
+  //     setTimeout(()=>{
 
-  onImageSelect(event: any): void {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith('image/')){
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
+  //     },100)
+  // }
 
-  addCountry(addAnother: boolean = false) {
-    if (this.validateForm()) {
-      this.newCountry.code = this.newCountry.iso2;
-      this.countries.push({ ...this.newCountry });
-      if (addAnother) {
-        this.cancelForm();
-      } else {
-        this.displayModal = false;
+  timezoneDropdown() {
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    const url = this.urlConstant.getCountryDropdown;
+    this.apiService.post(url, params).subscribe((res) => {
+      this.timezoneData = res.data.timezone ?? [];
+      this.regionsData = res.data.region ?? [];
+
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken();
       }
-    }
+
+    });
+  }
+  gridLoad() {
+
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.page_no = this.first.toString();
+    params.records = this.rows.toString();
+    const url = this.urlConstant.getCountryList;
+    this.apiService.post(url, params).subscribe((res) => {
+      this.countriesData = res.data.countries ?? [];
+      this.totalData = 50;
+      this.countriesData.forEach((val: any) => {
+        val.country_image = `${val.country_image}?${Math.random()}`;
+      });
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken()
+      }
+      else {
+        this.countriesData = []
+        this.totalData = this.countriesData.length;
+      }
+    });
+
+  }
+  calculateFirst(): number {
+    return (this.first - 1) * this.rows;
+  }
+  onPageChange(event: any) {
+    this.first = (event.page) + 1;
+    this.pageData = event.first;
+    this.rows = event.rows;
+    this.gridLoad();
   }
 
-  validateForm(): boolean {
-    const c = this.newCountry;
-    if (!c.name || !c.region || !c.timezone || !c.capital || !c.iso2 || !c.phoneCode || !c.subregion) {
-      return false;
-    }
-    if (c.iso2.length !== 2) {
-      alert('ISO Code 2 must be exactly 2 characters');
-      return false;
-    }
-    return true;
+  showAddForm() {
+    this.ShowForm = true;
   }
+
   cancelForm() {
-    this.displayModal = false; 
-     }
-     clearForm() {
-      this.newCountry = this.getEmptyCountry();
-      this.imagePreview = null;
+    this.ShowForm = false;
+  }
+
+
+  resetForm() {
+    this.addCountryForm.reset();
+    this.submitted = false;
+  }
+  successToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+
+  }
+
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
+  onAddCountry() {
+    this.submitted = true;
+    console.log(this.addCountryForm)
+    if (this.addCountryForm.invalid) {
+      this.addCountryForm.markAllAsTouched();
+      return
     }
-     
 
-  toggleStatus(country: Country): void {
-    country.status = country.status === 'Active' ? 'Inactive' : 'Active';
-  }
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.iso_code_2 = this.addCountryForm.value.iso_code_2.toString();
+    params.iso_code_3 = this.addCountryForm.value.iso_code_3.toString();
+    params.country_name = this.addCountryForm.value.country_name.toString();
+    params.region_id = this.addCountryForm.value.region_id.toString();
+    params.sub_region = this.addCountryForm.value.sub_region.toString();
+    params.time_zone_id = this.addCountryForm.value.time_zone_id.toString();
+    const country_id = this.addCountryForm.value.country_id;
+    if (this.addCountryForm.value.country_id !== null && this.addCountryForm.value.country_id !== '') {
+      params.country_id = country_id.toString();
+      params.action_flag = 'update';
+      const url = this.urlConstant.updateCountry;
+      this.apiService.post(url, params).subscribe((res) => {
+        if (res.status_code == 200) {
+          this.resetForm();
+          this.cancelForm();
+          this.successToast(res);
+          this.gridLoad();
 
-  deleteCountry(index: number) {
-    if (confirm('Are you sure you want to delete this country?')) {
-      this.countries.splice(index, 1);
+        } else {
+          this.failedToast(res);
+        }
+      }, (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err);
+        }
+      });
+    } else {
+      params.action_flag = 'create';
+
+      const url = this.urlConstant.addCountry;
+      this.apiService.post(url, params).subscribe((res) => {
+        if (res.status_code == 200) {
+          this.resetForm();
+          this.cancelForm();
+
+          this.successToast(res);
+          this.gridLoad();
+
+
+        } else {
+          this.failedToast(res);
+        }
+      })
     }
+
+  }
+  EditCountry(country_id: any) {
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.country_id = country_id?.toString();
+    const url = this.urlConstant.editCountry;
+    this.apiService.post(url, params).subscribe((res) => {
+      console.log(res);
+      if (res.status_code == 200) {
+
+      const editRecord: any = res.data.countries[0] ?? {};
+      if (editRecord != null) {
+        this.addCountryForm.setValue({
+          country_id: editRecord.country_id,
+          iso_code_2: editRecord.iso_code_2,
+          iso_code_3: editRecord.iso_code_3,
+          country_name: editRecord.country_name,
+          region_id: editRecord.region_id,
+          sub_region: editRecord.sub_region,
+          time_zone_id: editRecord.time_zone_id,
+          country_image: null
+        });
+        this.showAddForm();
+      }
+    }else{
+      this.failedToast(res);
+    }
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken()
+      }
+      else {
+        this.failedToast(err);
+      }
+    });
+
+
   }
 
-  editCountry(country: Country) {
-    this.isEditMode = true;
-    this.newCountry = { ...country };
-    this.imagePreview = country.image || null;
-    this.displayModal = true;
+  ActiveCountry(country_id: any) {
+    console.log("hi")
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      country_id: country_id?.toString()
+    };
+    const url = this.urlConstant.activeCountry;
+    this.apiService.post(url, params).subscribe(
+      (res) => {
+        this.gridLoad();
+        console.log('Country activated:', res);
+      },
+      (error) => {
+        console.error('Error activating country:', error);
+      }
+    );
   }
-
- 
-  
-  
+  DeactivatedCountry(country_id: any) {
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      country_id: country_id?.toString()
+    };
+    const url = this.urlConstant.deactiveCountry;
+    this.apiService.post(url, params).subscribe(
+      (res) => {
+        this.gridLoad();
+        console.log('Country Deactivated:', res);
+      },
+      (error) => {
+        console.error('Error Deactivated country:', error);
+      }
+    );
+  }
+  confirmActivation(country_id: any) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to activate this country?',
+      header: 'Confirmation',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        this.ActiveCountry(country_id);
+      this.confirmationService.close();
+      },
+      reject: () => {
+        this.msgService.add({ severity: 'info', summary: 'Cancelled', detail: 'Country activation cancelled' });
+      this.confirmationService.close();
+      }
+    });
+  }
+  confirmDeactivation(country_id: any) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to Deactivate this country?',
+      header: 'Confirmation',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        this.DeactivatedCountry(country_id);
+      this.confirmationService.close();
+      },
+      reject: () => {
+        this.msgService.add({ severity: 'info', summary: 'Cancelled', detail: 'Country Deactivation cancelled' });
+      this.confirmationService.close();
+      }
+    });
+  }
 }

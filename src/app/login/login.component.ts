@@ -110,11 +110,6 @@ export class LoginComponent {
                       "user_id": localStorage.getItem('user_id'),
 
                   }
-                //   this.apiService.post('Common/update_browser_info', params).subscribe((val: any) => {
-                //       this.Route.navigate(['']);
-
-                //   })
-
                 this.Route.navigate(['']);
               } else if(res.status_code == 406) {
                   this.errorMessage = res.message;

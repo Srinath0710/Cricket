@@ -4,7 +4,6 @@ export const environment = {
 
      imagePath:'/assets',
       apiUrl: 'http://122.165.179.198:10001/GlobalAPI/',
-      angularUrl: 'http://localhost:4200/',
                         islive:false,
 
 
