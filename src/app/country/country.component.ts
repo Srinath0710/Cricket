@@ -16,6 +16,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { Country, EditCountry, UpdateCountry } from './country.model';
+import { CricketKeyConstant } from '../services/cricket-key-constant';
 
 @Component({
   selector: 'app-country',
@@ -36,12 +38,13 @@ import { ToastModule } from 'primeng/toast';
     TagModule,
     ConfirmDialogModule,
     ToastModule
-    
+
   ],
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.css'],
   providers: [
     { provide: URLCONSTANT },
+    { provide: CricketKeyConstant },
     { provide: MessageService },
     { provide: ConfirmationService }
   ],
@@ -49,8 +52,8 @@ import { ToastModule } from 'primeng/toast';
 
 export class CountryComponent implements OnInit {
   public addCountryForm!: FormGroup<any>;
-  user_id = localStorage.getItem('user_id');
-  client_id = localStorage.getItem('client_id');
+  user_id: number = Number(localStorage.getItem('user_id'));
+  client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: any = false;
   isEditMode: boolean = false;
   viewMode: boolean = false;
@@ -58,7 +61,7 @@ export class CountryComponent implements OnInit {
   loading = false;
   regionsData = [];
   timezoneData = [];
-  countriesData = [];
+  countriesData: Country[] = [];
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
@@ -70,11 +73,8 @@ export class CountryComponent implements OnInit {
   time_zone_id: any;
 
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,private confirmationService: ConfirmationService) {
-    // this.statuses = [
-    //     {label: 'Active', value: 'active'},
-    //     {label: 'Inactive', value: 'inactive'},
-    // ];
+  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
+     private confirmationService: ConfirmationService,public cricketKeyConstant :CricketKeyConstant) {
 
   }
   ngOnInit() {
@@ -92,18 +92,13 @@ export class CountryComponent implements OnInit {
 
     })
   }
-  //   ngAfterViewInit() {
-  //     setTimeout(()=>{
 
-  //     },100)
-  // }
 
   timezoneDropdown() {
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
-    const url = this.urlConstant.getCountryDropdown;
-    this.apiService.post(url, params).subscribe((res) => {
+    this.apiService.post(this.urlConstant.getCountryDropdown, params).subscribe((res) => {
       this.timezoneData = res.data.timezone ?? [];
       this.regionsData = res.data.region ?? [];
 
@@ -121,21 +116,15 @@ export class CountryComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
-    const url = this.urlConstant.getCountryList;
-    this.apiService.post(url, params).subscribe((res) => {
+    this.apiService.post(this.urlConstant.getCountryList, params).subscribe((res) => {
       this.countriesData = res.data.countries ?? [];
       this.totalData = 50;
       this.countriesData.forEach((val: any) => {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken()
-      }
-      else {
-        this.countriesData = []
-        this.totalData = this.countriesData.length;
-      }
+           err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [],this.totalData = this.countriesData.length);
+
     });
 
   }
@@ -173,169 +162,110 @@ export class CountryComponent implements OnInit {
   }
   onAddCountry() {
     this.submitted = true;
-    console.log(this.addCountryForm)
     if (this.addCountryForm.invalid) {
       this.addCountryForm.markAllAsTouched();
       return
     }
-
-    const params: any = {};
-    params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
-    params.iso_code_2 = this.addCountryForm.value.iso_code_2.toString();
-    params.iso_code_3 = this.addCountryForm.value.iso_code_3.toString();
-    params.country_name = this.addCountryForm.value.country_name.toString();
-    params.region_id = this.addCountryForm.value.region_id.toString();
-    params.sub_region = this.addCountryForm.value.sub_region.toString();
-    params.time_zone_id = this.addCountryForm.value.time_zone_id.toString();
-    const country_id = this.addCountryForm.value.country_id;
-    if (this.addCountryForm.value.country_id !== null && this.addCountryForm.value.country_id !== '') {
-      params.country_id = country_id.toString();
+    const params: UpdateCountry = {
+      user_id: String(this.user_id),
+      client_id: String(this.client_id),
+      iso_code_2: this.addCountryForm.value.iso_code_2,
+      iso_code_3: this.addCountryForm.value.iso_code_3,
+      country_name: this.addCountryForm.value.country_name,
+      region_id: String(this.addCountryForm.value.region_id),
+      sub_region: this.addCountryForm.value.sub_region,
+      time_zone_id: String(this.addCountryForm.value.time_zone_id),
+      country_id: String(this.addCountryForm.value.country_id),
+      action_flag: 'create',
+      capital: '',
+      phonecode: '0'
+    };
+    if (this.addCountryForm.value.country_id) {
       params.action_flag = 'update';
-      const url = this.urlConstant.updateCountry;
-      this.apiService.post(url, params).subscribe((res) => {
-        if (res.status_code == 200) {
-          this.resetForm();
-          this.cancelForm();
-          this.successToast(res);
-          this.gridLoad();
-
-        } else {
-          this.failedToast(res);
-        }
+      this.apiService.post(this.urlConstant.updateCountry, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err);
-        }
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
-      params.action_flag = 'create';
-
-      const url = this.urlConstant.addCountry;
-      this.apiService.post(url, params).subscribe((res) => {
-        if (res.status_code == 200) {
-          this.resetForm();
-          this.cancelForm();
-
-          this.successToast(res);
-          this.gridLoad();
-
-
-        } else {
-          this.failedToast(res);
-        }
-      })
+      this.apiService.post(this.urlConstant.addCountry, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
     }
 
   }
-  EditCountry(country_id: any) {
+  addCallBack(res: any) {
+    this.resetForm();
+    this.cancelForm();
+    this.successToast(res);
+    this.gridLoad();
+  }
+  EditCountry(country_id: number) {
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.country_id = country_id?.toString();
-    const url = this.urlConstant.editCountry;
-    this.apiService.post(url, params).subscribe((res) => {
+    this.apiService.post(this.urlConstant.editCountry, params).subscribe((res) => {
       console.log(res);
       if (res.status_code == 200) {
-
-      const editRecord: any = res.data.countries[0] ?? {};
-      if (editRecord != null) {
-        this.addCountryForm.setValue({
-          country_id: editRecord.country_id,
-          iso_code_2: editRecord.iso_code_2,
-          iso_code_3: editRecord.iso_code_3,
-          country_name: editRecord.country_name,
-          region_id: editRecord.region_id,
-          sub_region: editRecord.sub_region,
-          time_zone_id: editRecord.time_zone_id,
-          country_image: null
-        });
-        this.showAddForm();
+        const editRecord: EditCountry = res.data.countries[0] ?? {};
+        if (editRecord != null) {
+          this.addCountryForm.setValue({
+            country_id: editRecord.country_id,
+            iso_code_2: editRecord.iso_code_2,
+            iso_code_3: editRecord.iso_code_3,
+            country_name: editRecord.country_name,
+            region_id: editRecord.region_id,
+            sub_region: editRecord.sub_region,
+            time_zone_id: editRecord.time_zone_id,
+            country_image: null
+          });
+          this.showAddForm();
+        }
+      } else {
+        this.failedToast(res);
       }
-    }else{
-      this.failedToast(res);
-    }
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken()
-      }
-      else {
-        this.failedToast(err);
-      }
+      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 
   }
 
-  ActiveCountry(country_id: any) {
-    console.log("hi")
+  status(country_id: number,url:string) {
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
       country_id: country_id?.toString()
     };
-    const url = this.urlConstant.activeCountry;
     this.apiService.post(url, params).subscribe(
-      (res) => {
-        this.gridLoad();
-        console.log('Country activated:', res);
+      (res:any) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
-      (error) => {
-        console.error('Error activating country:', error);
+      (err:any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
-  DeactivatedCountry(country_id: any) {
-    const params: any = {
-      user_id: this.user_id?.toString(),
-      client_id: this.client_id?.toString(),
-      country_id: country_id?.toString()
-    };
-    const url = this.urlConstant.deactiveCountry;
-    this.apiService.post(url, params).subscribe(
-      (res) => {
-        this.gridLoad();
-        console.log('Country Deactivated:', res);
-      },
-      (error) => {
-        console.error('Error Deactivated country:', error);
-      }
-    );
-  }
-  confirmActivation(country_id: any) {
+ 
+  StatusConfirm(country_id: number,actionObject:{key:string,label:string}) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to activate this country?',
+      message: `Are you sure you want to ${actionObject.label} this country?`,
       header: 'Confirmation',
       icon: 'pi pi-question-circle',
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        this.ActiveCountry(country_id);
-      this.confirmationService.close();
+        const url:string= this.cricketKeyConstant.condition_key.active_status.key===actionObject.key?this.urlConstant.activeCountry:this.urlConstant.deactiveCountry;
+        this.status(country_id,url);
+        this.confirmationService.close();
       },
       reject: () => {
-        this.msgService.add({ severity: 'info', summary: 'Cancelled', detail: 'Country activation cancelled' });
-      this.confirmationService.close();
+        this.confirmationService.close();
       }
     });
   }
-  confirmDeactivation(country_id: any) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to Deactivate this country?',
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        this.DeactivatedCountry(country_id);
-      this.confirmationService.close();
-      },
-      reject: () => {
-        this.msgService.add({ severity: 'info', summary: 'Cancelled', detail: 'Country Deactivation cancelled' });
-      this.confirmationService.close();
-      }
-    });
-  }
+  
 }

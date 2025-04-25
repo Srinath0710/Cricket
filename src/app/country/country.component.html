@@ -65,11 +65,11 @@
                   <!-- <i class="fa fa-pencil-square" aria-hidden="true"></i -->
                   
                   
-                  <div class="action-icon" (click)="confirmActivation(country.country_id)">
+                  <div class="action-icon" (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.active_status)">
                     <span><i class="fa fa-check"></i></span>
                   </div>
                   
-                  <div class="action-icon"(click)="confirmDeactivation(country.country_id)">
+                  <div class="action-icon"(click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.deactive_status)">
                     <span> <i class="fa fa-times" ></i>
                     </span>
                   </div>
@@ -85,10 +85,10 @@
         </div>
       </div>
     </main>
-                  <!-- Confirmation POPUP -->
+                  <!-- STATUS Confirmation POPUP -->
 
     <p-confirmDialog 
-    [style]="{width: '400px'}"
+    [style]="{width: '300px', height: '200px'}"
     [baseZIndex]="10000"
     [draggable]="false"
     [closable]="false"
@@ -96,7 +96,7 @@
   </p-confirmDialog>
   
     <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
-      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" styleClass="custom-sidebar" [showCloseIcon]="false">
+      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
 
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0">{{ isEditMode ? 'Edit Country' : 'Add Country' }}</h4>
@@ -107,14 +107,16 @@
           <div class="row gy-3">
             <div class="col-md-6">
               <label for="region">Region*</label>
-              <p-dropdown [options]="regionsData" class="drop-error " formControlName="region_id"
+              <p-dropdown [options]="regionsData"
+             
+               class="drop-error " formControlName="region_id"
                 optionValue="region_id" optionLabel="region_name" [ngModel]="addCountryForm.get('region_id')?.value"
                 placeholder="select region" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
                 <ng-template let-region1 pTemplate="item">
                   <div class="flex align-items-center gap-2">
 
-                    <div>{{ region1.region_name }}
+                    <div >{{ region1.region_name }}
                     </div>
                   </div>
                 </ng-template>
@@ -199,18 +201,19 @@
 
           <div class="row mt-4" *ngIf="!viewMode">
             <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-2"
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
                 (click)="cancelForm()"></button>
 
-
-              <button pButton type="button" label="Save" class="blue-btn" (click)="onAddCountry()">
-              </button>
-
-              <button pButton type="button" label="Clear" class="blue-btn"
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
                 *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null"
-                (click)="resetForm()">
-              </button>
+                (click)="resetForm()"></button>
+
+              <button pButton type="button" label="Save" class="save-button"
+                (click)="onAddCountry()"></button>
+            
+              
             </div>
+            
           </div>
         </form>
       </div>
