@@ -3,132 +3,180 @@
     <main>
       <div class="card margin-card">
         <div class="card-body">
-          <!-- Header -->
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
-              <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+              <i class="fa-solid fa-globe" aria-hidden="true"></i>
               All Teams
             </div>
 
-            <!-- Search Bar -->
             <form class="flex-grow-1 mx-3 search-width">
               <div class="form-group">
-                <input pInputText type="text" class="form-control width-search" placeholder="Search Teams" />
+                <span class="p-input-icon-left ml-auto">
+                  <span class="p-input-icon-right input-icons search-padding">
+                    <input pInputText type="text" class="form-control width-search p-input-icon-right"
+                      placeholder="{{'  Search'}}" />
+                  </span>
+                </span>
               </div>
             </form>
-
-            <!-- Add Team Button -->
-            <div class="card flex justify-center">
-              <p-button icon="fas fa-plus" label="Add Team" (click)="showAddTeamDialog()"
-                styleClass="custom-btn-color blue-btn"></p-button>
+            <div class="card flex justify-center ">
+              <p-button icon="fas fa-plus" label="Add Team" *ngIf="!ShowForm" styleClass="new-button p-button-text"
+                (click)="resetForm()" (click)="showAddForm()"></p-button>
             </div>
+
           </div>
 
-          <!-- Teams Table -->
-          <p-table [value]="teams" [tableStyle]="{ 'min-width': '50rem' }" scrollable="true" [paginator]="true"
-            [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" [globalFilterFields]="['teamName']">
+          <p-table [value]="teamData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
             <ng-template pTemplate="header">
               <tr>
-                <th class="custom-header">Team Name <p-sortIcon field="name"></p-sortIcon></th>
-                <th class="custom-header">Age Group <p-sortIcon field="name"></p-sortIcon></th>
-                <th class="custom-header">Team Format <p-sortIcon field="name"></p-sortIcon></th>
-                <th class="custom-header">Country <p-sortIcon field="name"></p-sortIcon></th>
-                <th class="custom-header">Status <p-sortIcon field="status"></p-sortIcon></th>
+                <th pSortableColumn="team_name">Team Name <p-sortIcon field="team_name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="age_category">Age Group <p-sortIcon field="age_category"></p-sortIcon>
+                </th>
+                <th pSortableColumn="team_category">Format <p-sortIcon field="team_category"></p-sortIcon>
+                </th>
+                <th pSortableColumn="gender">Gender<p-sortIcon field="gender"></p-sortIcon>
+                </th>
+                <th pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                </th>
                 <th class="custom-header action-column-header">Actions</th>
               </tr>
             </ng-template>
 
-            <ng-template pTemplate="body" let-team>
+            <ng-template pTemplate="body" let-teams>
               <tr>
-                <td>{{ team.teamName }}</td>
-                <td>{{ team.ageGroup }}</td>
-                <td>{{ team.format }}</td>
-                <td>{{ team.country }}</td>
+                <td>{{ teams.team_name }}</td>
+                <td>{{ teams.age_category }}</td>
+                <td>{{ teams.team_category }}</td>
+                <td>{{ teams.gender }}</td>
                 <td>
-                  <span [ngClass]="{ 'text-success': team.status === 'Active', 'text-danger': team.status !== 'Active' }">
-                    {{ team.status }}
+                  <span [ngClass]="{
+                        'text-success': teams.record_status === 'Active',
+                        'text-danger': teams.record_status === 'InActive'
+                      }">
+                    {{ teams.record_status }}
                   </span>
                 </td>
                 <td class="action-column">
-                  <div class="action-icon" (click)="editTeams(team)">
-                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                  <div class="action-icon" (click)="EditTeam(teams.team_id)">
+                    <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
                   </div>
-                  <div class="action-icon" (click)="viewTeams(team)">
-                    <i class="fa fa-eye" aria-hidden="true"></i>
+
+
+                  <div class="action-icon"
+                    (click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.active_status)">
+                    <span><i class="fa fa-check"></i></span>
                   </div>
-                  <div class="action-icon" (click)="toggleStatus(team)">
-                    <i class="fa" [ngClass]="team.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
+
+                  <div class="action-icon"
+                    (click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.deactive_status)">
+                    <span> <i class="fa fa-times"></i>
+                    </span>
                   </div>
+
                 </td>
               </tr>
             </ng-template>
           </p-table>
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[5,10, 20, 30]" (onPageChange)="onPageChange($event)">
+          </p-paginator>
+
         </div>
       </div>
     </main>
+    <!-- STATUS Confirmation POPUP -->
+    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+    </p-confirmDialog>
+
+
+
+
 
     <!-- Sidebar Modal -->
+    <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
+      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
 
-    <p-sidebar 
-      [(visible)]="displayModal"
-      position="right"
-      [style]="{ width: '100vw' }"
-      [modal]="true"
-      [baseZIndex]="10000"
-      [closeOnEscape]="false"
-      appendTo="body"
-      styleClass="custom-sidebar"
-      [showCloseIcon]="false">
-      
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">{{ isEditMode ? 'Edit Team' : 'Add Team' }}</h4>
+      </div>
+
       <div (click)="$event.stopPropagation()">
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="mb-0">{{ viewMode ? 'View Team' : isEditMode ? 'Edit Team' : 'Add Team' }}</h4>
-        
-        </div>
-
-        <!-- Team Form -->
-        <form *ngIf="newTeams" #form="ngForm" class="px-3">
-          <!-- Team Name -->
-          <div class="mb-3">
-            <label for="teamName">Team Name*</label>
-            <input id="teamName" type="text" pInputText [(ngModel)]="newTeams.teamName" name="teamName"
-              [disabled]="viewMode" required #teamNameRef="ngModel" />
-            <small class="text-danger" *ngIf="teamNameRef.invalid && teamNameRef.touched">Team Name is required</small>
+        <form [formGroup]="addTeamForm">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label class="">Team Name
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Team Name"
+                formControlName="team_name">
+              <small
+                *ngIf="addTeamForm?.get('team_name')?.invalid &&(addTeamForm?.get('team_name')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
+                class="text-danger">* Team
+                Name Is Required
+              </small>
+            </div>
+            <div class="col-md-6">
+              <label class="">Shot Name
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Short Name"
+                formControlName="team_short">
+            </div>
+            <div class="col-md-6">
+              <label for="gender">Gender*</label>
+              <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id" optionValue="config_id"
+                optionLabel="config_name" placeholder="select gender" appendTo="body"
+                [panelStyleClass]="'custom-dropdown-panel'">
+                <ng-template let-gender pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ gender.config_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            <div class="col-md-6">
+              <label>Format Name*</label>
+              <p-dropdown [options]="formatList" class="drop-error " formControlName="format_id" optionValue="config_id"
+                optionLabel="config_name" placeholder="select Format Name" appendTo="body"
+                [panelStyleClass]="'custom-dropdown-panel'">
+                <ng-template let-ageformat pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ ageformat.config_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            <div class="col-md-6">
+              <label>Age Group*</label>
+              <p-dropdown [options]="ageGroupList" class="drop-error " formControlName="age_category_id"
+                optionValue="config_id" optionLabel="config_name" placeholder="select Age Group" appendTo="body"
+                [panelStyleClass]="'custom-dropdown-panel'">
+                <ng-template let-agegroup pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ agegroup.config_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
           </div>
 
-          <!-- Age Group -->
-          <div class="mb-3">
-            <label for="ageGroup">Age Group*</label>
-            <input id="ageGroup" type="text" pInputText [(ngModel)]="newTeams.ageGroup" name="ageGroup"
-              [disabled]="viewMode" required #ageGroupRef="ngModel" />
-            <small class="text-danger" *ngIf="ageGroupRef.invalid && ageGroupRef.touched">Age Group is required</small>
-          </div>
+          <div class="row mt-4" *ngIf="!viewMode">
+            <div class="col-12 text-end">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                (click)="cancelForm()"></button>
 
-          <!-- Format -->
-          <div class="mb-3">
-            <label for="format">Format*</label>
-            <input id="format" type="text" pInputText [(ngModel)]="newTeams.format" name="format"
-              [disabled]="viewMode" required #formatRef="ngModel" />
-            <small class="text-danger" *ngIf="formatRef.invalid && formatRef.touched">Format is required</small>
-          </div>
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                *ngIf="addTeamForm.get('country_id')?.value == '' || addTeamForm.get('country_id')?.value == null"
+                (click)="resetForm()"></button>
 
-          <!-- Country Dropdown -->
-          <div class="mb-3">
-            <label for="country">Country*</label>
-            <p-dropdown [options]="countriesList" [(ngModel)]="newTeams.country" name="country"
-              placeholder="Select Country" [showClear]="true" [disabled]="viewMode"
-              required #countryRef="ngModel"></p-dropdown>
-            <small class="text-danger" *ngIf="countryRef.invalid && countryRef.touched">Country is required</small>
-          </div>
+              <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>
 
-          <!-- Footer Buttons -->
-          <div class="mt-4 text-end" *ngIf="!viewMode">
-            <button pButton type="button" label="Cancel" class="p-button-secondary me-2"
-              (click)="cancelForm()"></button>
-            <button pButton type="submit" label="Save" class="blue-btn me-2"
-              [disabled]="form.invalid" (click)="addTeams(true)"></button>
-            <button pButton type="button" label="Clear" class="blue-btn" (click)="clearForm()"></button>
+            </div>
           </div>
         </form>
       </div>
