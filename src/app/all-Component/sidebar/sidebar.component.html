@@ -29,7 +29,7 @@
                         <a  [routerLink]="parent_menu.menu_link" class="nav_link" [ngClass]="{'active-route':activeRoute==parent_menu.menu_link}" (click)="activeRoute=parent_menu.menu_link">
 
                           <span class="navlink_icon">
-                                <i [class]="parent_menu.menu_image"></i>
+                                <!-- <i [class]="parent_menu.menu_image"></i> -->
                         </span>
                           <span class="navlink"   >{{parent_menu.menu_name}}</span>
                         </a>
@@ -92,12 +92,13 @@
                 <ul class="ng-trigger ng-trigger-children ng-tns-c2000835034-5 ng-star-inserted">
                   <li app-menuitem="" *ngFor="let parent_menu of module?.sub_parent" class="ng-tns-c2000835034-6 ng-tns-c2000835034-5 ng-star-inserted" [ngClass]="{'active-menuitem':clickedModule==parent_menu.menu_id}">
 
-                    <a tabindex="0" *ngIf="parent_menu['has_submenu']" (click)="clickedModule=parent_menu.menu_id!=clickedModule?parent_menu.menu_id:''" pripple="" class="p-element p-ripple bor ng-tns-c2000835034-6 ng-star-inserted">
+                    <a style="text-decoration: none;"  tabindex="0" *ngIf="parent_menu['has_submenu']" (click)="clickedModule=parent_menu.menu_id!=clickedModule?parent_menu.menu_id:''" pripple="" class="p-element p-ripple bor ng-tns-c2000835034-6 ng-star-inserted">
                       <!-- <i class=" " [class]=""></i> -->
                       <!-- <i class="layout-menuitem-icon ng-tns-c2000835034-6  material-icons"></i> -->
-                      <i class="material-symbols-outlined">
+                      <!-- <i class="material-symbols-outlined">
                         {{parent_menu.menu_image}}
-                      </i>
+                      </i> -->
+                      
                       <span class="layout-menuitem-text ng-tns-c2000835034-6">{{parent_menu.menu_name}}</span>
                       <i class="pi pi-fw pi-angle-down layout-submenu-toggler ng-tns-c2000835034-6 ng-star-inserted"></i>
 
@@ -105,9 +106,9 @@
                     </a>
                     <a tabindex="0" *ngIf="!parent_menu['has_submenu']" (click)="setImage(parent_menu.menu_image)"  [routerLink]="parent_menu.menu_link" pripple="" class="p-element p-ripple ng-tns-c2000835034-6 ng-star-inserted">
                       <!-- <i class="layout-menuitem-icon ng-tns-c2000835034-6  " [class]="parent_menu.menu_image"></i> -->
-                      <i class="material-symbols-outlined">
+                      <!-- <i class="material-symbols-outlined">
                         {{parent_menu.menu_image}}
-                      </i>
+                      </i> -->
                       <span class="layout-menuitem-text ng-tns-c2000835034-6">{{parent_menu.menu_name}}</span>
                       <i class="pi pi-fw pi-angle-down layout-submenu-toggler ng-tns-c2000835034-6 ng-star-inserted"></i>
 
@@ -115,12 +116,14 @@
                     </a>
                     <ul *ngIf="parent_menu['has_submenu']" class="ng-trigger ng-trigger-children ng-tns-c2000835034-6 ng-star-inserted" style="height: 0px;">
                       <li app-menuitem="" *ngFor="let sub_menu of parent_menu?.sub_menu" class="ng-tns-c2000835034-13 ng-tns-c2000835034-6 ng-star-inserted" >
-
-                        <a routerlinkactive="active-route" tabindex="0" pripple="" class="p-element p-ripple ng-tns-c2000835034-13 ng-star-inserted"(click)="setImage(sub_menu.menu_image)"  [routerLink]="sub_menu.menu_link">
-                          <!-- <i class="layout-menuitem-icon ng-tns-c2000835034-13 " [class]="sub_menu.menu_image"></i> -->
-                          <i class="material-symbols-outlined">
+  <!-- <i class="layout-menuitem-icon ng-tns-c2000835034-13 " [class]="sub_menu.menu_image"></i> -->
+                          <!-- <i class="material-symbols-outlined">
                             {{sub_menu.menu_image}}
-                          </i>
+                          </i> -->
+
+                        <a style="text-decoration: none;" routerlinkactive="active-route" tabindex="0" pripple="" class="p-element p-ripple ng-tns-c2000835034-13 ng-star-inserted"(click)="setImage(sub_menu.menu_image)"  [routerLink]="sub_menu.menu_link">
+                        
+                          <i class="fa fa-user-circle" aria-hidden="true"></i>
                           <span class="layout-menuitem-text ng-tns-c2000835034-13">{{sub_menu.menu_name}}</span>
                           <span class="p-ink ng-tns-c2000835034-13" aria-hidden="true" role="presentation"></span>
                         </a>

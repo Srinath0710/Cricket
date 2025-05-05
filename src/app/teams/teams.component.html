@@ -8,21 +8,36 @@
               <i class="fa-solid fa-globe" aria-hidden="true"></i>
               All Teams
             </div>
+            <div class="d-flex align-items-center">
+              <!-- Search Form -->
+              <form class="d-flex align-items-center  gap-2">
+                <div class="p-input-icon-right flex-grow-1">
+                  <!-- <i class="pi pi-search" ></i> -->
+                  <input
+                    pInputText
+                    type="text"
+                    [(ngModel)]="searchKeyword"
+                    name="searchKeyword"
+                    class="width-search"
+                    placeholder="  Search"
+                    (keyup.enter)="gridLoad()"
+                  />
+                </div>
+              
+                <button
+                  type="button"
+                  class="clear-button"
+                  (click)="searchKeyword = ''"
+                >
+                  Clear
+                </button>
+              </form>
 
-            <form class="flex-grow-1 mx-3 search-width">
-              <div class="form-group">
-                <span class="p-input-icon-left ml-auto">
-                  <span class="p-input-icon-right input-icons search-padding">
-                    <input pInputText type="text" class="form-control width-search p-input-icon-right"
-                      placeholder="{{'  Search'}}" />
-                  </span>
-                </span>
-              </div>
-            </form>
-            <div class="card flex justify-center ">
-              <p-button icon="fas fa-plus" label="Add Team" *ngIf="!ShowForm" styleClass="new-button p-button-text"
-                (click)="resetForm()" (click)="showAddForm()"></p-button>
+            <div class="card flex justify-center">
+              <button  *ngIf="!ShowForm" class="new-button p-button-text"
+                (click)="resetForm()" (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
             </div>
+          </div>
 
           </div>
 
@@ -45,19 +60,34 @@
 
             <ng-template pTemplate="body" let-teams>
               <tr>
-                <td>{{ teams.team_name }}</td>
+                <td>
+                  <span class="person-image-team-player">
+                    <img 
+                      class="player-img" 
+                      *ngIf="!teams.profile_img || !teams.player_profile" 
+                      [src]="default_img">
+                      
+                    <img 
+                      class="player-img" 
+                      *ngIf="teams.profile_img && teams.player_profile" 
+                      [src]="teams.profile_img" 
+                      (error)="handleImageError($event, default_img)">
+                  </span>
+                  {{ teams.team_name }}
+                </td>
+                
                 <td>{{ teams.age_category }}</td>
                 <td>{{ teams.team_category }}</td>
                 <td>{{ teams.gender }}</td>
                 <td>
                   <span [ngClass]="{
-                        'text-success': teams.record_status === 'Active',
-                        'text-danger': teams.record_status === 'InActive'
+                        ' bg-success': teams.record_status === 'Active',
+                        ' bg-danger': teams.record_status === 'InActive'
                       }">
                     {{ teams.record_status }}
                   </span>
                 </td>
-                <td class="action-column">
+                <!-- <td class="action-column">
                   <div class="action-icon" (click)="EditTeam(teams.team_id)">
                     <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
                   </div>
@@ -74,12 +104,26 @@
                     </span>
                   </div>
 
-                </td>
+                </td> -->
+                <td>
+                  <span class="icon-blue" (click)="EditTeam(teams.team_id)" pTooltip="Edit" tooltipPosition="top">
+                    <i class="fa-solid fa-user-pen"></i>
+                  </span>
+  
+                  <span class="icon-green"  (click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.active_status)" pTooltip="Activate" tooltipPosition="top">
+                    <i class="fa-solid fa-circle-check"></i>
+                  </span>
+  
+                  <span class="icon-red"(click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.deactive_status)" pTooltip="Deactivate" tooltipPosition="top">
+                    <i class="fa-solid fa-trash-can-arrow-up"></i>
+                  </span>
+                  </td>
+
               </tr>
             </ng-template>
           </p-table>
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[5,10, 20, 30]" (onPageChange)="onPageChange($event)">
+            [rowsPerPageOptions]="[10, 20, 30]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>
@@ -89,10 +133,6 @@
     <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
       [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
-
-
-
-
 
     <!-- Sidebar Modal -->
     <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
@@ -163,6 +203,28 @@
                 </ng-template>
               </p-dropdown>
             </div>
+            <div class="col-md-6">
+              <div class="image-upload-container text-center">
+                <label for="profileImageInput" class="upload-label">
+                  <div class="image-preview-wrapper">
+                    <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
+                    <ng-template #placeholder>
+                      <!-- <span class="placeholder-icon">&#128247;</span> -->
+                    </ng-template>
+                  </div>
+                  <div class="upload-btn">Upload</div>
+                </label>
+                <input
+                  type="file"
+                  id="profileImageInput"
+                  accept="image/*"
+                  (change)="onProfileImageSelected($event)"
+                  hidden
+                  formControlName="profile_img_url"
+                />
+              </div>
+            </div>
+
           </div>
 
           <div class="row mt-4" *ngIf="!viewMode">

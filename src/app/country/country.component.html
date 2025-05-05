@@ -8,39 +8,55 @@
               <i class="fa-solid fa-globe" aria-hidden="true"></i>
               All Countries
             </div>
+            <div class="d-flex align-items-center">
 
-            <form class="flex-grow-1 mx-3 search-width">
-              <div class="form-group">
-                <span class="p-input-icon-left ml-auto">
-                  <span class="p-input-icon-right input-icons search-padding">
-                    <input pInputText type="text" class="form-control width-search p-input-icon-right"
-                      placeholder="{{'  Search'}}" />
-                  </span>
-                </span>
-              </div>
-            </form>
-
-            <div class="card flex justify-center ">
-              <p-button icon="fas fa-plus" label="Add Country" *ngIf="!ShowForm" styleClass="new-button p-button-text"
-                (click)="resetForm()" (click)="showAddForm()"></p-button>
+           <!-- Search Form -->
+           <form class="d-flex align-items-center  gap-2">
+            <div class="p-input-icon-right flex-grow-1">
+              <!-- <i class="pi pi-search" ></i> -->
+              <input
+                pInputText
+                type="text"
+                [(ngModel)]="searchKeyword"
+                name="searchKeyword"
+                class="width-search"
+                placeholder="  Search"
+                (keyup.enter)="gridLoad()"
+              />
             </div>
+          
+            <button
+              type="button"
+              class="clear-button"
+              (click)="searchKeyword = ''"
+            >
+              Clear
+            </button>
+          </form>
+
+      
+            <div class="card flex justify-center">
+              <button  *ngIf="!ShowForm" class="new-button p-button-text"
+                (click)="resetForm()" (click)="showAddForm()"> <i class="fas fa-plus"></i> Country</button>
+            </div>
+          </div>
 
           </div>
 
           <p-table [value]="countriesData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
             <ng-template pTemplate="header">
               <tr>
-                <th pSortableColumn="country_name">Country Name <p-sortIcon field="country_name"></p-sortIcon>
+                <th class="col-3" pSortableColumn="country_name">Country Name <p-sortIcon field="country_name"></p-sortIcon>
                 </th>
-                <th pSortableColumn="iso_code_3">ISO Code 3 <p-sortIcon field="iso_code_3"></p-sortIcon>
+                <th class="col-2" pSortableColumn="iso_code_3">ISO Code 3 <p-sortIcon field="iso_code_3"></p-sortIcon>
                 </th>
-                <th pSortableColumn="region_name">Region Name <p-sortIcon field="region_name"></p-sortIcon>
+                <th class="col-2" pSortableColumn="region_name">Region Name <p-sortIcon field="region_name"></p-sortIcon>
                 </th>
-                <th pSortableColumn="sub_region">Sub Region<p-sortIcon field="sub_region"></p-sortIcon>
+                <th class="col-2" pSortableColumn="sub_region">Sub Region<p-sortIcon field="sub_region"></p-sortIcon>
                 </th>
-                <th pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                <th class="col-1" pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
                 </th>
-                <th class="custom-header action-column-header">Actions</th>
+                <th class="col-2" class="custom-header action-column-header">Actions</th>
               </tr>
             </ng-template>
 
@@ -52,34 +68,30 @@
                 <td>{{ country.sub_region }}</td>
                 <td>
                   <span [ngClass]="{
-                        'text-success': country.record_status === 'Active',
-                        'text-danger': country.record_status === 'InActive'
-                      }">
-                    {{ country.record_status }}
-                  </span>
+                    ' bg-success': country.record_status === 'Active',
+                    ' bg-danger': country.record_status === 'InActive'
+                  }">
+                {{ country.record_status }}
+              </span>
                 </td>
-                <td class="action-column">
-                  <div class="action-icon" (click)="EditCountry(country.country_id)">
-                    <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                  </div>
-                  <!-- <i class="fa fa-pencil-square" aria-hidden="true"></i -->
-                  
-                  
-                  <div class="action-icon" (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.active_status)">
-                    <span><i class="fa fa-check"></i></span>
-                  </div>
-                  
-                  <div class="action-icon"(click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.deactive_status)">
-                    <span> <i class="fa fa-times" ></i>
-                    </span>
-                  </div>
+                <td>
+                <span class="icon-blue" (click)="EditCountry(country.country_id)" pTooltip="Edit" tooltipPosition="top">
+                  <i class="fa-solid fa-user-pen"></i>
+                </span>
 
+                <span class="icon-green"  (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.active_status)" pTooltip="Activate" tooltipPosition="top">
+                  <i class="fa-solid fa-circle-check"></i>
+                </span>
+
+                <span class="icon-red" (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.deactive_status)" pTooltip="Deactivate" tooltipPosition="top">
+                  <i class="fa-solid fa-trash-can-arrow-up"></i>
+                </span>
                 </td>
               </tr>
             </ng-template>
           </p-table>
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[5,10, 20, 30]" (onPageChange)="onPageChange($event)">
+            [rowsPerPageOptions]="[10, 20, 30]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>

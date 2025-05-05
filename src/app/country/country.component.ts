@@ -18,6 +18,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { Country, EditCountry, UpdateCountry } from './country.model';
 import { CricketKeyConstant } from '../services/cricket-key-constant';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-country',
@@ -37,7 +38,8 @@ import { CricketKeyConstant } from '../services/cricket-key-constant';
     PaginatorModule,
     TagModule,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    TooltipModule
 
   ],
   templateUrl: './country.component.html',
@@ -65,9 +67,10 @@ export class CountryComponent implements OnInit {
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
-  rows: number = 5;
+  rows: number = 10;
   totalData: any = 0;
   filedata: any;
+  searchKeyword: string = '';
 
   submitted: boolean = true;
   time_zone_id: any;
@@ -137,7 +140,7 @@ export class CountryComponent implements OnInit {
     this.rows = event.rows;
     this.gridLoad();
   }
-
+ 
   showAddForm() {
     this.ShowForm = true;
   }

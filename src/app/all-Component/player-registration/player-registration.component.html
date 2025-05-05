@@ -1,205 +1,219 @@
+<div class="full-page-container">
+  
 <div class="page-wrapper">
   <div class="content container-fluid">
     <main>
       <div class="card margin-card">
         <div class="card-body">
-          <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-            <div class="main-page-title page-title playerbackground">
+          <div class="page-header main-page-header">
+            <div class="main-page-title playerbackground">
               <i class="fa fa-user-circle" aria-hidden="true"></i>
-                   All Players
+              All Players
             </div>
-             <form class="flex-grow-1 mx-3 search-width">
-              <div class="form-group">
-                <span class="p-input-icon-left ml-auto">
-                  <span class="p-input-icon-right input-icons search-padding">
-                    <input pInputText type="text" 
-                      class="form-control width-search p-input-icon-right" placeholder="{{'  Search'}}"
-                     />
-                  </span>
-                </span>
+            <div class="d-flex align-items-center">
+              <!-- Search Form -->
+              <form class="d-flex align-items-center  gap-2">
+                <div class="p-input-icon-right flex-grow-1">
+                  <!-- <i class="pi pi-search" ></i> -->
+                  <input
+                    pInputText
+                    type="text"
+                    [(ngModel)]="searchKeyword"
+                    name="searchKeyword"
+                    class="width-search"
+                    placeholder="  Search"
+                    (keyup.enter)="gridLoad()"
+                  />
+                </div>
+              
+                <button
+                  type="button"
+                  class="clear-button"
+                  (click)="searchKeyword = ''"
+                >
+                  Clear
+                </button>
+              </form>
+              
+              
+              <!-- Filter Button -->
+              <div class="filter-icon-wrapper">
+                <button class="filter-icon-button" (click)="toggleFilters()">
+                  <i class="fa fa-filter"></i>
+                </button>
               </div>
               
-            </form> 
-            
-            <!-- <div class="card flex justify-center">
-              <p-button icon="fa fa-plus" label="New Player" (click)="showDialog()"></p-button>
-            </div> -->
-            
-            <!-- <p-dialog [(visible)]="visible" [position]="position" modal header="Player Form" [style]="{width: '30vw'}">
-              <form (ngSubmit)="onSubmit()" #playerForm="ngForm">
-                <div class="p-fluid p-formgrid p-grid row">
-                  <div class="p-field p-col-12 p-md-4">                   
-                     <label for="playerName">Player Name</label>
-                    <input id="playerName" type="text" pInputText [(ngModel)]="player.name" name="playerName" required />
-                  </div>
-                  
-                  <div class="p-field p-col-12 p-md-4">                    
-                    <label for="dob">DOB</label>
-                    <p-calendar id="dob" [(ngModel)]="player.dob" name="dob" required dateFormat="mm/dd/yy"></p-calendar>
-                  </div>
-                  
-                  <div class="p-field p-col-12 p-md-4">                   
-                     <label for="nationality">Nationality</label>
-                    <input id="nationality" type="text" pInputText [(ngModel)]="player.nationality" name="nationality" required />
-                  </div>
-                  
-                  <div class="p-field p-col-12 p-md-4">                   
-                     <label for="batStyle">Bat Style</label>
-                    <input id="batStyle" type="text" pInputText [(ngModel)]="player.batStyle" name="batStyle" required />
-                  </div>
-                  
-                  <div class="p-field p-col-12 p-md-4">                   
-                     <label for="bowlSpec">Bowl Spec</label>
-                    <input id="bowlSpec" type="text" pInputText [(ngModel)]="player.bowlSpec" name="bowlSpec" required />
-                  </div>
-            
-                  <p-footer>
-                    <p-button label="Close" icon="pi pi-times" (click)="visible = false"></p-button>
-                    <p-button label="Submit" icon="pi pi-check" type="submit" [disabled]="!playerForm.form.valid"></p-button>
-                  </p-footer>
-                </div>
-              </form>
-            </p-dialog> -->
-            
-          
-            <div class="card flex justify-center">
-              <p-button 
-              icon="fas fa-plus" 
-              label="New Player" 
-              (click)="showDialog()" 
-              styleClass="new-button p-button-text">
-            </p-button>
+              <!-- Add Button -->
+              <div class="card flex justify-center">
+                <button  *ngIf="!ShowForm" class="new-button p-button-text"
+                  (click)="resetForm()" (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
+              </div>
             </div>
-          </div> 
-                  <!-- View Players In Grid Load-->
-                  <p-dialog [(visible)]="visibleDialog" [style]="{ width: '30vw' }" [closable]="false" [modal]="true">
-  
-                    <div class="tabel-info position-relative">
-                      <div class="view-name">{{ selectedPlayer?.name | uppercase }}</div>
-                      <button 
-                      type="button" 
-                      pButton 
-                      icon="pi pi-times" 
-                      class="p-button-rounded p-button-text close-btn"
-                      (click)="visibleDialog = false"
-                      style="position: absolute; right: 1rem; top: 1rem; color: #e53935;" 
-                      aria-label="Close">
-                    </button>
-                    
-                    </div>
-                  
-                    <!-- Grid Info -->
-                    <div class="tabel-grid">
-                      <div class="info-block">
-                        <label>Gender</label>
-                        <div>{{ selectedPlayer?.gender || 'M' }}</div>
-                      </div>
-                      <div class="info-block">
-                        <label>Date of Birth</label>
-                        <div>{{ selectedPlayer?.dob }}</div>
-                      </div>
-                      <div class="info-block">
-                        <label>Player Role</label>
-                        <div>{{ selectedPlayer?.role || selectedPlayer?.bowlSpec }}</div>
-                      </div>
-                      <div class="info-block">
-                        <label>Batting Style</label>
-                        <div>{{ selectedPlayer?.batStyle }}</div>
-                      </div>
-                      <div class="info-block">
-                        <label>Bowling Style</label>
-                        <div>{{ selectedPlayer?.bowlSpec }}</div>
-                      </div>
-                      <div class="info-block">
-                        <label>Bowling Type</label>
-                        <div>{{ selectedPlayer?.bowlingType || 'Fast' }}</div>
-                      </div>
-                    </div>
-                  
-                  </p-dialog>
-                  
-
-          <p-table 
-          [value]="playerList" 
-          [tableStyle]="{ 'min-width': '50rem' }" 
-          scrollable="true" 
-          [paginator]="true" 
-          [rows]="5" 
-          [rowsPerPageOptions]="[5,10,20]"
-          [globalFilterFields]="['player_name']"
-          >
-          <ng-template pTemplate="header">
-            <tr>
-              <th class="custom-header" pSortableColumn="name">Player Name
-                <p-sortIcon field="name"></p-sortIcon>
-
-              </th>
-              <th class="custom-header">DOB
-                <p-sortIcon field="player_name"></p-sortIcon>
-              </th>
-              <th class="custom-header">Nationality
-                <p-sortIcon field="player_name"></p-sortIcon>
-              </th>
-              <th class="custom-header">Bat Style
-                <p-sortIcon field="player_name"></p-sortIcon>
-              </th>
-              <th class="custom-header">Roles
-                <p-sortIcon field="player_name"></p-sortIcon>
-              </th>
-              <th class="custom-header">Status
-                <p-sortIcon field="player_name"></p-sortIcon>
-              </th>
-              <th class="custom-header action-column-header">Actions</th>       
-            </tr>
-          </ng-template>
-        
-          <ng-template pTemplate="body" let-player let-rowIndex="rowIndex">
-            <tr [ngClass]="{ 'even-row': rowIndex % 2 == 1 }">
-            
-              <td>
-                {{ player.name }}
-                <img [src]="player.imageUrl" class="gird-image" />
-              </td>
+          </div>
           
-           
-              <td>{{ player.dob }}</td>
-              <td>{{ player.nationality }}</td>
-              <td>{{ player.batStyle }}</td>
-              <td>{{ player.roles }}</td>
-              <td>
-                <span
-                  [ngStyle]="{
-                    'background-color': player.status === 'Active' ? '#0ea5e9' : 'rgb(255 33 33)',
-                    'color': 'white',
-                    'padding': '4px 8px',
-                    'border-radius': '4px',
-                    'display': 'inline-block'
-                  }">
-                  {{ player.status }}
+          <!-- Filter Section -->
+          <div class="filter-panel" [ngClass]="{'show-filters': showFilters}">
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Status</label>
+                <select class="filter-select" [(ngModel)]="filterStatus">
+                  <option value="">All</option>
+                  <option value="Active">Active</option>
+                  <option value="InActive">InActive</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>Player Type</label>
+                <select class="filter-select" [(ngModel)]="filterPlayerType">
+                  <option value="">All</option>
+                  <option value="Batsman">Batsman</option>
+                  <option value="Bowler">Bowler</option>
+                </select>
+              </div>
+              <div class="filter-actions">
+                <button class="filter-apply-btn" (click)="applyFilters()">Apply</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Player Table -->
+          <p-table 
+            [value]="PlayerData" 
+            [styleClass]="'custom-table'" 
+            [globalFilterFields]="['display_name']"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="display_name">Player Name 
+                 <p-sortIcon field="display_name"></p-sortIcon> 
+                </th>
+                <th pSortableColumn="player_dob">DOB
+        <p-sortIcon field="player_dob"></p-sortIcon> 
+                </th>
+                <th pSortableColumn="mobile_no">Mobile Number 
+                 <p-sortIcon field="mobile_no"></p-sortIcon> 
+                </th>
+                <th pSortableColumn="email">Email
+                 <p-sortIcon field="email"></p-sortIcon> 
+                </th>
+                <th pSortableColumn="record_status">Status 
+                 <p-sortIcon field="record_status"></p-sortIcon> 
+                </th>
+                <th class="custom-header action-column-header">Actions</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-player let-even="even">
+              <tr [ngClass]="{'even-row': even}">
+                <td>
+                  <div class="player-name-cell">
+                    <span class="person-image-team-player">
+                      <img 
+                        class="player-img" 
+                        *ngIf="!player.profile_img || !player.player_profile" 
+                        [src]="'assets/images/avatar.png'">
+                        
+                      <img 
+                        class="player-img" 
+                        *ngIf="player.profile_img && player.player_profile" 
+                        [src]="player.profile_img" 
+                       >
+                    </span>
+                    <!-- <img src="assets/images/avatar.png" alt="Player" class="player-avatar"> -->
+                    {{ player.display_name }}
+                  </div>
+                </td>
+                <td>{{ player.player_dob }}</td>
+                <td>{{ player.mobile_no }}</td>
+                <td>{{ player.email }}</td>
+                <td>
+                  <span [ngClass]="{
+                        'badge bg-success': player.record_status === 'Active',
+                        'badge bg-danger': player.record_status === 'InActive'
+                      }">
+                    {{ player.record_status }}
+                  </span>
+                </td>
+                <td>
+                <span class="icon-blue" (click)="editPlayer(player)" pTooltip="Edit" tooltipPosition="top">
+                  <i class="fa-solid fa-user-pen"></i>
                 </span>
-              </td> 
-              <td class="action-column">
-                <div class="action-icon" (click)="editPlayer(player)">
-                  <span >
-                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                  </span>
-                </div>
-                <div class="action-icon" (click)="viewShowDialog()" (click)="viewPlayer(player)">
-                  <span >
-                    <i class="fa fa-eye" aria-hidden="true"></i>
-                  </span>
-                </div>
-                <div class="action-icon"(click)="toggleStatus(player)">
-                  <span >
-                    <i class="fa" [ngClass]="player.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
-                  </span>
-                </div>
+                <span class="icon-green" pTooltip="Activate" tooltipPosition="top">
+                  <i class="fa-solid fa-circle-check"></i>
+                </span>
+                <span class="icon-red" (click)="toggleStatus(player)" pTooltip="Deactivate" tooltipPosition="top">
+                  <i class="fa-solid fa-trash-can-arrow-up"></i>
+                </span>
               </td>
-            </tr>
-          </ng-template>
-        </p-table>
+              
+              </tr>
+            </ng-template>
+            
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6" class="text-center p-4">No players found.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+          
+          <!-- Pagination -->
+          <div class="player-pagination">
+            <p-paginator 
+              [rows]="rows" 
+              [totalRecords]="totalData" 
+              [rowsPerPageOptions]="[10, 20, 30, 50]"
+              (onPageChange)="onPageChange($event)">
+            </p-paginator>
+          </div>
+
+          <!-- View Player Dialog -->
+          <p-dialog [(visible)]="visibleDialog" [style]="{ width: '30vw' }" [closable]="false" [modal]="true">
+            <div class="tabel-info position-relative">
+              <div class="view-name">{{ selectedPlayer?.name | uppercase }}</div>
+              <button 
+                type="button" 
+                pButton 
+                icon="pi pi-times" 
+                class="p-button-rounded p-button-text close-btn"
+                (click)="visibleDialog = false"
+                style="position: absolute; right: 1rem; top: 1rem; color: #e53935;" 
+                aria-label="Close">
+              </button>
+            </div>
+          
+            <!-- Grid Info -->
+            <div class="tabel-grid">
+              <div class="info-block">
+                <label>Gender</label>
+                <div>{{ selectedPlayer?.gender || 'M' }}</div>
+              </div>
+              <div class="info-block">
+                <label>Date of Birth</label>
+                <div>{{ selectedPlayer?.dob }}</div>
+              </div>
+              <div class="info-block">
+                <label>Player Role</label>
+                <div>{{ selectedPlayer?.role || selectedPlayer?.bowlSpec }}</div>
+              </div>
+              <div class="info-block">
+                <label>Batting Style</label>
+                <div>{{ selectedPlayer?.batStyle }}</div>
+              </div>
+              <div class="info-block">
+                <label>Bowling Style</label>
+                <div>{{ selectedPlayer?.bowlSpec }}</div>
+              </div>
+              <div class="info-block">
+                <label>Bowling Type</label>
+                <div>{{ selectedPlayer?.bowlingType || 'Fast' }}</div>
+              </div>
+            </div>
+          </p-dialog>
         </div>
       </div>
     </main>
   </div>
+</div>
+
+
 </div>
