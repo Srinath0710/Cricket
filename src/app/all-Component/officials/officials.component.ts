@@ -14,106 +14,405 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { SidebarModule } from 'primeng/sidebar';
+// import { CricketKeyConstant } from '../../services/cricket-key-constant';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { CricketKeyConstant } from '../../services/cricket-key-constant';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { offcialupdate } from './officials.model';
+import { ReactiveFormsModule } from '@angular/forms';
+import { offcialedit } from './officials.model';
+import { OnInit } from '@angular/core';
+import {  HostListener } from '@angular/core';
+
+interface official {
+  config_id: string;
+}
+
 @Component({
   selector: 'app-officials',
   templateUrl: './officials.component.html',
   styleUrl: './officials.component.css',
   imports: [
+    ReactiveFormsModule,
     DropdownModule,
     TagModule,
     FormsModule,
     CommonModule,
     ButtonModule,
     TableModule,
-     ButtonModule, 
-     InputTextModule,
-     DialogModule,
-     CalendarModule,
-     HttpClientModule,
-     DrawerModule,
-     SidebarModule
-    ],
-     providers: [
-      { provide: URLCONSTANT }
-    ],
-})
-export class OfficialsComponent {
-    searchKeyword: string = '';
-    visible: boolean = false;
-    isEditing: boolean = false;
-    public ShowForm: any = false;
-    position:'right'  = 'right';
-    formGroup!: FormGroup ;
-    backScreen: any
-    selectedOfficial: any = null;
-    visibleDialog: boolean = false;
-    official:officials[]=[];
-    officialList: any[] = [];
-    sidebarVisible: boolean = false;
-    isEditMode: boolean = false;
+    ButtonModule,
+    InputTextModule,
+    DialogModule,
+    CalendarModule,
+    HttpClientModule,
+    DrawerModule,
+    SidebarModule,
+    ConfirmDialogModule
+  ],
+  providers: [
+    { provide: URLCONSTANT },
+    { provide: CricketKeyConstant },
+    { provide: MessageService },
+    { provide: ConfirmationService }
 
-    constructor(private fb: FormBuilder,private apiService:ApiService,private httpClient:HttpClient,private urlConstant: URLCONSTANT) {
-    
-    } 
-  
-    
-    ngOnInit(){
-    
-      this.gridload();
-    }
-    showDialog() {
-      this.sidebarVisible = true;
-      this.isEditMode = false;
-    }
-    onSidebarHide() {
-      this.sidebarVisible = false;
-    }
-    
-    gridload(){
-      this.apiService.get(this.urlConstant.officialList).subscribe(res => {
-        console.log(res);
-        this.officialList = res.data;
-      
-      });
+  ],
+})
+export class OfficialsComponent implements OnInit {
+
+  user_id: number = Number(localStorage.getItem('user_id'));
+  client_id: number = Number(localStorage.getItem('client_id'));
+  pageno: number = 1;
+  records: number = 10;
+  searchKeyword: string = '';
+  visible: boolean = false;
+  isEditing: boolean = false;
+  public ShowForm: boolean = false;
+  position: 'right' = 'right';
+  addOfficialForm!: FormGroup;
+  backScreen: any;
+  selectedOfficial: any = null;
+  visibleDialog: boolean = false;
+  official: officials[] = [];
+  officialList: any[] = [];
+  sidebarVisible: boolean = false;
+  isEditMode: boolean = false;
+  submitted: boolean = false;
+  officialDataList = [];
+
+
+  // Backend response (dropdown data)
+  dropdownData = [
+    { config_id: 13, config_key: "officials", config_name: "Umpire", parent_config_id: 0 },
+    { config_id: 14, config_key: "officials", config_name: "Scorer", parent_config_id: 0 },
+    { config_id: 15, config_key: "officials", config_name: "Analyst", parent_config_id: 0 },
+    { config_id: 16, config_key: "officials", config_name: "Referee", parent_config_id: 0 },
+    { config_id: 17, config_key: "officials", config_name: "Coach", parent_config_id: 0 },
+    { config_id: 18, config_key: "scorer", config_name: "Online Scorer", parent_config_id: 14 },
+    { config_id: 19, config_key: "scorer", config_name: "Manual Scorer", parent_config_id: 14 },
+    { config_id: 20, config_key: "analyst", config_name: "Junior Analyst", parent_config_id: 15 },
+    { config_id: 21, config_key: "analyst", config_name: "Senior Analyst", parent_config_id: 15 },
+    { config_id: 22, config_key: "umpire_category", config_name: "Elite", parent_config_id: 13 },
+    { config_id: 23, config_key: "umpire_category", config_name: "Plate", parent_config_id: 13 },
+    { config_id: 24, config_key: "umpire_category", config_name: "Others", parent_config_id: 13 }
+  ];
+
+  configDataList: official[] = [];
+  countrydropdownData: any;
+  teamformat: official[] = [];
+  // officialtype:official[]=[];
+  officialcategory: official[] = [];
+  // analystofficial: official[] = [];
+  // scoreofficial: official[] = [];
+  officialtype: any[] = [];
+  childOptions: any[] = [];
+  childLabel: string = '';
+  officialId: any;
+default_img: any ='assets/images/default-player.png';
+
+  constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT, public cricketKeyConstant: CricketKeyConstant,
+    private msgService: MessageService, private confirmationService: ConfirmationService
+  ) {
+
+  }
+
+
+  ngOnInit() {
+
+    this.gridload();
+    this.addOfficialForm = this.fb.group({
+      first_name: ['', [Validators.required]],
+      middle_name: ['', [Validators.required]],
+      sur_name: ['', [Validators.required]],
+      display_name: ['', [Validators.required]],
+      format_id: ['', [Validators.required]],
+      official_category_id: ['', [Validators.required]],
+      official_type_id: ['', [Validators.required]],
+      profile_img: [''],
+      country_id: ['', [Validators.required]],
+      official_id: [''],
+
+    })
+    this.dropdown();
+    this.countrydropdown();
+    this.officialtype = this.dropdownData.filter(item => item.config_key === 'officials');
+
+  }
+  showDialog() {
+    this.sidebarVisible = true;
+    this.isEditMode = false;
+  }
+  onSidebarHide() {
+    this.sidebarVisible = false;
+  }
+
+  gridload() {
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.page_no = this.pageno.toString();
+    params.records = this.records.toString();
+    this.apiService.post(this.urlConstant.officiallist, params).subscribe((res) => {
+      this.officialDataList = res.data.officials ?? [];
+
+      console.log(this.officialDataList)
+    }, (err: any) => {
       error: (err: any) => {
         console.error('Error loading official list:', err);
       }
+
+    });
+  }
+
+  addOfficialdata() {
+    this.submitted = true;
+    if (this.addOfficialForm.invalid) {
+      this.addOfficialForm.markAllAsTouched();
+      return
     }
-    
-    editofficial(official: any, ) {
-      console.log('Editing Official:', official);
-      this.isEditing = true;
-      this.formGroup.patchValue({ ...official });
-      this.visible = true;
-    }
-    
-    viewShowDialog() {
-      this.visibleDialog = true
-      this.backScreen = "overlay1"
-    }
-    viewofficial(official:any) {
-      this.selectedOfficial = official;
-      this.visibleDialog = true;
-    }
-    toggleStatus(official: any) {
-      official.status = official.status === 'Active' ? 'InActive' : 'Active';
-      console.log(`Official status changed to: ${official.status}`);
-    }
-    
-    onSubmit() {
-      if (this.formGroup.invalid) return;
-    
-      const officialData = this.formGroup.value;
-    
-      if (this.isEditing ) {
-        this.official = Object.assign({}, officialData);
-        } 
-        else {
-          this.official.push(Object.assign({}, officialData));
-        }
-    
-      this.visible = false; 
+    const params: offcialupdate = {
+      user_id: String(this.user_id),
+      client_id: String(this.client_id),
+      first_name: this.addOfficialForm.value.first_name,
+      middle_name: this.addOfficialForm.value.middle_name,
+      sur_name: this.addOfficialForm.value.sur_name,
+      display_name: String(this.addOfficialForm.value.display_name),
+      format_id: String(this.addOfficialForm.value.format_id),
+      official_type_id: String(this.addOfficialForm.value.official_type_id),
+      official_category_id: String(this.addOfficialForm.value.official_category_id),
+      country_id: String(this.addOfficialForm.value.country_id),
+      profile_img: String(this.addOfficialForm.value.profile_img),
+      official_id: String(this.addOfficialForm.value.official_id),
+      action_flag: 'create'
+
+    };
+
+
+    if (this.addOfficialForm.value.official_id) {
+      // params.action_flag='update';
+      this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    } else {
+
+      this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
     }
 
+  }
+
+  addCallBack(res: any) {
+    this.resetForm();
+    this.cancelForm();
+    this.successToast(res);
+    this.gridload();
+  }
+
+  showAddForm() {
+    this.ShowForm = true;
+  }
+
+  cancelForm() {
+    this.ShowForm = false;
+  }
+
+  resetForm() {
+    this.addOfficialForm.reset();
+    this.submitted = false;
+  }
+
+
+  
+
+  countrydropdown() {
+
+    const params: any = {};
+    params.action_flag = 'dropdown';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.countryofficial, params).subscribe((res) => {
+      this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
+
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken();
+
+      }
+    })
+
+
+  }
+
+  onOfficialChange(selectedId: number) {
+    const selectedItem = this.dropdownData.find(item => item.config_id === selectedId);
+
+    if (selectedId === 14 || selectedId === 15 || selectedId === 13) {
+      this.childOptions = this.dropdownData.filter(item => item.parent_config_id === selectedId);
+
+      // Set label based on selected type
+      if (selectedItem?.config_name === 'Scorer') {
+        this.childLabel = 'Scorer Type';
+      } else if (selectedItem?.config_name === 'Analyst') {
+        this.childLabel = 'Analyst Level';
+      } else if (selectedItem?.config_name === 'Umpire') {
+        this.childLabel = 'Umpire Category';
+      } else {
+        this.childLabel = 'Child Option'; // fallback
+      }
+    } else {
+      this.childOptions = [];
+      this.childLabel = '';
     }
-    
+  }
+
+
+  dropdown() {
+    const params: any = {};
+    params.action_flag = 'dropdown';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.dropdownofficial, params).subscribe((res) => {
+      this.configDataList = res.data.dropdowns != undefined ? res.data : [];
+
+      this.teamformat = res.data.dropdowns
+        .filter((item: any) => item.config_key === 'team_format')
+        .map((item: any) => ({ ...item }));
+
+      setTimeout(() => {
+        const teamId = this.addOfficialForm.get('team_id')?.value;
+        if (!teamId) {
+          this.formSetValue();
+        }
+      }, 100);
+
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken();
+
+      }
+    })
+  }
+
+  formSetValue() {
+    this.addOfficialForm.patchValue({
+      team_format: this.teamformat[0].config_id,
+
+
+    })
+  }
+
+  Editofficial(official: any) {
+    this.officialId = official.official_id;
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.official_id = official.official_id?.toString();
+    this.apiService.post(this.urlConstant.editofficial, params).subscribe((res) => {
+      console.log(res);
+      if (res.status_code == 200) {
+        const editRecord: offcialedit = res.data.officials[0] ?? {};
+        if (editRecord != null) {
+          this.addOfficialForm.setValue({
+
+            first_name: editRecord.first_name,
+            middle_name: editRecord.middle_name,
+            sur_name: editRecord.sur_name,
+            display_name: editRecord.display_name,
+            official_type_id: editRecord.official_type_id,
+            format_id: editRecord.format_id,
+            official_category_id: editRecord.official_category_id,
+            country_id: editRecord.country_id,
+            profile_img: null,
+            official_id: editRecord.official_id,
+          });
+          this.showAddForm();
+        }
+      } else {
+        this.failedToast(res);
+      }
+    }, (err: any) => {
+      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+    });
+
+  }
+
+  viewShowDialog() {
+    this.visibleDialog = true
+    this.backScreen = "overlay1"
+  }
+  viewofficial(official: any) {
+    this.selectedOfficial = official;
+    this.visibleDialog = true;
+  }
+
+  onSubmit() {
+    if (this.addOfficialForm.invalid) return;
+
+    const officialData = this.addOfficialForm.value;
+
+    if (this.isEditing) {
+      this.official = Object.assign({}, officialData);
+    }
+    else {
+      this.official.push(Object.assign({}, officialData));
+    }
+
+    this.visible = false;
+  }
+
+  successToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+
+  }
+
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
+
+  status(official_id: number, url: string) {
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      official_id: official_id?.toString()
+    };
+    this.apiService.post(url, params).subscribe(
+      (res: any) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
+      },
+      (err: any) => {
+        error: (err: any) => {
+          console.error('Error loading official list:', err);
+        }
+      });
+  }
+
+  StatusConfirm(official_id: number, actionObject: { key: string, label: string }) {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to ${actionObject.label} this Official?`,
+      header: 'Confirmation',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activateofficial : this.urlConstant.deactivateofficial;
+        this.status(official_id, url);
+        this.confirmationService.close();
+      },
+      reject: () => {
+        this.confirmationService.close();
+      }
+    });
+  }
+
+
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
+  }
+
+}

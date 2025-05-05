@@ -30,5 +30,18 @@ export class URLCONSTANT {
    toggleCompetitionStatus = 'Competition/toggle_status'
 
 
+   
+// Official  List 
+dropdownofficial="Official/get_official_dropdown"
+officiallist="Official/get_official_list"
+addofficial="Official/add_official"
+editofficial="Official/edit_official"
+updateOfficial="Official/update_Official"
+activateofficial="Official/activate_official"
+deactivateofficial="Official/deactivate_official"
+profileofficial="Official/official_profile_update"
+
+countryofficial="Country/get_country_dropdown"
+	
 
 }

@@ -66,14 +66,14 @@ export class CompetitionComponent {
     }
     
     gridload(){
-      this.apiService.get(this.urlConstant.compititionList).subscribe(res => {
-        console.log(res);
-        this.compititionList = res.data;
+      // this.apiService.get(this.urlConstant.compititionList).subscribe(res => {
+      //   console.log(res);
+      //   this.compititionList = res.data;
       
-      });
-      error: (err: any) => {
-        console.error('Error loading Compitition list:', err);
-      }
+      // });
+      // error: (err: any) => {
+      //   console.error('Error loading Compitition list:', err);
+      // }
     }
     
     editCompitition(compitition: any) {

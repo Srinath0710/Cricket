@@ -18,7 +18,7 @@ import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { TagModule } from 'primeng/tag';
 import { EditTeam, Teams, UpdateTeams } from './teams.model';
-import { ImageCroppedEvent } from 'ngx-image-cropper';
+// import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { TooltipModule } from 'primeng/tooltip';
 
 interface Team {

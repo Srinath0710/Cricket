@@ -8,7 +8,7 @@ import { CompetitionComponent } from "./competition/competition.component";
 import { TeamsComponent } from "../teams/teams.component";
 import { StateComponent } from "./state/state.component";
 import { AllCitiesComponent } from "./all-cities/all-cities.component";
-import { AllGroundsComponent } from "./all-grounds/all-grounds.component";
+// import { AllGroundsComponent } from "./all-grounds/all-grounds.component";
 export const AllComponentRoutes: Route[] = [
     {
         path: '',
@@ -32,7 +32,7 @@ export const AllComponentRoutes: Route[] = [
                 component: CountryComponent
             },
             {
-                path: 'official',
+                path: 'officials',
                 component: OfficialsComponent
             },
             {
@@ -40,7 +40,7 @@ export const AllComponentRoutes: Route[] = [
                 component: CompetitionComponent
             },
             {
-                path: 'team',
+                path: 'teams',
                 component: TeamsComponent
             },
             {
@@ -51,10 +51,10 @@ export const AllComponentRoutes: Route[] = [
                 path: 'city',
                 component: AllCitiesComponent
             },
-            {
-                path: 'grounds',
-                component: AllGroundsComponent
-            },
+            // {
+            //     path: 'ground',
+            //     component: AllGroundsComponent
+            // },
          
          
         ]
