@@ -44,4 +44,11 @@ profileofficial="Official/official_profile_update"
 countryofficial="Country/get_country_dropdown"
 	
 
+           /*State List*/
+           getStateList ="State/get_state_list"
+           addState ="State/add_state"
+           updateState ="State/update_state"
+           activateState ="State/activate_state"
+           deactivateState ="State/deactivate_country"
+           countryLookups ="Global/get_countries"
 }
