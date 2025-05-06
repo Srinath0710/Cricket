@@ -18,11 +18,12 @@ import { State, UpdateState, EditState} from './state.model';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Country } from '../../country/country.model';
 import { DropdownModule } from 'primeng/dropdown';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-state',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, BadgeModule, DialogModule, FormsModule, InputTextModule, Sidebar, ReactiveFormsModule, PaginatorModule, TagModule, ConfirmDialogModule, DropdownModule],
+  imports: [CommonModule, TableModule, ButtonModule, BadgeModule, DialogModule, FormsModule, InputTextModule, Sidebar, ReactiveFormsModule, PaginatorModule, TagModule, ConfirmDialogModule, DropdownModule,TooltipModule],
   templateUrl: './state.component.html',
   styleUrls: ['./state.component.css'],
   providers: [
@@ -48,11 +49,12 @@ export class StateComponent implements OnInit {
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
-  rows: number = 5;
+  rows: number = 10;
   totalData: any = 0;
   filedata: any;
   submitted: boolean = true;
   data: any;
+  searchKeyword: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
