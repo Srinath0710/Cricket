@@ -1,3 +1,8 @@
+::ng-deep.p-drawer-right .p-drawer {
+  width: 97% !important;
+}
+
+
 /* 
 .page-wrapper {
   background-color: #f9fafb;

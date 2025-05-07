@@ -1167,3 +1167,6 @@ main {
   font-size: 11px; 
   padding: 4px 8px; 
 }
+.sidebar-player {
+  width: 97% !important;
+}

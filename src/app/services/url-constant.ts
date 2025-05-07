@@ -22,12 +22,16 @@ export class URLCONSTANT {
 
 
    /*PLAYERS REGISTRATION */
-   getplayerlist = "Player/get_player_list"
-
-   getCompetitionList = 'Competition/get_competition_list'
-   createCompetition = 'Competition/create_competition'
-   updateCompetition = 'Competition/update_competition'
-   toggleCompetitionStatus = 'Competition/toggle_status'
+  
+   playerdropdown= "Player/get_player_dropdown"
+    getplayerlist = "Player/get_player_list"
+    addplayer= "Player/add_player"
+    updateplayer="Player/update_player"
+   editplayer="Player/edit_player"
+   activeplayer="Player/activate_player"
+   deactiveplayer="Player/deactivate_player"
+   duplicateplayer="Player/dupcheck_player"
+   nationalityplayer="Country/get_country_dropdown"
 
 
    
