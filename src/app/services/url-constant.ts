@@ -49,6 +49,15 @@ countryofficial="Country/get_country_dropdown"
            addState ="State/add_state"
            updateState ="State/update_state"
            activateState ="State/activate_state"
-           deactivateState ="State/deactivate_country"
+           deactivateState ="State/deactivate_state"
            countryLookups ="Global/get_countries"
+
+
+           /*Seasons List*/
+           getSeasons = "Season/get_seasons"
+           addSeason = "Season/add_season"
+           updateSeason = "Season/update_season"
+           editSeason = "Season/edit_season"
+           activateSeason = "Season/activate_season"
+           deactivateSeason = "Season/deactivate_season"
 }
