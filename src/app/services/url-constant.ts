@@ -60,4 +60,15 @@ countryofficial="Country/get_country_dropdown"
            editSeason = "Season/edit_season"
            activateSeason = "Season/activate_season"
            deactivateSeason = "Season/deactivate_season"
+
+           //    city
+    getStatesByCountry = "Global/get_state_by_country"
+    getCityList = "City/get_city_list"
+    addCity = "/City/add_city"
+    updateCity = "City/update_city"
+    activecity = "City/activate_city"
+    deactiveCity = "City/deactivate_city"
+    getcountry = "Global/get_countries"
+    getstate = "Global/get_state_by_country"
+    CountryDropdown = "Global/get_countries"
 }

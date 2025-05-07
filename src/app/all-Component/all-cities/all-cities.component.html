@@ -1,175 +1,207 @@
 <div class="page-wrapper">
-    <div class="content container-fluid">
-      <main>
-        <div class="card margin-card">
-          <div class="card-body">
-            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-              <div class="main-page-title page-title playerbackground">
-                <i class="fas fa-map-marker-alt"></i>
+  <div class="content container-fluid">
+    <main>
+      <div class="card margin-card">
+        <div class="card-body">
+          <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+            <div class="main-page-title page-title playerbackground">
+              <i class="fas fa-map-marker-alt"></i>
 
 
-                Add Cities
-              </div>
-  
-              <form class="flex-grow-1 mx-3 search-width">
-                <div class="form-group">
-                  <span class="p-input-icon-left ml-auto">
-                    <span class="p-input-icon-right input-icons search-padding">
-                      <input pInputText type="text" class="form-control width-search p-input-icon-right"
-                        placeholder="{{'  Search'}}" />
-                    </span>
-                  </span>
-                </div>
+              Add Cities
+            </div>
+            <div class="card flex justify-center">
+              <form [formGroup]="addCityForm">
+                <p-dropdown [options]="countryData" formControlName="country_id" optionValue="country_id"
+                  optionLabel="country_name" placeholder="Select Country" appendTo="body"
+                  [panelStyleClass]="'custom-dropdown-panel'" (onChange)="onGridCountryChange($event)">
+                  <ng-template let-country pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                      <div>{{ country.country_name }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <p-dropdown [options]="states" formControlName="state_id" optionValue="state_id"
+                  optionLabel="state_name" [ngModel]="addCityForm.get('state_id')?.value" placeholder="Select State"
+                  appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"
+                  >
+                  <ng-template let-state pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                      <div>{{ state.state_name }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
               </form>
-  
-              <div class="card flex justify-center">
-  
-                
-                <p-button icon="fas fa-plus" label="New cities" (click)="showAddStateDialog()"
-                styleClass="new-button p-button-text"></p-button>
-              </div>
             </div>
-   
-             <p-table [value]="cities" [tableStyle]="{ 'min-width': '50rem' }" scrollable="true" [paginator]="true"
-              [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" [globalFilterFields]="['name']">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th class="custom-header">State Name <p-sortIcon field="name"></p-sortIcon></th>
-                  <th class="custom-header">State Code <p-sortIcon field="code"></p-sortIcon></th>
-                  <th class="custom-header">Country Name <p-sortIcon field="code"></p-sortIcon></th>
-                  <th class="custom-header">Status <p-sortIcon field="status"></p-sortIcon></th>
-                  <th class="custom-header action-column-header">Actions</th>
-                </tr>
-              </ng-template>
-  
-              <ng-template pTemplate="body" let-country>
-                <tr>
-                 
-                </tr>
-              </ng-template> 
-              
-            </p-table> 
-            
-            <p-sidebar 
-            [(visible)]="sidebarVisible"
-            position="right"
-            [style]="{ width: '100vw' }"
-            [modal]="true"
-            [baseZIndex]="10000"
-            styleClass="custom-sidebar"
-            [showCloseIcon]="false">
-          
-            
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <h4 class="mb-0">{{ isEditMode ? 'Edit State' : 'Add cities' }}</h4>
-            </div>
-          
-            
-            <form class="p-fluid" #formRef="ngForm" (ngSubmit)="onSubmit(formRef)" (click)="$event.stopPropagation()">
 
-
-              <div class="row g-3">
-                <div class="col-12 drop">
-                  <label for="country" class="form-label">Country</label>
-                  <p-dropdown
-                    [options]="countries"
-                    [(ngModel)]="currentCity.country"
-                    name="country"
-                    placeholder="Select a Country"
-                    required
-                    #countryRef="ngModel">
-                  </p-dropdown>
-                  <div *ngIf="countryRef.invalid && countryRef.touched" class="text-danger">
-                    Country is required.
-                  </div>
-                </div>
-                  
-                  
-          
-                
-                <div class="col-12 drop">
-                  <label for="state" class="form-label">State</label>
-                  <p-dropdown
-                    [options]="states"
-                    [(ngModel)]="currentCity.state"
-                    name="state"
-                    class="drop"
-                    placeholder="Select a State"
-                    required
-                    #stateRef="ngModel">
-                  </p-dropdown>
-                  <div *ngIf="stateRef.invalid && stateRef.touched" class="text-danger">
-                    State is required.
-                  </div>
-                </div>
-                  
-                <div class="col-12">
-                  <label for="cityName" class="form-label">City Name</label>
-                  <input
-                    id="cityName"
-                    type="text"
-                    class="form-control"
-                    name="cityName"
-                    [(ngModel)]="currentCity.name"
-                    required
-                    #cityNameRef="ngModel"
-                  />
-                  <div *ngIf="cityNameRef.invalid && cityNameRef.touched" class="text-danger">
-                    City Name is required.
-                  </div>
-                </div>
-                <div class="col-12">
-                  <label for="cityCode" class="form-label">City Code</label>
-                  <input
-                    id="cityCode"
-                    type="number"
-                    class="form-control"
-                    name="cityCode"
-                    [(ngModel)]="currentCity.code"
-                    required
-                    #cityCodeRef="ngModel"
-                  />
-                  <div *ngIf="cityCodeRef.invalid && cityCodeRef.touched" class="text-danger">
-                    City Code is required.
-                  </div>
-                </div>
-
-                
-             
-              <div class="mt-5 d-flex justify-content-end gap-2">
-                <button 
-                  pButton 
-                  type="button" 
-                  label="Cancel" 
-                  class="p-button-secondary"
-                  (click)="onCancel(formRef)">
-                </button>
-                <button 
-                pButton 
-                type="submit" 
-                label="{{ isEditMode ? 'Update' : 'Add' }}" 
-                class="new-button">
-              </button>
-              
-              </div>
+            <form class="flex-grow-1 mx-3 search-width">
+              <div class="form-group">
+                <span class="p-input-icon-left ml-auto">
+                  <span class="p-input-icon-right input-icons search-padding">
+                    <input pInputText type="text" class="form-control width-search p-input-icon-right"
+                      placeholder="{{'  Search'}}" />
+                  </span>
+                </span>
               </div>
             </form>
-          
-          </p-sidebar>  
-          
-  
-            
-  
+
+            <div class="card flex justify-center">
+
+
+              <p-button icon="fas fa-plus" label="New cities" (click)="showAddForm()"
+                styleClass="new-button p-button-text"></p-button>
+            </div>
           </div>
+
+          <p-table [value]="cityData" [styleClass]="'custom-table'" [globalFilterFields]="['city_name']">
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="city_name">City Name <p-sortIcon field="city_name"></p-sortIcon></th>
+                <th pSortableColumn="city_code">City Code <p-sortIcon field="city_code"></p-sortIcon></th>
+                <th pSortableColumn="state_name">State Name <p-sortIcon field="state_name"></p-sortIcon></th>
+                <th pSortableColumn="state_code">State Code <p-sortIcon field="state_code"></p-sortIcon></th>
+                <th pSortableColumn="country_name">Country Name <p-sortIcon field="country_name"></p-sortIcon></th>
+                <th pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon></th>
+                <th class="custom-header action-column-header">Actions</th>
+              </tr>
+
+            </ng-template>
+
+            <ng-template pTemplate="body" let-cities>
+              <tr>
+                <td>{{ cities.city_name }}</td>
+                <td>{{ cities.city_code }}</td>
+                <td>{{ cities.state_name }}</td>
+                <td>{{ cities.state_code }}</td>
+                <td>{{ cities.country_name }}</td>
+                <td> <span [ngClass]="{
+                    'text-success': cities.record_status === 'Active',
+                    'text-danger': cities.record_status === 'InActive'
+                  }">
+                    {{ cities.record_status }}
+                  </span></td>
+                <td class="action-column">
+                  <div class="action-icon" (click)="EditCity(cities.city_id)">
+                    <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                  </div>
+                  <!-- <i class="fa fa-pencil-square" aria-hidden="true"></i -->
+
+
+                  <div class="action-icon"
+                    (click)="StatusConfirm(cities.city_id,cricketKeyConstant.condition_key.active_status)">
+                    <span><i class="fa fa-check"></i></span>
+                  </div>
+
+                  <div class="action-icon"
+                    (click)="StatusConfirm(cities.city_id,cricketKeyConstant.condition_key.deactive_status)">
+                    <span> <i class="fa fa-times"></i>
+                    </span>
+                  </div>
+
+                </td>
+
+              </tr>
+            </ng-template>
+          </p-table>
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[5,10, 20, 30]" (onPageChange)="onPageChange($event)">
+          </p-paginator>
+
         </div>
-      </main>
-  
-    
-  
-    </div>
-    
-    </div>
-    
-  
-    
-  
+      </div>
+    </main>
+    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+    </p-confirmDialog>
+
+    <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
+      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
+
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">{{ isEditMode ? 'Edit State' : 'Add cities' }}</h4>
+      </div>
+
+      <div (click)="$event.stopPropagation()">
+
+        <form [formGroup]="addCityForm">
+
+
+          <div class="row g-3">
+            <div class="col-12 drop">
+              <label for="country" class="drop-error">Country</label>
+              <p-dropdown [options]="countryData" class="drop-error" formControlName="country_id"
+                optionValue="country_id" optionLabel="country_name" placeholder="Select Country" appendTo="body"
+                [panelStyleClass]="'custom-dropdown-panel'">
+                <ng-template let-country pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ country.country_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addCityForm.get('country_id')?.invalid && (addCityForm.get('country_id')?.touched || submitted)"
+                class="text-danger">*Country is required</small>
+            </div>
+
+
+
+
+            <div class="col-12 drop">
+              <label for="state">State*</label>
+
+              <p-dropdown [options]="formStates" class="drop-error " formControlName="state_id" optionValue="state_id"
+                optionLabel="state_name"  placeholder="select state"
+                appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+
+                <ng-template let-state pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+
+                    <div>{{ state.state_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small *ngIf="addCityForm.get('state_id')?.invalid && (addCityForm.get('state_id')?.touched || submitted)"
+                class="text-danger">*State is required
+              </small>
+
+
+            </div>
+            <div class="col-12 drop">
+              <label for="city_name">City Name <span class="text-danger">*</span></label>
+              <input id="city_name" type="text" class="form-control drop-error" placeholder="Enter City Name"
+                formControlName="city_name" maxlength="50">
+
+              <small
+                *ngIf="addCityForm.get('city_name')?.invalid && (addCityForm.get('city_name')?.touched || submitted)"
+                class="text-danger">*City Name is required
+              </small>
+            </div>
+            <div class="col-12 drop">
+              <label for="city_code">City Code <span class="text-danger">*</span></label>
+              <input id="city_code" type="text" class="form-control drop-error" placeholder="Enter City Code"
+                formControlName="city_code" maxlength="10">
+
+              <small
+                *ngIf="addCityForm.get('city_code')?.invalid && (addCityForm.get('city_code')?.touched || submitted)"
+                class="text-danger">*City Code is required
+              </small>
+            </div>
+            <div class="row mt-4" *ngIf="!viewMode">
+              <div class="col-12 text-end">
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                  (click)="cancelForm()"></button>
+
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                  (click)="resetForm()"></button>
+                <button pButton type="button" label="Save" class="save-button" (click)="onAddCity()"></button>
+
+
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </p-sidebar>
