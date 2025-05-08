@@ -39,10 +39,10 @@ export class StateComponent implements OnInit {
   Client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: boolean = false;
   isEditMode: boolean = false;
-  viewMode: boolean = false;
   country_id: any;
   sidebarTitle: string = '';
   countriesData: Country[] = [];
+  selected_country: number | null = null; 
   public statesData: any[] = [];
   statesNameData: any[] = [];
   loading = false;
@@ -55,6 +55,7 @@ export class StateComponent implements OnInit {
   submitted: boolean = true;
   data: any;
   searchKeyword: string = '';
+  countryID: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -82,7 +83,7 @@ export class StateComponent implements OnInit {
     };
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
       this.countriesData = res.data.countries ?? [];
-    this.resetForm(this.countriesData[0].country_id);
+      this.countryID= this.countriesData[0].country_id;
         this.gridLoad();
       
     }, (err) => {
@@ -92,12 +93,13 @@ export class StateComponent implements OnInit {
     });
   }
 
+  
  
   gridLoad() {
     const params: any = {
       user_id: this.User_id.toString(),
       client_id: this.Client_id.toString(),
-      country_id: this.addStateForm.value.country_id.toString(),
+      country_id: this.countryID.toString(),
       page_no: this.first.toString(),
       records: this.rows.toString()
     };
@@ -131,16 +133,16 @@ export class StateComponent implements OnInit {
   }
 
   cancelForm() {
-    this.resetForm(this.countriesData[0].country_id);
+    this.resetForm();
     this.ShowForm = false;
     this.gridLoad();
   }
 
-  resetForm(country_id:number) {
+  resetForm() {
     this.addStateForm.reset();
-    this.addStateForm.patchValue({
-      country_id:country_id
-    })
+    // this.addStateForm.patchValue({
+    //   country_id:country_id
+    // })
     this.submitted = false;
   }
 
@@ -190,7 +192,7 @@ export class StateComponent implements OnInit {
   }
 
   addCallBack(res: any) {
-    this.resetForm(this.addStateForm.value.country_id);
+    this.resetForm();
     this.ShowForm = false;
 
     this.successToast(res);
@@ -244,7 +246,6 @@ export class StateComponent implements OnInit {
     });
     this.showAddForm();
     this.isEditMode = true;
-    this.viewMode = false; 
   }
 }
 

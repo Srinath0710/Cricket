@@ -75,4 +75,14 @@ export class URLCONSTANT {
    getcountry = "Global/get_countries"
    getstate = "Global/get_state_by_country"
    CountryDropdown = "Global/get_countries"
+
+    /*Grounds List*/
+    getGroundList = "Ground/get_ground_list"
+    addGround = "Ground/add_ground"
+    editGround = "Ground/edit_ground"
+    viewGround = "Ground/view_ground"
+    updateGround = "Ground/update_ground"
+    activateGround = "Ground/activate_ground"
+    deactivateGround = "Ground/deactivate_ground"
+    profileGround = "Ground/update_ground_photo"
 }

@@ -58,7 +58,7 @@ export class CountryComponent implements OnInit {
   client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: any = false;
   isEditMode: boolean = false;
-  viewMode: boolean = false;
+  // viewMode: boolean = false;
   region_id: any;
   loading = false;
   regionsData = [];
