@@ -31,4 +31,9 @@
     background-color: #2c3e90 !important;
     border-color: #2c3e90 !important;
   }
+  .dropdown-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Adjust spacing as needed */
+  }
   

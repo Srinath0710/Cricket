@@ -76,6 +76,8 @@ export class AllCitiesComponent implements OnInit {
   countryId:any;
   formCountryId: any;
   formStateId: any;
+  selected_country: any;
+  stateId: any;
 
   constructor(private formBuilder:FormBuilder, private apiService: ApiService,
     private urlConstant: URLCONSTANT, private msgService: MessageService,
@@ -91,9 +93,9 @@ export class AllCitiesComponent implements OnInit {
    this.countryDropdown();
    this.addCityForm = this.formBuilder.group({
     city_id: [''],
-  country_id: ['', Validators.required],
-  state_id: ['', Validators.required],
-  city_name: ['', Validators.required],
+    country_id: ['', Validators.required],
+    state_id: ['', Validators.required],
+    city_name: ['', Validators.required],
   city_code: ['', Validators.required]
   })
   
@@ -105,12 +107,9 @@ export class AllCitiesComponent implements OnInit {
     params.client_id=this.client_id?.toString();
     this.apiService.post(this.urlConstant. CountryDropdown, params).subscribe((res) => {
       this.countryData = res.data.countries ?? [];
-      // console.log(this.countryData);
-      this.countryId=this.countryData[0]?.country_id;
+      this.selected_country=this.countryData[0]?.country_id;
       console.log(this.countryId);
-      this.getStatesByCountry(this.countryId);  
-      this.getFormStatesByCountry(this.countryId);  
-
+      this.getStates();   
     }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
         this.apiService.RefreshToken();
@@ -118,18 +117,24 @@ export class AllCitiesComponent implements OnInit {
 
     });
   }
-  getStatesByCountry(countryId: number) {
+  getStates() {
     const params: any = {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
-      country_id: String(countryId)
+      country_id: String(this.selected_country)
     };
   
     this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe(
       (res) => {
         this.states = res.data.states ?? [];
-          this.state_id = this.states[1]?.state_id;
+        if(this.states.length!=0){
+          this.stateId = this.states[1]?.state_id;
            this.gridLoad();
+
+        }
+        else{
+          this.stateId =null;
+        }
         
       },
       (err) => {
@@ -142,30 +147,7 @@ export class AllCitiesComponent implements OnInit {
       }
     );
   }
-  getFormStatesByCountry(countryId: number) {
-    const params: any = {
-      user_id: String(this.user_id),
-      client_id: String(this.client_id),
-      country_id: String(countryId)
-    };
-  
-    this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe(
-      (res) => {
-        this.formStates = res.data.states ?? [];
-          this.state_id = this.states[1]?.state_id;
-           this.gridLoad();
-        
-      },
-      (err) => {
-        if (
-          err.status === this.cricketKeyConstant.status_code.refresh &&
-          err.error.message === this.cricketKeyConstant.status_code.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        } 
-      }
-    );
-  }
+
   
   
 
@@ -174,7 +156,7 @@ export class AllCitiesComponent implements OnInit {
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
-    params.state_id = this.state_id?.toString();
+    params.state_id = this.stateId?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();    
   
@@ -183,9 +165,7 @@ export class AllCitiesComponent implements OnInit {
       this.cityData = res.data.states ?? [];
       console.log(this.cityData);
       this.totalData = 50;
-      // this.cityData.forEach((val: any) => {
-      //   val.country_image = `${val.country_image}?${Math.random()}`;
-      // });
+   
     }, (err: any) => {
            err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.cityData = [],this.totalData = this.cityData.length);
 
@@ -260,6 +240,7 @@ export class AllCitiesComponent implements OnInit {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
       state_id: String(this.addCityForm.value.state_id),
+      country_id: String(this.addCityForm.value.country_id),
       city_name:this.addCityForm.value.city_name,
       city_code:this.addCityForm.value.city_code,
       city_id:this.addCityForm.value.city_id,
@@ -289,7 +270,6 @@ export class AllCitiesComponent implements OnInit {
     this.ShowForm = true;
     const city = this.cityData.find((c: any) => c.city_id === city_id);
     if (city) { 
-      this.getStatesByCountry(city.country_id); 
 
       this.addCityForm.patchValue({
         city_id: city.city_id,
@@ -314,7 +294,6 @@ export class AllCitiesComponent implements OnInit {
   onGridCountryChange(event: any) {
     this.gridCountryId = event.value;
     if (this.gridCountryId !== null) {
-      this.getStatesByCountry(this.gridCountryId);
 
     }
     this.gridStateId = null;
@@ -330,7 +309,6 @@ export class AllCitiesComponent implements OnInit {
 formCountryChanges(event:any){
   this.formCountryId = event.value;
   if (this.formCountryId !== null) {
-    this.getStatesByCountry(this.formCountryId);
 
   }
   this.cityData = [];

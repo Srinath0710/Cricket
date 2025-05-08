@@ -10,28 +10,24 @@
 
               Add Cities
             </div>
-            <div class="card flex justify-center">
-              <form [formGroup]="addCityForm">
-                <p-dropdown [options]="countryData" formControlName="country_id" optionValue="country_id"
-                  optionLabel="country_name" placeholder="Select Country" appendTo="body"
-                  [panelStyleClass]="'custom-dropdown-panel'" (onChange)="onGridCountryChange($event)">
+            <div class="d-flex align-items-center gap-3">
+                <p-dropdown [options]="countryData"  optionValue="country_id"optionLabel="country_name" placeholder="Select Country"
+                [(ngModel)]="selected_country"(ngModelChange)="getStates()"appendTo="body">
                   <ng-template let-country pTemplate="item">
-                    <div class="flex align-items-center gap-2">
+                    <div class="">
                       <div>{{ country.country_name }}</div>
                     </div>
                   </ng-template>
                 </p-dropdown>
-                <p-dropdown [options]="states" formControlName="state_id" optionValue="state_id"
-                  optionLabel="state_name" [ngModel]="addCityForm.get('state_id')?.value" placeholder="Select State"
-                  appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"
-                  >
+                <p-dropdown [options]="states" optionValue="state_id"
+                  optionLabel="state_name" [ngModel]="stateId" (ngModelChange)="gridLoad()"placeholder="Select State"
+                  appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   <ng-template let-state pTemplate="item">
                     <div class="flex align-items-center gap-2">
                       <div>{{ state.state_name }}</div>
                     </div>
                   </ng-template>
                 </p-dropdown>
-              </form>
             </div>
 
             <form class="flex-grow-1 mx-3 search-width">
@@ -131,7 +127,7 @@
             <div class="col-12 drop">
               <label for="country" class="drop-error">Country</label>
               <p-dropdown [options]="countryData" class="drop-error" formControlName="country_id"
-                optionValue="country_id" optionLabel="country_name" placeholder="Select Country" appendTo="body"
+                optionValue="country_id" optionLabel="country_name"[ngModel]="addCityForm.get('country_id')?.value" placeholder="Select Country" appendTo="body"
                 [panelStyleClass]="'custom-dropdown-panel'">
                 <ng-template let-country pTemplate="item">
                   <div class="flex align-items-center gap-2">
@@ -150,7 +146,7 @@
             <div class="col-12 drop">
               <label for="state">State*</label>
 
-              <p-dropdown [options]="formStates" class="drop-error " formControlName="state_id" optionValue="state_id"
+              <p-dropdown [options]="states"[ngModel]="addCityForm.get('state_id')?.value" class="drop-error " formControlName="state_id" optionValue="state_id"
                 optionLabel="state_name"  placeholder="select state"
                 appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
