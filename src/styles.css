@@ -102,6 +102,7 @@ label {
     border: 1px solid #ccc;
     width: 100%;
     transition: all 0.3s ease-in-out;
+    border-radius: 0 !important;
 }
 
 /* Password Field with Icon */
@@ -250,6 +251,7 @@ label {
 }
 .drop-error {
     display: block;
+    border-radius: 0 !important;
 }
 .main-page-action {
     flex: auto;
@@ -1170,3 +1172,40 @@ main {
 .sidebar-player {
   width: 97% !important;
 }
+
+.required-msg {
+  background-color: rgb(226, 36, 36);
+  color: white;
+  padding: 4px 8px;
+  
+  display: block;
+  font-size: 12px;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+ 
+}
+
+  
+.sticky-footer-buttons {
+  position: fixed;
+  bottom:0px;
+  right: 12px;
+  width: 100%;
+  background-color: #fff; /* Optional: white background */
+  padding: 10px 20px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+
+input.form-control:focus {
+  /* border-color: #4caf50; */
+  box-shadow: 0 0 0 0.01rem rgba(84, 76, 175, 0.25);
+  outline: none;
+}
+
+
+
+
+

@@ -22,7 +22,7 @@ import { offcialupdate } from './officials.model';
 import { ReactiveFormsModule } from '@angular/forms';
 import { offcialedit } from './officials.model';
 import { OnInit } from '@angular/core';
-import {  HostListener } from '@angular/core';
+import { HostListener } from '@angular/core';
 
 interface official {
   config_id: string;
@@ -74,40 +74,19 @@ export class OfficialsComponent implements OnInit {
   visibleDialog: boolean = false;
   official: officials[] = [];
   officialList: any[] = [];
-  sidebarVisible: boolean = false;
+  // sidebarVisible: boolean = false;
   isEditMode: boolean = false;
   submitted: boolean = false;
   officialDataList = [];
-
-
-  // Backend response (dropdown data)
-  dropdownData = [
-    { config_id: 13, config_key: "officials", config_name: "Umpire", parent_config_id: 0 },
-    { config_id: 14, config_key: "officials", config_name: "Scorer", parent_config_id: 0 },
-    { config_id: 15, config_key: "officials", config_name: "Analyst", parent_config_id: 0 },
-    { config_id: 16, config_key: "officials", config_name: "Referee", parent_config_id: 0 },
-    { config_id: 17, config_key: "officials", config_name: "Coach", parent_config_id: 0 },
-    { config_id: 18, config_key: "scorer", config_name: "Online Scorer", parent_config_id: 14 },
-    { config_id: 19, config_key: "scorer", config_name: "Manual Scorer", parent_config_id: 14 },
-    { config_id: 20, config_key: "analyst", config_name: "Junior Analyst", parent_config_id: 15 },
-    { config_id: 21, config_key: "analyst", config_name: "Senior Analyst", parent_config_id: 15 },
-    { config_id: 22, config_key: "umpire_category", config_name: "Elite", parent_config_id: 13 },
-    { config_id: 23, config_key: "umpire_category", config_name: "Plate", parent_config_id: 13 },
-    { config_id: 24, config_key: "umpire_category", config_name: "Others", parent_config_id: 13 }
-  ];
-
   configDataList: official[] = [];
   countrydropdownData: any;
   teamformat: official[] = [];
-  // officialtype:official[]=[];
   officialcategory: official[] = [];
-  // analystofficial: official[] = [];
-  // scoreofficial: official[] = [];
   officialtype: any[] = [];
   childOptions: any[] = [];
   childLabel: string = '';
   officialId: any;
-default_img: any ='assets/images/default-player.png';
+  default_img: any = 'assets/images/default-player.png';
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT, public cricketKeyConstant: CricketKeyConstant,
     private msgService: MessageService, private confirmationService: ConfirmationService
@@ -121,29 +100,28 @@ default_img: any ='assets/images/default-player.png';
     this.gridload();
     this.addOfficialForm = this.fb.group({
       first_name: ['', [Validators.required]],
-      middle_name: ['', [Validators.required]],
-      sur_name: ['', [Validators.required]],
+      middle_name: [''],
+      sur_name: [''],
       display_name: ['', [Validators.required]],
-      format_id: ['', [Validators.required]],
-      official_category_id: ['', [Validators.required]],
-      official_type_id: ['', [Validators.required]],
+      format_id: [''],
+      official_category_id: [''],
+      official_type_id: [''],
       profile_img: [''],
-      country_id: ['', [Validators.required]],
+      country_id: [''],
       official_id: [''],
 
     })
     this.dropdown();
     this.countrydropdown();
-    this.officialtype = this.dropdownData.filter(item => item.config_key === 'officials');
 
   }
-  showDialog() {
-    this.sidebarVisible = true;
-    this.isEditMode = false;
-  }
-  onSidebarHide() {
-    this.sidebarVisible = false;
-  }
+  // showDialog() {
+  //   this.sidebarVisible = true;
+  //   this.isEditMode = false;
+  // }
+  // onSidebarHide() {
+  //   this.sidebarVisible = false;
+  // }
 
   gridload() {
     const params: any = {};
@@ -165,6 +143,7 @@ default_img: any ='assets/images/default-player.png';
 
   addOfficialdata() {
     this.submitted = true;
+    this.isEditMode=true;
     if (this.addOfficialForm.invalid) {
       this.addOfficialForm.markAllAsTouched();
       return
@@ -226,7 +205,7 @@ default_img: any ='assets/images/default-player.png';
   }
 
 
-  
+
 
   countrydropdown() {
 
@@ -248,25 +227,32 @@ default_img: any ='assets/images/default-player.png';
   }
 
   onOfficialChange(selectedId: number) {
-    const selectedItem = this.dropdownData.find(item => item.config_id === selectedId);
-
-    if (selectedId === 14 || selectedId === 15 || selectedId === 13) {
-      this.childOptions = this.dropdownData.filter(item => item.parent_config_id === selectedId);
-
-      // Set label based on selected type
-      if (selectedItem?.config_name === 'Scorer') {
-        this.childLabel = 'Scorer Type';
-      } else if (selectedItem?.config_name === 'Analyst') {
-        this.childLabel = 'Analyst Level';
-      } else if (selectedItem?.config_name === 'Umpire') {
+    const selectedItem = this.officialtype.find(item => item.config_id === selectedId);
+    this.addOfficialForm.patchValue({
+      official_category_id: null
+      
+    })
+    switch (selectedItem.config_short) {
+      case 'UMP':
+        this.childOptions = this.configDataList.filter((item: any) => item.config_key === 'umpire_category');
         this.childLabel = 'Umpire Category';
-      } else {
-        this.childLabel = 'Child Option'; // fallback
-      }
-    } else {
-      this.childOptions = [];
-      this.childLabel = '';
+        break;
+      case 'VDA':
+
+        this.childOptions = this.configDataList.filter((item: any) => item.config_key === 'analyst');
+        this.childLabel = 'Analyst Level';
+        break;
+      case 'SCR':
+
+        this.childOptions = this.configDataList.filter((item: any) => item.config_key === 'scorer');
+        this.childLabel = 'Scorer Type';
+        break;
+      default:
+        this.childOptions = [];
+        this.childLabel = '';
+        break;
     }
+
   }
 
 
@@ -276,11 +262,15 @@ default_img: any ='assets/images/default-player.png';
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.dropdownofficial, params).subscribe((res) => {
-      this.configDataList = res.data.dropdowns != undefined ? res.data : [];
+      this.configDataList = res.data.dropdowns != undefined ? res.data.dropdowns : [];
 
       this.teamformat = res.data.dropdowns
         .filter((item: any) => item.config_key === 'team_format')
         .map((item: any) => ({ ...item }));
+      this.officialtype = res.data.dropdowns
+        .filter((item: any) => item.config_key === 'officials')
+        .map((item: any) => ({ ...item }));
+
 
       setTimeout(() => {
         const teamId = this.addOfficialForm.get('team_id')?.value;
@@ -306,6 +296,7 @@ default_img: any ='assets/images/default-player.png';
   }
 
   Editofficial(official: any) {
+    this.isEditMode=true;
     this.officialId = official.official_id;
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -316,6 +307,8 @@ default_img: any ='assets/images/default-player.png';
       if (res.status_code == 200) {
         const editRecord: offcialedit = res.data.officials[0] ?? {};
         if (editRecord != null) {
+          this.onOfficialChange(editRecord.official_type_id);
+
           this.addOfficialForm.setValue({
 
             first_name: editRecord.first_name,

@@ -173,13 +173,12 @@
         [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h4 class="mb-0">{{ isEditMode ? 'Edit Country' : 'Add Official' }}</h4>
+          <h4 class="mb-0">{{ isEditMode ? 'Edit Official' : 'Add Official' }}</h4>
         </div>
 
         <div (click)="$event.stopPropagation()">
           <form [formGroup]="addOfficialForm">
             <div class="row gy-3">
-
 
               <div class="col-md-6">
                 <label class="">First Name
@@ -189,31 +188,28 @@
                   formControlName="first_name">
                 <small
                   *ngIf="addOfficialForm?.get('first_name')?.invalid &&(addOfficialForm?.get('first_name')?.touched) || (addOfficialForm.get('first_name')?.invalid && submitted)"
-                  class="text-danger">* First name is Required
+                  class="required-msg"> First name is Required
                 </small>
               </div>
 
+
+
               <div class="col-md-6">
                 <label class="">Middle Name
-                  <span class="text-danger">*</span>
                 </label>
                 <input class="form-control" maxlength="50" type="text" placeholder="Enter Middle Name"
                   formControlName="middle_name">
-                <small
-                  *ngIf="addOfficialForm?.get('middle_name')?.invalid &&(addOfficialForm?.get('middle_name')?.touched) || (addOfficialForm.get('middle_name')?.invalid && submitted)"
-                  class="text-danger">* Middle name is Required
-                </small>
+              
               </div>
 
               <div class="col-md-6">
                 <label class="">Sure Name
-                  <span class="text-danger">*</span>
                 </label>
                 <input class="form-control" maxlength="50" type="text" placeholder="Enter Sure Name "
                   formControlName="sur_name">
                 <small
                   *ngIf="addOfficialForm.get('sur_name')?.invalid &&(addOfficialForm.get('sur_name')?.touched) || (addOfficialForm.get('sur_name')?.invalid && submitted)"
-                  class="text-danger">*Sure name is Required
+                  class="text-danger">Sure name is Required
                 </small>
               </div>
 
@@ -226,7 +222,7 @@
                   formControlName="display_name">
                 <small
                   *ngIf="addOfficialForm.get('display_name')?.invalid &&(addOfficialForm.get('display_name')?.touched) || (addOfficialForm.get('display_name')?.invalid && submitted)"
-                  class="text-danger">*Display name is Required
+                  class="required-msg">Display name is Required
                 </small>
               </div>
 
@@ -243,7 +239,6 @@
               <div class="col-md-6">
 
                 <label>Country</label>
-                <span class="text-danger">*</span>
 
                 <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="country_id"
                   optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country"
@@ -260,7 +255,6 @@
 
               <div class="col-md-6">
                 <label>Format</label>
-                <span class="text-danger">*</span>
 
                 <p-dropdown [options]="teamformat" class="drop-error " formControlName="format_id"
                   optionValue="config_id" optionLabel="config_name" placeholder="Select Format Id" appendTo="body"
@@ -277,7 +271,6 @@
 
               <div class="col-md-6">
                 <label>Official Type</label>
-                <span class="text-danger">*</span>
 
                 <p-dropdown [options]="officialtype" class="drop-error" formControlName="official_type_id"
                   optionValue="config_id" optionLabel="config_name" placeholder="Select Official Type"
@@ -307,22 +300,19 @@
               
 
             </div>
-
-            <div class="row mt-4">
+  
+            <div class="row mt-4 sticky-footer-buttons">
               <div class="col-12 text-end">
-                <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-                  (click)="cancelForm()"></button>
-
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()"></button>
+            
                 <button pButton type="button" label="Clear" class="p-button-secondary me-3"
                   *ngIf="addOfficialForm.get('country_id')?.value == '' || addOfficialForm.get('country_id')?.value == null"
                   (click)="resetForm()"></button>
-
+            
                 <button pButton type="button" label="Save" class="save-button" (click)="addOfficialdata()"></button>
-
-
               </div>
-
             </div>
+            
           </form>
         </div>
       </p-sidebar>
