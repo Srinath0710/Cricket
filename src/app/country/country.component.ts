@@ -77,7 +77,7 @@ export class CountryComponent implements OnInit {
 
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-     private confirmationService: ConfirmationService,public cricketKeyConstant :CricketKeyConstant) {
+    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
   }
   ngOnInit() {
@@ -126,7 +126,7 @@ export class CountryComponent implements OnInit {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
     }, (err: any) => {
-           err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [],this.totalData = this.countriesData.length);
+      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [], this.totalData = this.countriesData.length);
 
     });
 
@@ -140,7 +140,7 @@ export class CountryComponent implements OnInit {
     this.rows = event.rows;
     this.gridLoad();
   }
- 
+
   showAddForm() {
     this.ShowForm = true;
   }
@@ -165,6 +165,7 @@ export class CountryComponent implements OnInit {
   }
   onAddCountry() {
     this.submitted = true;
+    this.isEditMode = false;
     if (this.addCountryForm.invalid) {
       this.addCountryForm.markAllAsTouched();
       return
@@ -206,6 +207,7 @@ export class CountryComponent implements OnInit {
     this.gridLoad();
   }
   EditCountry(country_id: number) {
+    this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -237,23 +239,23 @@ export class CountryComponent implements OnInit {
 
   }
 
-  status(country_id: number,url:string) {
+  status(country_id: number, url: string) {
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
       country_id: country_id?.toString()
     };
     this.apiService.post(url, params).subscribe(
-      (res:any) => {
+      (res: any) => {
         res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
-      (err:any) => {
+      (err: any) => {
         err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
- 
-  StatusConfirm(country_id: number,actionObject:{key:string,label:string}) {
+
+  StatusConfirm(country_id: number, actionObject: { key: string, label: string }) {
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this country?`,
       header: 'Confirmation',
@@ -261,8 +263,8 @@ export class CountryComponent implements OnInit {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url:string= this.cricketKeyConstant.condition_key.active_status.key===actionObject.key?this.urlConstant.activeCountry:this.urlConstant.deactiveCountry;
-        this.status(country_id,url);
+        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activeCountry : this.urlConstant.deactiveCountry;
+        this.status(country_id, url);
         this.confirmationService.close();
       },
       reject: () => {
@@ -270,5 +272,5 @@ export class CountryComponent implements OnInit {
       }
     });
   }
-  
+
 }

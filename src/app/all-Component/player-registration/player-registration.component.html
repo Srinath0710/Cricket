@@ -53,9 +53,8 @@
 
 
 
-            <p-table [value]="PlayerData" [tableStyle]="{ 'minofficialList-width': '50rem' }" scrollable="true"
-              [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['player_name']">
-              <ng-template pTemplate="header">
+              <p-table [value]="PlayerData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
+            <ng-template pTemplate="header">
 
 
                 <tr>
@@ -134,14 +133,16 @@
 
 
 
-            <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" class="sidebar-player"
-              [modal]="true" [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
+        <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
+      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
+ <div class="sidebar-wrapper" (click)="$event.stopPropagation()">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+<h3 class="small-heading">
+  {{ isEditMode ? 'Edit Player' : 'Add Player' }}
+</h3>
+      </div>
 
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="mb-0">{{ isEditMode ? 'Edit Player' : 'Add Country' }}</h4>
-              </div>
-
-              <div (click)="$event.stopPropagation()">
+             
                 <form [formGroup]="playerRegistrationform">
                   <div class="row gy-3">
 
@@ -154,32 +155,25 @@
                         formControlName="first_name">
                       <small
                         *ngIf="playerRegistrationform?.get('first_name')?.invalid &&(playerRegistrationform?.get('first_name')?.touched) || (playerRegistrationform.get('first_name')?.invalid && submitted)"
-                        class="text-danger">* First name is Required
+                        class="required-msg">First name is Required
                       </small>
                     </div>
 
                     <div class="col-md-3  ">
                       <label class="">Middle Name
-                        <span class="text-danger">*</span>
                       </label>
                       <input class="form-control" maxlength="50" type="text" placeholder="Enter Middle Name"
                         formControlName="middle_name">
-                      <small
-                        *ngIf="playerRegistrationform?.get('middle_name')?.invalid &&(playerRegistrationform?.get('middle_name')?.touched) || (playerRegistrationform.get('middle_name')?.invalid && submitted)"
-                        class="text-danger">* Middle name is Required
-                      </small>
+                     
                     </div>
 
                     <div class="col-md-3">
                       <label class="">Sure Name
-                        <span class="text-danger">*</span>
+                       
                       </label>
                       <input class="form-control" maxlength="50" type="text" placeholder="Enter Sure Name "
                         formControlName="sur_name">
-                      <small
-                        *ngIf="playerRegistrationform.get('sur_name')?.invalid &&(playerRegistrationform.get('sur_name')?.touched) || (playerRegistrationform.get('sur_name')?.invalid && submitted)"
-                        class="text-danger">*Sure name is Required
-                      </small>
+                      
                     </div>
 
 
@@ -191,7 +185,7 @@
                         formControlName="display_name">
                       <small
                         *ngIf="playerRegistrationform.get('display_name')?.invalid &&(playerRegistrationform.get('display_name')?.touched) || (playerRegistrationform.get('display_name')?.invalid && submitted)"
-                        class="text-danger">*Display name is Required
+                        class="required-msg">Display name is Required
                       </small>
                     </div>
 
@@ -214,6 +208,11 @@
                           </div>
                         </ng-template>
                       </p-dropdown>
+
+                      <small
+                      *ngIf="playerRegistrationform.get('nationality_id')?.invalid &&(playerRegistrationform.get('nationality_id')?.touched) || (playerRegistrationform.get('nationality_id')?.invalid && submitted)"
+                      class="required-msg">Nationality  Required
+                    </small>
                     </div>
 
 
@@ -222,41 +221,32 @@
 
                     <div class="col-md-3">
                       <label class="">Player DOB
-                        <span class="text-danger">*</span>
+                       
                       </label>
                       <input class="form-control" maxlength="50" type="date" placeholder="Enter DOB"
                         formControlName="player_dob">
-                      <small
-                        *ngIf="playerRegistrationform.get('player_dob')?.invalid &&  (playerRegistrationform.get('player_dob')?.touched) ||(playerRegistrationform.get('player_dob')?.invalid && submitted)"
-                        class="text-danger">*DOB is Required
-                      </small>
+                    
                     </div>
 
 
 
 
                     <div class="col-md-3">
-                      <label class="">Phone NO
-                        <span class="text-danger">*</span>
+                      <label class="">Phone No
+                    
                       </label>
                       <input class="form-control" maxlength="10" type="tel" placeholder="Enter Phone No"
                         formControlName="mobile_no">
-                      <small
-                        *ngIf="playerRegistrationform.get('mobile_no')?.invalid &&(playerRegistrationform.get('mobile_no')?.touched) || (playerRegistrationform.get('mobile_no')?.invalid && submitted)"
-                        class="text-danger">*Phone No is Required
-                      </small>
+                     
                     </div>
 
                     <div class="col-md-3">
-                      <label class="">email id
-                        <span class="text-danger">*</span>
+                      <label class="">Email Id
+                     
                       </label>
                       <input class="form-control" maxlength="50" type="mail" placeholder="Enter mailid"
                         formControlName="email">
-                      <small
-                        *ngIf="playerRegistrationform.get('email')?.invalid &&(playerRegistrationform.get('email')?.touched) || (playerRegistrationform.get('email')?.invalid && submitted)"
-                        class="text-danger">*email id is Required
-                      </small>
+                      
                     </div>
 
 
@@ -276,6 +266,10 @@
                           </div>
                         </ng-template>
                       </p-dropdown>
+                      <small
+                        *ngIf="playerRegistrationform.get('gender_id')?.invalid &&(playerRegistrationform.get('gender_id')?.touched) || (playerRegistrationform.get('gender_id')?.invalid && submitted)"
+                        class="required-msg"> Gender is Required
+                      </small>
                     </div>
 
                     <div class="col-md-3">
@@ -292,6 +286,11 @@
                           </div>
                         </ng-template>
                       </p-dropdown>
+
+                      <small
+                      *ngIf="playerRegistrationform.get('player_role_id')?.invalid &&(playerRegistrationform.get('player_role_id')?.touched) || (playerRegistrationform.get('player_role_id')?.invalid && submitted)"
+                      class="required-msg">Select Player Role Required
+                    </small>
                     </div>
 
                     <div class="col-md-3">
@@ -308,12 +307,16 @@
                           </div>
                         </ng-template>
                       </p-dropdown>
+                      <small
+                      *ngIf="playerRegistrationform.get('batting_style_id')?.invalid &&(playerRegistrationform.get('batting_style_id')?.touched) || (playerRegistrationform.get('batting_style_id')?.invalid && submitted)"
+                      class="required-msg">Batting Style Required
+                    </small>
                     </div>
 
 
                     <div class="col-md-3">
                       <label>Batting Order </label>
-                      <span class="text-danger">*</span>
+                    
 
                       <p-dropdown [options]="battingorder" class="drop-error " formControlName="batting_order_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Batting Order"
@@ -329,7 +332,7 @@
 
                     <div class="col-md-3">
                       <label>Bowling Style </label>
-                      <span class="text-danger">*</span>
+                    
 
                       <p-dropdown [options]="bowlingstyle" class="drop-error " formControlName="bowling_style_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Bowling Style"
@@ -345,7 +348,7 @@
 
                     <div class="col-md-3">
                       <label>Bowling Type </label>
-                      <span class="text-danger">*</span>
+                   
 
                       <p-dropdown [options]="bowlingtype" class="drop-error " formControlName="bowling_type_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Bowling Type"
@@ -361,7 +364,7 @@
 
                     <div class="col-md-3">
                       <label>Bowling Spec </label>
-                      <span class="text-danger">*</span>
+                     
 
                       <p-dropdown [options]="bowlingspec" class="drop-error " formControlName="bowling_spec_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Bowling Spec"
@@ -379,79 +382,56 @@
 
 
                     <div class="col-md-3">
-                      <label class="">remarks
-                        <span class="text-danger">*</span>
+                      <label class="">Remarks
+                    
                       </label>
                       <input class="form-control" maxlength="50" type="text" placeholder="Enter remarks"
                         formControlName="email">
-                      <small
-                        *ngIf="playerRegistrationform.get('remarks')?.invalid &&(playerRegistrationform.get('remarks')?.touched) || (playerRegistrationform.get('remarks')?.invalid && submitted)"
-                        class="text-danger">*remarks id is Required
-                      </small>
+                   
                     </div>
 
                     <div class="col-md-3">
                       <label class="">Jersey No
-                        <span class="text-danger">*</span>
+                    
                       </label>
                       <input class="form-control" maxlength="50" type="number" placeholder="Enter Jersey No"
                         formControlName="jersey_no">
-                      <small
-                        *ngIf="playerRegistrationform.get('jersey_no')?.invalid &&(playerRegistrationform.get('jersey_no')?.touched) || (playerRegistrationform.get('jersey_no')?.invalid && submitted)"
-                        class="text-danger">*Jersey No id is Required
-                      </small>
+                      
                     </div>
 
                     <div class="col-md-3">
                       <label class="">Profile Image
-                        <span class="text-danger">*</span>
+                       
                       </label>
                       <input class="form-control" maxlength="50" type="file" placeholder="Enter Jersey No"
                         formControlName="profile_image">
-                      <small
-                        *ngIf="playerRegistrationform.get('profile_image')?.invalid &&(playerRegistrationform.get('profile_image')?.touched) || (playerRegistrationform.get('profile_image')?.invalid && submitted)"
-                        class="text-danger">*Profile Image is Required
-                      </small>
+                     
                     </div>
 
 
                     <div class="col-md-3">
                       <label class="">Team Represent
-                        <span class="text-danger">*</span>
+                    
                       </label>
                       <input class="form-control" maxlength="50" type="type" placeholder="Enter Team Represent"
                         formControlName="team_represent">
-                      <small
-                        *ngIf="playerRegistrationform.get('team_represent')?.invalid &&(playerRegistrationform.get('team_represent')?.touched) || (playerRegistrationform.get('team_represent')?.invalid && submitted)"
-                        class="text-danger">*Team Represent is Required
-                      </small>
+                     
                     </div>
 
 
-
-
-
-
-
-
                   </div>
-
-                  <div class="row mt-4">
+                  <div class="row mt-4 sticky-footer-buttons">
                     <div class="col-12 text-end">
-                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-                        (click)="cancelForm()"></button>
-
+                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()"></button>
+                  
                       <button pButton type="button" label="Clear" class="p-button-secondary me-3"
                         *ngIf="playerRegistrationform.get('player_id')?.value == '' || playerRegistrationform.get('player_id')?.value == null"
                         (click)="resetForm()"></button>
-
-                      <button pButton type="button" label="Save" class="save-button"
-                        (click)="duplicateChange()"></button>
-
-
+                  
+                      <button pButton type="button" label="Save" class="save-button" (click)="duplicateChange()"></button>
                     </div>
-
                   </div>
+                  
                 </form>
                 <p-dialog header="Duplicate Check" [modal]="true" [(visible)]="visible" [position]="position"
                   [style]="{ width: '50rem' }">

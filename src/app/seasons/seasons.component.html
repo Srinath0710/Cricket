@@ -97,12 +97,12 @@
 
         <p-sidebar [(visible)]="showForm" position="right" styleClass="full-width-sidebar" [modal]="true"
             [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
-
+ <div class="sidebar-wrapper" (click)="$event.stopPropagation()">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="mb-0">{{ isEditMode ? 'Add Season' : 'Edit Season' }}</h4>
             </div>
 
-            <div (click)="$event.stopPropagation()">
+            
                 <form [formGroup]="addSeasonsForm">
                     <div class="row gy-3">
                         <div class="col-md-6">

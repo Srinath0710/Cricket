@@ -138,26 +138,26 @@ export class PlayerRegistrationComponent implements OnInit {
   ngOnInit() {
     this.playerRegistrationform = this.formBuilder.group({
       first_name: ['', [Validators.required]],
-      middle_name: ['', [Validators.required]],
-      sur_name: ['', [Validators.required]],
+      middle_name: [''],
+      sur_name: [''],
       display_name: ['', [Validators.required]],
-      nationality_id: [''],
+      nationality_id: ['',[Validators.required]],
       player_dob: ['',],
       mobile_no: [''],
       email: [''],
-      gender_id: [''],
-      player_role_id: [],
-      batting_style_id: [],
-      batting_order_id: [],
-      bowling_style_id: [],
-      bowling_type_id: [],
-      bowling_spec_id: [],
+      gender_id: ['',[Validators.required]],
+      player_role_id: ['', [Validators.required]],
+      batting_style_id: ['', [Validators.required]],
+      batting_order_id: [''],
+      bowling_style_id: [''],
+      bowling_type_id: [''],
+      bowling_spec_id: [''],
       remarks: [''],
       jersey_no: [''],
       profile_image: [''],
       team_represent: [''],
 
-      player_id: [],
+      player_id: [''],
 
 
     });
@@ -348,7 +348,8 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   addplayerdata() {
-
+    this.submitted = true;
+    this.isEditMode = false;
     const params: playerupdate = {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
@@ -415,6 +416,7 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   Editplayer(player: any) {
+     this.isEditMode = true;
     this.playerId = player.player_id;
     const params: any = {};
     params.user_id = this.user_id?.toString();

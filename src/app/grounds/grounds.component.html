@@ -69,7 +69,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="icon-blue" (click)="EditGround(ground.ground_id)" pTooltip="Edit"
+                                    <span class="icon-blue" (click)="EditGround(ground)" pTooltip="Edit"
                                         tooltipPosition="top">
                                         <i class="fa-solid fa-user-pen"></i>
                                     </span>
@@ -97,32 +97,152 @@
         </main>
 
 
-        <p-confirmDialog [style]="{width: '300px', height: '200px'}"
-        [baseZIndex]="10000" [draggable]="false" [styleClass]="'p-confirm-dialog-custom'">
+        <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+            [styleClass]="'p-confirm-dialog-custom'">
         </p-confirmDialog>
+<p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
+      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
+ <div class="sidebar-wrapper" (click)="$event.stopPropagation()">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+<h3 class="small-heading">
+  {{ isEditMode ? 'Edit Ground' : 'Add Ground' }}
+</h3>
+      </div>
 
-        <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
-        [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="mb-0">{{ isEditMode ? 'Edit Ground' : 'Add Ground' }}</h4>
-        </div>
 
-        <div (click)="$event.stopPropagation()">
-            <form [formGroup]="addGroundForm">
-                <div class="row gy-3">
+       
+          <form [formGroup]="addGroundForm">
+            <div class="row gy-3">
+
+              <div class="col-md-6">
+                <label class="">Ground Name
+                  <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" maxlength="50" type="text" placeholder="Enter Ground Name"
+                  formControlName="ground_name">
+                <small
+                  *ngIf="addGroundForm?.get('ground_name')?.invalid &&(addGroundForm?.get('ground_name')?.touched) || (addGroundForm.get('ground_name')?.invalid && submitted)"
+                  class="required-msg"> Ground name is Required
+                </small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="">Dispaly Name
+                  <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" maxlength="50" type="text" placeholder="Entre Dispaly Name"
+                  formControlName="display_name">
+                <small
+                  *ngIf="addGroundForm?.get('display_name')?.invalid &&(addGroundForm?.get('display_name')?.touched) || (addGroundForm.get('display_name')?.invalid && submitted)"
+                  class="required-msg"> Ground name is Required
+                </small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="">Address Name 1
+                  <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" maxlength="50" type="text" placeholder="Entre Address 1"
+                  formControlName="address_1">
+                <small
+                  *ngIf="addGroundForm?.get('address_1')?.invalid &&(addGroundForm?.get('address_1')?.touched) || (addGroundForm.get('address_1')?.invalid && submitted)"
+                  class="required-msg">Adress 1 is Required
+                </small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="">Address Name 2
+                  <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" maxlength="50" type="text" placeholder="Entre Address 2"
+                  formControlName="address_2">
+                <small
+                  *ngIf="addGroundForm?.get('address_2')?.invalid &&(addGroundForm?.get('address_2')?.touched) || (addGroundForm.get('address_2')?.invalid && submitted)"
+                  class="required-msg">Adress 2 is Required
+                </small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="">Post Code
+                  <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" maxlength="50" type="text" placeholder="Post Code"
+                  formControlName="post_code">
+                <small
+                  *ngIf="addGroundForm?.get('post_code')?.invalid &&(addGroundForm?.get('post_code')?.touched) || (addGroundForm.get('post_code')?.invalid && submitted)"
+                  class="required-msg">Post Code is Required
+                </small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="">End One
+                  <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" maxlength="50" type="text" placeholder="End One"
+                  formControlName="end_one">
+                <small
+                  *ngIf="addGroundForm?.get('end_one')?.invalid &&(addGroundForm?.get('end_one')?.touched) || (addGroundForm.get('end_one')?.invalid && submitted)"
+                  class="required-msg">End One is Required
+                </small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="">End Two
+                  <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" maxlength="50" type="text" placeholder="End Two"
+                  formControlName="end_two">
+                <small
+                  *ngIf="addGroundForm?.get('end_two')?.invalid &&(addGroundForm?.get('end_two')?.touched) || (addGroundForm.get('end_two')?.invalid && submitted)"
+                  class="required-msg">End Two is Required
+                </small>
+              </div>
+
+
+
+     
                     <div class="col-md-6">
-                        <label class="">Ground Name
-                        <span class="text-danger">*</span>
-                        </label>
-                        <input clas="form-control" type="text" placeholder="Ground Name" formControlName="ground_name">
-                        <small *ngIf="addGroundForm?.get('ground_name')?.invalid && (addGroundForm?.get('ground_name')?.touched) || (addGroundForm.get('ground_name')?.invalid && submitted)"
-                        class="text-danger">*Ground Name is Required
-                    </small>
+                <label class="">Profile Image
+                </label>
+                <input class="form-control" maxlength="50" type="file" placeholder="Add Profile Image "
+                  formControlName="profile">
+
+              </div>
+
+            
+     
+                    <div class="col-md-6">
+                <label class="">Ground Photo
+                </label>
+                <input class="form-control" maxlength="50" type="file" placeholder="Add Ground Photo "
+                  formControlName="ground_photo">
+
+              </div>
+
+            
+
+
+
+
+                                    
                     </div>
-                </div>
-            </form>
-        </div>
+   <div class="row mt-4 sticky-footer-buttons">
+              <div class="col-12 text-end">
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()"></button>
+            
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                  *ngIf="addGroundForm.get('country_id')?.value == '' || addGroundForm.get('country_id')?.value == null"
+                  (click)="resetForm()"></button>
+            
+                <button pButton type="button" label="Save" class="save-button" (click)="onAddGround()"></button>
+              </div>
+            </div>
+
+
+
+                </form>
+            </div>
         </p-sidebar>
     </div>
 </div>

@@ -137,12 +137,14 @@
     <!-- Sidebar Modal -->
     <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
       [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
-
+ <div class="sidebar-wrapper" (click)="$event.stopPropagation()">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="mb-0">{{ isEditMode ? 'Edit Team' : 'Add Team' }}</h4>
+<h3 class="small-heading">
+  {{ isEditMode ? 'Edit Team' : 'Add Team' }}
+</h3>
       </div>
 
-      <div (click)="$event.stopPropagation()">
+     
         <form [formGroup]="addTeamForm">
           <div class="row gy-3">
             <div class="col-md-6">
@@ -153,19 +155,24 @@
                 formControlName="team_name">
               <small
                 *ngIf="addTeamForm?.get('team_name')?.invalid &&(addTeamForm?.get('team_name')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
-                class="text-danger">* Team
+                class="required-msg">Team
                 Name Is Required
               </small>
             </div>
+
             <div class="col-md-6">
-              <label class="">Shot Name
-                <span class="text-danger">*</span>
+              <label class="">Short Name
+               
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Short Name"
                 formControlName="team_short">
             </div>
+
             <div class="col-md-6">
-              <label for="gender">Gender*</label>
+              <label for="gender">Gender
+                <span class="text-danger">*</span>
+              </label>
+
               <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id" optionValue="config_id"
                 optionLabel="config_name" placeholder="select gender" appendTo="body"
                 [panelStyleClass]="'custom-dropdown-panel'">
@@ -176,9 +183,17 @@
                   </div>
                 </ng-template>
               </p-dropdown>
+              <small
+              *ngIf="addTeamForm?.get('gender_id')?.invalid &&(addTeamForm?.get('gender_id')?.touched) || (addTeamForm.get('gender_id')?.invalid && submitted)"
+              class="required-msg">Gender
+              Is Required
+            </small>
             </div>
+
             <div class="col-md-6">
-              <label>Format Name*</label>
+              <label>Format Name
+                <span class="text-danger">*</span>
+              </label>
               <p-dropdown [options]="formatList" class="drop-error " formControlName="format_id" optionValue="config_id"
                 optionLabel="config_name" placeholder="select Format Name" appendTo="body"
                 [panelStyleClass]="'custom-dropdown-panel'">
@@ -189,9 +204,18 @@
                   </div>
                 </ng-template>
               </p-dropdown>
+              <small
+              *ngIf="addTeamForm?.get('format_id')?.invalid &&(addTeamForm?.get('format_id')?.touched) || (addTeamForm.get('format_id')?.invalid && submitted)"
+              class="required-msg">Format Name
+              Is Required
+
+            </small>
             </div>
+
             <div class="col-md-6">
-              <label>Age Group*</label>
+              <label>Age Group
+                <span class="text-danger">*</span>
+              </label>
               <p-dropdown [options]="ageGroupList" class="drop-error " formControlName="age_category_id"
                 optionValue="config_id" optionLabel="config_name" placeholder="select Age Group" appendTo="body"
                 [panelStyleClass]="'custom-dropdown-panel'">
@@ -202,6 +226,11 @@
                   </div>
                 </ng-template>
               </p-dropdown>
+              <small
+              *ngIf="addTeamForm?.get('age_category_id')?.invalid &&(addTeamForm?.get('age_category_id')?.touched) || (addTeamForm.get('age_category_id')?.invalid && submitted)"
+              class="required-msg">Age Category
+              Is Required
+            </small>
             </div>
             <div class="col-md-6">
               <div class="image-upload-container text-center">
@@ -227,13 +256,13 @@
 
           </div>
 
-          <div class="row mt-4" *ngIf="!viewMode">
+          <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
             <div class="col-12 text-end">
               <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
                 (click)="cancelForm()"></button>
 
               <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                *ngIf="addTeamForm.get('country_id')?.value == '' || addTeamForm.get('country_id')?.value == null"
+                *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
                 (click)="resetForm()"></button>
 
               <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>

@@ -202,6 +202,7 @@ export class StateComponent implements OnInit {
 
   onAddState() {
     this.submitted = true;
+        this.isEditMode = false;
     if (this.addStateForm.invalid) {
       this.addStateForm.markAllAsTouched();
       return;
@@ -216,26 +217,28 @@ export class StateComponent implements OnInit {
       state_id: String(this.addStateForm.value.state_id || '0'),
     };
 
-    const url = this.addStateForm.value.state_id ? this.urlConstant.updateState : this.urlConstant.addState;
 
-    this.apiService.post(url, params).subscribe(
-      (res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status
-          ? this.addCallBack(res)
-          : this.failedToast(res);
-      },
-      (err) => {
-        if (err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err);
-        }
-      }
-    );
+     if (this.addStateForm.value.state_id) {
+      // params.action_flag='update';
+      this.apiService.post(this.urlConstant.updateState, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    } else {
+
+      this.apiService.post(this.urlConstant.addState, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    }
+
   }
 
 
   editState(editRecord:any){
+      this.isEditMode = true;
     console.log('Edit clicked', State);
     const params: any = {}
     this.addStateForm.setValue({

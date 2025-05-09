@@ -1,4 +1,3 @@
-
 :root {
     --white-color: #fff;
     --blue-color: #4070f4;
@@ -634,6 +633,7 @@ transition: all 0.5s ease;
     .layout-container.layout-slim .layout-content-wrapper {
         margin-left: 5rem
     }
+
     .layout-container.layout-slim .layout-menu .layout-root-menuitem>a {
         display: flex;
         align-items: center;
@@ -1775,8 +1775,9 @@ transition: all 0.5s ease;
     gap: 2px;
     justify-content: center;
     align-items: center;
-    padding-bottom:20px;
+    padding-bottom: 20px;
 }
+
 /* .disticts-img>*{
 justify-content: space-between;
 } */
@@ -1901,38 +1902,46 @@ justify-content: space-between;
     border-radius: 5px;
     background: #790000;
     opacity: 0px;
-cursor: pointer;
+    cursor: pointer;
 }
-.tab-tour-headers{
+
+.tab-tour-headers {
     cursor: pointer;
 
 }
+
 .tournaments-content {
     display: flex;
-    gap: 0; /* Remove unnecessary gap between the bar and details */
-    align-items: center; /* Align items vertically in the center */
+    gap: 0;
+    /* Remove unnecessary gap between the bar and details */
+    align-items: center;
+    /* Align items vertically in the center */
     height: auto;
 }
 
 .tournaments-bar {
     width: 7px;
-    height: 100%; /* Make the height match the parent element */
+    height: 100%;
+    /* Make the height match the parent element */
     background: #FFB1B1;
     position: absolute;
     left: 0px;
     top: 0px;
     overflow: hidden;
-    flex-shrink: 0; /* Prevent the bar from shrinking */
+    flex-shrink: 0;
+    /* Prevent the bar from shrinking */
 }
 
 
 .tournament-details-content {
-    flex-grow: 1; /* Take up the remaining space after the bar */
+    flex-grow: 1;
+    /* Take up the remaining space after the bar */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
-    margin-left: 8px; /* Add space between the bar and content */
+    margin-left: 8px;
+    /* Add space between the bar and content */
 }
 
 .tournament-title {
@@ -1945,7 +1954,7 @@ cursor: pointer;
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border:1px solid rgba(184, 182, 182, 0.838);
+    border: 1px solid rgba(184, 182, 182, 0.838);
     object-fit: cover;
 }
 
@@ -1965,58 +1974,74 @@ cursor: pointer;
     font-size: 14px;
     font-weight: 500;
 }
-.tournament-match-details-completed{
-    display: flex;
-    gap:2px;
-    align-items: center;
-flex-direction: row;
-justify-content: space-between;
-}
-.comp-details-bar{
 
-   
+.tournament-match-details-completed {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.comp-details-bar {
+
+
     font-size: 10px;
     color: #868585;
-    
+
 }
-.tournaments-comp-details-bar{
+
+.tournaments-comp-details-bar {
     width: 7px;
-    height: 100%; /* Make the height match the parent element */
+    height: 100%;
+    /* Make the height match the parent element */
     position: absolute;
     left: 0px;
     top: 0px;
     overflow: hidden;
-    flex-shrink: 0; /* Prevent the bar from shrinking */
+    flex-shrink: 0;
+    /* Prevent the bar from shrinking */
 }
-.card-tour-comp{
-    height:500px;
+
+.card-tour-comp {
+    height: 500px;
     overflow-y: auto;
 }
-.disticts-tour-comp{
-    max-height: 550px ;
+
+.disticts-tour-comp {
+    max-height: 550px;
     overflow-y: auto;
 }
-.cities-tour-comp{
-    height: 500px ;
+
+.cities-tour-comp {
+    height: 500px;
     overflow-y: auto;
 }
+
 google-map {
     height: 100%;
     width: 100%;
-  }
+}
 
-  .cities-card{
-    margin:-10px;
+.cities-card {
+    margin: -10px;
     cursor: pointer;
-  }
-  .tour-comp-name{
+}
+
+.tour-comp-name {
     font-weight: 500;
-  }
-  .tounament-vs{
+}
+
+.tounament-vs {
     font-weight: 500;
-  }
-  .disabled-link  {
-    pointer-events: none;  /* Disable clicking */
-    opacity: 0.5;          /* Make it look disabled */
+}
+
+.disabled-link {
+    pointer-events: none;
+    /* Disable clicking */
+    opacity: 0.5;
+    /* Make it look disabled */
     cursor: not-allowed;
 }
+
+    

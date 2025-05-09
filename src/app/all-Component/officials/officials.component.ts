@@ -143,7 +143,7 @@ export class OfficialsComponent implements OnInit {
 
   addOfficialdata() {
     this.submitted = true;
-    this.isEditMode=true;
+    this.isEditMode=false;
     if (this.addOfficialForm.invalid) {
       this.addOfficialForm.markAllAsTouched();
       return

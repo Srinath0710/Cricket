@@ -1,4 +1,4 @@
-::ng-deep .new-button {
+/* ::ng-deep .new-button {
     background-color: #3f51b5;
     color: white;
     border: none;
@@ -34,6 +34,6 @@
   .dropdown-container {
     display: flex;
     align-items: center;
-    gap: 1rem; /* Adjust spacing as needed */
+    gap: 1rem; 
   }
-  
+   */

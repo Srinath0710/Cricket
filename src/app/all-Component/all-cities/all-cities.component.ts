@@ -58,6 +58,7 @@ export class AllCitiesComponent implements OnInit {
   public ShowForm: any = false;
   isEditMode: boolean = false;
   viewMode: boolean = false;
+  searchKeyword: string = '';
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   state_id: number = Number(localStorage.getItem('state_id'));
@@ -228,6 +229,7 @@ export class AllCitiesComponent implements OnInit {
   
   onAddCity() {
     this.submitted = true;
+    this.isEditMode = false;
   
     if (this.addCityForm.invalid) {
         console.log('Form is invalid:', this.addCityForm.errors);

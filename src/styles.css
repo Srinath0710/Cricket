@@ -829,6 +829,7 @@ main {
 .card-body {
   padding: 0 !important;
   overflow: hidden !important; 
+  
 }
 .filter-panel {
   display: none;
@@ -1136,10 +1137,12 @@ main {
 }
 
 .width-search {
+   border-radius: 0 !important;
   width: 127px !important;
   padding-right: 35px !important;
   height: 37px;
   margin-top: 3px;
+
 }
 
 
@@ -1181,7 +1184,7 @@ main {
   display: block;
   font-size: 12px;
   width: 100%;
-  text-align: left;
+  text-align: center;
   box-sizing: border-box;
  
 }
@@ -1205,6 +1208,20 @@ input.form-control:focus {
   outline: none;
 }
 
+
+
+
+
+.sidebar-wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.small-heading {
+  font-size: 1.2rem;
+  font-weight: bold; 
+}
 
 
 

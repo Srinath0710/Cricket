@@ -88,7 +88,8 @@ export class TeamsComponent implements OnInit {
   viewMode: boolean = false;
   isEditMode: boolean = false;
   searchKeyword: string = '';
-
+selectedCity:string='';
+cities=[];
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -99,7 +100,7 @@ export class TeamsComponent implements OnInit {
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
       team_name: ['', [Validators.required]],
-      team_short: ['', [Validators.required]],
+      team_short: [''],
       gender_id: ['', [Validators.required]],
       age_category_id: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
@@ -117,7 +118,7 @@ export class TeamsComponent implements OnInit {
       this.teamData = res.data.teams ?? [];
       this.totalData = 50;
       this.teamData.forEach((val: any) => {
-        val.profile_img = `${val.profile_img}?${Math.random()}`;
+        // val.profile_img = `${val.profile_img}?${Math.random()}`;
       });
     }, (err: any) => {
       err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
@@ -279,6 +280,7 @@ export class TeamsComponent implements OnInit {
   }
 
   EditTeam(team_id: number) {
+     this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();

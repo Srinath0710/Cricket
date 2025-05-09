@@ -18,6 +18,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { CricketKeyConstant } from '../services/cricket-key-constant';
 import { Sidebar } from 'primeng/sidebar';
+import { profile } from 'console';
 
 @Component({
   selector: 'app-grounds',
@@ -142,6 +143,7 @@ export class GroundsComponent implements OnInit {
 
   onAddGround() {
     this.submitted = true;
+      this.isEditMode=false;
     if(this.addGroundForm.invalid) {
       this.addGroundForm.markAllAsTouched();
       return
@@ -161,21 +163,21 @@ export class GroundsComponent implements OnInit {
       end_one:this.addGroundForm.value.end_one,
       end_two:this.addGroundForm.value.end_two
     };
-    const url = this.addGroundForm.value.ground_id ? this.urlConstant.updateCountry : this.urlConstant.addCountry;
+ if (this.addGroundForm.value.official_id) {
+      // params.action_flag='update';
+      this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    } else {
 
-    this.apiService.post(url, params).subscribe(
-      (res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status
-        ? this.addCallBack(res) : this.failedToast(res);
-      },
-      (err) => {
-        if(err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg) {
-          this.apiService.RefreshToken();
-        }else{
-          this.failedToast(err);
-        }
-      }
-    );
+      this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    }
     }
 
   addCallBack(res:any) {
@@ -185,17 +187,18 @@ export class GroundsComponent implements OnInit {
     this.gridload();
   }
 
-  EditGround(ground_id: number) {
-    const params: any = {
-      user_id: this.user_id?.toString(),
-      client_id: this.client_id?.toString(),
-      ground_id: ground_id?.toString() 
-    };
-  
-    this.apiService.post(this.urlConstant.editGround, params).subscribe(
-      (res) => {
+  EditGround(ground: any) {
+       this.isEditMode = true;
+    const params: any = {};
+     params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.ground_id = ground.ground_id?.toString();
+
+    this.apiService.post(this.urlConstant.editGround, params).subscribe((res)=>{
+        console.log(res);
         if (res.status_code == 200) {
           const editRecord: EditGround = res.data.grounds[0] ?? {};
+
           if (editRecord != null) {
             this.addGroundForm.setValue({
               ground_id: editRecord.ground_id,
@@ -208,13 +211,15 @@ export class GroundsComponent implements OnInit {
               address_2: editRecord.address_2,
               post_code: editRecord.post_code,
               end_one: editRecord.end_one,
-              end_two: editRecord.end_two
+              end_two: editRecord.end_two,
+              profile:null,
+              ground_photo:null
             });
             this.showAddForm();
           }
         } else {
           this.failedToast(res);
-        }
+        } 
       },
       (err: any) => {
         err.status === this.cricketKeyConstant.status_code.refresh &&
