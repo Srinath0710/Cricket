@@ -8,7 +8,7 @@
               <i class="fa fa-user-circle" aria-hidden="true"></i>
               All States
             </div>
-            <div class="top-bar d-flex align-items-center gap-3" style="position:static;">
+            <div class="col-md-2 d-flex align-items-center gap-3">
               <p-dropdown 
             
                 [options]="countriesData" 
@@ -16,8 +16,9 @@
                 optionValue="country_id"
                 [(ngModel)]="countryID" 
                 (ngModelChange)="gridLoad()" 
-                placeholder="Select Country" 
-                appendTo="body">
+                placeholder="Select Country"  
+                appendTo="body"
+                class="drop-error header-drop" >
                 <ng-template let-country pTemplate="item">
                   <div class="country-item">
                     <div>{{ country.country_name }}</div>
@@ -33,7 +34,6 @@
               <!-- Search Form -->
               <form class="d-flex align-items-center  gap-2">
                 <div class="p-input-icon-right flex-grow-1">
-                  <!-- <i class="pi pi-search" ></i> -->
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
                     placeholder="  Search" (keyup.enter)="gridLoad()" />
                 </div>
@@ -129,31 +129,24 @@
         <form [formGroup]="addStateForm">
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="country_id">Country</label>
-               <span class="text-danger">*</span>
-              <p-dropdown [options]="countriesData" class="drop-error" formControlName="country_id"
-                optionValue="country_id" optionLabel="country_name" [ngModel]="addStateForm.get('country_id')?.value"
-                placeholder="Select Country" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
-                
-                
-                
+              <label >Country
+                <span class="text-danger">*</span>
+              </label>
+              <p-dropdown [options]="countriesData" class="drop-error " formControlName="country_id" optionValue="country_id"
+                optionLabel="country_name" placeholder="select Country">
                 <ng-template let-country pTemplate="item">
                   <div class="flex align-items-center gap-2">
-                    <div>{{ country.country_name }}</div>
+                    <div>{{ country.country_name }}
+                    </div>
                   </div>
                 </ng-template>
               </p-dropdown>
               <small
-                *ngIf="addStateForm.get('country_id')?.invalid && (addStateForm.get('country_id')?.touched || submitted)"
-                class="required-msg">Country is required</small>
+              *ngIf="addStateForm?.get('country_id')?.invalid &&(addStateForm?.get('country_id')?.touched) || (addStateForm.get('country_id')?.invalid && submitted)"
+              class="required-msg">Country
+              Is Required
+            </small>
             </div>
-
-
-
-
-
-            
-
             <div class="col-md-6">
               <label class="state_Name">State Name</label>
               

@@ -213,7 +213,6 @@ export class CountryComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.country_id = country_id?.toString();
     this.apiService.post(this.urlConstant.editCountry, params).subscribe((res) => {
-      console.log(res);
       if (res.status_code == 200) {
         const editRecord: EditCountry = res.data.countries[0] ?? {};
         if (editRecord != null) {

@@ -243,8 +243,7 @@
                 <label>Country</label>
 
                 <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="country_id"
-                  optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country"
-                  appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                  optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country">
                   <ng-template let-gender pTemplate="item">
                     <div class="flex align-items-center gap-2">
                       <div>{{ gender.region_name }}
@@ -259,8 +258,7 @@
                 <label>Format</label>
 
                 <p-dropdown [options]="teamformat" class="drop-error " formControlName="format_id"
-                  optionValue="config_id" optionLabel="config_name" placeholder="Select Format Id" appendTo="body"
-                  [panelStyleClass]="'custom-dropdown-panel'">
+                  optionValue="config_id" optionLabel="config_name" placeholder="Select Format Id">
                   <ng-template let-gender pTemplate="item">
                     <div class="flex align-items-center gap-2">
                       <div>{{ gender.config_name }}
@@ -276,8 +274,7 @@
 
                 <p-dropdown [options]="officialtype" class="drop-error" formControlName="official_type_id"
                   optionValue="config_id" optionLabel="config_name" placeholder="Select Official Type"
-                  (onChange)="onOfficialChange($event.value)" appendTo="body"
-                  [panelStyleClass]="'custom-dropdown-panel'">
+                  (onChange)="onOfficialChange($event.value)">
                   <ng-template let-ageformat pTemplate="item">
                     <div class="flex align-items-center gap-2">
                       <div>{{ ageformat.config_name }}</div>
@@ -291,7 +288,7 @@
                 <label>{{ childLabel }}</label>
                 <p-dropdown [options]="childOptions" class="drop-error" formControlName="official_category_id"
                   optionValue="config_id" optionLabel="config_name" placeholder="Select {{ childLabel }}"
-                  appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+  >
                   <ng-template let-option pTemplate="item">
                     <div class="flex align-items-center gap-2">
                       <div>{{ option.config_name }}</div>

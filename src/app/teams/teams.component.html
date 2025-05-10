@@ -87,24 +87,6 @@
                     {{ teams.record_status }}
                   </span>
                 </td>
-                <!-- <td class="action-column">
-                  <div class="action-icon" (click)="EditTeam(teams.team_id)">
-                    <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                  </div>
-
-
-                  <div class="action-icon"
-                    (click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.active_status)">
-                    <span><i class="fa fa-check"></i></span>
-                  </div>
-
-                  <div class="action-icon"
-                    (click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.deactive_status)">
-                    <span> <i class="fa fa-times"></i>
-                    </span>
-                  </div>
-
-                </td> -->
                 <td>
                   <span class="icon-blue" (click)="EditTeam(teams.team_id)" pTooltip="Edit" tooltipPosition="top">
                     <i class="fa-solid fa-user-pen"></i>
@@ -174,8 +156,7 @@
               </label>
 
               <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id" optionValue="config_id"
-                optionLabel="config_name" placeholder="select gender" appendTo="body"
-                [panelStyleClass]="'custom-dropdown-panel'">
+                optionLabel="config_name" placeholder="select gender">
                 <ng-template let-gender pTemplate="item">
                   <div class="flex align-items-center gap-2">
                     <div>{{ gender.config_name }}
@@ -195,8 +176,8 @@
                 <span class="text-danger">*</span>
               </label>
               <p-dropdown [options]="formatList" class="drop-error " formControlName="format_id" optionValue="config_id"
-                optionLabel="config_name" placeholder="select Format Name" appendTo="body"
-                [panelStyleClass]="'custom-dropdown-panel'">
+                optionLabel="config_name" placeholder="select Format Name"
+                >
                 <ng-template let-ageformat pTemplate="item">
                   <div class="flex align-items-center gap-2">
                     <div>{{ ageformat.config_name }}
@@ -217,8 +198,7 @@
                 <span class="text-danger">*</span>
               </label>
               <p-dropdown [options]="ageGroupList" class="drop-error " formControlName="age_category_id"
-                optionValue="config_id" optionLabel="config_name" placeholder="select Age Group" appendTo="body"
-                [panelStyleClass]="'custom-dropdown-panel'">
+                optionValue="config_id" optionLabel="config_name" placeholder="select Age Group">
                 <ng-template let-agegroup pTemplate="item">
                   <div class="flex align-items-center gap-2">
                     <div>{{ agegroup.config_name }}

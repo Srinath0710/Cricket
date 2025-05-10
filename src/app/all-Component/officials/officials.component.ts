@@ -132,7 +132,6 @@ export class OfficialsComponent implements OnInit {
     this.apiService.post(this.urlConstant.officiallist, params).subscribe((res) => {
       this.officialDataList = res.data.officials ?? [];
 
-      console.log(this.officialDataList)
     }, (err: any) => {
       error: (err: any) => {
         console.error('Error loading official list:', err);
@@ -303,7 +302,6 @@ export class OfficialsComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.official_id = official.official_id?.toString();
     this.apiService.post(this.urlConstant.editofficial, params).subscribe((res) => {
-      console.log(res);
       if (res.status_code == 200) {
         const editRecord: offcialedit = res.data.officials[0] ?? {};
         if (editRecord != null) {

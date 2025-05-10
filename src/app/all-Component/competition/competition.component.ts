@@ -1,7 +1,8 @@
+
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { FormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
@@ -9,114 +10,497 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { PaginatorModule } from 'primeng/paginator';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
-import { Compitition } from './competition.model';
-import { ToastModule } from 'primeng/toast';
+import { CricketKeyConstant } from '../../services/cricket-key-constant';
+import { Sidebar } from 'primeng/sidebar';
+import { EditCompitition, UpdateCompetition } from './competition.model';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CompTeamComponent } from './comp-team/comp-team.component';
+import { CompOfficialComponent } from './comp-official/comp-official.component';
+import { CompGroundComponent } from './comp-ground/comp-ground.component';
+import { CompPlayerComponent } from './comp-player/comp-player.component';
+import { CompMatchComponent } from './comp-match/comp-match.component';
+
+interface Competition {
+  competition_id: number;
+  client_id: string;
+  season_name: string;
+  start_date: string;
+  end_date: string;
+  comp_date: string;
+  competition_name: string;
+  visual_name: string;
+  trophy_name: string;
+  format: string;
+  tour_type: string;
+  category: string;
+  age_category: string;
+  gender: string;
+  record_status: string;
+  profile_image: string;
+  total_records: number;
+
+
+  // UI properties
+  name: string;
+  match_type: string;
+  status: string;
+  imageUrl: string;
+}
+interface MetaDataItem {
+  config_key: string;
+  [key: string]: any;
+}
+interface season {
+  season_id: number;
+  season_name: string;
+}
+
 
 @Component({
   selector: 'app-competition',
   templateUrl: './competition.component.html',
   styleUrl: './competition.component.css',
-  imports:[
+  imports: [
     DropdownModule,
     TagModule,
     FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     ButtonModule,
     TableModule,
-     ButtonModule, 
-     InputTextModule,
-     DialogModule,
-     CalendarModule,
-     HttpClientModule,
-     ToastModule
+    InputTextModule,
+    DialogModule,
+    CalendarModule,
+    HttpClientModule,
+    ToastModule,
+    PaginatorModule,
+    Sidebar,
+    ConfirmDialogModule,
+    CompTeamComponent,
+    CompOfficialComponent,
+    CompGroundComponent,
+    CompPlayerComponent,
+    CompMatchComponent
 
-    ],
-    providers: [
-      { provide: URLCONSTANT }
-    ],
+  ],
+  providers: [
+    { provide: URLCONSTANT },
+    { provide: CricketKeyConstant },
+    { provide: MessageService },
+    { provide: ConfirmationService }
+  ],
+  standalone: true
 })
-export class CompetitionComponent {
-    searchKeyword: string = '';
-    visible: boolean = false;
-    isEditing: boolean = false;
-    public ShowForm: any = false;
-    position:'right'  = 'right';
-    formGroup!: FormGroup ;
-    backScreen: any
-    selectedcompitition: any = null;
-    visibleDialog: boolean = false;
-    compitition:Compitition[]=[];
-    compititionList: any[] = [];
-    showTabs = false;
-    public activeTab = '';
+export class CompetitionComponent implements OnInit {
+  public addCompetitionForm!: FormGroup<any>;
 
-    constructor(private fb: FormBuilder,private apiService:ApiService,private httpClient:HttpClient,private urlConstant: URLCONSTANT) {
-    
-    } 
-    ngOnInit(){
-   
-      this.gridload();
+
+
+  user_id: number = Number(localStorage.getItem('user_id'));
+  client_id: number = Number(localStorage.getItem('client_id'));
+  searchKeyword: string = '';
+  isEditing: boolean = false;
+  public ShowForm: any = false;
+  position: string = 'right';
+  backScreen: any;
+  selectedcompitition: any = null;
+  visibleDialog: boolean = false;
+  compititionList: Competition[] = [];
+  filteredCompititionList: Competition[] = [];
+  showTabs: boolean = false;
+  public activeTab: string = 'ground';
+  totalRecords: number = 0;
+  first: number = 1;
+  rows: number = 6;
+  isEditMode: boolean = false;
+  submitted: boolean = false;
+  viewMode: boolean = false;
+  seasonList: season[] = [];
+  regionsData: [] = [];
+  metaDataList: MetaDataItem[] = [];
+  tourtypeList: MetaDataItem[] = [];
+  tourformatList: MetaDataItem[] = [];
+  filterTourformatList: MetaDataItem[] = [];
+  genderList: MetaDataItem[] = [];
+  ageGroupList: MetaDataItem[] = [];
+  tourlevelList: MetaDataItem[] = [];
+  teamdropList: MetaDataItem[] = [];
+
+  // Filter properties
+  showFilters: boolean = false;
+  filterStatus: string = '';
+  filterMatchType: string = '';
+  filterCategory: string = '';
+  manageData: { competition_id: number } = { competition_id: 0 };
+  competitionData: Competition = {
+    competition_id: 0,
+    client_id: '',
+    season_name: '',
+    start_date: '',
+    end_date: '',
+    comp_date: '',
+    competition_name: '',
+    visual_name: '',
+    trophy_name: '',
+    format: '',
+    tour_type: '',
+    category: '',
+    age_category: '',
+    gender: '',
+    record_status: '',
+    profile_image: '',
+    total_records: 0,
+    name: '',
+    match_type: '',
+    status: '',
+    imageUrl: ''
+  };
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private messageService: MessageService,
+    private cricketKeyConstant: CricketKeyConstant,
+    private confirmationService: ConfirmationService
+  ) { }
+
+  ngOnInit() {
+    this.initForm();
+    this.getGlobalData();
+    this.loadCompetitions();
+  }
+
+  initForm() {
+    this.addCompetitionForm = this.fb.group({
+      competition_id: [],
+      season_id: [],
+      competition_type_id: ['', Validators.required],
+      competition_category_id: ['1', Validators.required],
+      age_category_id: ['', Validators.required],
+      competition_level: ['', Validators.required],
+      gender_id: ['', Validators.required],
+      competition_format_id: ['', Validators.required],
+      competition_name: ['', Validators.required],
+      visual_name: ['', Validators.required],
+      trophy_name: ['', Validators.required],
+      start_date: ['', Validators.required],
+      end_date: ['', Validators.required],
+      // is_practice: [null, Validators.required],
+      video_path: ['', Validators.required],
+      overs_per_innings: [''],
+      overs_per_bowler: [''],
+      points_abandoned: [''],
+      points_draw: [''],
+      points_win: [''],
+      points_lead: [''],
+      points_tie: [''],
+      calculation: [''],
+      competition_image: [null],
+      distrib_id: [null],
+      is_practice: [null]
+    });
+  }
+
+  showDialog() {
+    this.isEditing = false;
+    this.addCompetitionForm.reset();
+    this.addCompetitionForm.patchValue({ status: 'Active' });
+    this.ShowForm = true;
+  }
+
+  loadCompetitions() {
+    const params: any = {
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString(),
+      page_no: this.first.toString(),
+      records: this.rows.toString()
+    };
+
+
+    if (this.filterStatus) {
+      params.status = this.filterStatus;
     }
-    showDialog() {
-      this.isEditing = false;
-      this.formGroup.reset();
-      this.visible = true;
+    if (this.filterMatchType) {
+      params.match_type = this.filterMatchType;
     }
-    
-    gridload(){
-      // this.apiService.get(this.urlConstant.compititionList).subscribe(res => {
-      //   console.log(res);
-      //   this.compititionList = res.data;
-      
-      // });
-      // error: (err: any) => {
-      //   console.error('Error loading Compitition list:', err);
-      // }
+    if (this.filterCategory) {
+      params.category = this.filterCategory;
     }
-    
-    editCompitition(compitition: any) {
-      console.log('Editing Compitition:', compitition);
-      this.isEditing = true;
-      this.formGroup.patchValue({ ...compitition });
-      this.visible = true;
-    }
-    
-    viewShowDialog() {
-      this.visibleDialog = true
-      this.backScreen = "overlay1"
-    }
-    viewCompitition(compitition:any) {
-      this.selectedcompitition = compitition;
-      this.visibleDialog = true;
-    }
-    toggleStatus(compitition: any) {
-      compitition.status = compitition.status === 'Active' ? 'InActive' : 'Active';
-      console.log(`Compitition status changed to: ${compitition.status}`);
-    }
-    
-    onSubmit() {
-      if (this.formGroup.invalid) return;
-    
-      const compititionData = this.formGroup.value;
-    
-      if (this.isEditing ) {
-        this.compitition = Object.assign({}, compititionData);
-        } 
-        else {
-          this.compitition.push(Object.assign({}, compititionData));
+
+    this.apiService.post(this.urlConstant.getCompetitionList, params).subscribe(
+      (res) => {
+        if (res.data && res.data.competitions) {
+          this.compititionList = res.data.competitions.map((comp: any) => {
+
+            return {
+              ...comp,
+              competition_id: comp.competition_id,
+              name: comp.competition_name,
+              start_date: comp.start_date,
+              end_date: comp.end_date,
+              match_type: comp.format,
+              status: comp.record_status,
+              imageUrl: comp.profile_image || 'assets/images/default-competition.png'
+            };
+          });
+
+          this.filteredCompititionList = [...this.compititionList];
+
+          if (this.compititionList.length > 0 && this.compititionList[0].total_records) {
+            this.totalRecords = this.compititionList[0].total_records;
+          }
         }
-    
-      this.visible = false; 
-    }
-    changeTabs(tabName: string) {
-      this.activeTab = tabName;
+      },
+      (err) => {
+        if (err.status === this.cricketKeyConstant.status_code.refresh &&
+          err.error.message === this.cricketKeyConstant.status_code.refresh_msg) {
+          this.apiService.RefreshToken();
+        } else {
+          this.compititionList = [];
+          this.filteredCompititionList = [];
+          this.totalRecords = 0;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load competitions'
+          });
+        }
+      }
+    );
   }
-  viewGridTab(){
-    console.log("HII")
-    console.log(this.showTabs)
+
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
+  }
+
+  applyFilters() {
+
+    this.first = 1;
+
+
+    this.loadCompetitions();
+
+
+    this.showFilters = false;
+
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Filters Applied',
+      detail: 'Competition list has been filtered'
+    });
+  }
+
+  editCompitition(comp: any) {
+    console.log(comp)
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.competition_id = comp.competition_id?.toString();
+    this.apiService.post(this.urlConstant.editcompetition, params).subscribe((res) => {
+      console.log(res);
+      if (res.status_code == 200) {
+        const editRecord: EditCompitition = res.data.competitions[0] ?? {};
+        if (editRecord != null) {
+          this.addCompetitionForm.setValue({
+            competition_id: editRecord.competition_id,
+            season_id: editRecord.season_id,
+            competition_name: editRecord.competition_name,
+            visual_name: editRecord.visual_name,
+            trophy_name: editRecord.trophy_name,
+            competition_type_id: editRecord.competition_type_id,
+            competition_category_id: editRecord.competition_category_id,
+            gender_id: editRecord.gender_id,
+            age_category_id: editRecord.age_category_id,
+            competition_level: editRecord.competition_level,
+            competition_format_id: editRecord.competition_format_id,
+            start_date: editRecord.start_date,
+            end_date: editRecord.end_date,
+            video_path: editRecord.video_path,
+            overs_per_innings: editRecord.overs_per_innings,
+            overs_per_bowler: editRecord.overs_per_bowler,
+            points_abandoned: editRecord.points_abandoned,
+            points_draw: editRecord.points_draw,
+            points_win: editRecord.points_win,
+            points_lead: editRecord.points_lead,
+            points_tie: editRecord.points_tie,
+            calculation: editRecord.calculation,
+            competition_image: null,
+            distrib_id: null,
+            is_practice: null
+          });
+          this.ShowForm = true;
+        }
+      } else {
+        this.failedToast(res);
+      }
+    }, (err: any) => {
+      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+    });
+
+
+  }
+
+  viewShowDialog() {
+    this.visibleDialog = true;
+    this.backScreen = "overlay1";
+  }
+
+  viewCompitition(competition: any) {
+    this.selectedcompitition = competition;
+    this.visibleDialog = true;
+  }
+
+  toggleStatus(competition: any) {
+    const newStatus = competition.status === 'Active' ? 'InActive' : 'Active';
+
+
+    const params = {
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString(),
+      competition_id: competition.competition_id.toString(),
+      status: newStatus
+    };
+
+
+    competition.status = newStatus;
+    console.log(`Competition status changed to: ${competition.status}`);
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Status Updated',
+      detail: `Competition status changed to ${newStatus}`
+    });
+  }
+
+
+
+
+
+  changeTabs(tabName: string, competition: Competition) {
+    this.activeTab = tabName;
+    this.competitionData=competition;
     this.showTabs = true;
-  }
+    this.manageData = {
+      competition_id: competition.competition_id
+
     }
-    
+    console.log(this.showTabs)
+
+  }
+
+  onPageChange(event: any) {
+
+    this.first = Math.floor(event.first / event.rows) + 1;
+    this.rows = event.rows;
+    this.loadCompetitions();
+  }
+
+  cancelForm() {
+    this.ShowForm = false;
+  }
+  resetForm() {
+    this.addCompetitionForm.reset();
+    this.submitted = false;
+  }
+  successToast(data: any) {
+    this.messageService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+
+  }
+
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.messageService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
+  addCallBack(res: any) {
+    this.resetForm();
+    this.cancelForm();
+    this.successToast(res);
+    this.loadCompetitions();
+  }
+
+
+  onAddCompetition() {
+    this.submitted = true;
+    if (this.addCompetitionForm.invalid) {
+      this.addCompetitionForm.markAllAsTouched();
+      return
+    }
+    const params: UpdateCompetition = {
+      user_id: String(this.user_id),
+      client_id: String(this.client_id),
+      season_id: String(this.addCompetitionForm.value.season_id),
+      competition_type_id: String(this.addCompetitionForm.value.competition_type_id),
+      competition_name: this.addCompetitionForm.value.competition_name,
+      visual_name: this.addCompetitionForm.value.visual_name,
+      trophy_name: this.addCompetitionForm.value.trophy_name,
+      competition_category_id: String(this.addCompetitionForm.value.competition_category_id ?? '1'),
+      gender_id: String(this.addCompetitionForm.value.gender_id),
+      age_category_id: String(this.addCompetitionForm.value.age_category_id),
+      competition_level: String(this.addCompetitionForm.value.competition_level),
+      competition_format_id: String(this.addCompetitionForm.value.competition_format_id),
+      start_date: this.addCompetitionForm.value.start_date,
+      end_date: this.addCompetitionForm.value.end_date,
+      // is_practice: this.addCompetitionForm.value.is_practice,
+      video_path: this.addCompetitionForm.value.video_path,
+      overs_per_innings: this.addCompetitionForm.value.overs_per_innings,
+      overs_per_bowler: this.addCompetitionForm.value.overs_per_bowler,
+      points_abandoned: this.addCompetitionForm.value.points_abandoned,
+      points_draw: this.addCompetitionForm.value.points_draw,
+      points_win: this.addCompetitionForm.value.points_win,
+      points_lead: this.addCompetitionForm.value.points_lead,
+      points_tie: this.addCompetitionForm.value.points_tie,
+      calculation: this.addCompetitionForm.value.calculation,
+      competition_id: String(this.addCompetitionForm.value.competition_id),
+      action_flag: 'create',
+    };
+    if (this.addCompetitionForm.value.competition_id) {
+      params.action_flag = 'update';
+      this.apiService.post(this.urlConstant.updateCompetition, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    } else {
+      this.apiService.post(this.urlConstant.createCompetition, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    }
+
+  }
+  getGlobalData() {
+
+    const params: any = {};
+    params.action_flag = 'drop_down';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.dropdownlookups, params).subscribe((res: any) => {
+      this.seasonList = res.data["seasons"] != undefined ? res.data["seasons"] : [];
+      this.metaDataList = res.data["metadata"] != undefined ? res.data["metadata"] : [];
+      this.tourtypeList = this.metaDataList.filter(temp => temp.config_key === 'comp_type');
+      this.filterTourformatList = this.metaDataList.filter(temp => temp.config_key === 'team_format');
+      this.genderList = this.metaDataList.filter(temp => temp.config_key === 'gender');
+      this.ageGroupList = this.metaDataList.filter(temp => temp.config_key === 'age_category');
+      this.tourlevelList = this.metaDataList.filter(temp => temp.config_key === 'comp_level');
+
+
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken();
+
+      }
+
+    })
+  }
+  goBack(): void {
+    this.showTabs=false;
+this.loadCompetitions();
+  }
+  
+}

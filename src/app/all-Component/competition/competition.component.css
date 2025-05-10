@@ -1,74 +1,395 @@
 
-  .custom-header {
-    background-color: #a1bbd0; 
-    color: #000000 !important;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 12px;
-    border-bottom: 2px solid white;
-    position: relative;
-  }
-
-/* Remove right border from the last column */
-::ng-deep .p-datatable-thead > tr > th:last-child,
-::ng-deep .p-datatable-tbody > tr > td:last-child {
-    border-right: none !important;
+.page-wrapper {
+  background-color: #f9fafb;
+  padding: 0;
+  margin: 0;
+  padding-left: 5px !important; 
+  width: calc(100% - 65px) !important;
+  position: relative !important;
+}
+::ng-deep.p-drawer-right .p-drawer {
+  width: 97% !important;
+}
+.content.container-fluid {
+  padding: 0 !important;
+  width: 100% !important;
+  /* margin-top: 50px; */
 }
 
-::ng-deep .new-button {
-  background-color: #3f51b5;
+main {
+  width: 100% !important;
+  padding-right: 0px !important;
+}
+
+.margin-card {
+  margin: 5px 0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  width: auto !important;
+}
+
+.card-body {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.main-page-header {
+  padding: 0 5px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.playerbackground {
+  color: #3F51B5;
+  font-weight: bold;
+  font-size: 14px;
+}
+.playerbackground i {
+  color: #B33DC6;
+  margin-right: 5px;
+}
+.search-width {
+  flex: 2;
+  max-width: 180px;
+  margin: 0 8px;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+  padding: 0.5rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 0 0.5rem 0.5rem 0.5rem;
+}
+
+:host ::ng-deep select, 
+:host ::ng-deep option {
+  font-size: 11px;
+  height: 24px;
+  padding: 0 4px;
+}
+
+.d-flex.align-items-center,
+.filter-icon-wrapper,
+.card.flex.justify-center {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.p-button-label, .p-button-icon, .p-button-icon:before, .p-button-icon:after {
+  color: #FFF;
+}
+
+.p-icon {
+  height: 10px !important;
+}
+
+.filter-panel {
+  display: none;
+  background-color: #f5f7fa;
+  margin: 0 10px 8px 10px;
+  border-radius: 4px;
+  padding: 0;
+  border: 1px solid #e0e0e0;
+}
+
+.show-filters {
+  display: block;
+}
+
+.filter-row {
+  display: flex;
+  gap: 10px;
+  padding: 6px 10px;
+}
+
+.filter-item {
+  flex: 1;
+}
+
+.filter-item label {
+  display: block;
+  margin-bottom: 3px;
+  font-weight: 600;
+  font-size: 10px;
+  color: #666;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 10px;
+  height: 24px;
+}
+
+.filter-apply-btn {
+  width: 100%;
+  padding: 5px 10px;
+  background-color: #B33DC6;
   color: white;
   border: none;
-  height: 41px;
-}
-/* Header Style */
-.dialog-header {
-  background-color: #3f51b5;
-  color: white;
-  width: 95%;
-  text-align: center;
-  border-radius: 10px;
-  margin-left: 24px;
-
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 10px;
+  height: 24px;
 }
 
-/* Wrapper Padding */
-.player-details-wrapper {
-  padding: 1.5rem;
+.filter-icon-button {
+  background: transparent;
+  border: none;
+  color: #3F51B5;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
 }
 
-.dialog-header {
-  text-align: right;
-  margin-bottom: 1rem;
+
+.competition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 15px 10px;
 }
 
-::ng-deep .p-dialog {
-  border-radius: 14px !important;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
-}
-
-::ng-deep .p-dialog .p-dialog-header {
-  display: none; 
-}
-.even-row {
-  background-color: #f1f5f9; 
-}
-
-.modal-popup{
+.grid-card {
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background-color: #fff;
   position: relative;
-    z-index: 10;
 }
-.nav-tabs .nav-link.active {
-  border-bottom: 2px solid #007bff;
+
+.card-header {
+  background-color: #3F51B5;
+  color: white;
+}
+
+.date-range {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.category-info {
+  display: flex;
+}
+
+.gender-category {
+  background-color: #555;
+  color: white;
+  flex: 1;
+  padding: 5px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.match-type {
+  background-color: #4CAF50;
+  color: white;
+  flex: 1;
+  padding: 5px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.card-body {
+  padding: 12px;
+  background-color: #f0ffef;
+}
+
+.competition-name {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
+}
+
+.competition-location {
+  font-size: 12px;
+  text-align: center;
+  color: #666;
+  margin-top: 4px;
+}
+
+.card-footer {
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.action-links {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.action-links:last-child {
+  margin-bottom: 0;
+}
+
+.link-item {
+  color: #3F51B5;
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-item:hover {
+  text-decoration: underline;
+  color: #B33DC6;
+}
+
+.card-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 5px;
+}
+
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.9);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.action-icon:nth-child(1) {
+  color: #4CAF50;
+}
+
+.action-icon:nth-child(2) {
+  color: #3F51B5;
+}
+
+.action-icon:nth-child(3) {
+  color: #F44336;
+}
+
+.competition-pagination {
+  margin: 15px 10px;
+}
+
+
+.tabel-info {
+  padding: 10px;
+  background-color: #f5f7fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.view-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #3F51B5;
+}
+
+.tabel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 15px;
+}
+
+.info-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-block label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.info-block div {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+.main-page-title-manage {
+  font-size: 18px;
+  font-weight: bold;
+  color: #3F51B5;
+}
+
+.manage-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background-color: #3F51B5;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.manage-btn i {
+  margin-right: 5px;
+}
+
+.page-tile-img {
+  color: #B33DC6;
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.nav-tabs-bottom {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.nav-tabs-bottom .nav-link {
+  color: #495057;
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-bottom: -1px;
+  font-size: 14px;
+}
+
+.nav-tabs-bottom .nav-link.active {
+  color: #3F51B5;
+  border-bottom: 2px solid #3F51B5;
   font-weight: 600;
 }
 
-.card {
-  border-radius: 12px;
+
+.inactive {
+  display: none;
 }
 
-.tab-content .card {
-  border: 1px solid #dee2e6;
-  border-radius: 10px;
+
+@media (max-width: 992px) {
+  .competition-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
+@media (max-width: 576px) {
+  .competition-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.p-drawer-right .p-drawer {
+  width: 96% !important;
+}
+button.btn-sm {
+  min-width: 80px;
+  white-space: nowrap;
+  color: var(--bs-btn-hover-color);
+  background-color: var(--bs-btn-hover-bg);
+  border-color: var(--bs-btn-hover-border-color);
+
+}

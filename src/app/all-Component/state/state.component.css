@@ -10,16 +10,12 @@
   padding: 0 0.75rem;
 }
 
-::ng-deep .p-dropdown {
-  width: 100% !important;
-  height: 36px !important;
-  line-height: 13px !important;
-  font-size: 17px;
-}
 
-.create-button {
+
+/* .create-button {
   background-color: #2e7d32;
   color: white;
   border: none;
   font-weight: 500;
-}
+} */
+

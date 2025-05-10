@@ -239,7 +239,6 @@ export class StateComponent implements OnInit {
 
   editState(editRecord:any){
       this.isEditMode = true;
-    console.log('Edit clicked', State);
     const params: any = {}
     this.addStateForm.setValue({
       state_id:editRecord.state_id,
