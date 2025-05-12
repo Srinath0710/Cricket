@@ -59,7 +59,9 @@ interface season {
   season_id: number;
   season_name: string;
 }
-
+export interface ManageDataItem {
+  competition_id: number, name: string, match_type: string, gender: string, age_category: string, start_date: string, end_date: string
+}
 
 @Component({
   selector: 'app-competition',
@@ -136,7 +138,7 @@ export class CompetitionComponent implements OnInit {
   filterStatus: string = '';
   filterMatchType: string = '';
   filterCategory: string = '';
-  manageData: { competition_id: number } = { competition_id: 0 };
+  manageData:ManageDataItem  = { competition_id: 0,name:'',match_type:'',gender:'',age_category:'',start_date:'',end_date:'' };
   competitionData: Competition = {
     competition_id: 0,
     client_id: '',
@@ -383,11 +385,16 @@ export class CompetitionComponent implements OnInit {
 
   changeTabs(tabName: string, competition: Competition) {
     this.activeTab = tabName;
-    this.competitionData=competition;
+    this.competitionData = competition;
     this.showTabs = true;
     this.manageData = {
-      competition_id: competition.competition_id
-
+      competition_id: competition.competition_id,
+      name: competition.competition_name,
+      age_category:competition.age_category,
+      match_type:competition.match_type,
+      gender:competition.gender,
+      start_date:competition.start_date,
+      end_date:competition.end_date
     }
     console.log(this.showTabs)
 
@@ -499,8 +506,8 @@ export class CompetitionComponent implements OnInit {
     })
   }
   goBack(): void {
-    this.showTabs=false;
-this.loadCompetitions();
+    this.showTabs = false;
+    this.loadCompetitions();
   }
-  
+
 }

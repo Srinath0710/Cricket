@@ -19,13 +19,17 @@ import { ToastModule } from 'primeng/toast';
 import { CricketKeyConstant } from '../services/cricket-key-constant';
 import { Sidebar } from 'primeng/sidebar';
 import { profile } from 'console';
-
+import { Drawer } from 'primeng/drawer';
+interface Country {
+  country_id: number;
+  country_name: string;
+}
 @Component({
   selector: 'app-grounds',
   standalone: true,
   imports: [CommonModule, TableModule, BadgeModule, ButtonModule,
             DialogModule, ReactiveFormsModule, DropdownModule, 
-            FormsModule, FileUploadModule, InputTextModule, Sidebar,
+            FormsModule, FileUploadModule, InputTextModule, Drawer,
             ConfirmDialogModule, ToastModule, TagModule, PaginatorModule],
   templateUrl: './grounds.component.html',
   styleUrls: ['./grounds.component.css'],
@@ -54,20 +58,24 @@ export class GroundsComponent implements OnInit {
   searchKeyword: string = '';
   submitted: boolean = true;
   ground_id: any;
+  country_id: any;
 
+  countriesList: Country[] = []; 
+  citiesList = [];
+  statesList = [];
   constructor(private formBuilder: FormBuilder, 
               private apiService: ApiService,
               private urlConstant: URLCONSTANT,
               private msgService: MessageService,
               private confirmationService: ConfirmationService,
-              public cricketKeyConstant: CricketKeyConstant
-  ){
+              public cricketKeyConstant: CricketKeyConstant){
 
   }
 
 
   ngOnInit() {
     this.gridload();
+    this.getCountries();
     this.addGroundForm = this.formBuilder.group({
       ground_name: ['',[Validators.required]],
       display_name: ['',[Validators.required]],
@@ -76,7 +84,7 @@ export class GroundsComponent implements OnInit {
       post_code:['',[Validators.required]],
       end_one: ['',[Validators.required]],
       end_two: ['',[Validators.required]],
-      country_id: [''],
+      country_id: ['',[Validators.required]],
       ground_id:[''],
       state_id: [''],
       city_id: [''],
@@ -149,22 +157,25 @@ export class GroundsComponent implements OnInit {
       return
     }
     const params: UpdateGround = {
+
       user_id: String(this.user_id),
       client_id: String(this.client_id),
-      ground_id: this.addGroundForm.value.ground_id,
+      ground_id: String(this.addGroundForm.value.ground_id),
       ground_name: this.addGroundForm.value.ground_name,
       display_name:this.addGroundForm.value.display_name,
-      country_id:this.addGroundForm.value.country_id,
-      state_id:this.addGroundForm.value.state_id,
-      city_id:this.addGroundForm.value.city_id,
+      country_id:String(this.addGroundForm.value.country_id),
+      state_id:String(this.addGroundForm.value.state_id),
+      city_id:String(this.addGroundForm.value.city_id),
       address_1:this.addGroundForm.value.address_1,
       address_2:this.addGroundForm.value.address_2,
       post_code:this.addGroundForm.value.post_code,
       end_one:this.addGroundForm.value.end_one,
-      end_two:this.addGroundForm.value.end_two
+      end_two:this.addGroundForm.value.end_two,
+      action_flag: 'create',
     };
- if (this.addGroundForm.value.official_id) {
-      // params.action_flag='update';
+ if (this.addGroundForm.value.ground_id) {
+  console.log(this.addGroundForm.value.ground_id)
+      params.action_flag='update';
       this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
         res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
@@ -271,6 +282,69 @@ export class GroundsComponent implements OnInit {
       }
     });
   }
+
+  getCountries() {
+    const params: any = {};
+    params.action_flag = 'get_countries';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
+        this.countriesList = res.data.countries != undefined ? res.data.countries : [];
+        this.loading = false;
+        this.country_id = this.countriesList[0].country_id;
+        this.gridload();
+    }, (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+            this.apiService.RefreshToken();
+           
+        } else {
+            this.failedToast(err);
+        }
+    });
+}
+
+getCities(state_id:any) {
+    const params: any = {};
+
+    if (state_id == null || state_id == '') {
+        return
+    }
+
+    params.action_flag = 'get_city_by_state';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    params.state_id = state_id.toString();
+    this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
+        this.citiesList = res.data.cities != undefined ? res.data.cities : [];
+    }, (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+            this.apiService.RefreshToken();
+           
+        } else {
+            this.failedToast(err);
+        }
+    });
+}
+
+getStates(country_id:any) {
+    const params: any = {};
+    if (country_id == null || country_id == '') {
+        return
+    }
+    params.action_flag = 'get_state_by_country';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    params.country_id = country_id.toString();
+    this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
+        this.statesList = res.data.states != undefined ? res.data.states : [];
+        this.loading = false;
+    }, (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+            this.apiService.RefreshToken();
+            
+        }
+    });
+}
   }
 
 

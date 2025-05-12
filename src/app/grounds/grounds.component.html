@@ -1,248 +1,278 @@
 <div class="page-wrapper">
-    <div class="content container-fluid">
-        <main>
-            <div class="card margin-card">
-                <div class="card-body">
-                    <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-                        <div class="main-page-title page-title playerbackground">
-                            <i class="fas fa-globe-americas" aria-hidden="true"></i>
-                            Grounds
-                        </div>
-                        <div class="d-flex align-items-center">
+  <div class="content container-fluid">
+    <main>
+      <div class="card margin-card">
+        <div class="card-body">
+          <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+            <div class="main-page-title page-title playerbackground">
+              <i class="fas fa-globe-americas" aria-hidden="true"></i>
+              Grounds
+            </div>
+            <div class="d-flex align-items-center">
 
-                            <form class="d-flex align-items-center gap-2">
-                                <div class="p-input-icon-right flex-grow-1">
+              <form class="d-flex align-items-center gap-2">
+                <div class="p-input-icon-right flex-grow-1">
 
-                                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
-                                        class="width-search" placeholder="Search" (keyup.enter)="gridload()" />
-                                </div>
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="Search" (keyup.enter)="gridload()" />
+                </div>
 
-                                <button type="button" class="clear-button" (click)="searchKeyword = ''">
-                                    Clear
-                                </button>
-                            </form>
+                <button type="button" class="clear-button" (click)="searchKeyword = ''">
+                  Clear
+                </button>
+              </form>
 
-                            <div class="card flex justify-center">
-                                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                                    (click)="showAddForm()">
-                                    <i class="fas fa-plus"></i>
-                                    Grounds
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+              <div class="card flex justify-center">
+                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                  (click)="showAddForm()">
+                  <i class="fas fa-plus"></i>
+                  Grounds
+                </button>
+              </div>
+            </div>
+          </div>
 
-                    <p-table [value]="groundsData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th class="col-3" pSortableColumn="ground_name">Ground Name <p-sortIcon
-                                        field="ground_name"></p-sortIcon>
-                                </th>
-                                <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon
-                                        field="country_name"></p-sortIcon>
-                                </th>
-                                <th class="col-2" pSortableColumn="state_name">State Name <p-sortIcon
-                                        field="state_name"></p-sortIcon>
-                                </th>
-                                <th class="col-2" pSortableColumn="city_name">City Name <p-sortIcon
-                                        field="city_name"></p-sortIcon>
-                                </th>
-                                <th class="col-1" pSortableColumn="record_status">Status <p-sortIcon
-                                        field="record_status"></p-sortIcon>
-                                </th>
-                                <th class="col-2" class="custom-header action-column-header">Actions</th>
-                            </tr>
-                        </ng-template>
+          <p-table [value]="groundsData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="col-3" pSortableColumn="ground_name">Ground Name <p-sortIcon field="ground_name">
+                  </p-sortIcon>
+                </th>
+                <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon field="country_name">
+                  </p-sortIcon>
+                </th>
+                <th class="col-2" pSortableColumn="state_name">State Name <p-sortIcon field="state_name"></p-sortIcon>
+                </th>
+                <th class="col-2" pSortableColumn="city_name">City Name <p-sortIcon field="city_name"></p-sortIcon>
+                </th>
+                <th class="col-1" pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                </th>
+                <th class="col-2" class="custom-header action-column-header">Actions</th>
+              </tr>
+            </ng-template>
 
-                        <ng-template pTemplate="body" let-ground>
-                            <tr>
-                                <td>{{ ground.ground_name }}</td>
-                                <td>{{ ground.country_name }}</td>
-                                <td>{{ ground.state_name }}</td>
-                                <td>{{ ground.city_name }}</td>
-                                <td>
-                                    <span [ngClass]="{
+            <ng-template pTemplate="body" let-ground>
+              <tr>
+                <td>{{ ground.ground_name }}</td>
+                <td>{{ ground.country_name }}</td>
+                <td>{{ ground.state_name }}</td>
+                <td>{{ ground.city_name }}</td>
+                <td>
+                  <span [ngClass]="{
                                     ' bg-success': ground.record_status === 'Active',
                                     ' bg-danger': ground.record_status === 'InActive'
                                   }">
-                                        {{ ground.record_status }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="icon-blue" (click)="EditGround(ground)" pTooltip="Edit"
-                                        tooltipPosition="top">
-                                        <i class="fa-solid fa-user-pen"></i>
-                                    </span>
+                    {{ ground.record_status }}
+                  </span>
+                </td>
+                <td>
+                  <span class="icon-blue" (click)="EditGround(ground)" pTooltip="Edit" tooltipPosition="top">
+                    <i class="fa-solid fa-user-pen"></i>
+                  </span>
 
-                                    <span class="icon-green"
-                                        (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.active_status)"
-                                        pTooltip="Activate" tooltipPosition="top">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                    </span>
+                  <span class="icon-green"
+                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.active_status)"
+                    pTooltip="Activate" tooltipPosition="top">
+                    <i class="fa-solid fa-circle-check"></i>
+                  </span>
 
-                                    <span class="icon-red"
-                                        (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.deactive_status)"
-                                        pTootip="Deactivate" tooltipPosition="top">
-                                        <i class="fa-solid fa-trash-can-arrow-up"></i>
-                                    </span>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                    <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-                        [rowsPerPageOptions]="[10, 20, 30]" (onPageChange)="onPageChange($event)">
-                    </p-paginator>
-                </div>
-            </div>
-        </main>
+                  <span class="icon-red"
+                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.deactive_status)"
+                    pTootip="Deactivate" tooltipPosition="top">
+                    <i class="fa-solid fa-trash-can-arrow-up"></i>
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[10, 20, 30]" (onPageChange)="onPageChange($event)">
+          </p-paginator>
+        </div>
+      </div>
+    </main>
 
 
-        <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
-            [styleClass]="'p-confirm-dialog-custom'">
-        </p-confirmDialog>
-<p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
-      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
- <div class="sidebar-wrapper" (click)="$event.stopPropagation()">
+    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+      [styleClass]="'p-confirm-dialog-custom'">
+    </p-confirmDialog>
+    <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
       <div class="d-flex justify-content-between align-items-center mb-4">
-<h3 class="small-heading">
-  {{ isEditMode ? 'Edit Ground' : 'Add Ground' }}
-</h3>
+        <h3 class="small-heading">
+          {{ isEditMode ? 'Edit Ground' : 'Add Ground' }}
+        </h3>
       </div>
 
+      <form [formGroup]="addGroundForm">
+        <div class="row gy-3">
+
+          <div class="col-md-6">
+            <label class="">Ground Name
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Enter Ground Name"
+              formControlName="ground_name">
+            <small
+              *ngIf="addGroundForm?.get('ground_name')?.invalid &&(addGroundForm?.get('ground_name')?.touched) || (addGroundForm.get('ground_name')?.invalid && submitted)"
+              class="required-msg"> Ground name is Required
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="">Dispaly Name
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Entre Dispaly Name"
+              formControlName="display_name">
+            <small
+              *ngIf="addGroundForm?.get('display_name')?.invalid &&(addGroundForm?.get('display_name')?.touched) || (addGroundForm.get('display_name')?.invalid && submitted)"
+              class="required-msg"> Ground name is Required
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="">Address Name 1
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Entre Address 1"
+              formControlName="address_1">
+            <small
+              *ngIf="addGroundForm?.get('address_1')?.invalid &&(addGroundForm?.get('address_1')?.touched) || (addGroundForm.get('address_1')?.invalid && submitted)"
+              class="required-msg">Adress 1 is Required
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="">Address Name 2
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Entre Address 2"
+              formControlName="address_2">
+            <small
+              *ngIf="addGroundForm?.get('address_2')?.invalid &&(addGroundForm?.get('address_2')?.touched) || (addGroundForm.get('address_2')?.invalid && submitted)"
+              class="required-msg">Adress 2 is Required
+            </small>
+          </div>
+          <div class="col-md-6">
+            <label>Country
+              <span class="text-danger">*</span>
+            </label>
+            <p-dropdown [options]="countriesList" class="drop-error " 
+            formControlName="country_id"
+            (ngModelChange)="getStates(addGroundForm.get('country_id')?.value)"
+              optionValue="country_id" optionLabel="country_name" placeholder="select Country">
+              <ng-template let-country pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ country.country_name }}
+                  </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              *ngIf="addGroundForm?.get('country_id')?.invalid &&(addGroundForm.get('country_id')?.touched) || (addGroundForm.get('country_id')?.invalid && submitted)"
+              class="required-msg">Country
+              Is Required
+            </small>
+          </div>
+          <div class="col-md-6">
+            <label>State
+            </label>
+            <p-dropdown [options]="statesList" class="drop-error " 
+            formControlName="state_id"
+            (ngModelChange)="getCities(addGroundForm.get('state_id')?.value)"
+              optionValue="state_id" optionLabel="state_name" placeholder="select State">
+              <ng-template let-state pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ state.state_name }}
+                  </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+           
+          </div>
+          <div class="col-md-6">
+            <label>City
+            </label>
+            <p-dropdown [options]="citiesList" class="drop-error " 
+            formControlName="city_id"
+              optionValue="city_id" optionLabel="city_name" placeholder="select City">
+              <ng-template let-city pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ city.city_name }}
+                  </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          
+          </div>
+
+          <div class="col-md-6">
+            <label class="">Post Code
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Post Code" formControlName="post_code">
+            <small
+              *ngIf="addGroundForm?.get('post_code')?.invalid &&(addGroundForm?.get('post_code')?.touched) || (addGroundForm.get('post_code')?.invalid && submitted)"
+              class="required-msg">Post Code is Required
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="">End One
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="End One" formControlName="end_one">
+            <small
+              *ngIf="addGroundForm?.get('end_one')?.invalid &&(addGroundForm?.get('end_one')?.touched) || (addGroundForm.get('end_one')?.invalid && submitted)"
+              class="required-msg">End One is Required
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="">End Two
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="End Two" formControlName="end_two">
+            <small
+              *ngIf="addGroundForm?.get('end_two')?.invalid &&(addGroundForm?.get('end_two')?.touched) || (addGroundForm.get('end_two')?.invalid && submitted)"
+              class="required-msg">End Two is Required
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="">Profile Image
+            </label>
+            <input class="form-control" maxlength="50" type="file" placeholder="Add Profile Image "
+              formControlName="profile">
+
+          </div>
+
+          <div class="col-md-6">
+            <label class="">Ground Photo
+            </label>
+            <input class="form-control" maxlength="50" type="file" placeholder="Add Ground Photo "
+              formControlName="ground_photo">
+
+          </div>
+
+        </div>
+        <div class="row mt-4 sticky-footer-buttons">
+          <div class="col-12 text-end">
+            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+              (click)="cancelForm()"></button>
+
+            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+              *ngIf="addGroundForm.get('country_id')?.value == '' || addGroundForm.get('country_id')?.value == null"
+              (click)="resetForm()"></button>
+
+            <button pButton type="button" label="Save" class="save-button" (click)="onAddGround()"></button>
+          </div>
+        </div>
 
 
-       
-          <form [formGroup]="addGroundForm">
-            <div class="row gy-3">
 
-              <div class="col-md-6">
-                <label class="">Ground Name
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Enter Ground Name"
-                  formControlName="ground_name">
-                <small
-                  *ngIf="addGroundForm?.get('ground_name')?.invalid &&(addGroundForm?.get('ground_name')?.touched) || (addGroundForm.get('ground_name')?.invalid && submitted)"
-                  class="required-msg"> Ground name is Required
-                </small>
-              </div>
+      </form>
 
-              <div class="col-md-6">
-                <label class="">Dispaly Name
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Entre Dispaly Name"
-                  formControlName="display_name">
-                <small
-                  *ngIf="addGroundForm?.get('display_name')?.invalid &&(addGroundForm?.get('display_name')?.touched) || (addGroundForm.get('display_name')?.invalid && submitted)"
-                  class="required-msg"> Ground name is Required
-                </small>
-              </div>
-
-              <div class="col-md-6">
-                <label class="">Address Name 1
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Entre Address 1"
-                  formControlName="address_1">
-                <small
-                  *ngIf="addGroundForm?.get('address_1')?.invalid &&(addGroundForm?.get('address_1')?.touched) || (addGroundForm.get('address_1')?.invalid && submitted)"
-                  class="required-msg">Adress 1 is Required
-                </small>
-              </div>
-
-              <div class="col-md-6">
-                <label class="">Address Name 2
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Entre Address 2"
-                  formControlName="address_2">
-                <small
-                  *ngIf="addGroundForm?.get('address_2')?.invalid &&(addGroundForm?.get('address_2')?.touched) || (addGroundForm.get('address_2')?.invalid && submitted)"
-                  class="required-msg">Adress 2 is Required
-                </small>
-              </div>
-
-              <div class="col-md-6">
-                <label class="">Post Code
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Post Code"
-                  formControlName="post_code">
-                <small
-                  *ngIf="addGroundForm?.get('post_code')?.invalid &&(addGroundForm?.get('post_code')?.touched) || (addGroundForm.get('post_code')?.invalid && submitted)"
-                  class="required-msg">Post Code is Required
-                </small>
-              </div>
-
-              <div class="col-md-6">
-                <label class="">End One
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="End One"
-                  formControlName="end_one">
-                <small
-                  *ngIf="addGroundForm?.get('end_one')?.invalid &&(addGroundForm?.get('end_one')?.touched) || (addGroundForm.get('end_one')?.invalid && submitted)"
-                  class="required-msg">End One is Required
-                </small>
-              </div>
-
-              <div class="col-md-6">
-                <label class="">End Two
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="End Two"
-                  formControlName="end_two">
-                <small
-                  *ngIf="addGroundForm?.get('end_two')?.invalid &&(addGroundForm?.get('end_two')?.touched) || (addGroundForm.get('end_two')?.invalid && submitted)"
-                  class="required-msg">End Two is Required
-                </small>
-              </div>
-
-
-
-     
-                    <div class="col-md-6">
-                <label class="">Profile Image
-                </label>
-                <input class="form-control" maxlength="50" type="file" placeholder="Add Profile Image "
-                  formControlName="profile">
-
-              </div>
-
-            
-     
-                    <div class="col-md-6">
-                <label class="">Ground Photo
-                </label>
-                <input class="form-control" maxlength="50" type="file" placeholder="Add Ground Photo "
-                  formControlName="ground_photo">
-
-              </div>
-
-            
-
-
-
-
-                                    
-                    </div>
-   <div class="row mt-4 sticky-footer-buttons">
-              <div class="col-12 text-end">
-                <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()"></button>
-            
-                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                  *ngIf="addGroundForm.get('country_id')?.value == '' || addGroundForm.get('country_id')?.value == null"
-                  (click)="resetForm()"></button>
-            
-                <button pButton type="button" label="Save" class="save-button" (click)="onAddGround()"></button>
-              </div>
-            </div>
-
-
-
-                </form>
-            </div>
-        </p-sidebar>
-    </div>
+    </p-drawer>
+  </div>
 </div>

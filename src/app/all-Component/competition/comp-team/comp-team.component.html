@@ -1,0 +1,32 @@
+<button (click)="upateTeams()">Update Teams</button>
+<p-pickList  [source]="sourceTeams" 
+[target]="targetTeams"
+[dragdrop]="true"
+[responsive]="true"
+[showSourceFilter]="true"
+[showTargetFilter]="true"
+filterBy="team_name"  
+sourceFilterPlaceholder="Search Available..." 
+targetFilterPlaceholder="Search Target..."
+[dragdrop]="true" [responsive]="true" [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" 
+>
+<ng-template pTemplate="sourceHeader">
+  <div class="p-d-flex p-ai-center">
+    Available
+  </div>
+</ng-template>
+
+<ng-template pTemplate="targetHeader">
+  <div class="p-d-flex p-ai-center">
+    Target 
+  </div>
+</ng-template>
+
+<ng-template pTemplate="item" let-product let-i="index">
+  <div class="flex flex-wrap p-2 align-items-center gap-3">
+    <div class="flex-1 flex flex-column gap-2">
+      <span class="font-bold">{{ product.team_name }}</span>
+    </div>
+  </div>
+</ng-template>
+</p-pickList>

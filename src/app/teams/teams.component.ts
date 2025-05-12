@@ -7,7 +7,6 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { Sidebar, SidebarModule } from 'primeng/sidebar';
 import { ApiService } from '../services/api.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { URLCONSTANT } from '../services/url-constant';
@@ -20,6 +19,7 @@ import { TagModule } from 'primeng/tag';
 import { EditTeam, Teams, UpdateTeams } from './teams.model';
 // import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { TooltipModule } from 'primeng/tooltip';
+import { Drawer } from 'primeng/drawer';
 
 interface Team {
   config_id: string;
@@ -39,12 +39,12 @@ interface Team {
     DropdownModule,
     FileUploadModule,
     InputTextModule,
-    Sidebar,
     PaginatorModule,
     TagModule,
     ConfirmDialogModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    Drawer
   ],
   templateUrl: './teams.component.html',
   styleUrls: ['./teams.component.css'],

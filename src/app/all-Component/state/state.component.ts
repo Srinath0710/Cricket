@@ -6,7 +6,7 @@ import { BadgeModule } from 'primeng/badge';
 import { DialogModule } from 'primeng/dialog';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-import { Sidebar } from 'primeng/sidebar';
+// import { Sidebar } from 'primeng/sidebar';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
@@ -19,11 +19,12 @@ import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Country } from '../../country/country.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
+import { Drawer } from 'primeng/drawer';
 
 @Component({
   selector: 'app-state',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, BadgeModule, DialogModule, FormsModule, InputTextModule, Sidebar, ReactiveFormsModule, PaginatorModule, TagModule, ConfirmDialogModule, DropdownModule,TooltipModule],
+  imports: [CommonModule, TableModule, ButtonModule, BadgeModule, DialogModule, FormsModule, InputTextModule, ReactiveFormsModule, PaginatorModule, TagModule, ConfirmDialogModule, DropdownModule,TooltipModule,Drawer],
   templateUrl: './state.component.html',
   styleUrls: ['./state.component.css'],
   providers: [

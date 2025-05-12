@@ -70,6 +70,8 @@ export class UpdateGround {
     post_code: string|number;
     end_one: string;
     end_two: string;
+    action_flag: string;
+
 
     constructor(item: Partial<UpdateGround> = {}) {
         this.user_id = item.user_id || 0;
@@ -85,5 +87,7 @@ export class UpdateGround {
         this.post_code = item.post_code || 0;
         this.end_one = item.end_one || '';
         this.end_two = item.end_two || '';
+        this.action_flag = item.action_flag || '';
+
     }
 }

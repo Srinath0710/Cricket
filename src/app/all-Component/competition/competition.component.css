@@ -26,6 +26,7 @@ main {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   width: auto !important;
+  
 }
 
 .card-body {

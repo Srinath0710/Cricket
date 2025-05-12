@@ -8,35 +8,24 @@
               <i class="fa fa-universal-access" aria-hidden="true"></i>
               All Official
             </div>
-          
-              <!-- Search Form -->
-           <form class="d-flex align-items-center  gap-2">
-            <div class="p-input-icon-right flex-grow-1">
-              <!-- <i class="pi pi-search" ></i> -->
-              <input
-                pInputText
-                type="text"
-                [(ngModel)]="searchKeyword"
-                name="searchKeyword"
-                class="width-search"
-                placeholder="  Search"
-                (keyup.enter)="gridload()"
-              />
-            </div>
-          
-            <button
-              type="button"
-              class="clear-button"
-              (click)="searchKeyword = ''"
-            >
-              Clear
-            </button>
-          </form>
 
-           
+            <!-- Search Form -->
+            <form class="d-flex align-items-center  gap-2">
+              <div class="p-input-icon-right flex-grow-1">
+                <!-- <i class="pi pi-search" ></i> -->
+                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                  placeholder="  Search" (keyup.enter)="gridload()" />
+              </div>
+
+              <button type="button" class="clear-button" (click)="searchKeyword = ''">
+                Clear
+              </button>
+            </form>
+
+
             <div class="card flex justify-center">
-              <button  *ngIf="!ShowForm" class="new-button p-button-text"
-                (click)="resetForm()" (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
+              <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()" (click)="showAddForm()">
+                <i class="fas fa-plus"></i> Create</button>
             </div>
 
 
@@ -81,7 +70,7 @@
             [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,30]" [globalFilterFields]="['Official_name']">
             <ng-template pTemplate="header">
 
-     
+
 
 
 
@@ -105,41 +94,36 @@
                 <th class="custom-header action-column-header">Actions</th>
               </tr>
 
-              
+
             </ng-template>
 
-                <ng-template pTemplate="body" let-official>
-                  <tr>
-                    <td>
-                      <span class="person-image-team-player">
-                        <img 
-                          class="player-img" 
-                          *ngIf="!official.profile_img || !official.player_profile" 
-                          [src]="default_img">
-                          
-                        <img 
-                          class="player-img" 
-                          *ngIf="official.profile_img && official.player_profile" 
-                          [src]="official.profile_img" 
-                          (error)="handleImageError($event, default_img)">
-                      </span>
-                      {{official.display_name}}
-                    </td>
+            <ng-template pTemplate="body" let-official>
+              <tr>
+                <td>
+                  <span class="person-image-team-player">
+                    <img class="player-img" *ngIf="!official.profile_img || !official.player_profile"
+                      [src]="default_img">
+
+                    <img class="player-img" *ngIf="official.profile_img && official.player_profile"
+                      [src]="official.profile_img" (error)="handleImageError($event, default_img)">
+                  </span>
+                  {{official.display_name}}
+                </td>
 
                 <!-- <td>{{ official.country }}</td> -->
                 <td>{{ official.format}}</td>
                 <td>{{ official.official_type}}</td>
                 <td>{{ official.category}}</td>
-               
-                 
-                  <td>
-                    <span [ngClass]="{
+
+
+                <td>
+                  <span [ngClass]="{
                       ' bg-success': official.record_status === 'Active',
                       ' bg-danger': official.record_status === 'InActive'
                     }"> {{ official.record_status }}
                   </span>
-                  </td>
-         
+                </td>
+
 
 
                 <td>
@@ -148,17 +132,21 @@
                     <i class="fa-solid fa-user-pen"></i>
                   </span>
 
-                  <span class="icon-green"  (click)="StatusConfirm(official.official_id,cricketKeyConstant.condition_key.active_status)" pTooltip="Activate" tooltipPosition="top">
+                  <span class="icon-green"
+                    (click)="StatusConfirm(official.official_id,cricketKeyConstant.condition_key.active_status)"
+                    pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
-  
-                  <span class="icon-red" (click)="StatusConfirm(official.official_id,cricketKeyConstant.condition_key.deactive_status)" pTooltip="Deactivate" tooltipPosition="top">
+
+                  <span class="icon-red"
+                    (click)="StatusConfirm(official.official_id,cricketKeyConstant.condition_key.deactive_status)"
+                    pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
 
 
-                  </td>
-               
+                </td>
+
 
 
 
@@ -169,153 +157,155 @@
         </div>
       </div>
 
-      <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
+      <!-- <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
       [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
- <div class="sidebar-wrapper" (click)="$event.stopPropagation()">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-<h3 class="small-heading">
-  {{ isEditMode ? 'Edit Official' : 'Add Official' }}
-</h3>
-      </div>
+ <div class="sidebar-wrapper" (click)="$event.stopPropagation()"> -->
 
-       
-          <form [formGroup]="addOfficialForm">
-            <div class="row gy-3">
-
-              <div class="col-md-6">
-                <label class="">First Name
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Enter First Name"
-                  formControlName="first_name">
-                <small
-                  *ngIf="addOfficialForm?.get('first_name')?.invalid &&(addOfficialForm?.get('first_name')?.touched) || (addOfficialForm.get('first_name')?.invalid && submitted)"
-                  class="required-msg"> First name is Required
-                </small>
-              </div>
-
-
-
-              <div class="col-md-6">
-                <label class="">Middle Name
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Enter Middle Name"
-                  formControlName="middle_name">
-              
-              </div>
-
-              <div class="col-md-6">
-                <label class="">Sure Name
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Enter Sure Name "
-                  formControlName="sur_name">
-                <small
-                  *ngIf="addOfficialForm.get('sur_name')?.invalid &&(addOfficialForm.get('sur_name')?.touched) || (addOfficialForm.get('sur_name')?.invalid && submitted)"
-                  class="text-danger">Sure name is Required
-                </small>
-              </div>
-
-
-              <div class="col-md-6">
-                <label class="">Display Name
-                  <span class="text-danger">*</span>
-                </label>
-                <input class="form-control" maxlength="50" type="text" placeholder="Enter Display Name "
-                  formControlName="display_name">
-                <small
-                  *ngIf="addOfficialForm.get('display_name')?.invalid &&(addOfficialForm.get('display_name')?.touched) || (addOfficialForm.get('display_name')?.invalid && submitted)"
-                  class="required-msg">Display name is Required
-                </small>
-              </div>
-
-
-              <div class="col-md-6">
-                <label class="">Profile Image
-                </label>
-                <input class="form-control" maxlength="50" type="file" placeholder="Add Profile Image "
-                  formControlName="profile_img">
-
-              </div>
-
-
-              <div class="col-md-6">
-
-                <label>Country</label>
-
-                <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="country_id"
-                  optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country">
-                  <ng-template let-gender pTemplate="item">
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ gender.region_name }}
-                      </div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-              </div>
-
-
-              <div class="col-md-6">
-                <label>Format</label>
-
-                <p-dropdown [options]="teamformat" class="drop-error " formControlName="format_id"
-                  optionValue="config_id" optionLabel="config_name" placeholder="Select Format Id">
-                  <ng-template let-gender pTemplate="item">
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ gender.config_name }}
-                      </div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-              </div>
-
-
-              <div class="col-md-6">
-                <label>Official Type</label>
-
-                <p-dropdown [options]="officialtype" class="drop-error" formControlName="official_type_id"
-                  optionValue="config_id" optionLabel="config_name" placeholder="Select Official Type"
-                  (onChange)="onOfficialChange($event.value)">
-                  <ng-template let-ageformat pTemplate="item">
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ ageformat.config_name }}</div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-              </div>
-
-              <!-- Child Dropdown with dynamic label -->
-              <div class="col-md-6" *ngIf="childOptions.length > 0">
-                <label>{{ childLabel }}</label>
-                <p-dropdown [options]="childOptions" class="drop-error" formControlName="official_category_id"
-                  optionValue="config_id" optionLabel="config_name" placeholder="Select {{ childLabel }}"
-  >
-                  <ng-template let-option pTemplate="item">
-                    <div class="flex align-items-center gap-2">
-                      <div>{{ option.config_name }}</div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-              </div>
-              
-
-            </div>
-  
-            <div class="row mt-4 sticky-footer-buttons">
-              <div class="col-12 text-end">
-                <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()"></button>
-            
-                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                  *ngIf="addOfficialForm.get('country_id')?.value == '' || addOfficialForm.get('country_id')?.value == null"
-                  (click)="resetForm()"></button>
-            
-                <button pButton type="button" label="Save" class="save-button" (click)="addOfficialdata()"></button>
-              </div>
-            </div>
-            
-          </form>
+      <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="small-heading">
+            {{ isEditMode ? 'Edit Official' : 'Add Official' }}
+          </h3>
         </div>
-      </p-sidebar>
 
+
+        <form [formGroup]="addOfficialForm">
+          <div class="row gy-3">
+
+            <div class="col-md-6">
+              <label class="">First Name
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter First Name"
+                formControlName="first_name">
+              <small
+                *ngIf="addOfficialForm?.get('first_name')?.invalid &&(addOfficialForm?.get('first_name')?.touched) || (addOfficialForm.get('first_name')?.invalid && submitted)"
+                class="required-msg"> First name is Required
+              </small>
+            </div>
+
+
+
+            <div class="col-md-6">
+              <label class="">Middle Name
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Middle Name"
+                formControlName="middle_name">
+
+            </div>
+
+            <div class="col-md-6">
+              <label class="">Sure Name
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Sure Name "
+                formControlName="sur_name">
+              <small
+                *ngIf="addOfficialForm.get('sur_name')?.invalid &&(addOfficialForm.get('sur_name')?.touched) || (addOfficialForm.get('sur_name')?.invalid && submitted)"
+                class="text-danger">Sure name is Required
+              </small>
+            </div>
+
+
+            <div class="col-md-6">
+              <label class="">Display Name
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Display Name "
+                formControlName="display_name">
+              <small
+                *ngIf="addOfficialForm.get('display_name')?.invalid &&(addOfficialForm.get('display_name')?.touched) || (addOfficialForm.get('display_name')?.invalid && submitted)"
+                class="required-msg">Display name is Required
+              </small>
+            </div>
+
+
+            <div class="col-md-6">
+              <label class="">Profile Image
+              </label>
+              <input class="form-control" maxlength="50" type="file" placeholder="Add Profile Image "
+                formControlName="profile_img">
+
+            </div>
+
+
+            <div class="col-md-6">
+
+              <label>Country</label>
+
+              <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="country_id"
+                optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country">
+                <ng-template let-gender pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ gender.region_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+
+            <div class="col-md-6">
+              <label>Format</label>
+
+              <p-dropdown [options]="teamformat" class="drop-error " formControlName="format_id" optionValue="config_id"
+                optionLabel="config_name" placeholder="Select Format Id">
+                <ng-template let-gender pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ gender.config_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+
+            <div class="col-md-6">
+              <label>Official Type</label>
+
+              <p-dropdown [options]="officialtype" class="drop-error" formControlName="official_type_id"
+                optionValue="config_id" optionLabel="config_name" placeholder="Select Official Type"
+                (onChange)="onOfficialChange($event.value)">
+                <ng-template let-ageformat pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ ageformat.config_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+            <!-- Child Dropdown with dynamic label -->
+            <div class="col-md-6" *ngIf="childOptions.length > 0">
+              <label>{{ childLabel }}</label>
+              <p-dropdown [options]="childOptions" class="drop-error" formControlName="official_category_id"
+                optionValue="config_id" optionLabel="config_name" placeholder="Select {{ childLabel }}">
+                <ng-template let-option pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ option.config_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+
+          </div>
+
+          <div class="row mt-4 sticky-footer-buttons">
+            <div class="col-12 text-end">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                (click)="cancelForm()"></button>
+
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                *ngIf="addOfficialForm.get('country_id')?.value == '' || addOfficialForm.get('country_id')?.value == null"
+                (click)="resetForm()"></button>
+
+              <button pButton type="button" label="Save" class="save-button" (click)="addOfficialdata()"></button>
+            </div>
+          </div>
+
+        </form>
+        <!-- </div>
+      </p-sidebar> -->
+      </p-drawer>
     </main>
   </div>
 </div>

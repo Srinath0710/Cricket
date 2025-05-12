@@ -54,7 +54,11 @@ export class URLCONSTANT {
       updateState = "State/update_state"
       activateState = "State/activate_state"
       deactivateState = "State/deactivate_state"
+
+     /* Global API */
       countryLookups = "Global/get_countries"
+      getStatesByCountry = "Global/get_state_by_country"
+      getcitylookups="Global/get_city_by_state"
 
 
       /*Seasons List*/
@@ -66,7 +70,6 @@ export class URLCONSTANT {
       deactivateSeason = "Season/deactivate_season"
 
       //    city
-      getStatesByCountry = "Global/get_state_by_country"
       getCityList = "City/get_city_list"
       addCity = "City/add_city"
       updateCity = "City/update_city"
@@ -105,7 +108,11 @@ export class URLCONSTANT {
       compgroundupdate = 'Competition/add_competition_grounds'
       compplayerlist = 'Competition/get_competition_players'
       compplayerupdate = 'Competition/add_competition_players'
+
+            /*   FIXTURE */
       fixturedropdown = 'Fixture/get_fixtures_dropdown'
       updatefixture = 'Fixture/update_fixtures'
+      addfixture = 'Fixture/add_fixtures'
+      getfixture = 'Fixture/get_fixtures'
 
 }

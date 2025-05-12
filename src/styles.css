@@ -782,8 +782,8 @@ label {
 }
 
 
-.p-drawer-right .p-drawer {
-  width: 30% !important;
+.p-drawer-right  {
+  width: 27rem !important;
 }
 .new-button {
   background-color: #367039 !important;

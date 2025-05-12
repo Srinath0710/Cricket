@@ -1,0 +1,20 @@
+    /* .team-picklist-container ::ng-deep .p-picklist {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 2rem; 
+    }
+    
+    .team-picklist-container ::ng-deep .p-picklist-source,
+    .team-picklist-container ::ng-deep .p-picklist-target {
+        flex: 1;
+        border: 1px solid #ccc;
+        padding: 1rem;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    */
+    /* Full layout into three columns: Available | Arrows | Target */
+
+  

@@ -1,0 +1,77 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ApiService } from '../../../services/api.service';
+import { CricketKeyConstant } from '../../../services/cricket-key-constant';
+import { URLCONSTANT } from '../../../services/url-constant';
+import { PickListModule } from 'primeng/picklist';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-comp-ground',
+  imports: [PickListModule, CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './comp-ground.component.html',
+  styleUrl: './comp-ground.component.css',
+  providers: [
+    { provide: URLCONSTANT },
+    { provide: CricketKeyConstant },
+    { provide: MessageService },
+    { provide: ConfirmationService }
+  ],
+  standalone: true
+})
+export class CompGroundComponent implements OnInit {
+  @Input() CompetitionData: any;
+  client_id: number = Number(localStorage.getItem('client_id'));
+  default_img: any ='assets/images/default-player.png';
+  sourceGround!: [];
+  targetGround!:[];
+  user_id: number = Number(localStorage.getItem('user_id'));
+  constructor(
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private messageService: MessageService,
+    private cricketKeyConstant: CricketKeyConstant,
+    private confirmationService: ConfirmationService
+  ) { }
+  ngOnInit() {
+    this.gridLoad();
+  }
+
+  gridLoad() {
+    const params: any = {}
+    params.client_id = this.client_id.toString();
+    params.user_id = this.user_id.toString();
+    params.competition_id = this.CompetitionData.competition_id.toString();
+    this.apiService.post(this.urlConstant.compgroundList, params).subscribe((res: any) => {
+      console.log(res);
+      const allItems =res.data.all_grounds;
+      const mappedIds = res.data.selected_grounds.map((value: any) => value.ground_id);
+      this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
+      // this.targetGround = res.data.all_grounds
+      this.targetGround = res.data.selected_grounds
+    console.log(this.sourceGround,this.targetGround,mappedIds)
+    }, (err: any) => {
+
+    })
+  }
+  updateGround() {
+    const params: any = {}
+    params.client_id = this.client_id.toString();
+    params.user_id = this.user_id.toString();
+    params.ground_list = this.targetGround.map((p: any) => p.ground_id).join(',').toString();
+    params.competition_id = this.CompetitionData.competition_id.toString();
+console.log("target:",this.targetGround);
+
+    this.apiService.post(this.urlConstant.compgroundupdate, params).subscribe((res: any) => {
+      this.gridLoad();
+    }, (err: any) => {
+
+    })
+  }
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
+  }
+}
+

@@ -23,6 +23,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { offcialedit } from './officials.model';
 import { OnInit } from '@angular/core';
 import { HostListener } from '@angular/core';
+import { Drawer } from 'primeng/drawer';
 
 interface official {
   config_id: string;
@@ -46,8 +47,8 @@ interface official {
     CalendarModule,
     HttpClientModule,
     DrawerModule,
-    SidebarModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    Drawer
   ],
   providers: [
     { provide: URLCONSTANT },

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { DialogModule } from 'primeng/dialog';
@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { Sidebar } from 'primeng/sidebar';
+// import { Sidebar } from 'primeng/sidebar';
 import { ApiService } from '../services/api.service';
 import { URLCONSTANT } from '../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
@@ -19,6 +19,7 @@ import { ToastModule } from 'primeng/toast';
 import { Country, EditCountry, UpdateCountry } from './country.model';
 import { CricketKeyConstant } from '../services/cricket-key-constant';
 import { TooltipModule } from 'primeng/tooltip';
+import { DrawerModule } from 'primeng/drawer';
 
 @Component({
   selector: 'app-country',
@@ -34,12 +35,13 @@ import { TooltipModule } from 'primeng/tooltip';
     FileUploadModule,
     InputTextModule,
     ReactiveFormsModule,
-    Sidebar,
+    // Sidebar,
     PaginatorModule,
     TagModule,
     ConfirmDialogModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    DrawerModule
 
   ],
   templateUrl: './country.component.html',
@@ -54,6 +56,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 export class CountryComponent implements OnInit {
   public addCountryForm!: FormGroup<any>;
+  @ViewChild('dt') dt: Table | undefined;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: any = false;
@@ -71,6 +74,7 @@ export class CountryComponent implements OnInit {
   totalData: any = 0;
   filedata: any;
   searchKeyword: string = '';
+  visible2: boolean = false;
 
   submitted: boolean = true;
   time_zone_id: any;
@@ -121,7 +125,7 @@ export class CountryComponent implements OnInit {
     params.records = this.rows.toString();
     this.apiService.post(this.urlConstant.getCountryList, params).subscribe((res) => {
       this.countriesData = res.data.countries ?? [];
-      this.totalData = 50;
+      this.totalData = 500;
       this.countriesData.forEach((val: any) => {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
@@ -271,5 +275,10 @@ export class CountryComponent implements OnInit {
       }
     });
   }
-
+  filterGlobal() {
+    this.dt?.filterGlobal(this.searchKeyword, 'contains');
+  }
+  clear(table: Table) {
+    table.clear();
+}
 }
