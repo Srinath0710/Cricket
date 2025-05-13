@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -57,6 +57,7 @@ interface Team {
 })
 export class TeamsComponent implements OnInit {
   public addTeamForm!: FormGroup<any>;
+  @ViewChild('dt') dt: Table | undefined;
 
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
@@ -65,11 +66,12 @@ export class TeamsComponent implements OnInit {
   uploadedImage: string | ArrayBuffer | null = null;
   default_img: string = 'assets/images/default-player.png';
   previewUrl: string | ArrayBuffer | null = null;
-
+ // team_short : string;
   configDataList: Team[] = [];
   ageGroupList: Team[] = [];
   genderList: Team[] = [];
   formatList: Team[] = [];
+  allTeamData: Teams[] = [];
   showCropperModal = false;
   imageBase64: any = null;
   filedata: any;
@@ -89,6 +91,8 @@ export class TeamsComponent implements OnInit {
   isEditMode: boolean = false;
   searchKeyword: string = '';
 selectedCity:string='';
+defaultRows: number = 10;
+
 cities=[];
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
@@ -97,6 +101,7 @@ cities=[];
   ngOnInit(): void {
     this.gridLoad()
     this.getGlobalData()
+    this.loadAllTeamData();
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
       team_name: ['', [Validators.required]],
@@ -107,6 +112,18 @@ cities=[];
       team_profile: ['']
     })
   }
+loadAllTeamData() {
+  const params = {
+    user_id: this.user_id?.toString(),
+    client_id: this.client_id?.toString(),
+    page_no: '1',
+    records: '10000' // Fetch all records (or update your API to support full list fetch)
+  };
+
+  this.apiService.post(this.urlConstant.getTeamList, params).subscribe((res) => {
+    this.allTeamData = res.data.teams ?? [];
+  });
+}
 
   gridLoad() {
     const params: any = {};
@@ -130,12 +147,24 @@ cities=[];
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
-  onPageChange(event: any) {
-    this.first = (event.page) + 1;
-    this.pageData = event.first;
-    this.rows = event.rows;
+ onPageChange(event: any) {
+  this.first = (event.page) + 1;
+  this.pageData = event.first;
+  this.rows = event.rows;
+
+  const keyword = this.searchKeyword.trim().toLowerCase();
+
+  if (keyword && this.allTeamData.length > 0) {
+    const filtered = this.allTeamData.filter(team =>
+      team.team_name?.toLowerCase().includes(keyword) ||
+      team.team_short?.toLowerCase().includes(keyword)
+    );
+
+    this.teamData = filtered.slice(event.first, event.first + event.rows);
+  } else {
     this.gridLoad();
   }
+}
   showAddForm() {
     this.ShowForm = true;
   }
@@ -337,5 +366,28 @@ cities=[];
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
+  
+   filterGlobal() {
+     const keyword = this.searchKeyword.trim().toLowerCase();
+
+  if (keyword && this.allTeamData.length > 0) {
+    const filtered = this.allTeamData.filter(team =>
+      team.team_name?.toLowerCase().includes(keyword) ||
+      team.team_short?.toLowerCase().includes(keyword)
+    );
+
+    this.teamData = filtered.slice(0, this.rows);
+    this.totalData = filtered.length;
+    this.first = 1;
+  } else {
+    this.gridLoad(); 
+  }
+  }
+clear(table: Table) {
+  table.clear();
+  this.searchKeyword = '';
+  this.gridLoad();
+}
+
 
 }

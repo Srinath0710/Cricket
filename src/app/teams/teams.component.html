@@ -10,7 +10,7 @@
             </div>
             <div class="d-flex align-items-center">
               <!-- Search Form -->
-              <form class="d-flex align-items-center  gap-2">
+              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
                   <!-- <i class="pi pi-search" ></i> -->
                   <input
@@ -20,14 +20,14 @@
                     name="searchKeyword"
                     class="width-search"
                     placeholder="  Search"
-                    (keyup.enter)="gridLoad()"
+                   (input)="filterGlobal()"
                   />
                 </div>
               
                 <button
                   type="button"
                   class="clear-button"
-                  (click)="searchKeyword = ''"
+                  (click)="searchKeyword = ''; filterGlobal();"
                 >
                   Clear
                 </button>
@@ -41,7 +41,8 @@
 
           </div>
 
-          <p-table [value]="teamData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
+          <p-table  #dt [value]="teamData" [styleClass]="'custom-table'" [globalFilterFields]="['team_name','age_category','team_category','gender','record_status']"
+             >
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="team_name">Team Name <p-sortIcon field="team_name"></p-sortIcon>

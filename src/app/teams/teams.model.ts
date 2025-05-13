@@ -5,6 +5,7 @@ export class Teams {
   age_category: string;
   team_category: string;
   record_status: string;
+  team_short: any;
   // time_zone_name: number;
 
   constructor(item: Partial<Teams> = {}) {
