@@ -90,19 +90,24 @@ h3 {
     margin: 0 27%;
 }
 label {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     display: block;
 }
 
 .form-control {
-    border-radius: 8px;
-    height: 42px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    width: 100%;
-    transition: all 0.3s ease-in-out;
-    border-radius: 0 !important;
+    font-size: 12px !important;            
+    border-radius: 0 !important;          
+    height: 35px;                        
+    padding: 10px;                         
+    border: 1px solid #ccc;               
+    width: 100%;                           
+    transition: all 0.3s ease-in-out;     
+}
+
+.form-control::placeholder {
+    font-size: 12px !important;            
+    color: #999;     
 }
 
 /* Password Field with Icon */
@@ -154,6 +159,8 @@ label {
 }
 .text-danger {
     text-transform: capitalize;
+
+
 }
 .page-wrapper {
     transition: all 0.2s ease-in-out;
@@ -253,6 +260,43 @@ label {
     display: block;
     border-radius: 0 !important;
 }
+
+.p-dropdown {
+  font-size: 12px !important; /* Controls both placeholder and selected text */
+}
+
+.p-dropdown .p-dropdown-label {
+  font-size: 12px !important;
+  padding: 0.25rem 0.5rem !important;
+}
+
+.p-dropdown-items .p-dropdown-item {
+  font-size: 12px !important;
+}
+
+.custom-dropdown-panel {
+  max-width:182px ! important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .main-page-action {
     flex: auto;
     height: inherit;
@@ -1137,12 +1181,16 @@ main {
 }
 
 .width-search {
-   border-radius: 0 !important;
-  width: 127px !important;
+  border-radius: 0 !important;
+  width: 150px !important;
   padding-right: 35px !important;
-  height: 37px;
+  height: 30px;
   margin-top: 3px;
+  font-size: 12px !important;
+}
 
+.width-search::placeholder {
+  font-size: 12px !important; 
 }
 
 
@@ -1180,9 +1228,8 @@ main {
   background-color: rgb(226, 36, 36);
   color: white;
   padding: 4px 8px;
-  
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   width: 100%;
   text-align: center;
   box-sizing: border-box;

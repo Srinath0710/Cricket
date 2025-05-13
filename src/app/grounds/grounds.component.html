@@ -160,7 +160,7 @@
             <p-dropdown [options]="countriesList" class="drop-error " 
             formControlName="country_id"
             (ngModelChange)="getStates(addGroundForm.get('country_id')?.value)"
-              optionValue="country_id" optionLabel="country_name" placeholder="select Country">
+              optionValue="country_id" optionLabel="country_name" placeholder="select Country"appendTo="self"  [panelStyleClass]="'custom-dropdown-panel'">
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ country.country_name }}
