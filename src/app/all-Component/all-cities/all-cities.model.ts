@@ -45,7 +45,6 @@ export class UpdateCity{
     city_id:string|number;
     action_flag: string;
     capital: string;
-    phonecode: string|number;
     country_id: string|number;
 
     constructor(item: Partial<UpdateCity> = {}){
@@ -57,8 +56,7 @@ export class UpdateCity{
       this.city_id=item.city_id||0;
       this.action_flag = item.action_flag || '';
       this.capital = item.capital || '';
-      this.phonecode = item.phonecode || 0;
-      this.country_id = item.phonecode || '';
+      this.country_id = item.country_id || '';
 
 
 

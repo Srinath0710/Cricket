@@ -17,7 +17,7 @@ import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Country,UpdateCity } from './all-cities.model';
-
+import { Drawer } from 'primeng/drawer';
 interface City {
   name: string;
   code: string;
@@ -41,7 +41,8 @@ interface City {
     DialogModule,
     ReactiveFormsModule,
     ConfirmDialogModule,
-    PaginatorModule
+    PaginatorModule,
+    Drawer
   ],
   templateUrl: './all-cities.component.html',
   styleUrls: ['./all-cities.component.css'],
@@ -66,7 +67,7 @@ export class AllCitiesComponent implements OnInit {
   rows: number = 10;
   cityData: any = [];
   countryData: Country[] = [];
-  states: any[] = [];
+  statesList: any[] = [];
   gridStates: any[] = [];
   formStates: any[] = [];
   totalData: any = 0;
@@ -74,11 +75,13 @@ export class AllCitiesComponent implements OnInit {
   submitted: boolean = false;
   gridCountryId: number | null = null;
   gridStateId: number | null = null;
-  countryId:any;
   formCountryId: any;
   formStateId: any;
   selected_country: any;
   stateId: any;
+  country_id: any;
+  countryId: any;
+  addAnother: boolean = false;
 
   constructor(private formBuilder:FormBuilder, private apiService: ApiService,
     private urlConstant: URLCONSTANT, private msgService: MessageService,
@@ -87,11 +90,8 @@ export class AllCitiesComponent implements OnInit {
 
   }
 
- 
- 
-
   ngOnInit() {
-   this.countryDropdown();
+   this.getCountries();
    this.addCityForm = this.formBuilder.group({
     city_id: [''],
     country_id: ['', Validators.required],
@@ -102,58 +102,47 @@ export class AllCitiesComponent implements OnInit {
   
 }
     
-  countryDropdown(){
-    const params:any={};
-    params.user_id =this.user_id?.toString();
-    params.client_id=this.client_id?.toString();
-    this.apiService.post(this.urlConstant. CountryDropdown, params).subscribe((res) => {
-      this.countryData = res.data.countries ?? [];
-      this.selected_country=this.countryData[0]?.country_id;
-      console.log(this.countryId);
-      this.getStates();   
-    }, (err: any) => {
+getCountries() {
+  const params: any = {};
+  params.action_flag = 'get_countries';
+  params.user_id = this.user_id.toString();
+  params.client_id = this.client_id.toString();
+  this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
+      this.countryData = res.data.countries != undefined ? res.data.countries : [];
+      this.countryId = this.countryData[0].country_id;
+
+      this.getStates(this.countryId);
+        }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
-      }
-
-    });
-  }
-  getStates() {
-    const params: any = {
-      user_id: String(this.user_id),
-      client_id: String(this.client_id),
-      country_id: String(this.selected_country)
-    };
-  
-    this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe(
-      (res) => {
-        this.states = res.data.states ?? [];
-        if(this.states.length!=0){
-          this.stateId = this.states[1]?.state_id;
-           this.gridLoad();
-
-        }
-        else{
-          this.stateId =null;
-        }
-        
-      },
-      (err) => {
-        if (
-          err.status === this.cricketKeyConstant.status_code.refresh &&
-          err.error.message === this.cricketKeyConstant.status_code.refresh_msg
-        ) {
           this.apiService.RefreshToken();
-        } 
+         
+      } else {
+          this.failedToast(err);
       }
-    );
-  }
+  });
+}
 
-  
-  
-
+getStates(countryId:any) {
+  const params: any = {};
+  params.action_flag = 'get_state_by_country';
+  params.user_id = this.user_id.toString();
+  params.client_id = this.client_id.toString();
+  params.country_id = countryId.toString();
+  this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
+      this.statesList = res.data.states != undefined ? res.data.states : [];
+  }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+          this.apiService.RefreshToken();
+          
+      }
+  });
+}
   
   gridLoad() {
+    setTimeout(()=>{
+      this.getCountries();
+
+  },1000)
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -195,6 +184,12 @@ export class AllCitiesComponent implements OnInit {
     this.addCityForm.reset();
     this.submitted = false;
   }
+  
+  showList() {
+
+    this.ShowForm = false;
+    this.resetForm();
+}
   successToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
@@ -232,7 +227,6 @@ export class AllCitiesComponent implements OnInit {
     this.isEditMode = false;
   
     if (this.addCityForm.invalid) {
-        console.log('Form is invalid:', this.addCityForm.errors);
       this.addCityForm.markAllAsTouched();
       return;
     }
@@ -248,18 +242,38 @@ export class AllCitiesComponent implements OnInit {
       city_id:this.addCityForm.value.city_id,
       action_flag: 'create',
         capital: '',
-      phonecode: '0'
     };
   
     if (this.addCityForm.value.city_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateCity, params).subscribe((res) => {
+
+        if (res.status_code == 200) {
+          this.countryId = Number(params.country_id);
+          this.stateId = Number(params.state_id);
+
+          setTimeout(() => {
+            this.getStates(this.countryId);
+            this.gridLoad();
+              this.successToast(res);
+              this.showList();
+              // this.ShowDrops();
+              this.resetForm();
+              if (this.addAnother == true) {
+                  this.showAddForm()
+              }
+          }, 100)
+      } else {
+          this.failedToast(res)
+      }
+
         res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
-      this.apiService.post(this.urlConstant.updateCity, params).subscribe((res) => {
+      this.apiService.post(this.urlConstant.addCity, params).subscribe((res) => {
+        this.countryId = this.addCityForm.get('country_id')?.value;
         res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
@@ -302,21 +316,8 @@ export class AllCitiesComponent implements OnInit {
     this.cityData = [];
   }
   
-  
-  // onGridStateFilterChange(event: any) {
-  //   this.state_id = event.value;
-  //   this.gridLoad();
-  // }
-  
-formCountryChanges(event:any){
-  this.formCountryId = event.value;
-  if (this.formCountryId !== null) {
 
-  }
-  this.cityData = [];
-}
 
-  
   StatusConfirm(city_id: number, actionObject: { key: string; label: string }) {
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this city?`, 
