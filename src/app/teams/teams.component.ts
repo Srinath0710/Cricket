@@ -388,6 +388,10 @@ clear(table: Table) {
   this.searchKeyword = '';
   this.gridLoad();
 }
+onEnterPress(event: KeyboardEvent): void {
+  event.preventDefault();
+  this.filterGlobal();
+}
 
 
 }

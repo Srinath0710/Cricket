@@ -21,6 +21,7 @@
                     class="width-search"
                     placeholder="  Search"
                    (input)="filterGlobal()"
+                    (keydown.enter)="$event.preventDefault(); filterGlobal()"
                   />
                 </div>
               
