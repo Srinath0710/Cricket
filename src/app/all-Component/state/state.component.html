@@ -8,23 +8,28 @@
               <i class="fa fa-user-circle" aria-hidden="true"></i>
               All States
             </div>
-            <!-- <div class="col-md-2 d-flex align-items-center gap-3">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
               <p-dropdown 
-            
                 [options]="countriesData" 
                 optionLabel="country_name" 
                 optionValue="country_id"
                 [(ngModel)]="countryID" 
                 (ngModelChange)="gridLoad()" 
-                placeholder="Select Country"  
-                class="drop-error header-drop" >
+                placeholder="Country"  
+                [filter]="true" 
+                appendTo="body"
+                class=" w-100 
+                 drop-error header-drop">
+                
                 <ng-template let-country pTemplate="item">
                   <div class="country-item">
                     <div>{{ country.country_name }}</div>
                   </div>
                 </ng-template>
+                
               </p-dropdown>
-            </div> -->
+            </div>
+            
 
 
 
@@ -108,7 +113,7 @@
           </p-table>
 
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[5,10 ,20 ,30]" (onPageChange)="onPageChange($event)">
+            [rowsPerPageOptions]="[10 ,20 ,30]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>
@@ -118,10 +123,7 @@
     <p-confirmDialog [style]="{ width: '300px' , height: '200px' }" [baseZIndex]="10000" [draggable]="false"
       [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
-    <!-- 
-    <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
-      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
- <div class="sidebar-wrapper" (click)="$event.stopPropagation()"> -->
+
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="small-heading">
@@ -135,7 +137,11 @@
               <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="countriesData" class="drop-error " formControlName="country_id"
-              optionValue="country_id" optionLabel="country_name" placeholder="select Country" appendTo="self"  [panelStyleClass]="'custom-dropdown-panel'">
+              optionValue="country_id" optionLabel="country_name"
+               placeholder="select Country" appendTo="self" 
+                [panelStyleClass]="'custom-dropdown-panel'"
+                [filter]="true" filterBy="country_name" [showClear]="false"
+                 >
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ country.country_name }}
@@ -191,8 +197,6 @@
       </form>
     </p-drawer>
 
-  <!-- </div>
-  </p-sidebar> -->
   </div> 
 
 </div>

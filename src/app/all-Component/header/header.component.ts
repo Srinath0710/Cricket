@@ -4,14 +4,24 @@ import { environment } from '../../environments/environment';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [  
-    CommonModule],
+    CommonModule,
+    ConfirmPopupModule,
+    ToastModule,
+    ButtonModule,
+  ],
   templateUrl: './header.component.html',
   styleUrls: ['../sidebar/sidebar.component.css'],
+  providers: [ConfirmationService, MessageService]
+
 })
 export class HeaderComponent implements OnInit{
   sidebarVisible: boolean = false;
@@ -31,9 +41,10 @@ export class HeaderComponent implements OnInit{
   sidebarOpen=false;
   envImagePath = environment.imagePath;
 
-  constructor(private apiService: ApiService, private router: Router) {
-  
-  }
+    // constructor(private confirmationService: ConfirmationService, private messageService: MessageService ,private apiService: ApiService, ) {}
+
+    constructor(private confirmationService: ConfirmationService, private messageService: MessageService,private router: Router,private apiService: ApiService) {}
+
   ngOnInit(){
     // if(this.itealTimeoutEnable==1){
     //   this.setupInactivityTimeout();
@@ -134,5 +145,17 @@ export class HeaderComponent implements OnInit{
         this.logOut();
       }
     }
+    confirm(event: Event) {
+      this.confirmationService.confirm({
+          target: event.target as EventTarget,
+          message: 'Save your current process?',
+          accept: () => {
+              this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+          },
+          reject: () => {
+              this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+          }
+      });
+  }
  
 }

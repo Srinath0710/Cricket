@@ -1,91 +1,91 @@
-<div class="container text-center login-page">
-    <div class="login-content">
-        <div class="loginForm">
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-6 text-center pt-3 ">
-                            <img [src]="envImagePath+'/depo.jpg'" style="width: 100%;" >
+<div class="container-fluid login-page">
+    <div class="row login-card">
+        <!-- Left Image -->
+        <div class="col-lg-6 col-md-6 col-12 image-side">
+            <img [src]="envImagePath+'/depo.jpg'" alt="Login Image">
+        </div>
+
+        <!-- Right Login Form -->
+        <div class="col-lg-6 col-md-6 col-12 form-side">
+            <!-- <h3 class="logo" >
+                <i class="fa-brands fa-teamspeak"></i>
+                CRIC SCORES
+            </h3> -->
+            
+            <h5 class="text-center">SIGN IN</h5>
+            <h3 class="text-center text-danger">{{errorMessage}}</h3>
+
+            <!-- Login Form (Without MFA) -->
+
+            <form [formGroup]="loginForm" (ngSubmit)="userIdentity()" *ngIf="!isMFAvisible">
+                <div class="text-start form-group pb-2">
+                    <label>User Name </label>
+                    <div class="pt-2">
+                        <input (input)="clearError()" class="form-control" type="text" formControlName="user_name"
+                            id="user_name" />
+                        <div
+                            *ngIf="loginForm.get('user_name')?.invalid && (loginForm.get('user_name')?.touched || submitted)">
+                            <small class="text-danger">User Name Required</small>
                         </div>
-                        <div class="col-6 login_form">
-                            <h3 class="text-center pt-3">LOGIN</h3>
-                            <h3 class="text-center text-danger">{{errorMessage}}</h3>
-        
-                            <!-- Login Form (Without MFA) -->
-                            
-                            <form [formGroup]="loginForm" (ngSubmit)="userIdentity()" *ngIf="!isMFAvisible">
-                                <div class="text-start form-group pb-2">
-                                    <label>User Name </label>
-                                    <div class="pt-2">
-                                        <input (input)="clearError()" class="form-control" type="text"
-                                            formControlName="user_name" id="user_name" />
-                                        <div *ngIf="loginForm.get('user_name')?.invalid && (loginForm.get('user_name')?.touched || submitted)">
-                                            <small class="text-danger">User Name Required</small>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <div class="form-group text-start">
-                                    <div class="row">
-                                        <div class="col">
-                                            <label>Password</label>
-                                        </div>
-                                    </div>
-                                    <div class="position-relative">
-                                        <div class="input-icons p-input-icon-right">
-                                            <input (input)="clearError()" class="form-control inputSearch"
-                                                [type]="password ? 'password' : 'text'" formControlName="password"
-                                                id="password">
-                                            <i class="icon text-secondary float-end"
-                                                [ngClass]="password ? 'pi pi-eye' : ''"
-                                                (click)="passwordVisible()"></i>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.touched || submitted)">
-                                        <small class="text-danger">Password Required</small>
-                                    </div>
-                                </div>
-        
-                                <div class="form-group text-center mt-3">
-                                    <button class="btn btn-primary" type="submit">Login</button>
-                                </div>
-                            </form>
-        
-                            <!-- MFA Login Form -->
-                            <!-- <form [formGroup]="loginForm" (ngSubmit)="loginUser()" *ngIf="isMFAvisible">
-                                <div *ngIf="!qrCodeVisible && isMFAvisible" class="text-center">
-                                    <img [src]="qrImage" alt="Qr" width="100px" height="100px">
-                                </div>
-        
-                                <div class="text-start form-group pb-2">
-                                    <div class="row">
-                                        <div class="col">
-                                            <label>MFA Code</label>
-                                        </div>
-                                        <div class="col-auto pt-2">
-                                            <a class="text-muted" (click)="refreshPage()">
-                                                Sign in to a different account?
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="pt-2">
-                                        <input (input)="clearError()" class="form-control"
-                                            [required]="isMFAvisible" type="text" formControlName="mfa_code"
-                                            id="mfa_code" />
-                                        <div *ngIf="loginForm.get('mfa_code')?.invalid && (loginForm.get('mfa_code')?.touched || submitted)">
-                                            <small class="text-danger">MFA Code Required</small>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <div class="form-group text-center mt-3">
-                                    <button class="btn btn-primary" type="submit">Login</button>
-                                </div>
-                            </form> -->
-                        </div>
-                        
                     </div>
                 </div>
-           
+
+                <div class="form-group text-start">
+                    <div class="row">
+                        <div class="col">
+                            <label>Password</label>
+                        </div>
+                    </div>
+                    <div class="position-relative">
+                        <div class="input-icons p-input-icon-right">
+                            <input (input)="clearError()" class="form-control inputSearch"
+                                [type]="password ? 'password' : 'text'" formControlName="password" id="password">
+                            <i class="icon text-secondary float-end" [ngClass]="password ? 'pi pi-eye' : ''"
+                                (click)="passwordVisible()"></i>
+                        </div>
+                    </div>
+                    <div
+                        *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.touched || submitted)">
+                        <small class="text-danger">Password Required</small>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+
+            <!-- MFA Login Form -->
+            <form [formGroup]="loginForm" (ngSubmit)="loginUser()" *ngIf="isMFAvisible">
+                <div *ngIf="!qrCodeVisible && isMFAvisible" class="text-center">
+                    <img [src]="qrImage" alt="Qr" width="100px" height="100px">
+                </div>
+
+                <div class="text-start form-group pb-2">
+                    <div class="row">
+                        <div class="col">
+                            <label>MFA Code</label>
+                        </div>
+                        <div class="col-auto pt-2">
+                            <a class="text-muted" (click)="refreshPage()">
+                                Sign in to a different account?
+                            </a>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <input (input)="clearError()" class="form-control" [required]="isMFAvisible" type="text"
+                            formControlName="mfa_code" id="mfa_code" />
+                        <div
+                            *ngIf="loginForm.get('mfa_code')?.invalid && (loginForm.get('mfa_code')?.touched || submitted)">
+                            <small class="text-danger">MFA Code Required</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>

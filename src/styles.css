@@ -190,7 +190,7 @@ label {
   height: 36px;
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 
 }
 .main-page-title {
@@ -1167,7 +1167,7 @@ main {
   border-radius: 0 !important;
   width: 150px !important;
   padding-right: 35px !important;
-  height: 30px;
+  height: 35px;
   margin-top: 3px;
   font-size: 12px !important;
 }

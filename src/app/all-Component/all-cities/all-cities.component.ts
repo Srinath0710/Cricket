@@ -68,8 +68,6 @@ export class AllCitiesComponent implements OnInit {
   cityData: any = [];
   countryData: Country[] = [];
   statesList: any[] = [];
-  gridStates: any[] = [];
-  formStates: any[] = [];
   totalData: any = 0;
   pageData: number = 0;
   submitted: boolean = false;
@@ -97,7 +95,7 @@ export class AllCitiesComponent implements OnInit {
     country_id: ['', Validators.required],
     state_id: ['', Validators.required],
     city_name: ['', Validators.required],
-  city_code: ['', Validators.required]
+    city_code: ['', Validators.required]
   })
   
 }
@@ -105,65 +103,79 @@ export class AllCitiesComponent implements OnInit {
 getCountries() {
   const params: any = {};
   params.action_flag = 'get_countries';
-  params.user_id = this.user_id.toString();
-  params.client_id = this.client_id.toString();
-  this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
-      this.countryData = res.data.countries != undefined ? res.data.countries : [];
-      this.countryId = this.countryData[0].country_id;
+  params.user_id = this.user_id?.toString();
+  params.client_id = this.client_id?.toString();
 
-      this.getStates(this.countryId);
-        }, (err: any) => {
+  this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
+      this.countryData = res.data.countries ?? []; 
+      this.countryId = this.countryData[0].country_id;
+  }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
           this.apiService.RefreshToken();
-         
       } else {
           this.failedToast(err);
       }
   });
 }
 
-getStates(countryId:any) {
+
+getStates(countryId: any) {
+  if (countryId == null || countryId === '') {
+    this.statesList = [];  
+    return;
+  }
   const params: any = {};
   params.action_flag = 'get_state_by_country';
-  params.user_id = this.user_id.toString();
-  params.client_id = this.client_id.toString();
+  params.user_id = this.user_id?.toString();
+  params.client_id = this.client_id?.toString();
   params.country_id = countryId.toString();
   this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
-      this.statesList = res.data.states != undefined ? res.data.states : [];
+      this.statesList = res.data.states ?? [];
+      this.stateId = this.statesList[0].state_id;
+
   }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
           this.apiService.RefreshToken();
-          
       }
   });
 }
-  
-  gridLoad() {
-    setTimeout(()=>{
-      this.getCountries();
 
-  },1000)
-    const params: any = {};
-    params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
-    params.state_id = this.stateId?.toString();
-    params.page_no = this.first.toString();
-    params.records = this.rows.toString();    
-  
-    this.apiService.post(this.urlConstant.getCityList, params).subscribe((res)=>{
 
-      this.cityData = res.data.states ?? [];
-      console.log(this.cityData);
-      this.totalData = 50;
-   
-    }, (err: any) => {
-           err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.cityData = [],this.totalData = this.cityData.length);
+gridLoad() {
+  this.cityData = [];
+  this.totalData = 0;
 
-    });
+  setTimeout(() => {
+      const params: any = {};
+      params.client_id = this.client_id?.toString();
+      params.page_no = this.first.toString();
+      params.records = this.rows.toString();
+      params.user_id = this.user_id?.toString();
+      params.action_flag = "grid_load";
+      params.state_id = this.stateId != null ? this.stateId.toString() : null;
 
+      this.apiService.post(this.urlConstant.getCityList, params).subscribe((res) => {
+          this.cityData = res.data.states ?? [];
+          this.totalData = this.cityData.length;
+      }, (err: any) => {
+          if (err.status === 401 && err.error.message === "Expired") {
+              this.apiService.RefreshToken();
+          } else {
+              this.cityData = [];
+              this.totalData = 0;
+          }
+      });
+  }, 0);  // optional timeout
+}
+
+
+onStateChange(event: any) {
+  this.stateId = event.value;  // Set selected state id
+  if (this.stateId) {
+    this.gridLoad();  // Load grid with selected stateId
   }
-  
-  
+}
+
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
@@ -297,27 +309,14 @@ getStates(countryId:any) {
     }
   }
 
- 
-  
-
-
   addCallBack(res: any) {
+    this.country_id=this.addCityForm.value.country_id;
     this.resetForm();
     this.cancelForm();
     this.successToast(res);
    this.gridLoad();
   }
-  onGridCountryChange(event: any) {
-    this.gridCountryId = event.value;
-    if (this.gridCountryId !== null) {
-
-    }
-    this.gridStateId = null;
-    this.cityData = [];
-  }
   
-
-
   StatusConfirm(city_id: number, actionObject: { key: string; label: string }) {
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this city?`, 

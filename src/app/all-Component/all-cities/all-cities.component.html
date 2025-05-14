@@ -8,36 +8,35 @@
               <i class="fas fa-map-marker-alt"></i>
               Add Cities
             </div>
-            <div class="col-md-2 d-flex align-items-center gap-3">
-              <p-dropdown [options]="countryData" class="drop-error "
-              (ngModelChange)="getStates(addCityForm.get('country_id')?.value)" optionValue="country_id"
-              optionLabel="country_name" placeholder="select Country"
-              class="drop-error header-drop">
-              <ng-template let-country pTemplate="item">
-                <div class="flex align-items-center gap-2">
-                  <div>{{ country.country_name }}
-                  </div>
-                </div>
-              </ng-template>
-            </p-dropdown>
-            </div>
-
-            <div class="col-md-2 d-flex align-items-center gap-3">
-              <p-dropdown [options]="statesList" optionLabel="state_name" optionValue="state_id"
-                placeholder="Select State"
-                [(ngModel)]="stateId" 
-                (ngModelChange)="gridLoad()"
-                class="drop-error header-drop">
+            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right">
+              <p-dropdown [options]="countryData" optionLabel="country_name" optionValue="country_id"
+                [(ngModel)]="countryId" (ngModelChange)="getStates($event)" placeholder="Country" [filter]="true"
+                appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"  class="w-100 drop-error header-drop">
                 <ng-template let-country pTemplate="item">
-                  <div class="flex align-items-center gap-2 ">
-                    <div>{{ country.state_name }}</div>
+                  <div class="country-item">
+                    <div>{{ country.country_name }}</div>
                   </div>
                 </ng-template>
               </p-dropdown>
+
+            </div>
+
+            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right-align">
+              <p-dropdown [options]="statesList" class="drop-error" formControlName="state_id" optionValue="state_id"
+                optionLabel="state_name" placeholder="Select State" (onChange)="onStateChange($event)"
+                [panelStyleClass]="'custom-dropdown-panel'"[filter]="true" appendTo="body"
+                >
+                <ng-template let-state pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ state.state_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+
             </div>
 
             <div class="d-flex align-items-center">
-              <form class="d-flex align-items-center  gap-2">
+              <div class="d-flex align-items-center  gap-2">
                 <div class="p-input-icon-right flex-grow-1">
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
                     placeholder="  Search" (keyup.enter)="gridLoad()" />
@@ -46,7 +45,7 @@
                 <button type="button" class="clear-button" (click)="searchKeyword = ''">
                   Clear
                 </button>
-              </form>
+              </div>
 
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
@@ -56,7 +55,8 @@
             </div>
           </div>
 
-          <p-table [value]="cityData" [styleClass]="'custom-table'" [globalFilterFields] ="['city_name','city_code','state_name','country_name','record_status']">
+          <p-table [value]="cityData" [styleClass]="'custom-table'"
+            [globalFilterFields]="['city_name','city_code','state_name','country_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
                 <th class="col-2" pSortableColumn="city_name">City Name <p-sortIcon field="city_name"></p-sortIcon>
@@ -65,7 +65,8 @@
                 </th>
                 <th class="col-2" pSortableColumn="state_name">State Name <p-sortIcon field="state_name"></p-sortIcon>
                 </th>
-                <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon field="country_name"></p-sortIcon>
+                <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon field="country_name">
+                  </p-sortIcon>
                 </th>
                 <th class="col-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
                 </th>
@@ -129,7 +130,7 @@
             </label>
             <p-dropdown [options]="countryData" class="drop-error " formControlName="country_id"
               (ngModelChange)="getStates(addCityForm.get('country_id')?.value)" optionValue="country_id"
-              optionLabel="country_name" placeholder="select Country" appendTo="self"  [panelStyleClass]="'custom-dropdown-panel'">
+              optionLabel="country_name" placeholder="select Country" [filter]="true" >
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ country.country_name }}
@@ -147,7 +148,7 @@
             <label>State
             </label>
             <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id" optionValue="state_id"
-              optionLabel="state_name" placeholder="select State">
+              optionLabel="state_name" placeholder="select State" [filter]="true">
               <ng-template let-state pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ state.state_name }}
