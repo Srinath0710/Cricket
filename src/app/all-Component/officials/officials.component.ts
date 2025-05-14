@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
@@ -11,7 +11,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { SidebarModule } from 'primeng/sidebar';
 // import { CricketKeyConstant } from '../../services/cricket-key-constant';
@@ -24,6 +24,7 @@ import { offcialedit } from './officials.model';
 import { OnInit } from '@angular/core';
 import { HostListener } from '@angular/core';
 import { Drawer } from 'primeng/drawer';
+import { PaginatorModule } from 'primeng/paginator';
 
 interface official {
   config_id: string;
@@ -48,7 +49,8 @@ interface official {
     HttpClientModule,
     DrawerModule,
     ConfirmDialogModule,
-    Drawer
+    Drawer,
+    PaginatorModule
   ],
   providers: [
     { provide: URLCONSTANT },
@@ -59,6 +61,7 @@ interface official {
   ],
 })
 export class OfficialsComponent implements OnInit {
+  @ViewChild('dt') dt!: Table;
 
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
@@ -70,6 +73,12 @@ export class OfficialsComponent implements OnInit {
   public ShowForm: boolean = false;
   position: 'right' = 'right';
   addOfficialForm!: FormGroup;
+    first: number = 1;
+  oldfirst: number = 1;
+  pageData: number = 0;
+  rows: number = 10;
+  totalData: any = 0;
+
   backScreen: any;
   selectedOfficial: any = null;
   visibleDialog: boolean = false;
@@ -88,6 +97,7 @@ export class OfficialsComponent implements OnInit {
   childLabel: string = '';
   officialId: any;
   default_img: any = 'assets/images/default-player.png';
+
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT, public cricketKeyConstant: CricketKeyConstant,
     private msgService: MessageService, private confirmationService: ConfirmationService
@@ -128,11 +138,11 @@ export class OfficialsComponent implements OnInit {
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
-    params.page_no = this.pageno.toString();
-    params.records = this.records.toString();
+    params.page_no = this.first.toString();
+    params.records = this.rows.toString();
     this.apiService.post(this.urlConstant.officiallist, params).subscribe((res) => {
       this.officialDataList = res.data.officials ?? [];
-
+      this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
     }, (err: any) => {
       error: (err: any) => {
         console.error('Error loading official list:', err);
@@ -141,6 +151,16 @@ export class OfficialsComponent implements OnInit {
     });
   }
 
+  calculateFirst(): number {
+    return (this.first - 1) * this.rows;
+  }
+  onPageChange(event: any) {
+    this.first = (event.page) + 1;
+    this.pageData = event.first;
+    this.rows = event.rows;
+    this.gridload();
+    
+  }
   addOfficialdata() {
     this.submitted = true;
     this.isEditMode=false;
@@ -406,5 +426,17 @@ export class OfficialsComponent implements OnInit {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
+
+    filterGlobal() {
+  this.dt.filterGlobal(this.searchKeyword, 'contains');   
+}
+  clear() {
+  this.searchKeyword = '';   
+  this.dt.clear();          
+  this.gridload();          
+}
+
+
+
 
 }

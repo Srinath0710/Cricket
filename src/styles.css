@@ -280,23 +280,6 @@ label {
   overflow-x: hidden !important;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .main-page-action {
     flex: auto;
     height: inherit;
@@ -1278,3 +1261,17 @@ input.form-control:focus {
 
 
 
+.p-overlay {
+    position: relative;
+    top: 0;
+    inset-inline-start: 0;
+}.p-select-overlay {
+    position: relative !important;
+    top: 0;
+    left: 0;
+    background: var(--p-select-overlay-background);
+    color: var(--p-select-overlay-color);
+    border: 1px solid var(--p-select-overlay-border-color);
+    border-radius: var(--p-select-overlay-border-radius);
+    box-shadow: var(--p-select-overlay-shadow);
+}
