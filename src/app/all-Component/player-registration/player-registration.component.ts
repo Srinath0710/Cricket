@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { DrawerModule } from 'primeng/drawer';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
@@ -20,8 +21,9 @@ import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { TooltipModule } from 'primeng/tooltip';
 import { SidebarModule } from 'primeng/sidebar';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Drawer } from 'primeng/drawer';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { Dialog } from 'primeng/dialog';
 
 
@@ -29,7 +31,9 @@ import { Dialog } from 'primeng/dialog';
 
 
 interface player {
-  config_id: string;
+  config_id: number;
+  config_name: string;
+  config_key: string;
 }
 interface DuplicatePlayer {
   user_id: number | string,
@@ -59,6 +63,9 @@ interface DuplicatePlayer {
     TooltipModule,
     SidebarModule,
     ReactiveFormsModule,
+       DrawerModule,
+        RadioButtonModule,
+         Drawer
 
 
 
@@ -256,7 +263,7 @@ export class PlayerRegistrationComponent implements OnInit {
         .filter((item: any) => item.config_key == 'batting_style')
 
       this.battingorder = res.data.teams
-        .filter((item: any) => item.config_key == 'batting_order')
+        .filter((item: any) => item.config_key == 'batting_order') 
 
       this.bowlingstyle = res.data.teams
         .filter((item: any) => item.config_key == 'bowling_style')

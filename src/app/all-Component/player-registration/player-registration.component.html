@@ -132,10 +132,14 @@
 
 
 
-
+<!-- 
         <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
       [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
- <div class="sidebar-wrapper" (click)="$event.stopPropagation()">
+ <div class="sidebar-wrapper" (click)="$event.stopPropagation()"> -->
+
+
+
+   <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
       <div class="d-flex justify-content-between align-items-center mb-4">
 <h3 class="small-heading">
   {{ isEditMode ? 'Edit Player' : 'Add Player' }}
@@ -199,8 +203,8 @@
 
                       <p-dropdown [options]="NationalitydropdownData " class="drop-error "
                         formControlName="nationality_id" optionValue="region_id" optionLabel="region_name"
-                        placeholder="Select Nationality Country" appendTo="body"
-                        [panelStyleClass]="'custom-dropdown-panel'">
+                        placeholder="Select Nationality Country"
+                  [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
                             <div>{{ gender.region_name }}
@@ -252,12 +256,173 @@
 
 
 
-                    <div class="col-md-3">
+
+<div class="col-md-3">
+  <label for="gender">Gender</label>
+  <span class="text-danger">*</span>
+
+  <div class="card flex flex-wrap gap-3 mt-2">
+    <div 
+      class="flex items-center"
+      *ngFor="let gender of genderSelect; let i = index">
+      
+      <p-radiobutton 
+        name="gender"
+        [inputId]="'gender' + i"
+        [value]="gender.config_id"
+        formControlName="gender_id">
+      </p-radiobutton>
+
+      <label 
+        class="ml-2" 
+        [for]="'gender' + i">
+        {{ gender.config_name }}
+      </label>
+    </div>
+  </div>
+
+  <small
+    *ngIf="playerRegistrationform.get('gender_id')?.invalid && 
+           (playerRegistrationform.get('gender_id')?.touched || submitted)"
+    class="text-danger">
+    Gender is Required
+  </small>
+</div>
+
+
+
+
+
+<div class="col-md-3">
+  <label for="playerRole">Player Role</label>
+  <span class="text-danger">*</span>
+
+  <div class="card flex flex-wrap gap-3 mt-2">
+    <div 
+      class="flex items-center"
+      *ngFor="let role of playerrole; let i = index">
+      
+      <p-radiobutton 
+        name="player_role_id"
+        [inputId]="'player_role' + i"
+        [value]="role.config_id"
+        formControlName="player_role_id">
+      </p-radiobutton>
+
+      <label 
+        class="ml-2" 
+        [for]="'player_role' + i">
+        {{ role.config_name }}
+      </label>
+    </div>
+  </div>
+
+  <small
+    *ngIf="playerRegistrationform.get('player_role_id')?.invalid && 
+           (playerRegistrationform.get('player_role_id')?.touched || submitted)"
+    class="text-danger">
+    Player Role is Required
+  </small>
+</div>
+
+
+
+<!-- Batting Style -->
+<div class="col-md-3">
+  <label>Batting Style</label>
+  <span class="text-danger">*</span>
+  <div class="card flex flex-wrap gap-3 mt-2">
+    <div *ngFor="let style of battingstyle; let i = index" class="flex items-center">
+      <p-radiobutton 
+        name="batting_style_id" 
+        [inputId]="'batting_style' + i" 
+        [value]="style.config_id" 
+        formControlName="batting_style_id">
+      </p-radiobutton>
+      <label class="ml-2" [for]="'batting_style' + i">{{ style.config_name }}</label>
+    </div>
+  </div>
+  <small *ngIf="playerRegistrationform.get('batting_style_id')?.invalid && (playerRegistrationform.get('batting_style_id')?.touched || submitted)" class="text-danger">
+    Batting Style is Required
+  </small>
+</div>
+
+<!-- Batting Order -->
+<div class="col-md-3">
+  <label>Batting Order</label>
+  <div class="card flex flex-wrap gap-3 mt-2">
+    <div *ngFor="let order of battingorder; let i = index" class="flex items-center">
+      <p-radiobutton 
+        name="batting_order_id" 
+        [inputId]="'batting_order' + i" 
+        [value]="order.config_id" 
+        formControlName="batting_order_id">
+      </p-radiobutton>
+      <label class="ml-2" [for]="'batting_order' + i">{{ order.config_name }}</label>
+    </div>
+  </div>
+</div>
+
+<!-- Bowling Style -->
+<div class="col-md-3">
+  <label>Bowling Style</label>
+  <div class="card flex flex-wrap gap-3 mt-2">
+    <div *ngFor="let style of bowlingstyle; let i = index" class="flex items-center">
+      <p-radiobutton 
+        name="bowling_style_id" 
+        [inputId]="'bowling_style' + i" 
+        [value]="style.config_id" 
+        formControlName="bowling_style_id">
+      </p-radiobutton>
+      <label class="ml-2" [for]="'bowling_style' + i">{{ style.config_name }}</label>
+    </div>
+  </div>
+</div>
+
+<!-- Bowling Type -->
+<div class="col-md-3">
+  <label>Bowling Type</label>
+  <div class="card flex flex-wrap gap-3 mt-2">
+    <div *ngFor="let type of bowlingtype; let i = index" class="flex items-center">
+      <p-radiobutton 
+        name="bowling_type_id" 
+        [inputId]="'bowling_type' + i" 
+        [value]="type.config_id" 
+        formControlName="bowling_type_id">
+      </p-radiobutton>
+      <label class="ml-2" [for]="'bowling_type' + i">{{ type.config_name }}</label>
+    </div>
+  </div>
+</div>
+
+<!-- Bowling Spec -->
+<div class="col-md-3">
+  <label>Bowling Spec</label>
+  <div class="card flex flex-wrap gap-3 mt-2">
+    <div *ngFor="let spec of bowlingspec; let i = index" class="flex items-center">
+      <p-radiobutton 
+        name="bowling_spec_id" 
+        [inputId]="'bowling_spec' + i" 
+        [value]="spec.config_id" 
+        formControlName="bowling_spec_id">
+      </p-radiobutton>
+      <label class="ml-2" [for]="'bowling_spec' + i">{{ spec.config_name }}</label>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+                    <!-- <div class="col-md-3">
                       <label>Gender</label>
                       <span class="text-danger">*</span>
 
                       <p-dropdown [options]="genderSelect" class="drop-error " formControlName="gender_id"
-                        optionValue="config_id" optionLabel="config_name" placeholder="Select Gender" appendTo="body"
+                        optionValue="config_id" optionLabel="config_name" placeholder="Select Gender"
                         [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
@@ -272,13 +437,14 @@
                       </small>
                     </div>
 
+
                     <div class="col-md-3">
                       <label>Player Role </label>
                       <span class="text-danger">*</span>
 
                       <p-dropdown [options]="playerrole" class="drop-error " formControlName="player_role_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Player Role"
-                        appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                      [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
                             <div>{{ gender.config_name }}
@@ -299,7 +465,7 @@
 
                       <p-dropdown [options]="battingstyle" class="drop-error " formControlName="batting_style_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Batting Style"
-                        appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                      [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
                             <div>{{ gender.config_name }}
@@ -320,7 +486,7 @@
 
                       <p-dropdown [options]="battingorder" class="drop-error " formControlName="batting_order_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Batting Order"
-                        appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                      [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
                             <div>{{ gender.config_name }}
@@ -336,7 +502,7 @@
 
                       <p-dropdown [options]="bowlingstyle" class="drop-error " formControlName="bowling_style_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Bowling Style"
-                        appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                      [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
                             <div>{{ gender.config_name }}
@@ -352,7 +518,7 @@
 
                       <p-dropdown [options]="bowlingtype" class="drop-error " formControlName="bowling_type_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Bowling Type"
-                        appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                       [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
                             <div>{{ gender.config_name }}
@@ -368,7 +534,7 @@
 
                       <p-dropdown [options]="bowlingspec" class="drop-error " formControlName="bowling_spec_id"
                         optionValue="config_id" optionLabel="config_name" placeholder="Select Bowling Spec"
-                        appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                     [panelStyleClass]="'custom-dropdown-panel'">
                         <ng-template let-gender pTemplate="item">
                           <div class="flex align-items-center gap-2">
                             <div>{{ gender.config_name }}
@@ -376,7 +542,7 @@
                           </div>
                         </ng-template>
                       </p-dropdown>
-                    </div>
+                    </div> -->
 
 
 
@@ -488,9 +654,9 @@
                 </p-dialog>
 
 
-              </div>
-            </p-sidebar>
-
+              <!-- </div> -->
+            <!-- </p-sidebar> -->
+</p-drawer>
           </div>
         </div>
       </main>
