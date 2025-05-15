@@ -133,7 +133,8 @@ loadAllTeamData() {
     params.records = this.rows.toString();
     this.apiService.post(this.urlConstant.getTeamList, params).subscribe((res) => {
       this.teamData = res.data.teams ?? [];
-      this.totalData = 50;
+      this.totalData = this.teamData.length!=0 ? res.data.teams[0].total_records:0
+      // this.totalData = 50;
       this.teamData.forEach((val: any) => {
         // val.profile_img = `${val.profile_img}?${Math.random()}`;
       });

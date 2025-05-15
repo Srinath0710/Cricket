@@ -88,8 +88,8 @@
               </tr>
             </ng-template>
           </p-table>
-          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[10, 20, 30]" (onPageChange)="onPageChange($event)">
+     <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+      [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>

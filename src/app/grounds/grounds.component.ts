@@ -103,8 +103,8 @@ export class GroundsComponent implements OnInit {
     this.apiService.post(this.urlConstant.getGroundList, params).subscribe({
       next: (res) => {
         this.groundsData = res.data?.grounds || [];
-        this.totalData = res.data?.totalRecords || this.groundsData.length;
-      },
+        this.totalData = this.groundsData.length!=0 ? res.data.grounds[0].total_records:0
+    },
       error: (err) => {
         if (
           err.status === this.cricketKeyConstant.status_code.refresh &&

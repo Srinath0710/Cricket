@@ -109,8 +109,8 @@ export class StateComponent implements OnInit {
 
         this.apiService.post(this.urlConstant.getStateList, params).subscribe((res) => {
             this.statesData = res.data.states != undefined ? res.data.states : [];
-            this.totalData = this.statesData.length;
-           this.totalData = 550;
+            // this.totalData = this.statesData.length;
+           this.totalData = 500;
 
 
         }, (err: any) => {

@@ -118,7 +118,6 @@ export class CountryComponent implements OnInit {
   }
   gridLoad() {
     this.countriesData = [];
-    this.totalData = 0;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -126,10 +125,8 @@ export class CountryComponent implements OnInit {
     params.records = this.rows.toString();
     this.apiService.post(this.urlConstant.getCountryList, params).subscribe((res) => {
       this.countriesData = res.data.countries ?? [];
-      // this.totalData = res.data.countriesData ?? this.countriesData.length;
-      // this.totalData = res.data.totalRecords ?? this.countriesData.length;
-      this.totalData = 500;
-
+      this.totalData = this.countriesData.length != 0 ? res.data.countries[0].total_records : 0
+      this.totalData = 100;
       this.countriesData.forEach((val: any) => {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
