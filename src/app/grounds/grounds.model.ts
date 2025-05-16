@@ -22,9 +22,9 @@ export class GroundList {
     ground_id: string|number;
 
     constructor(item: Partial<GroundList> = {}) {
-        this.user_id = item.user_id || 0;
-        this.client_id = item.client_id || 0;
-        this.ground_id = item.ground_id || 0;
+        this.user_id = item.user_id || '';
+        this.client_id = item.client_id || '';
+        this.ground_id = item.ground_id || '';
     }
 }
 

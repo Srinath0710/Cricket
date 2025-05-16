@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { DialogModule } from 'primeng/dialog';
@@ -35,6 +35,7 @@ import { Drawer } from 'primeng/drawer';
   ],
 })
 export class StateComponent implements OnInit {
+    @ViewChild('dt') dt!: Table;
   public addStateForm!: FormGroup<any>;
   User_id: number = Number(localStorage.getItem('user_id'));
   Client_id: number = Number(localStorage.getItem('client_id'));
@@ -106,11 +107,16 @@ export class StateComponent implements OnInit {
          params.client_id =this.Client_id.toString();
          params.page_no=this.first.toString();
          params.records = this.rows.toString();
+         params.search_text = this.searchKeyword.toString(),
+
 
         this.apiService.post(this.urlConstant.getStateList, params).subscribe((res) => {
-            this.statesData = res.data.states != undefined ? res.data.states : [];
+            this.statesData = res.data.states ?? [];
+
+                  this.totalData = this.statesData.length!=0 ? res.data.states[0].total_records:0
+
             // this.totalData = this.statesData.length;
-           this.totalData = 500;
+          //  this.totalData = 500;
 
 
         }, (err: any) => {
@@ -120,7 +126,6 @@ export class StateComponent implements OnInit {
             }
             else {
               this.statesData = []
-              this.totalData = 0;
             }
         });
     }
@@ -261,5 +266,20 @@ export class StateComponent implements OnInit {
     this.showAddForm();
     this.isEditMode = true;
   }
+
+//     filterGlobal() {
+//   this.dt.filterGlobal(this.searchKeyword, 'contains');   
+// }
+  filterGlobal() {
+    this.first = 1; 
+    this.gridLoad();
+
+  }
+  clear() {
+  this.searchKeyword = '';   
+  this.dt.clear();          
+  this.gridLoad();          
+}
+
 }
 

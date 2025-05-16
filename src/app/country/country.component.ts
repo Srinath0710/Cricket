@@ -56,7 +56,7 @@ import { DrawerModule } from 'primeng/drawer';
 
 export class CountryComponent implements OnInit {
   public addCountryForm!: FormGroup<any>;
-  @ViewChild('dt') dt: Table | undefined;
+  @ViewChild('dt') dt!: Table;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: any = false;
@@ -279,7 +279,9 @@ export class CountryComponent implements OnInit {
   filterGlobal() {
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
-  clear(table: Table) {
-    table.clear();
-  }
+  clear() {
+  this.searchKeyword = '';   
+  this.dt.clear();          
+  this.gridLoad();          
 }
+  }

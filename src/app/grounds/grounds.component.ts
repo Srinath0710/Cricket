@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -41,6 +41,11 @@ interface Country {
   ],
 })
 export class GroundsComponent implements OnInit {
+
+   showPopup: boolean = true;
+  
+   @ViewChild('dt') dt!: Table;
+
   public addGroundForm!: FormGroup<any>;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
@@ -59,10 +64,15 @@ export class GroundsComponent implements OnInit {
   submitted: boolean = true;
   ground_id: any;
   country_id: any;
-
   countriesList: Country[] = []; 
   citiesList = [];
   statesList = [];
+
+  
+
+  viewDialogVisible: boolean = false;
+selectedGround: any = [];
+  
   constructor(private formBuilder: FormBuilder, 
               private apiService: ApiService,
               private urlConstant: URLCONSTANT,
@@ -119,6 +129,42 @@ export class GroundsComponent implements OnInit {
     });
   }
 
+onViewGroundDetails(groundId: any) {
+  const params = { 
+    ground_id: groundId.toString() ,
+    client_id: String(this.client_id),
+    user_id: String(this.user_id )
+  };
+
+
+  this.apiService.post(this.urlConstant.viewGround, params).subscribe({
+    next: (res) => {
+      if (res.status && res.data) {
+        this.selectedGround = res.data.grounds; // or res.data.ground based on response shape
+        console.log ('resground',this.selectedGround);
+        this.viewDialogVisible = true;
+      }
+    },
+    error: (err) => {
+      console.error('Failed to fetch ground details', err);
+    }
+  });
+}
+
+
+  closePopup() {
+    this.showPopup = false;  // this will hide the popup
+  }
+
+  // Example: how popup is opened (optional)
+  openPopup() {
+    this.showPopup = true;
+  }
+
+
+getImageUrl(img: string) {
+  return `your-image-base-path/${img}`; // replace with correct path
+}
   calaculateFirst(): number{
     return (this.first - 1) * this.rows;
   }
@@ -345,6 +391,19 @@ getStates(country_id:any) {
         }
     });
 }
+
+
+
+    filterGlobal() {
+  this.dt.filterGlobal(this.searchKeyword, 'contains');   
+}
+  clear() {
+  this.searchKeyword = '';   
+  this.dt.clear();          
+  this.gridload();          
+}
+
+
   }
 
 

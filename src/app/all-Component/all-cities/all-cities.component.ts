@@ -155,6 +155,8 @@ gridLoad() {
       params.state_id = this.stateId != null ? this.stateId.toString() : null;
 
       this.apiService.post(this.urlConstant.getCityList, params).subscribe((res) => {
+        this.cityData=res.data.countries ?? [];
+
           this.cityData = res.data.states ?? [];
           this.totalData = this.cityData.length;
       }, (err: any) => {

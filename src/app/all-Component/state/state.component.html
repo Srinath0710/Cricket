@@ -36,15 +36,14 @@
             <div class="d-flex align-items-center">
 
               <!-- Search Form -->
-              <form class="d-flex align-items-center  gap-2">
+              <form class="d-flex align-items-center  gap-2"(submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="  Search" (keyup.enter)="gridLoad()" />
+                    placeholder="  Search" (input)="filterGlobal()" />
                 </div>
 
-                <button type="button" class="clear-button" (click)="searchKeyword = ''">
-                  Clear
-                </button>
+                  <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
+
               </form>
 
               <div class="card flex justify-center">
@@ -54,8 +53,8 @@
             </div>
           </div>
 
-          <p-table [value]="statesData" [styleClass]="'custom-table'"
-            [globalFilterFields]="['state_name', 'state_code']">
+          <p-table  #dt  [value]="statesData" [styleClass]="'custom-table'"
+            [globalFilterFields]="['state_name', 'state_code','country_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
                 <th class="col-md-3" pSortableColumn="state_name">State Name <p-sortIcon field="state_name">
@@ -112,14 +111,14 @@
 
           </p-table>
 
-          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[10,25,50,100]" (onPageChange)="onPageChange($event)">
+ <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>
       </div>
-    </main>
-
+    <!-- </main> -->
+    
     <p-confirmDialog [style]="{ width: '300px' , height: '200px' }" [baseZIndex]="10000" [draggable]="false"
       [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
@@ -196,7 +195,7 @@
         </div>
       </form>
     </p-drawer>
-
+</main>
   </div> 
 
 </div>
