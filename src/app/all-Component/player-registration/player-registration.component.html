@@ -129,9 +129,11 @@
 
               </ng-template>
             </p-table>
+     <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
+          </p-paginator>
 
-
-
+          
 <!-- 
         <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
       [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
@@ -606,8 +608,7 @@
                       Duplicate Check
                     </div>
 
-                    <p-table [value]="duplicatePlayers" [tableStyle]="{ 'min-width': '100%' }" scrollable="true"
-                      [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 30]"
+                    <p-table 
                       [globalFilterFields]="['display_name']">
                       <ng-template pTemplate="header">
                         <tr style="background-color: #f0f0f0;">
@@ -642,6 +643,7 @@
                         </tr>
                       </ng-template>
                     </p-table>
+               
                   </div>
 
                   <!-- Buttons in dialog footer -->

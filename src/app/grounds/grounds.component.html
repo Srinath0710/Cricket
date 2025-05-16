@@ -9,15 +9,15 @@
               Grounds
             </div>
             <div class="d-flex align-items-center">
- <!-- Search Form -->
-              <form class="d-flex align-items-center gap-2"(submit)="gridload()">
+              <!-- Search Form -->
+              <form class="d-flex align-items-center gap-2" (submit)="gridload()">
                 <div class="p-input-icon-right flex-grow-1">
 
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="Search"(input)="filterGlobal()" />
+                    placeholder="Search" (input)="filterGlobal()" />
                 </div>
 
-              <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
+                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
 
               </form>
 
@@ -25,15 +25,16 @@
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                   (click)="showAddForm()">
                   <i class="fas fa-plus"></i>
-                  Grounds
-                </button>
+Create               </button>
               </div>
             </div>
           </div>
-          
-          <p-table #dt [value]="groundsData" [styleClass]="'custom-table'" [globalFilterFields]="['ground_name','country_name','state_name','city_name','record_status']">
+
+          <p-table #dt [value]="groundsData" [styleClass]="'custom-table'"
+            [globalFilterFields]="['ground_name','country_name','state_name','city_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
+           
                 <th class="col-3" pSortableColumn="ground_name">Ground Name <p-sortIcon field="ground_name">
                   </p-sortIcon>
                 </th>
@@ -52,9 +53,17 @@
 
             <ng-template pTemplate="body" let-ground>
               <tr>
-                <td><span class="cursor" (click)="onViewGroundDetails(ground.ground_id)">{{ ground.ground_name }}</span></td>
+                <td>
+                  <span class="person-image-team-player">
+                    <img class="player-img" *ngIf="!ground.profile_img || !ground.player_profile" [src]="default_img">
 
-      
+                    <img class="player-img" *ngIf="ground.profile_img && ground.player_profile"
+                      [src]="ground.profile_img" (error)="handleImageError($event, default_img)">
+                  </span>
+             <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)"> {{ ground.ground_name }}</span>
+                </td>
+
+
                 <td>{{ ground.country_name }}</td>
                 <td>{{ ground.state_name }}</td>
                 <td>{{ ground.city_name }}</td>
@@ -88,140 +97,68 @@
           </p-table>
 
 
-<p-dialog 
-  header="Ground Details" 
-  [(visible)]="viewDialogVisible" 
-  [modal]="true" 
-  
-  [dismissableMask]="true"
->
-<!-- 
-<div class="popupstyle">
-  <button class="close-btn" (click)="viewDialogVisible = false">X</button>
-
-  <div class="row" *ngFor="let ground of selectedGround">
- <div class="table-row">
-  <div class="First">{{ ground['ground name'] }}</div>
-</div>
-
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label">ADDRESS 1</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground['address 1'] }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label">ADDRESS 2</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground['address 2'] }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label">POST CODE</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground['post code'] }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label">END ONE</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground['end one'] }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label">END TWO</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground['end two'] }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label"> PROFILE</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground.profile }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label"> COUNTRY</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground.country }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label"> STATE</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground.state }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label"> CITY  </div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground.city }}</div>
-    </div>
-    <div class="divider"></div>
-
-    <div class="table-row">
-      <div class="label"> Profile Image</div>
-      <div class="separator">|</div>
-      <div class="value">{{ ground.profile_img }}</div>
-    </div>
-    <div class="divider"></div>
-  </div>
-  
-</div> -->
+          <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
 
 
-<div class="popup-container">
-  <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
+            <div class="popup-container">
+              <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
 
-  <div *ngFor="let ground of selectedGround" class="popup-content">
+              <div *ngFor="let ground of selectedGround" class="popup-content">
 
-    <header class="popup-header">
-      <div class="popup-icon">🏟️</div>
-      <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
-      <p class="popup-address">📍 {{ ground['address 1'] }} {{ ground['address 2'] }}</p>
-    </header>
+                <!-- Only Ground Name at the top -->
+                <header class="popup-header">
+                  <div class="popup-icon">🏟️</div>
+                  <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
+                  
+                  
+                  
+                </header>
 
-    <section class="popup-section">
-      <h2 class="section-title">📌 Ground Details</h2>
-      <div class="info-row"><span class="info-label">🔢 Post Code</span><span class="separator">|</span><span class="info-value">{{ ground['post code'] }}</span></div>
-      <div class="info-row"><span class="info-label">🎯 End One</span><span class="separator">|</span><span class="info-value">{{ ground['end one'] }}</span></div>
-      <div class="info-row"><span class="info-label">🏁 End Two</span><span class="separator">|</span><span class="info-value">{{ ground['end two'] }}</span></div>
-      <div class="info-row"><span class="info-label">📘 Profile</span><span class="separator">|</span><span class="info-value">{{ ground.profile }}</span></div>
-    </section>
+                <!-- Group Address and Ground Details together -->
+                <section class="popup-section">
+                  <h2 class="section-title"> ⛳Ground Details</h2>
+                  <div class="info-row"><span class="info-label">🏠 Address 1</span><span
+                      class="separator">|</span><span class="info-value">{{ ground['address 1'] }}</span></div>
+                  <div class="info-row"><span class="info-label">🏘️ Address 2</span><span
+                      class="separator">|</span><span class="info-value">{{ ground['address 2'] }}</span></div>
+                  <div class="info-row"><span class="info-label">🔢 Post Code</span><span
+                      class="separator">|</span><span class="info-value">{{ ground['post code'] }}</span></div>
+                  <div class="info-row"><span class="info-label">↖️ End One</span><span class="separator">|</span><span
+                      class="info-value">{{ ground['end one'] }}</span></div>
+                  <div class="info-row"><span class="info-label">↘️ End Two</span><span class="separator">|</span><span
+                      class="info-value">{{ ground['end two'] }}</span></div>
+                  <div class="info-row"><span class="info-label">📘 Profile</span><span class="separator">|</span><span
+                      class="info-value">{{ ground.profile }}</span></div>
+                </section>
 
-    <section class="popup-section">
-      <h2 class="section-title">🌍 Location</h2>
-      <div class="info-row"><span class="info-label">🌎 Country</span><span class="separator">|</span><span class="info-value">{{ ground.country }}</span></div>
-      <div class="info-row"><span class="info-label">🏴 State</span><span class="separator">|</span><span class="info-value">{{ ground.state }}</span></div>
-      <div class="info-row"><span class="info-label">🏙️ City</span><span class="separator">|</span><span class="info-value">{{ ground.city }}</span></div>
-    </section>
+                <section class="popup-section">
+                  <h2 class="section-title">🌐 Location</h2>
+                  <div class="info-row"><span class="info-label">🌎 Country</span><span class="separator">|</span><span
+                      class="info-value">{{ ground.country }}</span></div>
+                  <div class="info-row"><span class="info-label">🏴 State</span><span class="separator">|</span><span
+                      class="info-value">{{ ground.state }}</span></div>
+                  <div class="info-row"><span class="info-label">🏢 City</span><span class="separator">|</span><span
+                      class="info-value">{{ ground.city }}</span></div>
+                </section>
 
-    <section class="popup-section">
+                <!-- <section class="popup-section">
       <h2 class="section-title">🖼️ Media</h2>
       <div class="info-row">
         <span class="info-label">🖼️ Profile Image</span><span class="separator">|</span>
         <span class="info-value image-preview" title="Click to zoom">
-          <img [src]="ground.profile_img" alt="Profile Image" />
+          <img [src]="" alt="Profile Image" />
           <span class="zoom-icon">🔍</span>
         </span>
       </div>
-    </section>
+    </section> -->
 
-  </div>
-</div>
+              </div>
+            </div>
 
 
-</p-dialog>
+
+
+          </p-dialog>
 
 
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
@@ -296,10 +233,10 @@
             <label>Country
               <span class="text-danger">*</span>
             </label>
-            <p-dropdown [options]="countriesList" class="drop-error " 
-            formControlName="country_id"
-            (ngModelChange)="getStates(addGroundForm.get('country_id')?.value)"
-              optionValue="country_id" optionLabel="country_name" placeholder="select Country"appendTo="self"  [panelStyleClass]="'custom-dropdown-panel'">
+            <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_id"
+              (ngModelChange)="getStates(addGroundForm.get('country_id')?.value)" optionValue="country_id"
+              optionLabel="country_name" placeholder="select Country" appendTo="self"
+              [panelStyleClass]="'custom-dropdown-panel'">
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ country.country_name }}
@@ -316,10 +253,9 @@
           <div class="col-md-6">
             <label>State
             </label>
-            <p-dropdown [options]="statesList" class="drop-error " 
-            formControlName="state_id"
-            (ngModelChange)="getCities(addGroundForm.get('state_id')?.value)"
-              optionValue="state_id" optionLabel="state_name" placeholder="select State">
+            <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
+              (ngModelChange)="getCities(addGroundForm.get('state_id')?.value)" optionValue="state_id"
+              optionLabel="state_name" placeholder="select State">
               <ng-template let-state pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ state.state_name }}
@@ -327,14 +263,13 @@
                 </div>
               </ng-template>
             </p-dropdown>
-           
+
           </div>
           <div class="col-md-6">
             <label>City
             </label>
-            <p-dropdown [options]="citiesList" class="drop-error " 
-            formControlName="city_id"
-              optionValue="city_id" optionLabel="city_name" placeholder="select City">
+            <p-dropdown [options]="citiesList" class="drop-error " formControlName="city_id" optionValue="city_id"
+              optionLabel="city_name" placeholder="select City">
               <ng-template let-city pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ city.city_name }}
@@ -342,7 +277,7 @@
                 </div>
               </ng-template>
             </p-dropdown>
-          
+
           </div>
 
           <div class="col-md-6">
@@ -418,21 +353,3 @@
 </div>
 
 
-
-<!-- 
-┌────────────────────────────────────────────┐
-│ ✖                                          │   ← Close Button (top-right)
-│                                            │
-│        🏟️  **Lords Cricket Ground**        │   ← Ground Name (centered, bold)
-│                                            │
-│  📍 Address 1        : St John's Wood Rd   │
-│  🧭 Address 2        : London NW8          │
-│  🔢 Post Code        : NW8 8QN             │
-│  🎯 End One          : Pavilion End        │
-│  🏁 End Two          : Nursery End         │
-│  📘 Ground Profile   : Historic venue      │
-│  🌍 Country          : United Kingdom      │
-│  🏴 State            : England             │
-│  🏙️  City            : London              │
-│  🖼️  Profile Image    : [Image Preview]     │ (optional if exists)
-└────────────────────────────────────────────┘ -->

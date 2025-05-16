@@ -1275,3 +1275,10 @@ input.form-control:focus {
     border-radius: var(--p-select-overlay-border-radius);
     box-shadow: var(--p-select-overlay-shadow);
 }
+
+
+.groundnameover{
+
+  cursor: pointer;
+  color: #3103e7;
+}

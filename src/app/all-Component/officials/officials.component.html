@@ -63,7 +63,7 @@
           </p-dialog>
 
 
-          <p-table #dt [value]="officialDataList" [globalFilterFields]="['display_name','format','official_type','category','record_status']">
+          <p-table #dt [value]="officialDataList" [styleClass]="'custom-table'"  [globalFilterFields]="['display_name','format','official_type','category','record_status']">
            
           <ng-template pTemplate="header">
               <tr>

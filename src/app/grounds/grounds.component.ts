@@ -67,6 +67,7 @@ export class GroundsComponent implements OnInit {
   countriesList: Country[] = []; 
   citiesList = [];
   statesList = [];
+  default_img: any = 'assets/images/default-player.png';
 
   
 
@@ -402,6 +403,12 @@ getStates(country_id:any) {
   this.dt.clear();          
   this.gridload();          
 }
+
+
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
+  }
 
 
   }

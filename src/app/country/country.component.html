@@ -35,7 +35,7 @@
             </div>
           </div>
           </div>
-          <p-table #dt [value]="countriesData"
+          <p-table #dt [value]="countriesData"[styleClass]="'custom-table'" 
      [globalFilterFields]="['country_name','iso_code_3','region_name','sub_region','record_status']"
         >     <ng-template pTemplate="header">
               <tr>
