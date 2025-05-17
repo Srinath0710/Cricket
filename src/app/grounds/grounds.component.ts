@@ -110,6 +110,7 @@ selectedGround: any = [];
     page_no : this.first.toString(),
     records : this.rows.toString()
     };
+     params.search_text = this.searchKeyword.toString(),
 
     this.apiService.post(this.urlConstant.getGroundList, params).subscribe({
       next: (res) => {
@@ -396,8 +397,9 @@ getStates(country_id:any) {
 
 
     filterGlobal() {
-  this.dt.filterGlobal(this.searchKeyword, 'contains');   
-}
+    this.first = 1;
+    this.gridload();
+  }
   clear() {
   this.searchKeyword = '';   
   this.dt.clear();          

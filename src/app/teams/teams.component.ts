@@ -101,7 +101,6 @@ cities=[];
   ngOnInit(): void {
     this.gridLoad()
     this.getGlobalData()
-    this.loadAllTeamData();
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
       team_name: ['', [Validators.required]],
@@ -112,18 +111,7 @@ cities=[];
       team_profile: ['']
     })
   }
-loadAllTeamData() {
-  const params = {
-    user_id: this.user_id?.toString(),
-    client_id: this.client_id?.toString(),
-    page_no: '1',
-    records: '10000' // Fetch all records (or update your API to support full list fetch)
-  };
 
-  this.apiService.post(this.urlConstant.getTeamList, params).subscribe((res) => {
-    this.allTeamData = res.data.teams ?? [];
-  });
-}
 
   gridLoad() {
     const params: any = {};
@@ -131,6 +119,7 @@ loadAllTeamData() {
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
+    params.search_text = this.searchKeyword.toString(),
     this.apiService.post(this.urlConstant.getTeamList, params).subscribe((res) => {
       this.teamData = res.data.teams ?? [];
       this.totalData = this.teamData.length!=0 ? res.data.teams[0].total_records:0
@@ -148,24 +137,12 @@ loadAllTeamData() {
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
- onPageChange(event: any) {
-  this.first = (event.page) + 1;
-  this.pageData = event.first;
-  this.rows = event.rows;
-
-  const keyword = this.searchKeyword.trim().toLowerCase();
-
-  if (keyword && this.allTeamData.length > 0) {
-    const filtered = this.allTeamData.filter(team =>
-      team.team_name?.toLowerCase().includes(keyword) ||
-      team.team_short?.toLowerCase().includes(keyword)
-    );
-
-    this.teamData = filtered.slice(event.first, event.first + event.rows);
-  } else {
-    this.gridLoad();
+onPageChange(event: any) {
+     this.first = (event.page) + 1;
+    this.pageData = event.first;
+    this.rows = event.rows;
+        this.gridLoad();
   }
-}
   showAddForm() {
     this.ShowForm = true;
   }
@@ -369,20 +346,8 @@ loadAllTeamData() {
   }
   
    filterGlobal() {
-     const keyword = this.searchKeyword.trim().toLowerCase();
-
-  if (keyword && this.allTeamData.length > 0) {
-    const filtered = this.allTeamData.filter(team =>
-      team.team_name?.toLowerCase().includes(keyword) ||
-      team.team_short?.toLowerCase().includes(keyword)
-    );
-
-    this.teamData = filtered.slice(0, this.rows);
-    this.totalData = filtered.length;
-    this.first = 1;
-  } else {
-    this.gridLoad(); 
-  }
+ this.first = 1; 
+    this.gridLoad();
   }
 clear(table: Table) {
   table.clear();

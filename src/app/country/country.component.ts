@@ -123,10 +123,10 @@ export class CountryComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
+    params.search_text = this.searchKeyword.toString(),
     this.apiService.post(this.urlConstant.getCountryList, params).subscribe((res) => {
       this.countriesData = res.data.countries ?? [];
       this.totalData = this.countriesData.length != 0 ? res.data.countries[0].total_records : 0
-      this.totalData = 100;
       this.countriesData.forEach((val: any) => {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });

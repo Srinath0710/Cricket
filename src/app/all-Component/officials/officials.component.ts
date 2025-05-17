@@ -114,11 +114,11 @@ export class OfficialsComponent implements OnInit {
       middle_name: [''],
       sur_name: [''],
       display_name: ['', [Validators.required]],
-      format_id: [''],
-      official_category_id: [''],
-      official_type_id: [''],
+       format_id: ['', [Validators.required]],
+      official_category_id: ['',[Validators.required]],
+      official_type_id: ['', [Validators.required]],
       profile_img: [''],
-      country_id: [''],
+      country_id: ['', [Validators.required]],
       official_id: [''],
 
     })
@@ -126,13 +126,7 @@ export class OfficialsComponent implements OnInit {
     this.countrydropdown();
 
   }
-  // showDialog() {
-  //   this.sidebarVisible = true;
-  //   this.isEditMode = false;
-  // }
-  // onSidebarHide() {
-  //   this.sidebarVisible = false;
-  // }
+
 
   gridload() {
     const params: any = {};
@@ -140,6 +134,7 @@ export class OfficialsComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
+    params.search_text = this.searchKeyword.toString();
     this.apiService.post(this.urlConstant.officiallist, params).subscribe((res) => {
       this.officialDataList = res.data.officials ?? [];
       this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
@@ -428,8 +423,11 @@ export class OfficialsComponent implements OnInit {
   }
 
     filterGlobal() {
-  this.dt.filterGlobal(this.searchKeyword, 'contains');   
-}
+    this.first = 1; 
+    this.gridload();
+
+  }
+
   clear() {
   this.searchKeyword = '';   
   this.dt.clear();          
