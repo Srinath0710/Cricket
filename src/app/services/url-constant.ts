@@ -113,6 +113,9 @@ export class URLCONSTANT {
       fixturedropdown = 'Fixture/get_fixtures_dropdown'
       updatefixture = 'Fixture/update_fixtures'
       addfixture = 'Fixture/add_fixtures'
+      editfixture = 'Fixture/edit_fixtures'
       getfixture = 'Fixture/get_fixtures'
+      activefixture = 'Fixture/activate_fixtures'
+      deactivefixture = 'Fixture/deactivate_fixtures'
 
 }
