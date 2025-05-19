@@ -107,28 +107,28 @@
                                         <td class="col-2">
                                             <div class="status-icons d-flex flex-row">
 
-                                                <a class="m-1" (click)="resetForm()"
+                                                <!-- <a class="m-1" (click)="resetForm()"
                                                     (click)="edit(role.role_id,role.role_name,role.role_description,role.parent_role_id)"
                                                     pTooltip="edit" pTooltip="Edit" tooltipPosition="top"
                                                     placeholder="Top">
                                                     <img [src]="envImagePath+'/images/Component 5.svg'">
 
-                                                </a>
-                                                <a class="m-1" (click)="permissionOpen(role.role_id,role.role_name)"
-                                                    pTooltip="edit" pTooltip="Permission" tooltipPosition="top"
-                                                    placeholder="Top">
-                                                    <img [src]="envImagePath+'/images/view-icon.svg'">
+                                                </a> -->
+                                                <span class="icon-blue"       (click)="edit(role.role_id,role.role_name,role.role_description,role.parent_role_id)"pTooltip="Edit" tooltipPosition="top">
+                                                    <i class="fa-solid fa-user-pen"></i>
+                                                  </span>
+                                                <span class="icon-blue"      (click)="permissionOpen(role.role_id,role.role_name)"pTooltip="Edit" tooltipPosition="top">
+                                                    <i class="fa-solid fa-people-roof"></i>
+                                                  </span>
 
-                                                </a>
-                                                <a pTooltip="Active" tooltipPosition="top" placeholder="Top" class="m-1"
-                                                    (click)="showConfirm('activate_role',role.role_id,role.record_status,'active')">
-                                                    <img [src]="envImagePath+'/images/Component 6.svg'">
-                                                </a>
-                                                <a pTooltip="InActive" tooltipPosition="top" placeholder="Top"
-                                                    class="m-1"
-                                                    (click)="showConfirm('deactivate_role',role.role_id,role.record_status,'inactive')">
-                                                    <img [src]="envImagePath+'/images/Component 7.svg'">
-                                                </a>
+                                                <span class="icon-green"  (click)="showConfirm('activate_role',role.role_id,role.record_status,'active')" pTooltip="Activate" tooltipPosition="top">
+                                                    <i class="fa-solid fa-circle-check"></i>
+                                                  </span>
+                                  
+                                                  <span class="icon-red" (click)="showConfirm('deactivate_role',role.role_id,role.record_status,'inactive')" pTooltip="Deactivate" tooltipPosition="top">
+                                                    <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                                  </span>
+                                     
                                             </div>
                                         </td>
                                     </tr>
@@ -222,10 +222,7 @@
 
                                             Save
                                         </button>
-                                        <button class="save-another-btn submit-btn margin-right" (click)="addNewRole()"
-                                            (click)="addAnother=true">
-                                            Save & Add Another
-                                        </button>
+                              
                                         <button class="clear-button submit-btn margin-right"
                                             *ngIf="roleMenuForm?.get('role_id')?.value == '' || roleMenuForm?.get('role_id')?.value == null"
                                             (click)="resetForm()">
@@ -418,9 +415,7 @@
                         <button type="button col-12" pButton (click)="onReject()" label="No"
                             class="p-button-secondary"></button>
                     </div>
-                    <!--<div class="col-6">-->
-                    <!--<button type="button" pButton (click)="onReject()" label="No" class="p-button-secondary"></button>-->
-                    <!--</div>-->
+
                 </div>
             </div>
         </ng-template>
