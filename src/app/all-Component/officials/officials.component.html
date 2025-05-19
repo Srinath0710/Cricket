@@ -63,8 +63,7 @@
           </p-dialog>
 
 
-         <p-table #dt [value]="officialDataList"
-            [globalFilterFields]="['display_name','format','official_type','category','record_status']">
+          <p-table #dt [value]="officialDataList" [styleClass]="'custom-table'"  [globalFilterFields]="['display_name','format','official_type','category','record_status']">
            
           <ng-template pTemplate="header">
               <tr>
@@ -184,14 +183,13 @@
             </div>
 
             <div class="col-md-6">
-              <label class="">Sur Name
+              <label class="">Sure Name
               </label>
-              
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Sure Name "
                 formControlName="sur_name">
               <small
                 *ngIf="addOfficialForm.get('sur_name')?.invalid &&(addOfficialForm.get('sur_name')?.touched) || (addOfficialForm.get('sur_name')?.invalid && submitted)"
-                class="text-danger">Sur name is Required
+                class="text-danger">Sure name is Required
               </small>
             </div>
 
@@ -221,7 +219,6 @@
             <div class="col-md-6">
 
               <label>Country</label>
-               <span class="text-danger">*</span>
 
               <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="country_id"
                 optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country">
@@ -232,16 +229,12 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-               <small
-                *ngIf="addOfficialForm.get('country_id')?.invalid &&(addOfficialForm.get('country_id')?.touched) || (addOfficialForm.get('country_id')?.invalid && submitted)"
-                class="required-msg">Country is Required
-              </small>
             </div>
 
 
             <div class="col-md-6">
               <label>Format</label>
-              <span class="text-danger">*</span>
+
               <p-dropdown [options]="teamformat" class="drop-error " formControlName="format_id" optionValue="config_id"
                 optionLabel="config_name" placeholder="Select Format Id">
                 <ng-template let-gender pTemplate="item">
@@ -251,16 +244,12 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-               <small
-                *ngIf="addOfficialForm.get('format_id')?.invalid &&(addOfficialForm.get('format_id')?.touched) || (addOfficialForm.get('format_id')?.invalid && submitted)"
-                class="required-msg">format is Required
-              </small>
             </div>
 
 
             <div class="col-md-6">
               <label>Official Type</label>
-               <span class="text-danger">*</span>
+
               <p-dropdown [options]="officialtype" class="drop-error" formControlName="official_type_id"
                 optionValue="config_id" optionLabel="config_name" placeholder="Select Official Type"
                 (onChange)="onOfficialChange($event.value)">
@@ -270,16 +259,11 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-               <small
-                *ngIf="addOfficialForm.get('official_type_id')?.invalid &&(addOfficialForm.get('official_type_id')?.touched) || (addOfficialForm.get('official_type_id')?.invalid && submitted)"
-                class="required-msg">official type is Required
-              </small>
             </div>
 
             <!-- Child Dropdown with dynamic label -->
             <div class="col-md-6" *ngIf="childOptions.length > 0">
               <label>{{ childLabel }}</label>
-              <span class="text-danger">*</span>
               <p-dropdown [options]="childOptions" class="drop-error" formControlName="official_category_id"
                 optionValue="config_id" optionLabel="config_name" placeholder="Select {{ childLabel }}">
                 <ng-template let-option pTemplate="item">
@@ -288,14 +272,14 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-              <small
-                *ngIf="addOfficialForm.get('official_category_id')?.invalid &&(addOfficialForm.get('official_category_id')?.touched) || (addOfficialForm.get('official_category_id')?.invalid && submitted)"
-                class="required-msg">official category is Required
-              </small>
             </div>
 
 
           </div>
+
+
+
+<div class="form-wrapper pb-5">
 
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
@@ -309,7 +293,7 @@
               <button pButton type="button" label="Save" class="save-button" (click)="addOfficialdata()"></button>
             </div>
           </div>
-
+</div>
         </form>
         <!-- </div>
       </p-sidebar> -->

@@ -24,7 +24,9 @@ import { Drawer } from 'primeng/drawer';
 @Component({
   selector: 'app-state',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, BadgeModule, DialogModule, FormsModule, InputTextModule, ReactiveFormsModule, PaginatorModule, TagModule, ConfirmDialogModule, DropdownModule, TooltipModule, Drawer],
+  imports: [CommonModule, TableModule, ButtonModule, BadgeModule, DialogModule, FormsModule, InputTextModule, ReactiveFormsModule, PaginatorModule, TagModule, ConfirmDialogModule, DropdownModule, TooltipModule, Drawer
+    ,ToastModule
+  ],
   templateUrl: './state.component.html',
   styleUrls: ['./state.component.css'],
   providers: [

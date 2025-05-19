@@ -31,7 +31,7 @@
             </div>
             
 
-
+<div class="form-wrapper pb-5">
 
             <div class="d-flex align-items-center">
 
@@ -50,6 +50,8 @@
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                   (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
               </div>
+            </div>
+
             </div>
           </div>
 
@@ -181,7 +183,7 @@
           </div>
         </div>
 
-        <div class="row mt-4 sticky-footer-buttons">
+        <div class="row mt-4 sticky-footer-buttons">  
           <div class="col-12 text-end">
             <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()">
             </button>
@@ -199,3 +201,4 @@
   </div> 
 
 </div>
+    <p-toast key="tc" position="top-right"></p-toast>

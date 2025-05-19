@@ -1232,6 +1232,21 @@ main {
 }
 
 
+
+.form-wrapper {
+  padding-bottom: 100px; /* Enough space for fixed footer height */
+}
+
+
+@media (max-width: 768px) {
+  .sticky-footer-buttons {
+    padding: 15px 10px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+
 input.form-control:focus {
   /* border-color: #4caf50; */
   box-shadow: 0 0 0 0.01rem rgba(84, 76, 175, 0.25);
@@ -1282,6 +1297,48 @@ input.form-control:focus {
   cursor: pointer;
   color: #3103e7;
 }
+
+
+.playersrequired-msg {
+  background-color: rgb(226, 36, 36);
+  color: white;
+  padding: 4px 8px;
+  display: block;
+  font-size: 11px;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  margin-top: 0px; /* Optional: small spacing between box and error */
+  
+}
+
+.border.rounded {
+  border-radius: 0 !important;
+}
+
+
+
+
+
+.box-card .border {
+  min-height: 100%; /* equal height */
+ 
+}
+
+.box-card .p-3 {
+  padding: 1rem !important;
+}
+
+.form-check {
+  
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+
+
+
 .parent-container {
   display: flex;
   justify-content: flex-end;

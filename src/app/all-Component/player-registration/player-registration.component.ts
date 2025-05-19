@@ -31,6 +31,7 @@ import { Dialog } from 'primeng/dialog';
 
 
 interface player {
+  parent_config_id: number;
   config_id: number;
   config_name: string;
   config_key: string;
@@ -63,9 +64,9 @@ interface DuplicatePlayer {
     TooltipModule,
     SidebarModule,
     ReactiveFormsModule,
-       DrawerModule,
-        RadioButtonModule,
-         Drawer
+    DrawerModule,
+    RadioButtonModule,
+    Drawer
 
 
 
@@ -94,7 +95,6 @@ export class PlayerRegistrationComponent implements OnInit {
   rows: number = 10; // Default records shown is 10
   totalData: any = 0;
   isEditMode: boolean = false;
-  // public ShowForm: boolean = false;
   searchKeyword: string = '';
   visible: boolean = false;
   isEditing: boolean = false;
@@ -117,6 +117,10 @@ export class PlayerRegistrationComponent implements OnInit {
   bowlingstyle: player[] = [];
   bowlingtype: player[] = [];
   bowlingspec: player[] = [];
+   
+
+
+  filteredSpecs: any[] = [];
 
   playerId: any;
 
@@ -132,6 +136,7 @@ export class PlayerRegistrationComponent implements OnInit {
   // Filter options
   filterStatus: string = '';
   filterPlayerType: string = '';
+  form: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -139,7 +144,8 @@ export class PlayerRegistrationComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private confirmationService: ConfirmationService,
-    public cricketKeyConstant: CricketKeyConstant
+    public cricketKeyConstant: CricketKeyConstant,
+
   ) { }
 
   ngOnInit() {
@@ -148,11 +154,11 @@ export class PlayerRegistrationComponent implements OnInit {
       middle_name: [''],
       sur_name: [''],
       display_name: ['', [Validators.required]],
-      nationality_id: ['',[Validators.required]],
+      nationality_id: ['', [Validators.required]],
       player_dob: ['',],
       mobile_no: [''],
       email: [''],
-      gender_id: ['',[Validators.required]],
+      gender_id: ['', [Validators.required]],
       player_role_id: ['', [Validators.required]],
       batting_style_id: ['', [Validators.required]],
       batting_order_id: [''],
@@ -163,14 +169,18 @@ export class PlayerRegistrationComponent implements OnInit {
       jersey_no: [''],
       profile_image: [''],
       team_represent: [''],
-
       player_id: [''],
+
+
+
+
 
 
     });
 
 
     this.Nationalitydropdown();
+    this.radiobutton();
     this.dropdownplayer();
     this.gridLoad();
 
@@ -189,16 +199,19 @@ export class PlayerRegistrationComponent implements OnInit {
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
 
-
+// PlayerData
     if (this.filterStatus) {
       params.status = this.filterStatus;
     }
     if (this.filterPlayerType) {
       params.player_type = this.filterPlayerType;
     }
-
+  params.search_text = this.searchKeyword.toString(),
     this.apiService.post(this.urlConstant.getplayerlist, params).subscribe(
       (res) => {
+
+        this.PlayerData = res.data.players ?? [];
+      this.totalData = this.PlayerData.length!=0 ? res.data.players[0].total_records:0
         this.PlayerData = res.data.players ?? [];
         this.totalData = res.data.total_records || 50;
 
@@ -251,28 +264,10 @@ export class PlayerRegistrationComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-      this.configDataList = res.data.teams != undefined ? res.data.teams : [];
+      this.configDataList = res.data.dropdowns != undefined ? res.data.dropdowns : [];
 
       this.genderSelect = res.data.teams
         .filter((item: any) => item.config_key == 'gender')
-
-      this.playerrole = res.data.teams
-        .filter((item: any) => item.config_key == 'player_role')
-
-      this.battingstyle = res.data.teams
-        .filter((item: any) => item.config_key == 'batting_style')
-
-      this.battingorder = res.data.teams
-        .filter((item: any) => item.config_key == 'batting_order') 
-
-      this.bowlingstyle = res.data.teams
-        .filter((item: any) => item.config_key == 'bowling_style')
-
-      this.bowlingtype = res.data.teams
-        .filter((item: any) => item.config_key == 'bowling_type')
-
-      this.bowlingspec = res.data.teams
-        .filter((item: any) => item.config_key == 'bowling_spec')
 
       // console.log(this.genderSelect,res.data.teams);
     }, (err: any) => {
@@ -283,26 +278,66 @@ export class PlayerRegistrationComponent implements OnInit {
     })
   }
 
-  formSetValue() {
-    this.playerRegistrationform.patchValue({
-      gender: this.genderSelect[0].config_id,
-
-      playerrole: this.playerrole[0].config_id,
-
-      battingstyle: this.playerrole[0].config_id,
-
-      battingorder: this.playerrole[0].config_id,
-
-      bowlingstyle: this.playerrole[0].config_id,
-
-      bowlingtype: this.playerrole[0].config_id,
-
-      bowlingspec: this.playerrole[0].config_id,
 
 
-    })
+  radiobutton() {
+    const params: any = {};
+    params.action_flag = 'dropdown';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
+       this.configDataList = res.data.dropdowns ?? [];
+      this.playerrole = res.data.dropdowns
+        .filter((item: any) => item.config_key == 'player_role')
 
+      this.battingstyle = res.data.dropdowns
+        .filter((item: any) => item.config_key == 'batting_style')
+
+      this.battingorder = res.data.dropdowns
+        .filter((item: any) => item.config_key == 'batting_order')
+
+      this.bowlingstyle = res.data.dropdowns
+        .filter((item: any) => item.config_key == 'bowling_style')
+
+          this.bowlingtype = this.configDataList.
+            filter((item: any) => item.config_key === 'bowling_type')
+
+        this.bowlingspec = this.configDataList.
+            filter((item: any) => item.config_key === 'bowling_spec')
+
+  this.filteredSpecs = [];
+  this.formSetValue();
+    });
   }
+
+  onBowlingTypeChange(selectedBowlingTypeId: number) {
+    this.filteredSpecs = this.bowlingspec.filter(
+      spec => spec.parent_config_id === selectedBowlingTypeId
+    );
+
+    // Optional: reset previous bowling_spec_id if already selected
+    this.form.get('bowling_spec_id')?.setValue(null);
+  }
+
+formSetValue() {
+  // Find the "Fast bowler" item in bowlingtype list
+  const fastBowler = this.bowlingtype.find(
+    (type: any) => type.config_name.toLowerCase().includes('fast')
+  );
+
+  if (fastBowler) {
+    const fastBowlerId = fastBowler.config_id;
+
+    // Patch the value to the form
+    this.playerRegistrationform.patchValue({
+      bowling_type_id: fastBowlerId
+    });
+
+    // Trigger the spec filter
+    this.onBowlingTypeChange(fastBowlerId);
+  }
+}
+
   duplicateChange() {
     this.submitted = true;
     if (this.playerRegistrationform.invalid) {
@@ -353,10 +388,18 @@ export class PlayerRegistrationComponent implements OnInit {
   hideDialog() {
     this.visible = false;
   }
+editLabel(){
+   this.isEditMode =false;
 
+}
   addplayerdata() {
     this.submitted = true;
     this.isEditMode = false;
+        if (this.playerRegistrationform.invalid) {
+      this.playerRegistrationform.markAllAsTouched();
+      return
+    }
+
     const params: playerupdate = {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
@@ -423,7 +466,7 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   Editplayer(player: any) {
-     this.isEditMode = true;
+    this.isEditMode = true;
     this.playerId = player.player_id;
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -572,6 +615,21 @@ export class PlayerRegistrationComponent implements OnInit {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
+
+
+     filterGlobal() {
+ this.first = 1; 
+    this.gridLoad();
+  }
+clear(table: Table) {
+  table.clear();
+  this.searchKeyword = '';
+  this.gridLoad();
+}
+onEnterPress(event: KeyboardEvent): void {
+  event.preventDefault();
+  this.filterGlobal();
+}
 
 
 

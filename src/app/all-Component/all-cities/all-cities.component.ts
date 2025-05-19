@@ -18,6 +18,7 @@ import { ConfirmationService } from 'primeng/api';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Country,UpdateCity } from './all-cities.model';
 import { Drawer } from 'primeng/drawer';
+import { ToastModule } from 'primeng/toast';
 interface City {
   name: string;
   code: string;
@@ -42,7 +43,8 @@ interface City {
     ReactiveFormsModule,
     ConfirmDialogModule,
     PaginatorModule,
-    Drawer
+    Drawer,
+ToastModule
   ],
   templateUrl: './all-cities.component.html',
   styleUrls: ['./all-cities.component.css'],
