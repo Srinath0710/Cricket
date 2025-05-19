@@ -701,7 +701,7 @@ label {
         background-color: #3d513e;
         color: white;
         border: none;
-        height: 31px;
+        height: 30px;
       }
       .p-dialog {
         /* border-radius: 14px !important; */
@@ -1281,4 +1281,14 @@ input.form-control:focus {
 
   cursor: pointer;
   color: #3103e7;
+}
+.parent-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Comp-child-butn {
+  margin-top: 5px;
+  margin-bottom: 8px;
+  width: 100px;
 }

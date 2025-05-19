@@ -1,14 +1,17 @@
-<!-- Update Button -->
-<div class="mb-4 text-right">
-  <button class="p-button p-button-primary p-button-sm " (click)="upateTeams()">Update Player</button>
+<div class="parent-container">
+  <button class="new-button p-button-text Comp-child-butn"(click)="updateplayer()">UpdatePlayer</button>
 </div>
 
 <!-- Team List -->
-<div *ngFor="let team of teamsDropDown" class="mb-2 border p-3 rounded-md shadow-sm">
-  <div class="flex justify-between items-center">
-    <span class="font-medium text-gray-700 " (click)="chooseTeam(team.team_id)">{{ team.team_name }}</span>
+<div class="team-row">
+  <div *ngFor="let team of teamsDropDown"
+       class="team-card"
+       (click)="chooseTeam(team.team_id)">
+    {{ team.team_name }}
   </div>
 </div>
+
+
   <p-pickList  [source]="sourcePlayer" 
   [target]="targetPlayer"
   [dragdrop]="true"
@@ -18,7 +21,8 @@
   filterBy="display_name"  
   sourceFilterPlaceholder="Search Available..." 
   targetFilterPlaceholder="Search Target..."
-  [dragdrop]="true" [responsive]="true" [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" breakpoint="1400px"
+  [dragdrop]="true" [responsive]="true" [sourceStyle]="{ height: '30rem' }"
+   [targetStyle]="{ height: '30rem' }" 
   >
   <ng-template pTemplate="sourceHeader">
     <div class="p-d-flex p-ai-center">

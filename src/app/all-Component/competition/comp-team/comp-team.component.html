@@ -1,4 +1,6 @@
-<button (click)="upateTeams()">Update Teams</button>
+<div class="parent-container">
+<button class="new-button p-button-text Comp-child-butn"(click)="updateTeam()">UpdateTeams</button>
+</div>
 <p-pickList  [source]="sourceTeams" 
 [target]="targetTeams"
 [dragdrop]="true"
@@ -8,7 +10,9 @@
 filterBy="team_name"  
 sourceFilterPlaceholder="Search Available..." 
 targetFilterPlaceholder="Search Target..."
-[dragdrop]="true" [responsive]="true" [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" 
+[dragdrop]="true" [responsive]="true" 
+[sourceStyle]="{ height: '20rem' }"
+ [targetStyle]="{ height: '20rem' }" 
 >
 <ng-template pTemplate="sourceHeader">
   <div class="p-d-flex p-ai-center">

@@ -54,7 +54,7 @@ export class CompOfficialComponent implements OnInit {
 
     })
   }
-  upateTeams() {
+  updateOfficial() {
     const params: any = {}
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();

@@ -16,7 +16,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
-import { Sidebar } from 'primeng/sidebar';
 import { EditCompitition, UpdateCompetition } from './competition.model';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CompTeamComponent } from './comp-team/comp-team.component';
@@ -24,6 +23,7 @@ import { CompOfficialComponent } from './comp-official/comp-official.component';
 import { CompGroundComponent } from './comp-ground/comp-ground.component';
 import { CompPlayerComponent } from './comp-player/comp-player.component';
 import { CompMatchComponent } from './comp-match/comp-match.component';
+import { Drawer } from 'primeng/drawer';
 
 interface Competition {
   competition_id: number;
@@ -81,13 +81,13 @@ export interface ManageDataItem {
     HttpClientModule,
     ToastModule,
     PaginatorModule,
-    Sidebar,
     ConfirmDialogModule,
     CompTeamComponent,
     CompOfficialComponent,
     CompGroundComponent,
     CompPlayerComponent,
-    CompMatchComponent
+    CompMatchComponent,
+    Drawer
 
   ],
   providers: [
@@ -283,13 +283,8 @@ export class CompetitionComponent implements OnInit {
   applyFilters() {
 
     this.first = 1;
-
-
     this.loadCompetitions();
-
-
     this.showFilters = false;
-
     this.messageService.add({
       severity: 'info',
       summary: 'Filters Applied',
@@ -454,14 +449,14 @@ export class CompetitionComponent implements OnInit {
       end_date: this.addCompetitionForm.value.end_date,
       // is_practice: this.addCompetitionForm.value.is_practice,
       video_path: this.addCompetitionForm.value.video_path,
-      overs_per_innings: this.addCompetitionForm.value.overs_per_innings,
-      overs_per_bowler: this.addCompetitionForm.value.overs_per_bowler,
-      points_abandoned: this.addCompetitionForm.value.points_abandoned,
-      points_draw: this.addCompetitionForm.value.points_draw,
-      points_win: this.addCompetitionForm.value.points_win,
-      points_lead: this.addCompetitionForm.value.points_lead,
-      points_tie: this.addCompetitionForm.value.points_tie,
-      calculation: this.addCompetitionForm.value.calculation,
+      overs_per_innings: String(this.addCompetitionForm.value.overs_per_innings),
+      overs_per_bowler: String(this.addCompetitionForm.value.overs_per_bowler),
+      points_abandoned: String(this.addCompetitionForm.value.points_abandoned),
+      points_draw: String(this.addCompetitionForm.value.points_draw),
+      points_win: String(this.addCompetitionForm.value.points_win),
+      points_lead: String(this.addCompetitionForm.value.points_lead),
+      points_tie: String(this.addCompetitionForm.value.points_tie),
+      calculation: String(this.addCompetitionForm.value.calculation),
       competition_id: String(this.addCompetitionForm.value.competition_id),
       action_flag: 'create',
     };
