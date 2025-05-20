@@ -148,19 +148,49 @@
 
 .popup-container {
   max-width: 600px;
-  margin: 10px auto;
+  margin: 8px auto;
   background: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   position: relative;
-  padding: 20px 30px;
+  padding: 12px 16px;  /* reduced padding */
   border-left: 4px solid #007BFF;
   border-right: 4px solid #007BFF;
   color: #222;
-  max-height: 90vh;              
-  overflow-y: auto;               
+  max-height: calc(100vh - 40px); /* tighter max height */
+  overflow-y: auto;
   box-sizing: border-box;
+}
+@media screen and (max-height: 800px) {
+  .popup-container {
+    padding: 10px 12px !important;
+    max-height: calc(100vh - 20px) !important;
+  }
+
+  .popup-title {
+    font-size: 20px;
+  }
+
+  .info-row {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .image-preview {
+    max-width: 150px;
+    margin-top: 6px;
+  }
+
+  .zoom-icon {
+    padding: 4px 6px;
+    font-size: 14px;
+  }
 }
 
 .p-dialog .p-dialog-content {
