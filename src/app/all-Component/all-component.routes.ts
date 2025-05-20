@@ -10,7 +10,7 @@ import { StateComponent } from "./state/state.component";
 import { AllCitiesComponent } from "./all-cities/all-cities.component";
 import { SeasonsComponent } from "../seasons/seasons.component";
 import { GroundsComponent } from "../grounds/grounds.component";
-import { ScoreEnginesComponent } from "../score-engines/score-engines.component";
+// import { ScoreEnginesComponent } from "../score-engines/score-engines.component";
 import { ScoreEngineComponent } from "../score-engine/score-engine.component";
 
 export const AllComponentRoutes: Route[] = [
