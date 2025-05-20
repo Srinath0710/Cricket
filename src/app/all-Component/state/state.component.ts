@@ -164,12 +164,14 @@ export class StateComponent implements OnInit {
     this.submitted = false;
   }
 
+
   successToast(data: any) {
-    this.msgService.add({ key: 'ts', severity: 'success', summary: 'Success', detail: data.message });
+    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+
   }
 
   failedToast(data: any) {
-    this.msgService.add({ key: 'ts', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
 
   status(state_id: number, url: string) {
@@ -189,7 +191,14 @@ export class StateComponent implements OnInit {
       });
   }
 
-  StatusConfirm(state_id: number, actionObject: { key: string, label: string }) {
+  StatusConfirm(state_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+    const AlreadyStatestatus =
+    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+
+  if (AlreadyStatestatus) {
+    return; 
+  }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this state?`,
       header: 'Confirmation',

@@ -31,9 +31,7 @@
             </div>
             
 
-<div class="form-wrapper pb-5">
-
-            <div class="d-flex align-items-center">
+  <div class="d-flex align-items-center">
 
               <!-- Search Form -->
               <form class="d-flex align-items-center  gap-2"(submit)="gridLoad()">
@@ -53,7 +51,6 @@
             </div>
 
             </div>
-          </div>
 
           <p-table  #dt  [value]="statesData" [styleClass]="'custom-table'"
             [globalFilterFields]="['state_name', 'state_code','country_name','record_status']">
@@ -96,13 +93,13 @@
                   </span>
 
                   <span class="icon-green"
-                    (click)="StatusConfirm(state.state_id,cricketKeyConstant.condition_key.active_status)"
+                    (click)="StatusConfirm(state.state_id,cricketKeyConstant.condition_key.active_status, state.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
 
                   <span class="icon-red"
-                    (click)="StatusConfirm(state.state_id,cricketKeyConstant.condition_key.deactive_status)"
+                    (click)="StatusConfirm(state.state_id,cricketKeyConstant.condition_key.deactive_status, state.record_status)"
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
@@ -201,4 +198,4 @@
   </div> 
 
 </div>
-    <p-toast key="tc" position="top-right"></p-toast>
+<p-toast key="tc" position="top-right"></p-toast>

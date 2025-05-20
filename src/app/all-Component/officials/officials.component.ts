@@ -25,6 +25,7 @@ import { OnInit } from '@angular/core';
 import { HostListener } from '@angular/core';
 import { Drawer } from 'primeng/drawer';
 import { PaginatorModule } from 'primeng/paginator';
+import { ToastModule } from 'primeng/toast';
 
 interface official {
   config_id: string;
@@ -50,7 +51,8 @@ interface official {
     DrawerModule,
     ConfirmDialogModule,
     Drawer,
-    PaginatorModule
+    PaginatorModule,
+    ToastModule
   ],
   providers: [
     { provide: URLCONSTANT },
@@ -398,7 +400,14 @@ export class OfficialsComponent implements OnInit {
       });
   }
 
-  StatusConfirm(official_id: number, actionObject: { key: string, label: string }) {
+  StatusConfirm(official_id: number, actionObject: { key: string, label: string },currentStatus:string) {
+    const AlreadyStatestatus =
+    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+
+  if (AlreadyStatestatus) {
+    return; 
+  }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this Official?`,
       header: 'Confirmation',

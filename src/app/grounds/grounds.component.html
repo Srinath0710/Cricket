@@ -25,7 +25,7 @@
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                   (click)="showAddForm()">
                   <i class="fas fa-plus"></i>
-Create               </button>
+                  Create </button>
               </div>
             </div>
           </div>
@@ -34,7 +34,7 @@ Create               </button>
             [globalFilterFields]="['ground_name','country_name','state_name','city_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
-           
+
                 <th class="col-3" pSortableColumn="ground_name">Ground Name <p-sortIcon field="ground_name">
                   </p-sortIcon>
                 </th>
@@ -60,7 +60,8 @@ Create               </button>
                     <img class="player-img" *ngIf="ground.profile_img && ground.player_profile"
                       [src]="ground.profile_img" (error)="handleImageError($event, default_img)">
                   </span>
-             <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)"> {{ ground.ground_name }}</span>
+                  <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)"> {{ ground.ground_name
+                    }}</span>
                 </td>
 
 
@@ -81,13 +82,13 @@ Create               </button>
                   </span>
 
                   <span class="icon-green"
-                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.active_status)"
+                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.active_status,ground.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
 
                   <span class="icon-red"
-                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.deactive_status)"
+                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.deactive_status,ground.record_status)"
                     pTootip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
@@ -109,9 +110,9 @@ Create               </button>
                 <header class="popup-header">
                   <div class="popup-icon">🏟️</div>
                   <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
-                  
-                  
-                  
+
+
+
                 </header>
 
                 <!-- Group Address and Ground Details together -->
@@ -141,16 +142,6 @@ Create               </button>
                       class="info-value">{{ ground.city }}</span></div>
                 </section>
 
-                <!-- <section class="popup-section">
-      <h2 class="section-title">🖼️ Media</h2>
-      <div class="info-row">
-        <span class="info-label">🖼️ Profile Image</span><span class="separator">|</span>
-        <span class="info-value image-preview" title="Click to zoom">
-          <img [src]="" alt="Profile Image" />
-          <span class="zoom-icon">🔍</span>
-        </span>
-      </div>
-    </section> -->
 
               </div>
             </div>
@@ -331,27 +322,21 @@ Create               </button>
 
         </div>
         <div class="form-wrapper pb-5">
-        <div class="row mt-4 sticky-footer-buttons">
-          <div class="col-12 text-end">
-            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-              (click)="cancelForm()"></button>
+          <div class="row mt-4 sticky-footer-buttons">
+            <div class="col-12 text-end">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                (click)="cancelForm()"></button>
 
-            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-              *ngIf="addGroundForm.get('country_id')?.value == '' || addGroundForm.get('country_id')?.value == null"
-              (click)="resetForm()"></button>
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                *ngIf="addGroundForm.get('country_id')?.value == '' || addGroundForm.get('country_id')?.value == null"
+                (click)="resetForm()"></button>
 
-            <button pButton type="button" label="Save" class="save-button" (click)="onAddGround()"></button>
+              <button pButton type="button" label="Save" class="save-button" (click)="onAddGround()"></button>
+            </div>
           </div>
         </div>
-      </div>
-
-
-
-
       </form>
-
     </p-drawer>
   </div>
 </div>
-
-
+<p-toast key="tc" position="top-right"></p-toast>

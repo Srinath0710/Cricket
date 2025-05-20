@@ -155,17 +155,16 @@ onViewGroundDetails(groundId: any) {
 
 
   closePopup() {
-    this.showPopup = false;  // this will hide the popup
+    this.showPopup = false;  
   }
 
-  // Example: how popup is opened (optional)
   openPopup() {
     this.showPopup = true;
   }
 
 
 getImageUrl(img: string) {
-  return `your-image-base-path/${img}`; // replace with correct path
+  return `your-image-base-path/${img}`;
 }
   calaculateFirst(): number{
     return (this.first - 1) * this.rows;
@@ -188,13 +187,14 @@ getImageUrl(img: string) {
     this.addGroundForm.reset();
     this.submitted = false;
   }
-
   successToast(data: any) {
-    this.msgService.add({ key: 'tg', severity: 'success', summary: 'Success', detail:data.message});
+    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+
   }
 
-  failedToast(data: any){
-    this.msgService.add({ key: 'ts', severity: 'error', summary: 'Error', detail:data.message});
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
 
   onAddGround() {
@@ -313,7 +313,14 @@ getImageUrl(img: string) {
   }
   
 
-  StatusConfirm(ground_id: number,actionObject:{key:string,label:string}) { 
+  StatusConfirm(ground_id: number,actionObject:{key:string,label:string},currentStatus:string) { 
+    const AlreadyStatestatus =
+    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+
+  if (AlreadyStatestatus) {
+    return; 
+  }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this.ground?`,
       header: 'Confirmation',
