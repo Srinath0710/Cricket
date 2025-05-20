@@ -100,13 +100,13 @@
 
           <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
 
-
+<!-- 
             <div class="popup-container">
               <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
 
               <div *ngFor="let ground of selectedGround" class="popup-content">
 
-                <!-- Only Ground Name at the top -->
+               
                 <header class="popup-header">
                   <div class="popup-icon">🏟️</div>
                   <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
@@ -115,7 +115,18 @@
 
                 </header>
 
-                <!-- Group Address and Ground Details together -->
+<section class="popup-section image-only-section">
+  <div class="image-close-wrapper">
+    <span class="image-preview" title="Click to zoom">
+      <img [src]="ground.profileImageUrl" alt="Profile Image" />
+      <span class="zoom-icon">🔍</span>
+    </span>
+  </div>
+</section>
+
+
+
+               
                 <section class="popup-section">
                   <h2 class="section-title"> ⛳Ground Details</h2>
                   <div class="info-row"><span class="info-label">🏠 Address 1</span><span
@@ -141,10 +152,63 @@
                   <div class="info-row"><span class="info-label">🏢 City</span><span class="separator">|</span><span
                       class="info-value">{{ ground.city }}</span></div>
                 </section>
+                             <section class="popup-section">
+      <h2 class="section-title">🖼️ Media</h2>
+      <div class="info-row">
+        <span class="info-label">🖼️ Profile Image</span><span class="separator">|</span>
+        <span class="info-value image-preview" title="Click to zoom">
+          <img [src]="" alt="Profile Image" />
+          <span class="zoom-icon">🔍</span>
+        </span>
+      </div>
+    </section> 
 
 
               </div>
-            </div>
+            </div> -->
+
+            <div class="popup-container">
+
+  <!-- ✅ Top bar: Image on left, Cancel button on right -->
+<div class="top-bar">
+  <div class="profile-image-wrapper">
+    <img [src]="selectedGround[0]?.profileImageUrl" alt="Profile Image" class="profile-image" />
+  </div>
+  <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
+</div>
+
+
+  <div *ngFor="let ground of selectedGround" class="popup-content">
+
+    <!-- ✅ Ground name without 🏟️ icon -->
+    <header class="popup-header no-icon">
+      <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
+    </header>
+
+    <!-- ✅ Removed image-only section (because it's now shown in top-bar) -->
+
+    <!-- Ground Details -->
+    <section class="popup-section">
+      <h2 class="section-title">⛳ Ground Details</h2>
+      <div class="info-row"><span class="info-label">🏠 Address 1</span><span class="separator">|</span><span class="info-value">{{ ground['address 1'] }}</span></div>
+      <div class="info-row"><span class="info-label">🏘️ Address 2</span><span class="separator">|</span><span class="info-value">{{ ground['address 2'] }}</span></div>
+      <div class="info-row"><span class="info-label">🔢 Post Code</span><span class="separator">|</span><span class="info-value">{{ ground['post code'] }}</span></div>
+      <div class="info-row"><span class="info-label">↖️ End One</span><span class="separator">|</span><span class="info-value">{{ ground['end one'] }}</span></div>
+      <div class="info-row"><span class="info-label">↘️ End Two</span><span class="separator">|</span><span class="info-value">{{ ground['end two'] }}</span></div>
+      <div class="info-row"><span class="info-label">📘 Profile</span><span class="separator">|</span><span class="info-value">{{ ground.profile }}</span></div>
+    </section>
+
+    <!-- Location Details -->
+    <section class="popup-section">
+      <h2 class="section-title">🌐 Location</h2>
+      <div class="info-row"><span class="info-label">🌎 Country</span><span class="separator">|</span><span class="info-value">{{ ground.country }}</span></div>
+      <div class="info-row"><span class="info-label">🏴 State</span><span class="separator">|</span><span class="info-value">{{ ground.state }}</span></div>
+      <div class="info-row"><span class="info-label">🏢 City</span><span class="separator">|</span><span class="info-value">{{ ground.city }}</span></div>
+    </section>
+
+  </div>
+</div>
+
 
 
 
