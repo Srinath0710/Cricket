@@ -1300,6 +1300,7 @@ input.form-control:focus {
 
 
 .playersrequired-msg {
+    position: relative;
   background-color: rgb(226, 36, 36);
   color: white;
   padding: 4px 8px;
@@ -1308,9 +1309,11 @@ input.form-control:focus {
   width: 100%;
   text-align: center;
   box-sizing: border-box;
-  margin-top: 0px; /* Optional: small spacing between box and error */
-  
+  margin-top: 0px; 
+  z-index: 1;
 }
+
+
 
 .border.rounded {
   border-radius: 0 !important;
@@ -1319,9 +1322,9 @@ input.form-control:focus {
 
 
 
-
+/* equal height */
 .box-card .border {
-  min-height: 100%; /* equal height */
+  min-height: 100%; 
  
 }
 
@@ -1349,3 +1352,9 @@ input.form-control:focus {
   margin-bottom: 8px;
   width: 100px;
 }
+
+
+
+
+
+

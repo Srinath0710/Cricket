@@ -16,12 +16,10 @@
                   <div class="p-input-icon-right flex-grow-1">
                     <!-- <i class="pi pi-search" ></i> -->
                     <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                      placeholder="  Search" (input)="filterGlobal()"(keydown.enter)="$event.preventDefault();filterGlobal()" />
+                      placeholder="Search" (input)="filterGlobal()"/>
                   </div>
 
-                  <button type="button" class="clear-button" (click)="searchKeyword = ''">
-                    Clear
-                  </button>
+                 <button type="button" class="clear-button" (click)="clear()"> Clear </button>
                 </form>
 
 
@@ -53,8 +51,9 @@
 
 
 
-            <p-table [value]="PlayerData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
-              <ng-template pTemplate="header">
+                  <p-table #dt [value]="PlayerData" [styleClass]="'custom-table'"
+            [globalFilterFields]="['display_name','player_dob','mobile_no','email','record_status']">
+            <ng-template pTemplate="header">
 
 
                 <tr>
@@ -503,3 +502,5 @@
 
 
 </div>
+
+ <p-toast key="tc" position="top-right"></p-toast>

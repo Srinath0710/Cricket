@@ -25,6 +25,7 @@ import { Drawer } from 'primeng/drawer';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Dialog } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
 
 
 
@@ -66,7 +67,8 @@ interface DuplicatePlayer {
     ReactiveFormsModule,
     DrawerModule,
     RadioButtonModule,
-    Drawer
+    Drawer,
+    ToastModule
 
 
 
@@ -85,6 +87,8 @@ interface DuplicatePlayer {
 })
 export class PlayerRegistrationComponent implements OnInit {
 
+  @ViewChild('dt') dt!: Table;
+
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   submitted: boolean = true;
@@ -94,11 +98,13 @@ export class PlayerRegistrationComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10; // Default records shown is 10
   totalData: any = 0;
+  
   isEditMode: boolean = false;
+  filedata: any;
   searchKeyword: string = '';
   visible: boolean = false;
   isEditing: boolean = false;
-  public ShowForm: boolean = false;
+  public ShowForm: any = false;
   position: 'center' = 'center';
   playerRegistrationform!: FormGroup;
   backScreen: any;
@@ -195,46 +201,77 @@ export class PlayerRegistrationComponent implements OnInit {
   gridLoad() {
     const params: any = {};
     params.user_id = this.user_id?.toString();
-    params.client_id = '1';//this.client_id?.toString();
+    params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
+    params.search_text = this.searchKeyword.toString(),
 
-// PlayerData
-    if (this.filterStatus) {
-      params.status = this.filterStatus;
-    }
-    if (this.filterPlayerType) {
-      params.player_type = this.filterPlayerType;
-    }
-  params.search_text = this.searchKeyword.toString(),
-    this.apiService.post(this.urlConstant.getplayerlist, params).subscribe(
-      (res) => {
+    this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
+      this.PlayerData = res.data.players ?? [];
+      this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
+      this.PlayerData.forEach((val: any) => {
+        val.country_image = `${val.country_image}?${Math.random()}`;
+      });
+    }, (err: any) => {
+      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.PlayerData = [], this.totalData = this.PlayerData.length);
 
-        this.PlayerData = res.data.players ?? [];
-      this.totalData = this.PlayerData.length!=0 ? res.data.players[0].total_records:0
-        this.PlayerData = res.data.players ?? [];
-        this.totalData = res.data.total_records || 50;
+    });
 
-        this.PlayerData.forEach((val: any) => {
-          val.profile_img = `${val.profile_img}?${Math.random()}`;
-        });
-      },
-      (err: any) => {
-        if (err.status === this.cricketKeyConstant.status_code.refresh &&
-          err.error.message === this.cricketKeyConstant.status_code.refresh_msg) {
-          this.apiService.RefreshToken();
-        } else {
-          this.PlayerData = [];
-          this.totalData = this.PlayerData.length;
-          this.msgService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to load players'
-          });
-        }
-      }
-    );
   }
+ 
+
+  calculateFirst(): number {
+    return (this.first - 1) * this.rows;
+  }
+  onPageChange(event: any) {
+    this.first = (event.page) + 1;
+    this.pageData = event.first;
+    this.rows = event.rows;
+    this.gridLoad();
+  }
+
+
+
+
+
+
+    
+// // PlayerData
+//     if (this.filterStatus) {
+//       params.status = this.filterStatus;
+//     }
+//     if (this.filterPlayerType) {
+//       params.player_type = this.filterPlayerType;
+//     }
+//   params.search_text = this.searchKeyword.toString(),
+//     this.apiService.post(this.urlConstant.getplayerlist, params).subscribe(
+//       (res) => {
+
+//         this.PlayerData = res.data.players ?? [];
+//       this.totalData = this.PlayerData.length!=0 ? res.data.players[0].total_records:0
+//         this.PlayerData = res.data.players ?? [];
+//         this.totalData = res.data.total_records || 50;
+
+//         this.PlayerData.forEach((val: any) => {
+//           val.profile_img = `${val.profile_img}?${Math.random()}`;
+//         });
+//       },
+//       (err: any) => {
+//         if (err.status === this.cricketKeyConstant.status_code.refresh &&
+//           err.error.message === this.cricketKeyConstant.status_code.refresh_msg) {
+//           this.apiService.RefreshToken();
+//         } else {
+//           this.PlayerData = [];
+//           this.totalData = this.PlayerData.length;
+//           this.msgService.add({
+//             severity: 'error',
+//             summary: 'Error',
+//             detail: 'Failed to load players'
+//           });
+//         }
+//       }
+//     );
+//   }
 
 
 
@@ -560,18 +597,16 @@ editLabel(){
     });
   }
 
-  onPageChange(event: any) {
-    this.first = Math.floor(event.first / event.rows) + 1;
-    this.rows = event.rows;
-    this.gridLoad();
-  }
+  // onPageChange(event: any) {
+  //   this.first = Math.floor(event.first / event.rows) + 1;
+  //   this.rows = event.rows;
+  //   this.gridLoad();
+  // }
 
   successToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
-
   }
 
-  /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
@@ -617,19 +652,18 @@ editLabel(){
   }
 
 
-     filterGlobal() {
- this.first = 1; 
-    this.gridLoad();
+  filterGlobal() {
+    this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
-clear(table: Table) {
-  table.clear();
-  this.searchKeyword = '';
-  this.gridLoad();
+  clear() {
+  this.searchKeyword = '';   
+  this.dt.clear();          
+  this.gridLoad();          
 }
-onEnterPress(event: KeyboardEvent): void {
-  event.preventDefault();
-  this.filterGlobal();
-}
+// onEnterPress(event: KeyboardEvent): void {
+//   event.preventDefault();
+//   this.filterGlobal();
+// }
 
 
 
