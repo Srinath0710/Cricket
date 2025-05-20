@@ -1,102 +1,127 @@
-table.dataTable{
-	max-width: 100% !important;
-	width: 100% !important;
+table.dataTable {
+    max-width: 100% !important;
+    width: 100% !important;
 }
-.modal-title{
-	font-size: 22px;
+
+.modal-title {
+    font-size: 22px;
 }
-.inactive{
-	display: none !important;
+
+.inactive {
+    display: none !important;
 }
-.formContainer{
-	padding-left: 20px;
+
+.formContainer {
+    padding-left: 20px;
     padding-right: 20px;
 }
-.totalRecords{
-	font-size: 16px;
+
+.totalRecords {
+    font-size: 16px;
 }
 
 
 
-.formAccodian{
-	float: left;
+.formAccodian {
+    float: left;
     width: 100%;
     margin-top: 10px;
 }
 
-.formAccodianHead{
+.formAccodianHead {
     background-color: #d5d5d5;
     float: left;
     padding: 5px;
     width: 100%;
 }
 
-.formAccodianTitle{
+.formAccodianTitle {
     font-weight: bold;
 }
-.formAccodianListTitle{
-    
-}
-.formAccodianListTitle.wicon,.formAccodiansubListTitle.wicon{
-	
+
+.formAccodianListTitle {}
+
+.formAccodianListTitle.wicon,
+.formAccodiansubListTitle.wicon {
+
     padding-left: 0;
     cursor: pointer;
 }
-.formAccodianListTitle.wicon .fa,.formAccodiansubListTitle.wicon .fa{
-	color: #6d6d6d;
+
+.formAccodianListTitle.wicon .fa,
+.formAccodiansubListTitle.wicon .fa {
+    color: #6d6d6d;
     font-size: 16px;
-	top: 2px;
-    left: -2px;
-}
-.formAccodianListTitle.wicon.minimize,.formAccodiansubListTitle.wicon.minimize{
-     color : #037CD9;
-}
-.formAccodianListTitle.wicon.minimize .fa,.formAccodiansubListTitle.wicon.minimize .fa{
-	color : #037CD9;
-	font-size: 16px;
-	top: 2px;
+    top: 2px;
     left: -2px;
 }
 
-.formAccodianList{
+.formAccodianListTitle.wicon.minimize,
+.formAccodiansubListTitle.wicon.minimize {
+    color: #037CD9;
+}
+
+.formAccodianListTitle.wicon.minimize .fa,
+.formAccodiansubListTitle.wicon.minimize .fa {
+    color: #037CD9;
+    font-size: 16px;
+    top: 2px;
+    left: -2px;
+}
+
+.formAccodianList {
     float: left;
     padding: 5px;
     width: 100%;
     border-bottom: 1px dashed #8c8c8c;
 }
 
-.formAccodianList:last-child{
+.formAccodianList:last-child {
     border-bottom: 1px solid #c9c9c9;
 }
 
-.formAccodiansubList,.formAccodiansubsubList{
+.formAccodiansubList,
+.formAccodiansubsubList {
     display: none;
-    float: left;  
+    float: left;
     width: 100%;
 }
-.formAccodiansubList_main{
-	padding-bottom: 5px;
+
+.formAccodiansubList_main {
+    padding-bottom: 5px;
     padding-top: 5px;
 }
-.formAccodianList_main{
+
+.formAccodianList_main {
     float: left;
     padding-bottom: 5px;
     padding-top: 5px;
     width: 100%;
 }
-.formAccodiansubList.active,.formAccodiansubsubList.active{
+
+.formAccodiansubList.active,
+.formAccodiansubsubList.active {
     display: block;
 }
-.formAccodiansubListTitle{
-     padding-left: 25px;
+
+.formAccodiansubListTitle {
+    padding-left: 25px;
 }
-.formAccodiansubsubList .formAccodiansubListTitle{
-     padding-left: 40px;
-} 
-.formAccodiansubListTitle.wicon{
-     margin-left: 25px;
+
+.formAccodiansubsubList .formAccodiansubListTitle {
+    padding-left: 40px;
 }
-.mcColumn,.mcColumns{ padding-left:5px;padding-right:5px;float:left; }
+
+.formAccodiansubListTitle.wicon {
+    margin-left: 25px;
+}
+
+.mcColumn,
+.mcColumns {
+    padding-left: 5px;
+    padding-right: 5px;
+    float: left;
+}
 
 .popup {
     display: none;
@@ -143,4 +168,97 @@ table.dataTable{
     border-radius: 14px;
     margin-right: 80px;
 
+}
+/* 
+.main-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+
+.main-page-title,
+.main-page-title-manage {
+    flex: 1;
+    text-align: center;
+}
+
+.main-page-action {
+    position: absolute;
+    display: block;
+    justify-content: flex-end;
+    right: 1rem;
+    top: 44%;
+    transform: translateY(-63%);
+}
+
+
+.back-button,
+.new-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+}
+
+.back-button {
+    background: transparent;
+    border: 1px solid #ddd;
+    color: #333;
+    position: fixed;
+    top: 23px;
+    border-radius: 50px;
+}
+
+.new-button {
+    background: #3B82F6;
+    color: white;
+    border: none;
+}
+
+
+.page-tile-img {
+    margin-right: 0.5rem;
+}*/
+
+ .p-select,
+.p-inputtext {
+    width: 94% !important;
+}
+
+.page-content {
+    padding: 0px 0px;
+}
+
+/* .clearbutton {
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 0px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-right: 36px;
+    margin-left: 5px;
+}*/
+ .widthsearch {
+    border-radius: none;
+    width: 150px !important;
+    padding-right: 53px !important;
+    height: 35px;
+    margin-top: 1px;
+    font-size: 12px !important;
+} 
+
+.back-button {
+    position: fixed;
+    top: 23px;
+}
+.input-form{
+    position: fixed; 
+    top: 76px;
+    right:27px
 }

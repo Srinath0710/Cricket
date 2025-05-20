@@ -11,6 +11,8 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TooltipModule } from 'primeng/tooltip';
+import { DrawerModule } from 'primeng/drawer';
 
 
 @Component({
@@ -26,11 +28,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         DropdownModule,
         ButtonModule,
         TableModule,
-        TagModule
+        TagModule, TooltipModule,
+        DrawerModule
     ]
 })
 export class RoleMenuComponent implements OnInit, AfterViewInit {
-    @ViewChild('role') dt: Table | undefined;
+    @ViewChild('dt') dt!: Table;
 
     visible = false;
     visibleDialog = false;
@@ -45,6 +48,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
     public roleMenuForm!: FormGroup<any>;
     statusApi: any;
     statusValues: any;
+    isEditMode: boolean = false;
     visibleShowConfirm: boolean = false
     ShowForm1: boolean = false;
     gridLoadData: any
@@ -483,7 +487,7 @@ confirmSelection(permissionform: NgForm) {
 
     /*Edit function*/
     edit(role_id: any, role_name: any, role_description: any, parent_role_id: any) {
-
+        this.isEditMode = true;
         this.roleMenuForm.setValue({
             role_id: role_id,
             role_name: role_name,
@@ -501,5 +505,10 @@ confirmSelection(permissionform: NgForm) {
         this.addAnother = false;
         this.gridLoad();
     }
+      clears() {
+  this.searchKeyword = '';   
+  this.dt.clear();          
+  this.gridLoad();          
+}
 
 }

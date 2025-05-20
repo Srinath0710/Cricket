@@ -118,4 +118,12 @@ export class URLCONSTANT {
       activefixture = 'Fixture/activate_fixtures'
       deactivefixture = 'Fixture/deactivate_fixtures'
 
+            /* USERS LIST */
+      getRoleList = 'User/get_role_list'
+      getMenuPermissionsList = 'User/get_menu_permissions'
+      updateMenuPermissionsList = 'User/update_menu_permissions'
+      updateRoleList = 'User/update_role'
+      createRoleList = 'User/create_role'
+      activeRole = '/User/activate_role'
+      deactivateRole = 'User/deactivate_role'
 }
