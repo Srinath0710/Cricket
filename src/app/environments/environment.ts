@@ -3,7 +3,7 @@ export const environment = {
       //------------------- Local Link-------------------\\
 
      imagePath:'/assets',
-      apiUrl: 'http://122.165.179.198:10001/GlobalAPI/',
+      apiUrl: 'http://122.165.179.198:10001/CricketGalaxy/',
                         islive:false,
 
 
