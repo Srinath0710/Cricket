@@ -52,7 +52,7 @@ export class GroundsComponent implements OnInit {
   public ShowForm:any = false;
   isEditMode: boolean = false;
   ViewMode: boolean = false;
-  groundsData: any[] = [];
+  clientData: any[] = [];
   loading = false;
   first: number = 1;
   oldfirst: number = 1;
@@ -73,6 +73,10 @@ export class GroundsComponent implements OnInit {
 
   viewDialogVisible: boolean = false;
 selectedGround: any = [];
+
+
+ClientID:any=[];
+  groundsData: any;
   
   constructor(private formBuilder: FormBuilder, 
               private apiService: ApiService,
@@ -85,8 +89,9 @@ selectedGround: any = [];
 
 
   ngOnInit() {
-    this.gridload();
+    
     this.getCountries();
+    this.Clientdropdown();
     this.addGroundForm = this.formBuilder.group({
       ground_name: ['',[Validators.required]],
       display_name: ['',[Validators.required]],
@@ -103,10 +108,36 @@ selectedGround: any = [];
       ground_photo: ['']
     })
   }
+
+
+
+
+  Clientdropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+      this.clientData = res.data ?? [];
+      this.ClientID= this.clientData[1].client_id;
+      console.log(this.ClientID);
+      this.gridload();
+
+    }, (err) => {
+      if (err.status === 401 && err.error.message === 'Token expired') {
+        this.apiService.RefreshToken();
+      }
+    });
+  }
+
+
+
+
+
+
   gridload() {
     const params: any = {
     user_id : this.user_id?.toString(),
-    client_id : this.client_id?.toString(),
+    client_id : this.ClientID?.toString(),
     page_no : this.first.toString(),
     records : this.rows.toString()
     };

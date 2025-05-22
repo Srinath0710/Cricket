@@ -8,6 +8,41 @@
               <i class="fas fa-globe-americas" aria-hidden="true"></i>
               Grounds
             </div>
+
+
+
+
+
+
+                          <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+              <p-dropdown 
+                [options]="clientData" 
+                optionLabel="client_name" 
+                optionValue="client_id"
+                [(ngModel)]="ClientID" 
+                (ngModelChange)="gridload()" 
+                placeholder="Client Id"  
+                [filter]="true" 
+                appendTo="body"
+                class=" w-100 
+                 drop-error header-drop">
+                
+                <ng-template let-Client pTemplate="item">
+                  <div class="country-item">
+                    <div>{{ Client.client_name }}</div>
+                  </div>
+                </ng-template>
+                
+              </p-dropdown>
+            </div>
+            
+
+
+
+
+
+
+
             <div class="d-flex align-items-center">
               <!-- Search Form -->
               <form class="d-flex align-items-center gap-2" (submit)="gridload()">
@@ -172,7 +207,8 @@
   <!-- ✅ Top bar: Image on left, Cancel button on right -->
 <div class="top-bar">
   <div class="profile-image-wrapper">
-    <img [src]="selectedGround[0]?.profileImageUrl" alt="Profile Image" class="profile-image" />
+    <img [src]="selectedGround[0]?.profileImageUrl" alt="Img" class="profile-image" />
+      <!-- <img src="https://via.placeholder.com/100" class="profile-image" /> -->
   </div>
   <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
 </div>

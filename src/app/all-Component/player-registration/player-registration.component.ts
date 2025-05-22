@@ -68,7 +68,8 @@ interface DuplicatePlayer {
     DrawerModule,
     RadioButtonModule,
     Drawer,
-    ToastModule
+    ToastModule,
+    
 
 
 
@@ -103,7 +104,7 @@ export class PlayerRegistrationComponent implements OnInit {
   filedata: any;
   searchKeyword: string = '';
   visible: boolean = false;
-  isEditing: boolean = false;
+  isEditing: boolean = false; 
   public ShowForm: any = false;
   position: 'center' = 'center';
   playerRegistrationform!: FormGroup;
@@ -301,14 +302,14 @@ export class PlayerRegistrationComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-      this.configDataList = res.data.dropdowns != undefined ? res.data.dropdowns : [];
+      this.configDataList = res.data.teams != undefined ? res.data.teams : [];
 
       this.genderSelect = res.data.teams
         .filter((item: any) => item.config_key == 'gender')
 
       // console.log(this.genderSelect,res.data.teams);
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status === 401 && err.error.message === "Expired") {  
         this.apiService.RefreshToken();
 
       }
@@ -323,17 +324,17 @@ export class PlayerRegistrationComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-       this.configDataList = res.data.dropdowns ?? [];
-      this.playerrole = res.data.dropdowns
+       this.configDataList = res.data.teams ?? [];
+      this.playerrole = res.data.teams
         .filter((item: any) => item.config_key == 'player_role')
 
-      this.battingstyle = res.data.dropdowns
+      this.battingstyle = res.data.teams
         .filter((item: any) => item.config_key == 'batting_style')
 
-      this.battingorder = res.data.dropdowns
+      this.battingorder = res.data.teams
         .filter((item: any) => item.config_key == 'batting_order')
 
-      this.bowlingstyle = res.data.dropdowns
+      this.bowlingstyle = res.data.teams
         .filter((item: any) => item.config_key == 'bowling_style')
 
           this.bowlingtype = this.configDataList.
