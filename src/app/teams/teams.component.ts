@@ -132,7 +132,7 @@ export class TeamsComponent implements OnInit {
           this.totalData = 0;
         }
         this.teamData.forEach((val: any) => {
-          // val.profile_img = `${val.profile_img}?${Math.random()}`;
+          val.profile_img = `${val.profile_img}?${Math.random()}`;
         });
       }, (err: any) => {
         err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
