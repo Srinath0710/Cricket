@@ -55,10 +55,10 @@ export class URLCONSTANT {
       activateState = "State/activate_state"
       deactivateState = "State/deactivate_state"
 
-     /* Global API */
+      /* Global API */
       countryLookups = "Global/get_countries"
       getStatesByCountry = "Global/get_state_by_country"
-      getcitylookups="Global/get_city_by_state"
+      getcitylookups = "Global/get_city_by_state"
 
 
       /*Seasons List*/
@@ -109,7 +109,7 @@ export class URLCONSTANT {
       compplayerlist = 'Competition/get_competition_players'
       compplayerupdate = 'Competition/add_competition_players'
 
-            /*   FIXTURE */
+      /*   FIXTURE */
       fixturedropdown = 'Fixture/get_fixtures_dropdown'
       updatefixture = 'Fixture/update_fixtures'
       addfixture = 'Fixture/add_fixtures'
@@ -118,7 +118,7 @@ export class URLCONSTANT {
       activefixture = 'Fixture/activate_fixtures'
       deactivefixture = 'Fixture/deactivate_fixtures'
 
-            /* USERS LIST */
+      /* USERS LIST */
       getRoleList = 'User/get_role_list'
       getMenuPermissionsList = 'User/get_menu_permissions'
       updateMenuPermissionsList = 'User/update_menu_permissions'
@@ -126,4 +126,15 @@ export class URLCONSTANT {
       createRoleList = 'User/create_role'
       activeRole = '/User/activate_role'
       deactivateRole = 'User/deactivate_role'
-}
+
+      /*   Client List */
+      createclient = 'Client/add_client'
+      updateclient='Client/update_client'
+      editclient='Client/edit_client'
+      activeClient='Client/activate_client'
+      deactiveClient='Client/deactivate_client'
+      getclientList='Client/get_client_list'
+      viewclient='Client/view_client'
+      lookupdropdown='Client/get_client_dropdown'
+
+} 
