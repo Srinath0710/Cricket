@@ -76,7 +76,7 @@ export class EditGround {
 export class UpdateGround {
     user_id: string|number;
     client_id: string|number;
-    ground_id: string|number;
+    ground_id: string|number|null;
     ground_name: string;
     display_name: string;
     country_id: string|number;
