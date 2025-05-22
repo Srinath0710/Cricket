@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators  }
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { Sidebar } from 'primeng/sidebar';
 import { ApiService } from '../services/api.service';
 import { URLCONSTANT } from '../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
@@ -19,6 +18,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CricketKeyConstant } from '../services/cricket-key-constant';
+import { Drawer } from 'primeng/drawer';
 
 @Component({
   selector: 'app-seasons',
@@ -27,7 +27,7 @@ import { CricketKeyConstant } from '../services/cricket-key-constant';
             BadgeModule, DialogModule, FormsModule, 
             DropdownModule, FileUploadModule, InputTextModule,
             PaginatorModule, TagModule,  ReactiveFormsModule,
-            ConfirmDialogModule, Sidebar, TooltipModule, CalendarModule
+            ConfirmDialogModule, Drawer, TooltipModule, CalendarModule
   
    ],
   templateUrl: './seasons.component.html',
@@ -50,7 +50,7 @@ export class SeasonsComponent implements OnInit {
     public addSeasonsForm!: FormGroup<any>;
     user_id: number = Number(localStorage.getItem('user_id'));
     client_id: number = Number(localStorage.getItem('client_id'));
-    public showForm: any = false;
+    public ShowForm: boolean = false;
     isEditMode : boolean = false;
     viewMode : boolean = false;
     seasonsData: any[] = [];
@@ -122,11 +122,11 @@ export class SeasonsComponent implements OnInit {
     }
 
     showAddForm() {
-      this.showForm = true;
+      this.ShowForm = true;
     }
   
     cancelForm(){
-      this.showForm = false;
+      this.ShowForm = false;
     }
     
     resetForm() {
