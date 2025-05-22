@@ -56,6 +56,7 @@ export class SeasonsComponent implements OnInit {
     seasonsData: any[] = [];
     association_id : any;
     loading = false;
+    showTime = false;
     first : number = 1;
     oldfirst: number = 1;
     pageData: number = 0;
@@ -179,33 +180,39 @@ export class SeasonsComponent implements OnInit {
     this.successToast(res);
     this.gridload();
   }
+  
 
-  EditSeason(season_id:number){
-    const params: any = {};
-    params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
-    params.season_id = season_id?.toString();
-    this.apiService.post(this.urlConstant.editSeason,params).subscribe((res) => {
-      console.log(res);
-      if(res.status_code == 200) {
-        const editRecord: EditSeason = res.data.seasons[0] ?? {};
-        if(editRecord != null) {
-          this.addSeasonsForm.setValue({
-            season_id: editRecord.season_id,
-            season_name: editRecord.season_name,
-            start_date: editRecord.start_date,
-            end_date: editRecord.end_date,
-            season_status: editRecord.season_status
-          });
-          this.showAddForm();
-        }
-      }else{
-        this.failedToast(res);
+  EditSeason(season_id: number) {
+  const params: any = {};
+  params.user_id = this.user_id?.toString();
+  params.client_id = this.client_id?.toString();
+  params.season_id = season_id?.toString();
+
+  this.apiService.post(this.urlConstant.editSeason, params).subscribe((res) => {
+    console.log(res);
+    if (res.status_code == 200) {
+      const editRecord: EditSeason = res.data.seasons[0] ?? {};
+      if (editRecord != null) {
+        this.addSeasonsForm.setValue({
+          season_id: editRecord.season_id,
+          season_name: editRecord.season_name,
+          start_date: typeof editRecord.start_date === 'string' ? editRecord.start_date.slice(0, 10) : '',
+          end_date: typeof editRecord.end_date === 'string' ? editRecord.end_date.slice(0, 10) : '',
+          season_status: editRecord.season_status
+        });
+        this.showAddForm();
       }
-    },(err:any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
-    });
-  }
+    } else {
+      this.failedToast(res);
+    }
+  }, (err: any) => {
+    err.status === this.cricketKeyConstant.status_code.refresh &&
+    err.error.message === this.cricketKeyConstant.status_code.refresh_msg
+      ? this.apiService.RefreshToken()
+      : this.failedToast(err);
+  });
+}
+
 
   status(season_id: number,url:string) {
     const params: any = {
