@@ -92,6 +92,7 @@ export class URLCONSTANT {
       profileGround = "Ground/update_ground_photo"
 
       groundUserClient = "User/get_user_client_list"
+      groundclubdropdown ="Ground/get_ground_dropdown"
 
 
 

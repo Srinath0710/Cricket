@@ -77,6 +77,7 @@ selectedGround: any = [];
 
 ClientID:any=[];
   groundsData: any;
+  configDataList: any;
   
   constructor(private formBuilder: FormBuilder, 
               private apiService: ApiService,
@@ -89,24 +90,34 @@ ClientID:any=[];
 
 
   ngOnInit() {
-    
     this.getCountries();
     this.Clientdropdown();
+
     this.addGroundForm = this.formBuilder.group({
       ground_name: ['',[Validators.required]],
       display_name: ['',[Validators.required]],
+      country_id: ['',[Validators.required]],
+      state_id: [''],
+      city_id: [''],
       address_1: ['',[Validators.required]],
       address_2: ['',[Validators.required]],
       post_code:['',[Validators.required]],
-      end_one: ['',[Validators.required]],
-      end_two: ['',[Validators.required]],
-      country_id: ['',[Validators.required]],
-      ground_id:[''],
-      state_id: [''],
-      city_id: [''],
-      profile: [''],
-      ground_photo: ['']
+      northern_end: ['',[Validators.required]],
+      sourthern_end: ['',[Validators.required]],
+      north: ['',[Validators.required]],
+      south: ['',[Validators.required]],
+      east: ['',[Validators.required]],
+      west: ['',[Validators.required]],
+      club_id: [''],
+      latitude: ['',[Validators.required]],
+      longitude: ['',[Validators.required]],
+      capacity: ['',[Validators.required]],
+      profile: ['',[Validators.required]],
+      ground_photo: ['',[Validators.required]],
+    
     })
+
+    
   }
 
 
@@ -118,10 +129,8 @@ ClientID:any=[];
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
-      this.ClientID= this.clientData[1].client_id;
-      console.log(this.ClientID);
+      this.ClientID= this.clientData[0].client_id;
       this.gridload();
-
     }, (err) => {
       if (err.status === 401 && err.error.message === 'Token expired') {
         this.apiService.RefreshToken();
@@ -133,6 +142,35 @@ ClientID:any=[];
 
 
 
+  clubsdropdown() {
+    const params: any = {};
+    params.action_flag = 'dropdown';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.ClientID.toString();
+    this.apiService.post(this.urlConstant.groundclubdropdown, params).subscribe((res) => {
+      this.configDataList = res.data.clubs != undefined ? res.data.clubs : [];
+      console.log(res.data.clubs); 
+
+      this.groundsData = res.data.clubs
+        .filter((item: any) => item.config_key === 'club_id')
+        .map((item: any) => ({ ...item }));
+    
+
+
+      setTimeout(() => {
+        const teamId = this.addGroundForm.get('club_id')?.value;
+        if (!teamId) {
+          this.formSetValue();
+        }
+      }, 100);
+
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken();
+
+      }
+    })
+  }
 
   gridload() {
     const params: any = {
@@ -147,6 +185,8 @@ ClientID:any=[];
       next: (res) => {
         this.groundsData = res.data?.grounds || [];
         this.totalData = this.groundsData.length!=0 ? res.data.grounds[0].total_records:0
+            this.clubsdropdown();
+
     },
       error: (err) => {
         if (
@@ -160,6 +200,8 @@ ClientID:any=[];
         }
       },
     });
+
+    
   }
 
 onViewGroundDetails(groundId: any) {
@@ -229,16 +271,21 @@ getImageUrl(img: string) {
   }
 
   onAddGround() {
+    console.log("hii function start")
     this.submitted = true;
       this.isEditMode=false;
     if(this.addGroundForm.invalid) {
+          console.log("hii function if")
+
       this.addGroundForm.markAllAsTouched();
       return
     }
+        console.log("hii function else")
+
     const params: UpdateGround = {
 
       user_id: String(this.user_id),
-      client_id: String(this.client_id),
+      client_id: String(this.ClientID),
       ground_id: String(this.addGroundForm.value.ground_id),
       ground_name: this.addGroundForm.value.ground_name,
       display_name:this.addGroundForm.value.display_name,
@@ -248,10 +295,23 @@ getImageUrl(img: string) {
       address_1:this.addGroundForm.value.address_1,
       address_2:this.addGroundForm.value.address_2,
       post_code:this.addGroundForm.value.post_code,
-      end_one:this.addGroundForm.value.end_one,
-      end_two:this.addGroundForm.value.end_two,
+      northern_end:this.addGroundForm.value.northern_end,
+      sourthern_end:this.addGroundForm.value.sourthern_end,
+      north:this.addGroundForm.value.north,
+      south:this.addGroundForm.value.south,
+      east:this.addGroundForm.value.east,
+      west:this.addGroundForm.value.west,
+      club_id:String(this.addGroundForm.value.club_id),
+      latitude:this.addGroundForm.value.latitude,
+      longitude:this.addGroundForm.value.longitude,
+      capacity:this.addGroundForm.value.capacity,
+      profile:this.addGroundForm.value.profile,
+      ground_photo:this.addGroundForm.value.ground_photo,
+    
       action_flag: 'create',
     };
+        console.log("hii function update")
+
  if (this.addGroundForm.value.ground_id) {
   console.log(this.addGroundForm.value.ground_id)
       params.action_flag='update';
@@ -281,7 +341,7 @@ getImageUrl(img: string) {
        this.isEditMode = true;
     const params: any = {};
      params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
+    params.client_id = this.ClientID?.toString();
     params.ground_id = ground.ground_id?.toString();
 
     this.apiService.post(this.urlConstant.editGround, params).subscribe((res)=>{
@@ -300,8 +360,16 @@ getImageUrl(img: string) {
               address_1: editRecord.address_1,
               address_2: editRecord.address_2,
               post_code: editRecord.post_code,
-              end_one: editRecord.end_one,
-              end_two: editRecord.end_two,
+              northern_end: editRecord.northern_end,
+              sourthern_end: editRecord.sourthern_end,
+              north: editRecord.north,
+              south: editRecord.south,
+              east: editRecord.east,
+              west: editRecord.west,
+              club_id: editRecord.club_id,
+              latitude: editRecord.latitude,
+              longitude: editRecord.longitude,
+              capacity: editRecord.capacity,
               profile:null,
               ground_photo:null
             });
@@ -378,7 +446,7 @@ getImageUrl(img: string) {
         this.countriesList = res.data.countries != undefined ? res.data.countries : [];
         this.loading = false;
         this.country_id = this.countriesList[0].country_id;
-        this.gridload();
+        // this.gridload();
     }, (err: any) => {
         if (err.status === 401 && err.error.message === "Expired") {
             this.apiService.RefreshToken();
@@ -431,6 +499,19 @@ getStates(country_id:any) {
         }
     });
 }
+
+
+
+
+
+
+  formSetValue() {
+    this.addGroundForm.patchValue({
+      team_format: this.groundsData[0].config_id,
+
+
+    })
+  }
 
 
 

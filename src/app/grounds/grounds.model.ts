@@ -38,8 +38,17 @@ export class EditGround {
     address_1: string;
     address_2: string;
     post_code: string;
-    end_one: string;
-    end_two: string;
+    northern_end: string;
+    sourthern_end: string;
+    north: string;
+    south: string;
+    east: string;
+    west: string;
+    club_id: string;
+    latitude: string;
+    longitude: string;
+    capacity: string;
+
 
     constructor(item: Partial<EditGround> = {}) {
         this.ground_id = item.ground_id || 0;
@@ -51,8 +60,16 @@ export class EditGround {
         this.address_1 = item.address_1 || '';
         this.address_2 = item.address_2 || '';
         this.post_code = item.post_code || '';
-        this.end_one = item.end_one || '';
-        this.end_two = item.end_two || '';
+        this.northern_end = item.northern_end || '';
+        this.sourthern_end = item.sourthern_end || '';
+        this.north = item.north || '';
+        this.south = item.south || '';
+        this.east = item.east || '';
+        this.west = item.west || '';
+        this.club_id = item.club_id || '';
+        this.latitude = item.latitude || '';
+        this.longitude = item.longitude || '';
+        this.capacity = item.capacity || '';
     }
 }
 
@@ -68,8 +85,19 @@ export class UpdateGround {
     address_1: string;
     address_2: string;
     post_code: string|number;
-    end_one: string;
-    end_two: string;
+    northern_end: string;
+    sourthern_end: string;
+    north: string;
+    south: string;
+    east: string;
+    west: string;
+    club_id: string|number;
+    latitude: string;
+    longitude: string;
+    capacity: string;
+    profile: string;
+    ground_photo: string;
+   
     action_flag: string;
 
 
@@ -85,8 +113,18 @@ export class UpdateGround {
         this.address_1 = item.address_1 || '';
         this.address_2 = item.address_2 || '';
         this.post_code = item.post_code || 0;
-        this.end_one = item.end_one || '';
-        this.end_two = item.end_two || '';
+        this.northern_end = item.northern_end || '';
+        this.sourthern_end = item.sourthern_end || '';
+        this.north = item.north || '';
+        this.south = item.south || '';
+        this.east = item.east || '';
+        this.west = item.west || '';
+        this.club_id = item.club_id || 0;
+        this.latitude = item.latitude || '';
+        this.longitude = item.longitude || '';
+        this.capacity = item.capacity || '';
+        this.profile = item.profile || '';
+        this.ground_photo = item.ground_photo || '';
         this.action_flag = item.action_flag || '';
 
     }
