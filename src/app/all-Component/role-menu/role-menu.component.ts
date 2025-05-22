@@ -13,13 +13,16 @@ import { TagModule } from 'primeng/tag';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
+import { URLCONSTANT } from '../../services/url-constant';
+import { CricketKeyConstant } from '../../services/cricket-key-constant';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { truncate } from 'fs';
 
 
-@Component({
+ @Component({
     selector: 'app-role-menu',
-    templateUrl: './role-menu.component.html',
-    styleUrls: ['./role-menu.component.css'],
-    providers: [MessageService, DialogService],
+    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -29,8 +32,18 @@ import { DrawerModule } from 'primeng/drawer';
         ButtonModule,
         TableModule,
         TagModule, TooltipModule,
-        DrawerModule
-    ]
+        DrawerModule,
+        ConfirmDialogModule
+    ],
+    templateUrl: './role-menu.component.html',
+    styleUrls: ['./role-menu.component.css'],
+    providers: [
+        { provide: URLCONSTANT },
+        { provide: CricketKeyConstant },
+        { provide: MessageService },
+        { provide: ConfirmationService }
+    ],
+
 })
 export class RoleMenuComponent implements OnInit, AfterViewInit {
     @ViewChild('dt') dt!: Table;
@@ -64,8 +77,9 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
     selectedMenus:  { menu_id: string; name: string }[] = [];
     selectedMenuId: string = ''; 
 
-    constructor(
-        private apiService: ApiService, private formBuilder: FormBuilder, private msgService: MessageService,private snackBar: MatSnackBar) {
+   constructor(
+        private apiService: ApiService, private formBuilder: FormBuilder, private msgService: MessageService,
+        private snackBar: MatSnackBar, private urlConstant: URLCONSTANT, private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
         this.roleMenuForm = this.formBuilder.group({
             role_id: [''],
@@ -253,6 +267,7 @@ confirmSelection(permissionform: NgForm) {
         }
 
     }
+    
 
 
 
@@ -268,34 +283,61 @@ confirmSelection(permissionform: NgForm) {
         table.clear();
     }
 
-    getSeverity(status: string) {
-        switch (status) {
-            case 'inactive':
-                return 'danger';
+    successToast(data: any) {
+        this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
-            case 'active':
-                return 'success';
-        }
-        return 'secondary';
+    }
+
+    /* Failed Toast */
+    failedToast(data: any) {
+        this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    }
+  status(role_id: number, url: string) {
+        const params: any = {
+            user_id: this.user_id?.toString(),
+            client_id: this.client_id?.toString(),
+            role_id: role_id?.toString()
+        };
+        this.apiService.post(url, params).subscribe(
+            (res: any) => {
+                res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+            },
+            (err: any) => {
+                err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+            }
+        );
     }
 
 
+    StatusConfirm(role_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+        console.log(role_id);
+        const AlreadyStatestatus =
+            (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+            (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
 
-    showConfirm(url_name: any, data: any, status: any, status_key: any) {
-        if (status == status_key) {
-            return
+        if (AlreadyStatestatus) {
+            return;
         }
-        this.statusApi = url_name;
-        this.statusValues = data;
-        if (!this.visibleShowConfirm) {
-            this.msgService.add({
-                key: 'confirm', sticky: true, severity: 'warn',
-                summary: 'Are you sure?', detail: 'Confirm to proceed'
-            });
-            this.visibleShowConfirm = true;
-        }
+        this.confirmationService.confirm({
+            message: `Are you sure you want to ${actionObject.label} this Role?`,
+            header: 'Confirmation',
+            icon: 'pi pi-question-circle',
+            acceptLabel: 'Yes',
+            rejectLabel: 'No',
+            accept: () => {
+                const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key
+                    ? this.urlConstant.activeRole
+                    : this.urlConstant.deactivateRole;
+                this.status(role_id, url);
+                this.confirmationService.close();
+            },
+
+            reject: () => {
+                this.confirmationService.close();
+            }
+
+        });
     }
-
 
     onConfirm() {
         this.msgService.clear('confirm');
@@ -341,17 +383,7 @@ confirmSelection(permissionform: NgForm) {
         });
     }
 
-    /* Success Toast */
-
-    successToast(data: any) {
-        this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
-
-    }
-
-    /* Failed Toast */
-    failedToast(data: any) {
-        this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
-    }
+  
 
     /* START -  GET DROPDOWN FUNCTION */
 
@@ -417,6 +449,11 @@ confirmSelection(permissionform: NgForm) {
         this.roleMenuForm.reset();
         this.submitted = false;
 
+    }
+    
+    
+ cancelForm() {
+        this.ShowForm = false;
     }
 
 

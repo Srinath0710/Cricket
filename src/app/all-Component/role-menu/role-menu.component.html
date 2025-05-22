@@ -32,17 +32,7 @@
                             <!-- <span class="page-tile-img">
                                     <i class="material-symbols-outlined">user_attributes</i>
                                 </span> -->
-                            <div class="manage-title-name">
-                                <div
-                                    *ngIf="roleMenuForm?.get('role_id')?.value == '' || roleMenuForm?.get('role_id')?.value == null">
-                                    <i class="fas fa-users-cog"></i>
-                                    add role
-                                </div>
-                                <div
-                                    *ngIf="roleMenuForm?.get('role_id')?.value != null && roleMenuForm?.get('role_id')?.value != ''">
-                                    edit role</div>
-                                <div class="sub-manage-title">Roles</div>
-                            </div>
+            
                         </div>
                        
 
@@ -93,14 +83,15 @@
                                                 <i class="fas fa-key"></i>
                                             </span>
 
-                                            <span class="icon-green"
-                                                (click)="showConfirm('activate_role',roles.role_id,roles.record_status,'active')"
+                                            
+                                              <span class="icon-green"
+                                                (click)="StatusConfirm(roles.role_id,cricketKeyConstant.condition_key.active_status,roles.record_status)"
                                                 pTooltip="Activate" tooltipPosition="top">
                                                 <i class="fa-solid fa-circle-check"></i>
                                             </span>
 
                                             <span class="icon-red"
-                                                (click)="showConfirm('deactivate_role',roles.role_id,roles.record_status,'inactive')"
+                                                (click)="StatusConfirm(roles.role_id,cricketKeyConstant.condition_key.deactive_status,roles.record_status)"
                                                 pTooltip="Deactivate" tooltipPosition="top">
                                                 <i class="fa-solid fa-trash-can-arrow-up"></i>
                                             </span>
@@ -136,9 +127,7 @@
                                             {{ isEditMode ? 'Edit Role' : 'Add Role' }}
                                         </h3>
                                     </div>
-                                    <a class="back-button top-btn" *ngIf="ShowForm" (click)="combinedClick()"
-                                        (click)="resetForm()"><i class="fa-solid fa-arrow-left"></i>
-                                        Back </a>
+                                   
                                     <form [formGroup]="roleMenuForm" class="input-form">
                                         <div class="row gy-3">
                                             <!-- <div class="form-scroller row"> -->
@@ -208,13 +197,9 @@
                                         <div class="submit-section">
                                             <div class="row mt-4 sticky-footer-buttons">
                                                 <div class="col-12 text-end">
-
-
-                                                    <button pButton type="button" class="p-button-secondary me-3"
-                                                        (click)="addNewRole()">
-
-                                                        Save
-                                                    </button>
+                                                <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                                                          (click)="cancelForm()"></button>
+                                                   
                                                     <!-- (click)="addAnother=false" -->
 
                                                     <button pButton type="button" class="p-button-secondary me-3"
@@ -222,6 +207,8 @@
                                                         (click)="resetForm()">
                                                         Clear
                                                     </button>
+                                                    <button pButton type="button" class="save-button" (click)="addNewRole()">Save
+                                                                                   </button>
                                                     <!-- class="clear-button submit-btn margin-right" -->
                                                 </div>
                                             </div>
@@ -237,6 +224,11 @@
                     <!--form code end-->
                 </div>
             </main>
+            <!-- pop up status -->
+              <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="1000" [draggable]="
+            false"
+                [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+            </p-confirmDialog>
         </div>
     </div>
 </article>
@@ -375,6 +367,7 @@
                                                                                     class="confirm-btn">
                                                                                     Confirm
                                                                                 </button>
+                                                                                 
                                                                             </div>
                                                                         </div>
                                                                     </div>

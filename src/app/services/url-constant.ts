@@ -129,7 +129,7 @@ export class URLCONSTANT {
       updateMenuPermissionsList = 'User/update_menu_permissions'
       updateRoleList = 'User/update_role'
       createRoleList = 'User/create_role'
-      activeRole = '/User/activate_role'
+      activeRole = 'User/activate_role' 
       deactivateRole = 'User/deactivate_role'
 
       /*   Client List */

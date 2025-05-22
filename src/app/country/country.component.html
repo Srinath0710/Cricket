@@ -72,13 +72,17 @@
                   <i class="fa-solid fa-user-pen"></i>
                 </span>
 
-                <span class="icon-green"  (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.active_status)" pTooltip="Activate" tooltipPosition="top">
-                  <i class="fa-solid fa-circle-check"></i>
-                </span>
+               <span class="icon-green"
+                    (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.active_status,country.record_status)"
+                    pTooltip="Activate" tooltipPosition="top">
+                    <i class="fa-solid fa-circle-check"></i>
+                  </span>
 
-                <span class="icon-red" (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.deactive_status)" pTooltip="Deactivate" tooltipPosition="top">
-                  <i class="fa-solid fa-trash-can-arrow-up"></i>
-                </span>
+                  <span class="icon-red"
+                    (click)="StatusConfirm(country.country_id,cricketKeyConstant.condition_key.deactive_status,country.record_status)"
+                    pTooltip="Deactivate" tooltipPosition="top">
+                    <i class="fa-solid fa-trash-can-arrow-up"></i>
+                  </span>
                 </td>
               </tr>
             </ng-template>

@@ -259,7 +259,14 @@ export class CountryComponent implements OnInit {
     );
   }
 
-  StatusConfirm(country_id: number, actionObject: { key: string, label: string }) {
+  StatusConfirm(country_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+    const AlreadyStatestatus =
+    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+
+  if (AlreadyStatestatus) {
+    return; 
+  }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this country?`,
       header: 'Confirmation',
@@ -267,7 +274,9 @@ export class CountryComponent implements OnInit {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activeCountry : this.urlConstant.deactiveCountry;
+        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key
+          ? this.urlConstant.activeCountry
+          : this.urlConstant.deactiveCountry;
         this.status(country_id, url);
         this.confirmationService.close();
       },
