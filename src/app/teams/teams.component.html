@@ -8,7 +8,27 @@
               <i class="fa-solid fa-globe" aria-hidden="true"></i>
               All Teams
             </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+              <p-dropdown 
+                [options]="clientData" 
+                optionLabel="client_name" 
+                optionValue="client_id"
+                [(ngModel)]="client_id" 
+                (ngModelChange)="gridLoad()" 
+                placeholder="Client Id"  
+                [filter]="true" 
+                appendTo="body"
+                class=" w-100 
+                 drop-error header-drop">
+                <ng-template let-Client pTemplate="item">
+                  <div class="country-item">
+                    <div>{{ Client.client_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
             <div class="d-flex align-items-center">
+             
               <!-- Search Form -->
               <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
@@ -119,10 +139,7 @@
     </p-confirmDialog>
 
     <!-- Sidebar Modal -->
-    <!-- <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
-      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false"> -->
       <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-      <!-- <div class="sidebar-wrapper" (click)="$event.stopPropagation()"> -->
       <div class="d-flex justify-content-between align-items-center mb-4">
 <h3 class="small-heading">
   {{ isEditMode ? 'Edit Team' : 'Add Team' }}
@@ -216,12 +233,24 @@
             </small>
             </div>
             <div class="col-md-6">
+              <label class="">Primary Color
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Primary Color"
+                formControlName="primary_color">
+            </div>
+            <div class="col-md-6">
+              <label class="">Secondary Color
+              </label>
+              <input class="form-control" maxlength="50" type="text" placeholder="Enter Secondary Color"
+                formControlName="secondary_color">
+            </div>
+
+            <div class="col-md-6">
               <div class="image-upload-container text-center">
                 <label for="profileImageInput" class="upload-label">
                   <div class="image-preview-wrapper">
                     <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
                     <ng-template #placeholder>
-                      <!-- <span class="placeholder-icon">&#128247;</span> -->
                     </ng-template>
                   </div>
                   <div class="upload-btn">Upload</div>

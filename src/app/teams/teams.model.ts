@@ -26,6 +26,8 @@ export class EditTeam {
   gender_id: number;
   age_category_id: number;
   format_id: number;
+  primary_color: string;
+  secondary_color: string;
   distrib_id: number;
   //  team_profile: '';
 
@@ -33,9 +35,11 @@ export class EditTeam {
   constructor(item: Partial<EditTeam> = {}) {
     this.team_id = item.team_id || 0;
     this.team_short = item.team_short || '';
-    this.team_name = item.team_name || '';
     this.gender_id = item.gender_id || 0;
+    this.team_name = item.team_name || '';
     this.age_category_id = item.age_category_id || 0;
+    this.primary_color = item.primary_color || '';
+    this.secondary_color = item.secondary_color || '';
     this.format_id = item.format_id || 0;
     this.distrib_id = item.distrib_id || 0;
     // /this.team_profile = '';

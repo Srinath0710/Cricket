@@ -1,4 +1,4 @@
-import { Component, OnInit ,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -66,7 +66,7 @@ export class TeamsComponent implements OnInit {
   uploadedImage: string | ArrayBuffer | null = null;
   default_img: string = 'assets/images/default-player.png';
   previewUrl: string | ArrayBuffer | null = null;
- // team_short : string;
+  // team_short : string;
   configDataList: Team[] = [];
   ageGroupList: Team[] = [];
   genderList: Team[] = [];
@@ -90,16 +90,17 @@ export class TeamsComponent implements OnInit {
   viewMode: boolean = false;
   isEditMode: boolean = false;
   searchKeyword: string = '';
-selectedCity:string='';
-defaultRows: number = 10;
+  selectedCity: string = '';
+  defaultRows: number = 10;
+  clientData: any[] = [];
 
-cities=[];
+  cities = [];
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
   }
   ngOnInit(): void {
-    this.gridLoad()
+    this.Clientdropdown()
     this.getGlobalData()
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
@@ -108,7 +109,9 @@ cities=[];
       gender_id: ['', [Validators.required]],
       age_category_id: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
-      team_profile: ['']
+      // team_profile: [''],
+      primary_color: [''],
+      secondary_color: ['']
     })
   }
 
@@ -120,28 +123,32 @@ cities=[];
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString(),
-    this.apiService.post(this.urlConstant.getTeamList, params).subscribe((res) => {
-      this.teamData = res.data.teams ?? [];
-      this.totalData = this.teamData.length!=0 ? res.data.teams[0].total_records:0
-      // this.totalData = 50;
-      this.teamData.forEach((val: any) => {
-        // val.profile_img = `${val.profile_img}?${Math.random()}`;
-      });
-    }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
+      this.apiService.post(this.urlConstant.getTeamList, params).subscribe((res) => {
+        if (res.data?.teams) {
+          this.teamData = res.data.teams;
+          this.totalData = this.teamData.length !== 0 ? res.data.teams[0].total_records : 0;
+        } else {
+          this.teamData = [];
+          this.totalData = 0;
+        }
+        this.teamData.forEach((val: any) => {
+          // val.profile_img = `${val.profile_img}?${Math.random()}`;
+        });
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
 
-    });
+      });
 
   }
 
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
-onPageChange(event: any) {
-     this.first = (event.page) + 1;
+  onPageChange(event: any) {
+    this.first = (event.page) + 1;
     this.pageData = event.first;
     this.rows = event.rows;
-        this.gridLoad();
+    this.gridLoad();
   }
   showAddForm() {
     this.ShowForm = true;
@@ -181,14 +188,14 @@ onPageChange(event: any) {
     );
   }
 
-  StatusConfirm(team_id: number, actionObject: { key: string, label: string },currentStatus:string) {
+  StatusConfirm(team_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+      (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
 
-  if (AlreadyStatestatus) {
-    return; 
-  }
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this team?`,
       header: 'Confirmation',
@@ -294,7 +301,8 @@ onPageChange(event: any) {
   }
 
   EditTeam(team_id: number) {
-     this.isEditMode = true;
+    console.log("hiii",this.showAddForm())
+    this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -310,8 +318,12 @@ onPageChange(event: any) {
             gender_id: editRecord.gender_id,
             age_category_id: editRecord.age_category_id,
             format_id: editRecord.format_id,
-            team_profile: null
+            primary_color: editRecord.primary_color,
+            secondary_color: editRecord.secondary_color,
+            // team_profile: null
           });
+          console.log(this.showAddForm())
+
           this.showAddForm();
         }
       } else {
@@ -351,20 +363,35 @@ onPageChange(event: any) {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
-  
-   filterGlobal() {
- this.first = 1; 
+
+  filterGlobal() {
+    this.first = 1;
     this.gridLoad();
   }
-clear(table: Table) {
-  table.clear();
-  this.searchKeyword = '';
-  this.gridLoad();
-}
-onEnterPress(event: KeyboardEvent): void {
-  event.preventDefault();
-  this.filterGlobal();
-}
+  clear(table: Table) {
+    table.clear();
+    this.searchKeyword = '';
+    this.gridLoad();
+  }
+  onEnterPress(event: KeyboardEvent): void {
+    event.preventDefault();
+    this.filterGlobal();
+  }
+  Clientdropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+      this.clientData = res.data ?? [];
+      this.client_id = this.clientData[0].client_id;
+      console.log(this.client_id);
+      this.gridLoad();
 
+    }, (err) => {
+      if (err.status === 401 && err.error.message === 'Token expired') {
+        this.apiService.RefreshToken();
+      }
+    });
+  }
 
 }

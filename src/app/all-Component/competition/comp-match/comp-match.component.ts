@@ -8,6 +8,7 @@ import { ApiService } from '../../../services/api.service';
 import { CricketKeyConstant } from '../../../services/cricket-key-constant';
 import { URLCONSTANT } from '../../../services/url-constant';
 import { ManageDataItem } from '../competition.component';
+import { ToastModule } from 'primeng/toast';
 
 interface MetaInfo {
   config_key: string;
@@ -23,7 +24,7 @@ interface MetaInfo {
     SidebarModule,
     DropdownModule,
     FormsModule,
-
+    ToastModule
   ],
   templateUrl: './comp-match.component.html',
   styleUrl: './comp-match.component.css',
@@ -101,16 +102,17 @@ export class CompMatchComponent implements OnInit {
     const params: any = {}
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
-    params.competition_id=String( this.CompetitionData.competition_id),
+    params.competition_id=String( this.CompetitionData?.competition_id),
 
     this.apiService.post(this.urlConstant.getfixture, params).subscribe((res) => {
-      this.MatchData = res.data.fixtures ?? [];
-      // this.teamData.forEach((val: any) => {
 
-      // });
+      if (res.data && res.data.fixtures) {
+        this.MatchData = res.data.fixtures;
+      } else {
+        this.MatchData = [];
+      }
     }, (err: any) => {
       err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
-        // , this.totalData = this.teamData.length);
 
     });
   }
@@ -193,7 +195,6 @@ export class CompMatchComponent implements OnInit {
     }
 
   addFixtures() {
-    console.log(this.competitionFixturesForm)
     this.submitted = true;
     if (!this.competitionFixturesForm.valid) {
       this.competitionFixturesForm.markAllAsTouched();
@@ -257,7 +258,6 @@ export class CompMatchComponent implements OnInit {
    
     if (this.competitionFixturesForm.value.match_id){
       params.action_flag = 'update';
-      console.log(params.match_id);
       this.apiService.post(this.urlConstant.updatefixture, params).subscribe(
         (res) => {
           if (res.status_code == 200) {
@@ -300,94 +300,98 @@ export class CompMatchComponent implements OnInit {
 }
 
 editCardData(match_id:any){
+  console.log("hello edit ")
+
+}
+// status(match_id: any, url: string) {
+//   const params: any = {
+//     user_id: this.user_id?.toString(),
+//     client_id: this.client_id?.toString(),
+//     match_id: String(this.match_id),
+//     };
+//   this.apiService.post(url, params).subscribe(
+//     (res: any) => {
+//       res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
+//     },
+//     (err: any) => {
+//       error: (err: any) => {
+//         console.error('Error loading Match list:', err);
+//       }
+//     });
+// }
+StatusConfirm(match_id: any): void {
+  // const compId = this.CompetitionData?.competition_id;
+  // if (!compId) {
+  //   console.error("Invalid competition_id");
+  //   return;
+  // }
+  console.log("CompetitionData:", this.CompetitionData);
+  console.log("Competition ID:", this.CompetitionData?.competition_id);
   // const params: any = {
-  //   action_flag: "edit",
   //   user_id: String(this.user_id),
   //   client_id: String(this.client_id),
-  //   competition_id: this.CompetitionData?.competition_id != null ? String(this.CompetitionData.competition_id) : null,
-  //   match_id: match_id != null ? String(match_id) : null, 
-  // };
-  // console.log('Edit Params:', params);
-  // this.apiService.post(this.urlConstant.editfixture, params).subscribe(
-  //   (res) => {
-  //     const fixtureData = res.data[0]
-  //       this.competitionFixturesForm.setValue({
+  //   match_id: String(match_id),
+  //   competition_id: String(compId),
+  //   };
 
-  //         cloud_video_path: fixtureData.cloud_video_path,
-  //         day_type: Number(fixtureData.day_type),
-  //         digital_scorer: fixtureData.digital_scorer_id,
-  //         external_ref: fixtureData.external_ref_id,
-  //         ground: fixtureData.ground_id,
-  //         // is_neutral_venue: Boolean(fixtureData.is_neutral_venue),
-  //         jr_video: fixtureData.jr_video,
-  //         manual_scorer: fixtureData.manual_scorer_id,
-  //         match_end_date: fixtureData.match_end_date != null ? fixtureData.match_end_date.split('T')[0] : null,
-  //         match_group: fixtureData.match_group_id,
-  //         match_id: fixtureData.match_id,
-  //         match_name: fixtureData.match_name,
-  //         sequence_no: fixtureData.sequence_no,
-  //         match_overs: fixtureData.match_overs,
-  //         match_phase: fixtureData.match_phase_id,
-  //         match_start_date: fixtureData.match_start_date.replace(' ', 'T'),
-  //         referee: fixtureData.referee_id,
-  //         has_super_over: fixtureData.has_super_over != null ? fixtureData.has_super_over.toString() : null,
-  //         is_super_over: fixtureData.is_super_over != null ? fixtureData.is_super_over.toString() : null,
-  //         super_over_match_id: fixtureData.super_over_match_id != null ? Number(fixtureData.super_over_match_id) : null,
-  //         sr_video: fixtureData.sr_video,
-  //         home_team: fixtureData.team_a_code,
-  //         away_team: fixtureData.team_b_code,
-  //         time_zone: fixtureData.time_zone_id,
-  //         // umpire_1: fixtureData.umpire_1,
-  //         // umpire_2: fixtureData.umpire_2,
-  //         // umpire_3: fixtureData.umpire_3,
-  //         // umpire_4: fixtureData.umpire_4,
-  //          })
+  // console.log('Deactivation Params:', params);
+
+  // this.apiService.post(this.urlConstant.deactivefixture, params).subscribe(
+  //   (res: any) => {
+  //     console.log("Deactivation success", res);
+  //   }, 
+  //   (err: any) => {
+  //     if (err.status === 401 && err.error.message === "Expired") {
+  //       this.apiService.RefreshToken();
+  //     } else {
+  //       console.error("Deactivation error", err);
+  //     }
+  //   }
+  // );
+}
 
 
-  //     }, (err: any) => {
-  //       if (err.status === 401 && err.error.message === "Expired") {
-  //         this.apiService.RefreshToken();
-
-  //       } else {
-  //         this.failedToast(err);
+  // status(state_id: number, url: string) {
+  //   const params: any = {
+  //     user_id: this.user_id?.toString(),
+  //     client_id: this.client_id?.toString(),
+  //     state_id: state_id?.toString(),
+  //   };
+  //   this.apiService.post(url, params).subscribe(
+  //     (res: any) => {
+  //       res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
+  //     },
+  //     (err: any) => {
+  //       error: (err: any) => {
+  //         console.error('Error loading state list:', err);
   //       }
   //     });
+  // }
 
-}
-status(match_id: number, url: string) {
-  const params: any = {
-    user_id: this.user_id?.toString(),
-    client_id: this.client_id?.toString(),
-    match_id: match_id?.toString()
-  };
-  this.apiService.post(url, params).subscribe(
-    (res: any) => {
-      res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
-    },
-    (err: any) => {
-      error: (err: any) => {
-        console.error('Error loading Match list:', err);
-      }
-    });
-}
-StatusConfirm(match_id: any) {
-  console.log("hii");
-  const params: any = {
-    user_id: String(this.user_id),
-    client_id: String(this.client_id),
-    competition_id: this.CompetitionData?.competition_id != null ? String(this.CompetitionData.competition_id) : null,
-    match_id: this.competitionFixturesForm.value.match_id != null ? String(this.competitionFixturesForm.value.match_id) : null,
-    };
-  this.apiService.post(this.urlConstant.deactivefixture, params).subscribe(
-    (res: any) => {
-      console.log("Deactivation success", res);
-    }, 
-    (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
-      }
-    }
-  );
-}
+  // StatusConfirm(state_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+  //   const AlreadyStatestatus =
+  //   (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+  //   (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
 
+  // if (AlreadyStatestatus) {
+  //   return; 
+  // }
+  //   this.confirmationService.confirm({
+  //     message: `Are you sure you want to ${actionObject.label} this state?`,
+  //     header: 'Confirmation',
+  //     icon: 'pi pi-question-circle',
+  //     acceptLabel: 'Yes',
+  //     rejectLabel: 'No',
+  //     accept: () => {
+  //       const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key
+  //         ? this.urlConstant.activateState
+  //         : this.urlConstant.deactivateState;
+  //       this.status(state_id, url);
+  //       this.confirmationService.close();
+  //     },
+  //     reject: () => {
+  //       this.confirmationService.close();
+  //     }
+  //   });
+  // }
 }

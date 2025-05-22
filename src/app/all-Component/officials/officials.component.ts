@@ -99,6 +99,7 @@ export class OfficialsComponent implements OnInit {
   childLabel: string = '';
   officialId: any;
   default_img: any = 'assets/images/default-player.png';
+  clientData: any[] = [];
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT, public cricketKeyConstant: CricketKeyConstant,
@@ -110,8 +111,8 @@ export class OfficialsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.gridload();
-    this.addOfficialForm = this.fb.group({
+    this.Clientdropdown()
+      this.addOfficialForm = this.fb.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
       sur_name: [''],
@@ -138,8 +139,15 @@ export class OfficialsComponent implements OnInit {
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString();
     this.apiService.post(this.urlConstant.officiallist, params).subscribe((res) => {
-      this.officialDataList = res.data.officials ?? [];
-      this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
+      if (res.data?.officials) {
+        this.officialDataList = res.data.officials;
+        this.totalData = this.officialDataList.length !== 0 ? res.data.officials[0].total_records : 0;
+      } else {
+        this.officialDataList = [];
+        this.totalData = 0;
+      }
+      // this.officialDataList = res.data.officials ?? [];
+      // this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
     }, (err: any) => {
       error: (err: any) => {
         console.error('Error loading official list:', err);
@@ -443,7 +451,22 @@ export class OfficialsComponent implements OnInit {
   this.gridload();          
 }
 
+Clientdropdown() {
+  const params: any = {
+    user_id: this.user_id?.toString()
+  };
+  this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+    this.clientData = res.data ?? [];
+    this.client_id = this.clientData[0].client_id;
+    console.log(this.client_id);
+    this.gridload();
 
+  }, (err) => {
+    if (err.status === 401 && err.error.message === 'Token expired') {
+      this.apiService.RefreshToken();
+    }
+  });
+}
 
 
 }

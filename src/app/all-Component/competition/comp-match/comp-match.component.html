@@ -8,15 +8,15 @@
       <strong>Match:{{ Fixtures.match_id }}</strong>
       <div class="gap-2">
         <span class="p-button-sm" style="background-color: #0084B1; color:#fff">{{ Fixtures.match_status }}</span>
-        <button pButton type="button" class="p-button-sm p-button-info" style="background-color:#367039;"
-        (click)="editCardData(Fixtures.match_id)" >   
-     <!-- (click)="editCardData(Fixtures.match_id)" -->
-          <i class="fa fa-pencil me-2"></i>Edit
+        <button pButton type="button" class="p-button-sm p-button-info
+        " style="background-color:#367039;" (click)="editCardData(Fixtures.match_id)" >   
+        <!-- (click)="editCardData(Fixtures.match_id)" >    -->
+          <i class="fa fa-pencil me-2"></i>
         </button>
         <button pButton type="button" class="p-button-sm p-button-danger"
         (click)="StatusConfirm(Fixtures.match_id)"
         >
-          <i class="fa fa-trash me-2"></i>Delete
+          <i class="fa fa-trash me-2"></i>
         </button>
       </div>
     </div>
@@ -357,3 +357,4 @@ optionValue="config_id" optionLabel="config_name"
 </form>
 
 </div>
+<p-toast key="tc" position="top-right"></p-toast>

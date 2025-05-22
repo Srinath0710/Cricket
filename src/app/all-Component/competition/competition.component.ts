@@ -132,6 +132,7 @@ export class CompetitionComponent implements OnInit {
   ageGroupList: MetaDataItem[] = [];
   tourlevelList: MetaDataItem[] = [];
   teamdropList: MetaDataItem[] = [];
+  clientData: any[] = [];
 
   // Filter properties
   showFilters: boolean = false;
@@ -173,6 +174,7 @@ export class CompetitionComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.Clientdropdown();
     this.getGlobalData();
     this.loadCompetitions();
   }
@@ -503,6 +505,22 @@ export class CompetitionComponent implements OnInit {
   goBack(): void {
     this.showTabs = false;
     this.loadCompetitions();
+  }
+  Clientdropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+      this.clientData = res.data ?? [];
+      this.client_id= this.clientData[1].client_id;
+      console.log(this.client_id);
+      this.loadCompetitions();
+
+    }, (err) => {
+      if (err.status === 401 && err.error.message === 'Token expired') {
+        this.apiService.RefreshToken();
+      }
+    });
   }
 
 }
