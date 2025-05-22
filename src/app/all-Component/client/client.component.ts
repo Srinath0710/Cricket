@@ -1,0 +1,379 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { Table, TableModule } from 'primeng/table';
+import { ApiService } from '../../services/api.service';
+import { CricketKeyConstant } from '../../services/cricket-key-constant';
+import { URLCONSTANT } from '../../services/url-constant';
+import { PaginatorModule } from 'primeng/paginator';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { Drawer } from 'primeng/drawer';
+import { DropdownModule } from 'primeng/dropdown';
+interface Country {
+  country_id: number;
+  country_name: string;
+}
+@Component({
+  selector: 'app-client',
+  templateUrl: './client.component.html',
+  styleUrl: './client.component.css',
+  imports: [
+    PaginatorModule,
+    CommonModule,
+    TableModule,
+    ButtonModule,
+    ToastModule,
+    TooltipModule,
+    FormsModule,
+    ConfirmDialogModule,
+    DialogModule,
+    Drawer,
+    ReactiveFormsModule,
+    DropdownModule,
+
+
+  ],
+
+  providers: [
+    { provide: URLCONSTANT },
+    { provide: CricketKeyConstant },
+    { provide: MessageService },
+    { provide: ConfirmationService }
+  ],
+})
+export class ClientComponent implements OnInit{
+  user_id: number = Number(localStorage.getItem('user_id'));
+  client_id: number = Number(localStorage.getItem('client_id'));
+  searchKeyword: string = '';
+  public addClientForm!: FormGroup<any>;
+  @ViewChild('dt') dt!: Table;
+  public ShowForm: any = false;
+  Clientdata: any = [];
+  rows: number = 10;
+  totalData: any = 0;
+  first: number = 1;
+  pageData: number = 0;
+  countriesList: Country[] = []; 
+  citiesList = [];
+  statesList = [];
+  loading = false;
+  country_id: any;
+  isEditMode: boolean = false;
+  submitted: boolean = true;
+  seletedclient: any = [];
+  viewDialogVisible: boolean = false;
+
+  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
+    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
+
+  }
+
+  ngOnInit() {
+    this.getCountries();
+    this.addClientForm = this.formBuilder.group({
+      client_name: ['',[Validators.required]],
+      client_code: ['',[Validators.required]],
+      address_1: [''],
+      address_2: [''],
+      post_code:[''],
+      email_id: [''],
+      mobile: [''],
+      website: [''],
+      description: [''],
+      connection_id: [''],
+      country_id: [''],
+      state_id: [''],
+      city_id: [''],
+      profile_img_url: [''],
+      client_id: [''],
+      header_color: [''],
+      tbl_header_color: [''],
+      tbl_header_font_color: [''],
+      button_color: [''],
+      button_font_color: [''],
+    })
+  }
+  gridLoad() {
+    this.Clientdata = [];
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.page_no = this.first.toString();
+    params.records = this.rows.toString();
+    params.search_text = this.searchKeyword.toString(),
+    this.apiService.post(this.urlConstant.getclientList, params).subscribe((res) => {
+      this.Clientdata = res.data?? [];
+      this.totalData = this.Clientdata.length != 0 ? res.data[0].total_records : 0
+      this.Clientdata.forEach((val: any) => {
+        val.country_image = `${val.country_image}?${Math.random()}`;
+      });
+    }, (err: any) => {
+      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.Clientdata = [], this.totalData = this.Clientdata.length);
+
+    });
+
+  }
+  onAddClient() {
+    this.submitted = true;
+    this.isEditMode = false;
+    // if (this.addClientForm.invalid) {
+    //   console.log(this.addClientForm)
+
+    //   this.addClientForm.markAllAsTouched();
+    //   return
+    // }
+    const params: any = {
+      user_id: String(this.user_id),
+      client_name: this.addClientForm.value.client_name,
+      address_1: this.addClientForm.value.address_1,
+      address_2: this.addClientForm.value.address_2,
+      post_code: this.addClientForm.value.post_code,
+      email_id: this.addClientForm.value.email_id,
+      mobile: this.addClientForm.value.mobile,
+      website: this.addClientForm.value.website,
+      description: this.addClientForm.value.description,
+      // profile_img_url: this.addClientForm.value.profile_img_url,
+      // connection_id: this.addClientForm.value.connection_id,
+      client_code: this.addClientForm.value.client_code,
+      state_id: String(this.addClientForm.value.state_id),
+      country_id: String(this.addClientForm.value.country_id),
+      city_id: String(this.addClientForm.value.city_id),
+
+      action_flag: 'create',
+      header_color: '',
+      tbl_header_color: '',
+      tbl_header_font_color: '',
+      button_color: '',
+      button_font_color: '',
+      connection_id:'',
+      profile_img_url:''
+
+    };
+
+    if (this.addClientForm.value.client_id) {
+
+      params.action_flag = 'update';
+      this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    } else {
+
+      this.apiService.post(this.urlConstant.createclient, params).subscribe((res) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
+    }
+
+  }
+  EditClient(client_id: number) {
+    this.isEditMode = true;
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = client_id?.toString();
+    this.apiService.post(this.urlConstant.editclient, params).subscribe((res) => {
+      if (res.status_code == 200) {
+        const editRecord: any = res.data[0] ?? {};
+        if (editRecord != null) {
+          this.addClientForm.setValue({
+            client_id: editRecord.client_id,
+            client_name: editRecord.client_name,
+            client_code: editRecord.client_code,
+            country_id: editRecord.country_id,
+            address_1: editRecord.address_1,
+            address_2: editRecord.address_2,
+            state_id: editRecord.state_id,
+            city_id: editRecord.city_id,
+            post_code: editRecord.post_code,
+            email_id: editRecord.email_id,
+            mobile: editRecord.mobile,
+            website: editRecord.website,
+            description: editRecord.description,
+            profile_img_url: null,
+            header_color: null,
+            tbl_header_color: null,
+            tbl_header_font_color: null,
+            button_color: null,
+            button_font_color: null,
+            connection_id: editRecord.connection_id ?? null // <-- Add this line
+          });
+          
+          this.showAddForm();
+        }
+      } else {
+        this.failedToast(res);
+      }
+    }, (err: any) => {
+      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+    });
+
+
+  }
+  showAddForm() {
+    this.ShowForm = true;
+  }
+  cancelForm() {
+    this.ShowForm = false;
+  }
+   resetForm() {
+    this.addClientForm.reset();
+    this.submitted = false;
+  }
+  successToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+
+  }
+
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
+  addCallBack(res: any) {
+    this.resetForm();
+    this.cancelForm();
+    this.successToast(res);
+    this.gridLoad();
+  }
+  onPageChange(event: any) {
+    this.first = (event.page) + 1;
+    this.pageData = event.first;
+    this.rows = event.rows;
+    this.gridLoad();
+  }
+  status(client_id: number, url: string) {
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: client_id?.toString(),
+    };
+    this.apiService.post(url, params).subscribe(
+      (res: any) => {
+        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+      },
+      (err: any) => {
+        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      }
+    );
+  }
+  StatusConfirm(client_id: number, actionObject: { key: string, label: string },currentStatus:string) {
+    const AlreadyStatestatus =
+    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
+    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+
+  if (AlreadyStatestatus) {
+    return; 
+  }
+    this.confirmationService.confirm({
+      message: `Are you sure you want to ${actionObject.label} this Client?`,
+      header: 'Confirmation',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
+        this.status(client_id, url);
+        this.confirmationService.close();
+      },
+      reject: () => {
+        this.confirmationService.close();
+      }
+    });
+  }
+  filterGlobal() {
+    this.dt?.filterGlobal(this.searchKeyword, 'contains');
+  }
+  clear() {
+    this.searchKeyword = '';   
+    this.dt.clear();          
+    this.gridLoad();          
+  }
+  getCountries() {
+    const params: any = {};
+    params.action_flag = 'get_countries';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
+        this.countriesList = res.data.countries != undefined ? res.data.countries : [];
+        this.loading = false;
+        this.country_id = this.countriesList[0].country_id;
+        this.gridLoad();
+    }, (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+            this.apiService.RefreshToken();
+           
+        } else {
+            this.failedToast(err);
+        }
+    });
+}
+
+getCities(state_id:any) {
+    const params: any = {};
+
+    if (state_id == null || state_id == '') {
+        return
+    }
+
+    params.action_flag = 'get_city_by_state';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    params.state_id = state_id.toString();
+    this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
+        this.citiesList = res.data.cities != undefined ? res.data.cities : [];
+    }, (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+            this.apiService.RefreshToken();
+           
+        } else {
+            this.failedToast(err);
+        }
+    });
+}
+
+getStates(country_id:any) {
+    const params: any = {};
+    if (country_id == null || country_id == '') {
+        return
+    }
+    params.action_flag = 'get_state_by_country';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    params.country_id = country_id.toString();
+    this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
+        this.statesList = res.data.states != undefined ? res.data.states : [];
+        this.loading = false;
+    }, (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+            this.apiService.RefreshToken();
+            
+        }
+    });
+}
+viewClient(client_id: any) {
+  const params = { 
+    client_id: client_id.toString() ,
+    // client_id: String(this.client_id),
+    user_id: String(this.user_id )
+  };
+
+
+  this.apiService.post(this.urlConstant.viewclient, params).subscribe({
+    next: (res) => {
+      if (res.status && res.data) {
+        this.seletedclient = res.data; 
+        this.viewDialogVisible = true;
+      }
+    },
+    error: (err) => {
+      console.error('Failed to fetch Client details', err);
+    }
+  });
+}
+
+}

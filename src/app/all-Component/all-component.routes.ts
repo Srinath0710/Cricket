@@ -12,6 +12,7 @@ import { SeasonsComponent } from "../seasons/seasons.component";
 import { GroundsComponent } from "../grounds/grounds.component";
 // import { ScoreEnginesComponent } from "../score-engines/score-engines.component";
 import { ScoreEngineComponent } from "../score-engine/score-engine.component";
+import { ClientComponent } from "./client/client.component";
 
 export const AllComponentRoutes: Route[] = [
     {
@@ -40,7 +41,7 @@ export const AllComponentRoutes: Route[] = [
                 component: OfficialsComponent
             },
             {
-                path: 'compitition',
+                path: 'tournament',
                 component: CompetitionComponent
             },
             {
@@ -70,8 +71,13 @@ export const AllComponentRoutes: Route[] = [
             // },
          
             {
-                path: 'score-cards',
+                path: 'score-card',
                 component: ScoreEngineComponent
+
+            },
+            {
+                path: 'client',
+                component: ClientComponent
 
             },
          
