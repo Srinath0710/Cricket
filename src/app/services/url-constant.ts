@@ -34,8 +34,7 @@ export class URLCONSTANT {
       nationalityplayer = "Country/get_country_dropdown"
 
 
-
-      // Official  List 
+ // Official  List 
       dropdownofficial = "Official/get_official_dropdown"
       officiallist = "Official/get_official_list"
       addofficial = "Official/add_official"
@@ -46,6 +45,9 @@ export class URLCONSTANT {
       profileofficial = "Official/official_profile_update"
 
       countryofficial = "Country/get_country_dropdown"
+      
+      clientdropdown="Client/get_client_dropdown"
+
 
 
       /*State List*/
@@ -79,7 +81,7 @@ export class URLCONSTANT {
       getstate = "Global/get_state_by_country"
       CountryDropdown = "Global/get_countries"
 
-      /*Grounds List*/
+/*Grounds List*/
       getGroundList = "Ground/get_ground_list"
       addGround = "Ground/add_ground"
       editGround = "Ground/edit_ground"
@@ -88,6 +90,9 @@ export class URLCONSTANT {
       activateGround = "Ground/activate_ground"
       deactivateGround = "Ground/deactivate_ground"
       profileGround = "Ground/update_ground_photo"
+
+      groundUserClient = "User/get_user_client_list"
+
 
 
       /*competition */
