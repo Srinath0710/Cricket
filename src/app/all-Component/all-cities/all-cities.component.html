@@ -10,7 +10,7 @@
             </div>
             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right">
               <p-dropdown [options]="countryData" optionLabel="country_name" optionValue="country_id"
-                [(ngModel)]="countryId" (ngModelChange)="getStates($event)" placeholder="Country" [filter]="true"
+                [(ngModel)]="countryId" (ngModelChange)="getStates()" placeholder="Country" [filter]="true"
                 appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"  class="w-100 drop-error header-drop">
                 <ng-template let-country pTemplate="item">
                   <div class="country-item">
@@ -22,8 +22,8 @@
             </div>
 
             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right-align">
-              <p-dropdown [options]="statesList" class="drop-error" formControlName="state_id" optionValue="state_id"
-                optionLabel="state_name" placeholder="Select State" (onChange)="onStateChange($event)"
+              <p-dropdown [options]="statesList" class="drop-error"  [(ngModel)]="stateId" optionValue="state_id"
+                optionLabel="state_name" placeholder="Select State" (ngModelChange)="gridLoad()"
                 [panelStyleClass]="'custom-dropdown-panel'"[filter]="true" appendTo="body"
                 >
                 <ng-template let-state pTemplate="item">
@@ -129,7 +129,7 @@
               <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="countryData" class="drop-error " formControlName="country_id"
-              (ngModelChange)="getStates(addCityForm.get('country_id')?.value)" optionValue="country_id"
+              (ngModelChange)="getFormStates()" optionValue="country_id"
               optionLabel="country_name" placeholder="select Country" [filter]="true" >
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
@@ -147,7 +147,7 @@
           <div class="col-md-6">
             <label>State
             </label>
-            <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id" optionValue="state_id"
+            <p-dropdown [options]="statesFormList" class="drop-error " formControlName="state_id" optionValue="state_id"
               optionLabel="state_name" placeholder="select State" [filter]="true">
               <ng-template let-state pTemplate="item">
                 <div class="flex align-items-center gap-2">

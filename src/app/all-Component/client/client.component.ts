@@ -158,6 +158,7 @@ export class ClientComponent implements OnInit{
     if (this.addClientForm.value.client_id) {
 
       params.action_flag = 'update';
+      params.client_id = String(this.addClientForm.value.client_id);
       this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
         res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
