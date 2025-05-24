@@ -19,6 +19,10 @@ export class URLCONSTANT {
       editTeam = "Teams/edit_team"
       updateTeam = "Teams/update_team"
       addTeam = "Teams/add_team"
+      teamclubdropdown ="Teams/get_teams_dropdown"
+      teamcountrydropdown = "Global/get_countries"
+      viewgroundTeams ="Teams/view_team"
+
 
 
       /*PLAYERS REGISTRATION */
@@ -32,6 +36,7 @@ export class URLCONSTANT {
       deactiveplayer = "Player/deactivate_player"
       duplicateplayer = "Player/dupcheck_player"
       nationalityplayer = "Country/get_country_dropdown"
+       playerclubdropdown ="Teams/get_teams_dropdown"
 
 
  // Official  List 

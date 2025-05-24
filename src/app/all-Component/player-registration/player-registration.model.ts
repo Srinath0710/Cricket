@@ -43,11 +43,14 @@ export class playerupdate{
   bowling_type_id : string|number;
   bowling_spec_id : string|number;
   remarks : string;
+  scorecard_name : string;
   jersey_no : string|number;
   profile_image : string;
+  reference_id : string;
   player_id : string|number;
   team_represent : string;
   action_flag : string;
+    club_id: string|number;
 
 
 
@@ -72,12 +75,14 @@ export class playerupdate{
             this.bowling_type_id = item.bowling_type_id || 0;
             this.bowling_spec_id = item.bowling_spec_id || 0;
             this.remarks = item.remarks || '';
+            this.scorecard_name = item.scorecard_name || '';
             this.jersey_no = item.jersey_no || 0;
             this.profile_image = item.profile_image || '';
+            this.reference_id = item.reference_id || '';
             this.player_id = item.player_id|| 0;
             this.team_represent = item.team_represent || '';
             this.action_flag = item.action_flag || '';
-
+            this.club_id = item.club_id || 0;
 
 
 }
@@ -109,10 +114,13 @@ export class playeredit{
   bowling_type_id : string|number;
   bowling_spec_id : string|number;
   remarks : string;
+  scorecard_name : string;
   jersey_no : string|number;
   profile_image : string;
+  reference_id : string;
   player_id : string|number;
   team_represent : string;
+  club_id: string;
 
 
 
@@ -137,10 +145,13 @@ export class playeredit{
             this.bowling_type_id = item.bowling_type_id || 0;
             this.bowling_spec_id = item.bowling_spec_id || 0;
             this.remarks = item.remarks || '';
+            this.scorecard_name = item.scorecard_name || '';
             this.jersey_no = item.jersey_no || 0;
             this.profile_image = item.profile_image || '';
+            this.reference_id = item.reference_id || '';
             this.player_id = item.player_id|| 0;
             this.team_represent = item.team_represent || '';
+              this.club_id = item.club_id || '';
 
 
 

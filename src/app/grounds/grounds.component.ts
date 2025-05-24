@@ -109,7 +109,8 @@ export class GroundsComponent implements OnInit {
       capacity: ['', []],
       profile: ['', []],
       ground_photo: ['', []],
-      ground_id: ['',[]]
+      ground_id: ['',[]],
+      reference_id: ['',[]]
 
     })
 
@@ -191,7 +192,7 @@ export class GroundsComponent implements OnInit {
   onViewGroundDetails(groundId: any) {
     const params = {
       ground_id: groundId.toString(),
-      client_id: String(this.client_id),
+      client_id: this.ClientID?.toString(),
       user_id: String(this.user_id)
     };
 
@@ -291,6 +292,7 @@ export class GroundsComponent implements OnInit {
       capacity: this.addGroundForm.value.capacity,
       profile: this.addGroundForm.value.profile,
       ground_photo: this.addGroundForm.value.ground_photo,
+      reference_id: this.addGroundForm.value.reference_id,
 
       action_flag: 'create',
     };
@@ -354,6 +356,7 @@ export class GroundsComponent implements OnInit {
             latitude: editRecord.latitude,
             longitude: editRecord.longitude,
             capacity: editRecord.capacity,
+            reference_id: editRecord.reference_id,
             profile: null,
             ground_photo: null
           });

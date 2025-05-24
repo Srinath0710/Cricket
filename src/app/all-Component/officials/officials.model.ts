@@ -54,6 +54,7 @@ export class offcialedit{
   country_id : number;
   official_type_id:number;
   official_id:string|number;
+  reference_id:string|number;
   
 
 
@@ -71,6 +72,7 @@ export class offcialedit{
     this.country_id = item.country_id || 0;
     this.official_type_id = item.official_type_id || 0;
     this.official_id = item.official_id || 0;
+    this.reference_id = item.reference_id || 0;
    
 
   }
@@ -93,6 +95,7 @@ export class offcialupdate{
   country_id : string|number;
   profile_img : string;
   official_id : string|number;
+  reference_id : string|number;
   action_flag: string;
 
 
@@ -109,6 +112,7 @@ export class offcialupdate{
     this.country_id = item.country_id || 0;
     this.profile_img = item.profile_img || '';
    this.official_id=item.official_id||0;
+   this.reference_id=item.reference_id||0;
    this.action_flag=item.action_flag||'';
 
 

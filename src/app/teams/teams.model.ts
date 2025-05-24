@@ -29,6 +29,9 @@ export class EditTeam {
   primary_color: string;
   secondary_color: string;
   distrib_id: number;
+  club_id: string;
+  reference_id: number;
+  country_id: string;
   //  team_profile: '';
 
 
@@ -42,6 +45,9 @@ export class EditTeam {
     this.secondary_color = item.secondary_color || '';
     this.format_id = item.format_id || 0;
     this.distrib_id = item.distrib_id || 0;
+    this.club_id = item.club_id || '';
+    this.reference_id = item.reference_id || 0;
+    this.country_id = item.country_id || '';
     // /this.team_profile = '';
      }
 }
@@ -55,6 +61,9 @@ export class UpdateTeams {
     team_id: string|number;
     team_name: string;
     team_short: string;
+     club_id: string|number;
+     reference_id: string|number;
+     country_id:string|number;
     action_flag: string;
 
   
@@ -67,6 +76,9 @@ export class UpdateTeams {
       this.age_category_id = item.age_category_id || 0;
       this.format_id = item.format_id || 0;
       this.team_id = item.team_id || 0;
+      this.club_id = item.club_id || 0;
+      this.reference_id = item.reference_id || 0;
+      this.country_id = item.country_id || '';
       this.action_flag = item.action_flag || '';
 
     }

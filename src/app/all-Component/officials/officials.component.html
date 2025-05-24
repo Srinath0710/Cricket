@@ -208,6 +208,16 @@
             </div>
 
 
+              <div class="col-md-6">
+              <label class="">Reference Sourece ID 
+              </label>
+              <input class="form-control" maxlength="20" type="text" placeholder="Enter Reference Sourece ID "
+                formControlName="reference_id">
+
+            </div>
+
+
+
             <div class="col-md-6">
               <label class="">Profile Image
               </label>
@@ -304,7 +314,6 @@
                   (click)="cancelForm()"></button>
 
                 <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                  *ngIf="addOfficialForm.get('country_id')?.value == '' || addOfficialForm.get('country_id')?.value == null"
                   (click)="resetForm()"></button>
 
                 <button pButton type="button" label="Save" class="save-button" (click)="addOfficialdata()"></button>

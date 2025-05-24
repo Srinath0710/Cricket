@@ -95,7 +95,8 @@
                       [src]="teams.profile_img" 
                       (error)="handleImageError($event, default_img)">
                   </span>
-                  {{ teams.team_name }}
+                  <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)">  {{ teams.team_name }}</span>
+                
                 </td>
                 
                 <td>{{ teams.age_category }}</td>
@@ -126,6 +127,63 @@
               </tr>
             </ng-template>
           </p-table>
+
+
+
+
+
+            
+          <p-dialog header="Teams Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
+
+        
+            <div class="popup-container">
+
+              <!-- ✅ Top bar: Image on left, Cancel button on right -->
+              <div class="top-bar">
+                <div class="profile-image-wrapper">
+                  <img [src]="selectedTeams[0]?.profileImageUrl" alt="Img" class="profile-image" />
+                  <!-- <img src="https://via.placeholder.com/100" class="profile-image" /> -->
+                </div>
+                <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
+              </div>
+
+
+              <div *ngFor="let teams of selectedTeams" class="popup-content">
+
+                <!-- ✅ Teams name without 🏟️ icon -->
+                <header class="popup-header no-icon">
+                  <h1 class="popup-title">{{teams['team name'] | uppercase }}</h1>
+                </header>
+
+                <!-- Teams Details -->
+                <section class="popup-section">
+                  <h2 class="section-title">⛳ Teams Details</h2>
+                  <div class="info-row"><span class="info-label">🚻Gender</span><span
+                      class="separator">|</span><span class="info-value">{{ teams['gender'] }}</span></div>
+                  <div class="info-row"><span class="info-label">📊 Age Group</span><span
+                      class="separator">|</span><span class="info-value">{{ teams['age group'] }}</span></div>
+                  <div class="info-row"><span class="info-label">🔢 Team Category</span><span
+                      class="separator">|</span><span class="info-value">{{ teams['team category'] }}</span></div>
+                  
+                </section>
+              </div>
+            </div>
+
+
+
+
+
+          </p-dialog>
+
+
+
+
+
+
+
+
+
+
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
             [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
@@ -244,6 +302,71 @@
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Secondary Color"
                 formControlName="secondary_color">
             </div>
+
+
+
+<div class="col-md-6">
+              <label>Club ID</label>
+               <span class="text-danger">*</span>
+              <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
+                optionLabel="club_name" placeholder="Select Club Id">
+                <ng-template let-club pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ club.club_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addTeamForm?.get('club_id')?.invalid &&(addTeamForm?.get('club_id')?.touched) || (addTeamForm.get('club_id')?.invalid && submitted)"
+                class="required-msg"> Club ID is Required
+              </small>
+            </div>
+
+
+
+
+
+               <div class="col-md-6">
+            <label>Country
+              <span class="text-danger">*</span>
+            </label>
+            <p-dropdown [options]="countriesData" class="drop-error " formControlName="country_id"
+              optionValue="country_id" optionLabel="country_name"
+               placeholder="select Country" appendTo="self" 
+                [panelStyleClass]="'custom-dropdown-panel'"
+                [filter]="true" filterBy="country_name" [showClear]="false"
+                 >
+              <ng-template let-country pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ country.country_name }}
+                  </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              *ngIf="addTeamForm?.get('country_id')?.invalid &&(addTeamForm?.get('country_id')?.touched) || (addTeamForm.get('country_id')?.invalid && submitted)"
+              class="required-msg">Country
+              Is Required
+            </small>
+          </div>
+
+
+
+     <div class="col-md-6">
+              <label class="">Reference Sourece ID
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="20" type="text" placeholder="Enter Reference Sourece ID"
+                formControlName="reference_id">
+              <small
+                *ngIf="addTeamForm?.get('reference_id')?.invalid &&(addTeamForm?.get('reference_id')?.touched) || (addTeamForm.get('reference_id')?.invalid && submitted)"
+                class="required-msg">Reference Sourece ID Required
+              </small>
+            </div>
+
+
+
 
             <div class="col-md-6">
               <div class="image-upload-container text-center">

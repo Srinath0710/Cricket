@@ -56,6 +56,8 @@ interface Team {
   ],
 })
 export class TeamsComponent implements OnInit {
+
+    showPopup: boolean = true;
   public addTeamForm!: FormGroup<any>;
   @ViewChild('dt') dt: Table | undefined;
 
@@ -93,15 +95,19 @@ export class TeamsComponent implements OnInit {
   selectedCity: string = '';
   defaultRows: number = 10;
   clientData: any[] = [];
-
   cities = [];
+  selectedTeams:any = [];
+    viewDialogVisible: boolean = false;
+  countriesData: any;
+  countryID: any;
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
   }
   ngOnInit(): void {
-    this.Clientdropdown()
-    this.getGlobalData()
+    this.Clientdropdown();
+    this.countryDropdown();
+    
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
       team_name: ['', [Validators.required]],
@@ -111,13 +117,41 @@ export class TeamsComponent implements OnInit {
       format_id: ['', [Validators.required]],
       // team_profile: [''],
       primary_color: [''],
-      secondary_color: ['']
+      secondary_color: [''],
+      club_id:['',[]],
+      reference_id:['',[]],
+      country_id:['' ],
     })
   }
 
 
+
+   clubsdropdown() {
+    const params: any = {
+      action_flag: 'dropdown',
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString()
+    };
+
+    this.apiService.post(this.urlConstant.playerclubdropdown, params).subscribe(
+      (res) => {
+        this.configDataList = res.data?.clubs || [];
+        console.log("All clubs:", this.configDataList);
+      },
+      (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+          this.apiService.RefreshToken();
+        } else {
+          this.configDataList = [];
+          console.error("Error fetching clubs dropdown:", err);
+        }
+      }
+    );
+  }
+
+
   gridLoad() {
-    const params: any = {};
+        const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
@@ -127,6 +161,7 @@ export class TeamsComponent implements OnInit {
         if (res.data?.teams) {
           this.teamData = res.data.teams;
           this.totalData = this.teamData.length !== 0 ? res.data.teams[0].total_records : 0;
+          this.clubsdropdown();
         } else {
           this.teamData = [];
           this.totalData = 0;
@@ -140,6 +175,40 @@ export class TeamsComponent implements OnInit {
       });
 
   }
+
+
+  onViewGroundDetails(teamsid: any) {
+    const params = {
+      team_id: teamsid.toString(),
+      client_id: this.client_id?.toString(),
+      user_id: String(this.user_id)
+    };
+
+
+    this.apiService.post(this.urlConstant.viewgroundTeams, params).subscribe({
+      next: (res) => {
+        if (res.status && res.data) {
+          this.selectedTeams = res.data.teams; // or res.data.ground based on response shape
+          console.log('resground', this.selectedTeams);
+          this.viewDialogVisible = true;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch ground details', err);
+      }
+    });
+  }
+
+
+  closePopup() {
+    this.showPopup = false;
+  }
+
+  openPopup() {
+    this.showPopup = true;
+  }
+
+
 
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
@@ -229,7 +298,7 @@ export class TeamsComponent implements OnInit {
 
       this.ageGroupList = res.data.dropdowns
         .filter((item: any) => item.config_key === 'age_category')
-        .map((item: any) => ({ ...item }));
+        .map((item: any) => ({ ...item })); 
 
       this.genderList = res.data.dropdowns
         .filter((item: any) => item.config_key === 'gender')
@@ -263,6 +332,27 @@ export class TeamsComponent implements OnInit {
   }
 
 
+
+
+  countryDropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.teamcountrydropdown, params).subscribe((res) => {
+      this.countriesData = res.data.countries ?? [];
+      this.countryID = this.countriesData[0].country_id;
+      this.gridLoad();
+
+    }, (err) => {
+      if (err.status === 401 && err.error.message === 'Token expired') {
+        this.apiService.RefreshToken();
+      }
+    });
+  }
+
+
+
   onAddTeam() {
     this.submitted = true;
     if (this.addTeamForm.invalid) {
@@ -278,6 +368,13 @@ export class TeamsComponent implements OnInit {
       age_category_id: String(this.addTeamForm.value.age_category_id),
       format_id: String(this.addTeamForm.value.format_id),
       team_id: String(this.addTeamForm.value.team_id),
+      club_id: String(this.addTeamForm.value.club_id),
+      reference_id: String(this.addTeamForm.value.reference_id),
+      country_id:String(this.addTeamForm.value.country_id),
+
+
+      
+
       action_flag: 'create',
     };
     if (this.addTeamForm.value.team_id) {
@@ -320,6 +417,10 @@ export class TeamsComponent implements OnInit {
             format_id: editRecord.format_id,
             primary_color: editRecord.primary_color,
             secondary_color: editRecord.secondary_color,
+            club_id: editRecord.club_id,
+            reference_id: editRecord.reference_id,
+            country_id: editRecord.country_id,
+
             // team_profile: null
           });
           console.log(this.showAddForm())
@@ -386,6 +487,7 @@ export class TeamsComponent implements OnInit {
       this.client_id = this.clientData[0].client_id;
       console.log(this.client_id);
       this.gridLoad();
+      this.getGlobalData();
 
     }, (err) => {
       if (err.status === 401 && err.error.message === 'Token expired') {

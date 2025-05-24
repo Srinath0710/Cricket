@@ -125,7 +125,7 @@ export class PlayerRegistrationComponent implements OnInit {
   bowlingtype: player[] = [];
   bowlingspec: player[] = [];
    
-
+clientData: any[] = [];
 
   filteredSpecs: any[] = [];
 
@@ -156,6 +156,7 @@ export class PlayerRegistrationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+     this.Clientdropdown();
     this.playerRegistrationform = this.formBuilder.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
@@ -177,6 +178,9 @@ export class PlayerRegistrationComponent implements OnInit {
       profile_image: [''],
       team_represent: [''],
       player_id: [''],
+      club_id:['',[]],
+      scorecard_name:['',[]],
+      reference_id:['',[]],
 
 
 
@@ -187,14 +191,58 @@ export class PlayerRegistrationComponent implements OnInit {
 
 
     this.Nationalitydropdown();
-    this.radiobutton();
-    this.dropdownplayer();
-    this.gridLoad();
+    
 
   }
 
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
+  }
+
+
+ clubsdropdown() {
+    const params: any = {
+      action_flag: 'dropdown',
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString()
+    };
+
+    this.apiService.post(this.urlConstant.teamclubdropdown, params).subscribe(
+      (res) => {
+        this.configDataList = res.data?.clubs || [];
+        console.log("All clubs:", this.configDataList);
+      },
+      (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+          this.apiService.RefreshToken();
+        } else {
+          this.configDataList = [];
+          console.error("Error fetching clubs dropdown:", err);
+        }
+      }
+    );
+  }
+
+
+  Clientdropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+      this.clientData = res.data ?? [];
+      this.client_id = this.clientData[0].client_id;
+      console.log(this.client_id);
+      this.gridLoad();
+    
+      this.dropdownplayer();
+      this.radiobutton();
+
+
+    }, (err) => {
+      if (err.status === 401 && err.error.message === 'Token expired') {
+        this.apiService.RefreshToken();
+      }
+    });
   }
 
 
@@ -210,6 +258,7 @@ export class PlayerRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
       this.PlayerData = res.data.players ?? [];
       this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
+       this.clubsdropdown();
       this.PlayerData.forEach((val: any) => {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
@@ -230,50 +279,6 @@ export class PlayerRegistrationComponent implements OnInit {
     this.rows = event.rows;
     this.gridLoad();
   }
-
-
-
-
-
-
-    
-// // PlayerData
-//     if (this.filterStatus) {
-//       params.status = this.filterStatus;
-//     }
-//     if (this.filterPlayerType) {
-//       params.player_type = this.filterPlayerType;
-//     }
-//   params.search_text = this.searchKeyword.toString(),
-//     this.apiService.post(this.urlConstant.getplayerlist, params).subscribe(
-//       (res) => {
-
-//         this.PlayerData = res.data.players ?? [];
-//       this.totalData = this.PlayerData.length!=0 ? res.data.players[0].total_records:0
-//         this.PlayerData = res.data.players ?? [];
-//         this.totalData = res.data.total_records || 50;
-
-//         this.PlayerData.forEach((val: any) => {
-//           val.profile_img = `${val.profile_img}?${Math.random()}`;
-//         });
-//       },
-//       (err: any) => {
-//         if (err.status === this.cricketKeyConstant.status_code.refresh &&
-//           err.error.message === this.cricketKeyConstant.status_code.refresh_msg) {
-//           this.apiService.RefreshToken();
-//         } else {
-//           this.PlayerData = [];
-//           this.totalData = this.PlayerData.length;
-//           this.msgService.add({
-//             severity: 'error',
-//             summary: 'Error',
-//             detail: 'Failed to load players'
-//           });
-//         }
-//       }
-//     );
-//   }
-
 
 
   Nationalitydropdown() {
@@ -302,9 +307,9 @@ export class PlayerRegistrationComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-      this.configDataList = res.data.teams != undefined ? res.data.teams : [];
+      this.configDataList = res.data.clubs != undefined ? res.data.clubs : [];
 
-      this.genderSelect = res.data.teams
+      this.genderSelect = res.data.clubs
         .filter((item: any) => item.config_key == 'gender')
 
       // console.log(this.genderSelect,res.data.teams);
@@ -316,25 +321,24 @@ export class PlayerRegistrationComponent implements OnInit {
     })
   }
 
-
-
   radiobutton() {
+    console.log('hi');
     const params: any = {};
     params.action_flag = 'dropdown';
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-       this.configDataList = res.data.teams ?? [];
-      this.playerrole = res.data.teams
+       this.configDataList = res.data.clubs ?? [];
+      this.playerrole = res.data.clubs
         .filter((item: any) => item.config_key == 'player_role')
 
-      this.battingstyle = res.data.teams
+      this.battingstyle = res.data.clubs
         .filter((item: any) => item.config_key == 'batting_style')
 
-      this.battingorder = res.data.teams
+      this.battingorder = res.data.clubs
         .filter((item: any) => item.config_key == 'batting_order')
 
-      this.bowlingstyle = res.data.teams
+      this.bowlingstyle = res.data.clubs
         .filter((item: any) => item.config_key == 'bowling_style')
 
           this.bowlingtype = this.configDataList.
@@ -347,15 +351,17 @@ export class PlayerRegistrationComponent implements OnInit {
   this.formSetValue();
     });
   }
+onBowlingTypeChange(selectedBowlingTypeId: number) {
+  this.filteredSpecs = this.bowlingspec.filter(
+    spec => spec.parent_config_id === selectedBowlingTypeId
+  );
 
-  onBowlingTypeChange(selectedBowlingTypeId: number) {
-    this.filteredSpecs = this.bowlingspec.filter(
-      spec => spec.parent_config_id === selectedBowlingTypeId
-    );
-
-    // Optional: reset previous bowling_spec_id if already selected
-    this.form.get('bowling_spec_id')?.setValue(null);
+  // Reset only if form and control are initialized
+  if (this.form?.get('bowling_spec_id')) {
+    this.form.get('bowling_spec_id')!.setValue(null);
   }
+}
+
 
 formSetValue() {
   // Find the "Fast bowler" item in bowlingtype list
@@ -400,7 +406,7 @@ formSetValue() {
         ) {
           this.showDuplicatePopup(res);
         } else {
-          this.addplayerdata(); // call add only if no duplicates
+          //  this.addplayerdata(); // call add only if no duplicates
         }
       },
       (err: any) => {
@@ -422,6 +428,7 @@ formSetValue() {
   showDialog() {
     this.position = 'center';
     this.visible = true;
+    // this.addplayerdata();
   }
   hideDialog() {
     this.visible = false;
@@ -461,6 +468,9 @@ editLabel(){
       profile_image: this.playerRegistrationform.value.profile_image != null ? this.playerRegistrationform.value.profile_image.toString() : null,
       player_id: this.playerRegistrationform.value.player_id != null ? this.playerRegistrationform.value.player_id.toString() : null,
       team_represent: this.playerRegistrationform.value.team_represent != null ? this.playerRegistrationform.value.team_represent.toString() : null,
+      club_id: this.playerRegistrationform.value.club_id != null ? this.playerRegistrationform.value.club_id.toString() : null,
+      scorecard_name: this.playerRegistrationform.value.scorecard_name != null ? this.playerRegistrationform.value.scorecard_name.toString() : null,
+      reference_id: this.playerRegistrationform.value.reference_id != null ? this.playerRegistrationform.value.reference_id.toString() : null,
       action_flag: 'create'
 
     };
@@ -469,6 +479,7 @@ editLabel(){
     if (this.playerRegistrationform.value.player_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateplayer, params).subscribe((res) => {
+         this.visible = false;
         res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
@@ -476,6 +487,7 @@ editLabel(){
     } else {
 
       this.apiService.post(this.urlConstant.addplayer, params).subscribe((res) => {
+         this.visible = false;
         res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
@@ -537,6 +549,9 @@ editLabel(){
             jersey_no: editRecord.jersey_no,
             profile_image: null,
             player_id: editRecord.player_id,
+             club_id: editRecord.club_id,
+             scorecard_name: editRecord.scorecard_name,
+             reference_id: editRecord.reference_id,
 
           });
           this.showAddForm();

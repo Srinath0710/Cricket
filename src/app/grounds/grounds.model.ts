@@ -48,6 +48,7 @@ export class EditGround {
     latitude: string;
     longitude: string;
     capacity: string;
+    reference_id: string;
 
 
     constructor(item: Partial<EditGround> = {}) {
@@ -70,6 +71,7 @@ export class EditGround {
         this.latitude = item.latitude || '';
         this.longitude = item.longitude || '';
         this.capacity = item.capacity || '';
+        this.reference_id = item.reference_id || '';
     }
 }
 
@@ -95,6 +97,7 @@ export class UpdateGround {
     latitude: string;
     longitude: string;
     capacity: string;
+    reference_id: string;
     profile: string;
     ground_photo: string;
    
@@ -123,6 +126,7 @@ export class UpdateGround {
         this.latitude = item.latitude || '';
         this.longitude = item.longitude || '';
         this.capacity = item.capacity || '';
+        this.reference_id = item.reference_id || '';
         this.profile = item.profile || '';
         this.ground_photo = item.ground_photo || '';
         this.action_flag = item.action_flag || '';

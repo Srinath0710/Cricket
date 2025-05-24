@@ -123,9 +123,10 @@ export class OfficialsComponent implements OnInit {
       profile_img: [''],
       country_id: ['', [Validators.required]],
       official_id: [''],
+      reference_id: [''],
 
     })
-    this.dropdown();
+  
     this.countrydropdown();
 
   }
@@ -186,6 +187,7 @@ export class OfficialsComponent implements OnInit {
       country_id: String(this.addOfficialForm.value.country_id),
       profile_img: String(this.addOfficialForm.value.profile_img),
       official_id: String(this.addOfficialForm.value.official_id),
+      reference_id: String(this.addOfficialForm.value.reference_id),
       action_flag: 'create'
 
     };
@@ -345,6 +347,7 @@ export class OfficialsComponent implements OnInit {
             country_id: editRecord.country_id,
             profile_img: null,
             official_id: editRecord.official_id,
+            reference_id: editRecord.reference_id,
           });
           this.showAddForm();
         }
@@ -459,6 +462,7 @@ Clientdropdown() {
     this.clientData = res.data ?? [];
     this.client_id = this.clientData[0].client_id;
     console.log(this.client_id);
+    this.dropdown();
     this.gridload();
 
   }, (err) => {
