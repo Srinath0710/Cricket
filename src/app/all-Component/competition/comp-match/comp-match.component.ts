@@ -52,7 +52,8 @@ export class CompMatchComponent implements OnInit {
   MatchData: any = []
   viewMode: boolean = false;
   match_id: any;
-
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
 
   constructor(
     private formbuilder: FormBuilder,
@@ -112,7 +113,7 @@ export class CompMatchComponent implements OnInit {
         this.MatchData = [];
       }
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
 
     });
   }
@@ -292,9 +293,9 @@ export class CompMatchComponent implements OnInit {
     // }
     else {
       this.apiService.post(this.urlConstant.addfixture, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 }

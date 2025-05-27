@@ -77,6 +77,9 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
     selectedMenus:  { menu_id: string; name: string }[] = [];
     selectedMenuId: string = ''; 
 
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
+
    constructor(
         private apiService: ApiService, private formBuilder: FormBuilder, private msgService: MessageService,
         private snackBar: MatSnackBar, private urlConstant: URLCONSTANT, private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
@@ -300,10 +303,10 @@ confirmSelection(permissionform: NgForm) {
         };
         this.apiService.post(url, params).subscribe(
             (res: any) => {
-                res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+                res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
             },
             (err: any) => {
-                err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+                err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
             }
         );
     }
@@ -312,8 +315,8 @@ confirmSelection(permissionform: NgForm) {
     StatusConfirm(role_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
         console.log(role_id);
         const AlreadyStatestatus =
-            (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-            (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+            (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+            (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
 
         if (AlreadyStatestatus) {
             return;
@@ -325,7 +328,7 @@ confirmSelection(permissionform: NgForm) {
             acceptLabel: 'Yes',
             rejectLabel: 'No',
             accept: () => {
-                const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key
+                const url: string = this.conditionConstants.active_status.key === actionObject.key
                     ? this.urlConstant.activeRole
                     : this.urlConstant.deactivateRole;
                 this.status(role_id, url);

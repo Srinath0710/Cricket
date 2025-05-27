@@ -134,6 +134,9 @@ export class CompetitionComponent implements OnInit {
   teamdropList: MetaDataItem[] = [];
   clientData: any[] = [];
 
+    conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
+
   // Filter properties
   showFilters: boolean = false;
   filterStatus: string = '';
@@ -261,8 +264,8 @@ export class CompetitionComponent implements OnInit {
         }
       },
       (err) => {
-        if (err.status === this.cricketKeyConstant.status_code.refresh &&
-          err.error.message === this.cricketKeyConstant.status_code.refresh_msg) {
+        if (err.status === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
           this.compititionList = [];
@@ -338,7 +341,7 @@ export class CompetitionComponent implements OnInit {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 
@@ -465,15 +468,15 @@ export class CompetitionComponent implements OnInit {
     if (this.addCompetitionForm.value.competition_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateCompetition, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.createCompetition, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
