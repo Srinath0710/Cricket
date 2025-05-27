@@ -9,11 +9,6 @@
               Grounds
             </div>
 
-
-
-
-
-
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
               <p-dropdown [options]="clientData" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="ClientID" (ngModelChange)="gridload()" placeholder="Client Id" [filter]="true"
@@ -29,20 +24,14 @@
               </p-dropdown>
             </div>
 
-
-
-
-
-
-
-
             <div class="d-flex align-items-center">
               <!-- Search Form -->
               <form class="d-flex align-items-center gap-2" (submit)="gridload()">
                 <div class="p-input-icon-right flex-grow-1">
 
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="Search" (input)="filterGlobal()" />
+                    placeholder="Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
 
                 <button type="button" class="clear-button" (click)="clear()"> Clear </button>
@@ -110,13 +99,13 @@
                   </span>
 
                   <span class="icon-green"
-                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.active_status,ground.record_status)"
+                    (click)="StatusConfirm(ground.ground_id,conditionConstants.active_status,ground.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
 
                   <span class="icon-red"
-                    (click)="StatusConfirm(ground.ground_id,cricketKeyConstant.condition_key.deactive_status,ground.record_status)"
+                    (click)="StatusConfirm(ground.ground_id,conditionConstants.deactive_status,ground.record_status)"
                     pTootip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
@@ -128,7 +117,7 @@
 
           <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
 
-        
+
             <div class="popup-container">
 
               <!-- ✅ Top bar: Image on left, Cancel button on right -->
@@ -157,11 +146,11 @@
                       class="separator">|</span><span class="info-value">{{ ground['address 2'] }}</span></div>
                   <div class="info-row"><span class="info-label">🔢 Post Code</span><span
                       class="separator">|</span><span class="info-value">{{ ground['post code'] }}</span></div>
-                  <div class="info-row"><span class="info-label">⬆️  Northern End</span><span class="separator">|</span><span
-                      class="info-value">{{ ground['northern end'] }}</span></div>
-                  <div class="info-row"><span class="info-label">⬇️ southern End</span><span class="separator">|</span><span
-                      class="info-value">{{ ground['southern end'] }}</span></div>
-                      <div class="info-row"><span class="info-label">💾capacity</span><span class="separator">|</span><span
+                  <div class="info-row"><span class="info-label">⬆️ Northern End</span><span
+                      class="separator">|</span><span class="info-value">{{ ground['northern end'] }}</span></div>
+                  <div class="info-row"><span class="info-label">⬇️ southern End</span><span
+                      class="separator">|</span><span class="info-value">{{ ground['southern end'] }}</span></div>
+                  <div class="info-row"><span class="info-label">💾capacity</span><span class="separator">|</span><span
                       class="info-value">{{ ground['capacity'] }}</span></div>
                   <div class="info-row"><span class="info-label">📘 Profile</span><span class="separator">|</span><span
                       class="info-value">{{ ground.profile }}</span></div>
@@ -169,21 +158,21 @@
 
 
 
-                 <!-- Boundaries Details -->
-       <section class="popup-section">
+                <!-- Boundaries Details -->
+                <section class="popup-section">
                   <h2 class="section-title">🧭 Boundaries Details</h2>
-                  <div class="info-row"><span class="info-label">⬆️ North</span><span
-                      class="separator">|</span><span class="info-value">{{ ground['north'] }}</span></div>
-                  <div class="info-row"><span class="info-label">⬇️ South</span><span
-                      class="separator">|</span><span class="info-value">{{ ground['south'] }}</span></div>
-                  <div class="info-row"><span class="info-label">➡️ East</span><span
-                      class="separator">|</span><span class="info-value">{{ ground['east'] }}</span></div>
+                  <div class="info-row"><span class="info-label">⬆️ North</span><span class="separator">|</span><span
+                      class="info-value">{{ ground['north'] }}</span></div>
+                  <div class="info-row"><span class="info-label">⬇️ South</span><span class="separator">|</span><span
+                      class="info-value">{{ ground['south'] }}</span></div>
+                  <div class="info-row"><span class="info-label">➡️ East</span><span class="separator">|</span><span
+                      class="info-value">{{ ground['east'] }}</span></div>
                   <div class="info-row"><span class="info-label">⬅️ West</span><span class="separator">|</span><span
                       class="info-value">{{ ground['west'] }}</span></div>
                   <div class="info-row"><span class="info-label">🌐 Latitude</span><span class="separator">|</span><span
                       class="info-value">{{ ground['latitude'] }}</span></div>
-                  <div class="info-row"><span class="info-label">🌐 Longitude</span><span class="separator">|</span><span
-                      class="info-value">{{ ground.longitude }}</span></div>
+                  <div class="info-row"><span class="info-label">🌐 Longitude</span><span
+                      class="separator">|</span><span class="info-value">{{ ground.longitude }}</span></div>
                 </section>
 
 
@@ -202,10 +191,6 @@
               </div>
             </div>
 
-
-
-
-
           </p-dialog>
 
 
@@ -215,7 +200,6 @@
         </div>
       </div>
     </main>
-
 
     <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
       [styleClass]="'p-confirm-dialog-custom'">
@@ -231,26 +215,35 @@
         <div class="row gy-3">
 
           <div class="col-md-3">
-            <label class="">Ground Name
-              <span class="text-danger">*</span>
-            </label>
+            <label class="">Ground Name <span class="text-danger">*</span></label>
             <input class="form-control" maxlength="50" type="text" placeholder="Enter Ground Name"
-              formControlName="ground_name">
+              formControlName="ground_name" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('ground_name', $event)">
+
+
+            <!-- Show required error -->
             <small
-              *ngIf="addGroundForm?.get('ground_name')?.invalid &&(addGroundForm?.get('ground_name')?.touched) || (addGroundForm.get('ground_name')?.invalid && submitted)"
-              class="required-msg"> Ground name is Required
+              *ngIf="(addGroundForm.get('ground_name')?.touched || submitted) && addGroundForm.get('ground_name')?.errors?.['required']"
+              class="required-msg">
+              Ground name is Required
             </small>
           </div>
+
 
           <div class="col-md-3">
             <label class="">Dispaly Name
               <span class="text-danger">*</span>
             </label>
             <input class="form-control" maxlength="50" type="text" placeholder="Entre Dispaly Name"
-              formControlName="display_name">
+              formControlName="display_name" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('display_name', $event)">
+  
+
+            <!-- Show required error -->
             <small
-              *ngIf="addGroundForm?.get('display_name')?.invalid &&(addGroundForm?.get('display_name')?.touched) || (addGroundForm.get('display_name')?.invalid && submitted)"
-              class="required-msg"> Ground name is Required
+              *ngIf="(addGroundForm.get('display_name')?.touched || submitted) && addGroundForm.get('display_name')?.errors?.['required']"
+              class="required-msg">
+              Dispaly name is Required
             </small>
           </div>
 
@@ -306,17 +299,14 @@
           </div>
 
 
-
-
-
-
-
           <div class="col-md-3">
             <label class="">Address Name 1
               <span class="text-danger">*</span>
             </label>
             <input class="form-control" maxlength="200" type="text" placeholder="Entre Address 1"
-              formControlName="address_1">
+              formControlName="address_1" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('address_1', $event)">
+
             <small
               *ngIf="addGroundForm?.get('address_1')?.invalid &&(addGroundForm?.get('address_1')?.touched) || (addGroundForm.get('address_1')?.invalid && submitted)"
               class="required-msg">Adress 1 is Required
@@ -328,22 +318,26 @@
               <span class="text-danger">*</span>
             </label>
             <input class="form-control" maxlength="200" type="text" placeholder="Entre Address 2"
-              formControlName="address_2">
+              formControlName="address_2" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('address_2', $event)">
+   
             <small
               *ngIf="addGroundForm?.get('address_2')?.invalid &&(addGroundForm?.get('address_2')?.touched) || (addGroundForm.get('address_2')?.invalid && submitted)"
               class="required-msg">Adress 2 is Required
             </small>
+
+
           </div>
-
-
 
 
           <div class="col-md-3">
             <label class="">Post Code
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="20" type="text" placeholder="Entre Post Code"
-              formControlName="post_code">
+            <input class="form-control" maxlength="10" type="text" placeholder="Entre Post Code"
+              formControlName="post_code" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('post_code', $event)">
+
             <small
               *ngIf="addGroundForm?.get('post_code')?.invalid &&(addGroundForm?.get('post_code')?.touched) || (addGroundForm.get('post_code')?.invalid && submitted)"
               class="required-msg">Post Code is Required
@@ -351,16 +345,14 @@
           </div>
 
 
-
-
-
-
           <div class="col-md-3">
             <label class="">Northern End
               <span class="text-danger">*</span>
             </label>
             <input class="form-control" maxlength="50" type="text" placeholder="Entre Northern End"
-              formControlName="northern_end">
+              formControlName="northern_end"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('northern_end', $event)">
+         
             <small
               *ngIf="addGroundForm?.get('northern_end')?.invalid &&(addGroundForm?.get('northern_end')?.touched) || (addGroundForm.get('northern_end')?.invalid && submitted)"
               class="required-msg">Northern End is Required
@@ -374,7 +366,9 @@
               <span class="text-danger">*</span>
             </label>
             <input class="form-control" maxlength="50" type="text" placeholder="Entre Sourthern End"
-              formControlName="sourthern_end">
+              formControlName="sourthern_end"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('sourthern_end', $event)">
+       
             <small
               *ngIf="addGroundForm?.get('sourthern_end')?.invalid &&(addGroundForm?.get('sourthern_end')?.touched) || (addGroundForm.get('sourthern_end')?.invalid && submitted)"
               class="required-msg">Sourthern End is Required
@@ -383,14 +377,14 @@
 
 
 
-
-
- <div class="col-md-3">
+          <div class="col-md-3">
             <label class="">Latitude
               <span class="text-danger">*</span>
             </label>
             <input class="form-control" maxlength="50" type="text" placeholder="Entre Latitude"
-              formControlName="latitude">
+              formControlName="latitude"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('latitude', $event)">
+         
             <small
               *ngIf="addGroundForm?.get('latitude')?.invalid &&(addGroundForm?.get('latitude')?.touched) || (addGroundForm.get('latitude')?.invalid && submitted)"
               class="required-msg">Latitude is Required
@@ -399,15 +393,14 @@
 
 
 
-
-
-
           <div class="col-md-3">
             <label class="">Longitude
               <span class="text-danger">*</span>
             </label>
             <input class="form-control" maxlength="50" type="text" placeholder="Entre Longitude"
-              formControlName="longitude">
+              formControlName="longitude"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('longitude', $event)">
+   
             <small
               *ngIf="addGroundForm?.get('longitude')?.invalid &&(addGroundForm?.get('longitude')?.touched) || (addGroundForm.get('longitude')?.invalid && submitted)"
               class="required-msg">Longitude is Required
@@ -415,44 +408,48 @@
           </div>
 
 
-               <div class="col-md-3">
-                          <label>Reference Sourece ID </label>
-                          <input class="form-control" type="text" maxlength="20" placeholder="Enter Reference Sourece ID    "
-                            formControlName="reference_id">
-                        </div>
-
-
           <div class="col-md-3">
-            <label class="">Capacity
-              <span class="text-danger">*</span>
-            </label>
-            <input class="form-control" maxlength="50" type="tel" placeholder="Entre Capacity"
-              formControlName="capacity">
+            <label>Reference Sourece ID </label>
+            <input class="form-control" type="text" maxlength="20" placeholder="Enter Reference Sourece ID    "
+              formControlName="reference_id"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('reference_id', $event)">
+    
+          </div>
+
+      
+          <div class="col-md-3">
+            <label>Capacity No <span class="text-danger">*</span></label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Enter Capacity No"
+              formControlName="capacity" (keypress)="allowNumberOnly($event)"
+              (input)="sanitizeNumberInput('capacity', $event)">
+
+
+            <!-- Required field error -->
             <small
-              *ngIf="addGroundForm?.get('capacity')?.invalid &&(addGroundForm?.get('capacity')?.touched) || (addGroundForm.get('capacity')?.invalid && submitted)"
-              class="required-msg">Capacity is Required
+              *ngIf="(addGroundForm.get('capacity')?.touched || submitted) && addGroundForm.get('capacity')?.errors?.['required']"
+              class="required-msg">
+              Capacity is Required
             </small>
           </div>
 
 
-
-<div class="col-md-3">
-              <label>Club ID</label>
-               <span class="text-danger">*</span>
-              <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
-                optionLabel="club_name" placeholder="Select Club Id">
-                <ng-template let-club pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ club.club_name }}
-                    </div>
+          <div class="col-md-3">
+            <label>Club ID</label>
+            <span class="text-danger">*</span>
+            <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
+              optionLabel="club_name" placeholder="Select Club Id">
+              <ng-template let-club pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ club.club_name }}
                   </div>
-                </ng-template>
-              </p-dropdown>
-              <small
-                *ngIf="addGroundForm?.get('club_id')?.invalid &&(addGroundForm?.get('club_id')?.touched) || (addGroundForm.get('club_id')?.invalid && submitted)"
-                class="required-msg"> Club ID is Required
-              </small>
-            </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              *ngIf="addGroundForm?.get('club_id')?.invalid &&(addGroundForm?.get('club_id')?.touched) || (addGroundForm.get('club_id')?.invalid && submitted)"
+              class="required-msg"> Club ID is Required
+            </small>
+          </div>
 
 
           <div class="col-md-3">
@@ -467,66 +464,93 @@
             <label>Ground Photo </label>
             <input class="form-control" type="file" formControlName="ground_photo">
           </div>
+
           <div class="col-md-12">
             <fieldset class="border p-3 rounded">
               <legend class="w-auto px-2">Boundaries (in Metres) <span class="text-danger">*</span></legend>
               <div class="row">
-                
+
                 <div class="col-md-3">
-                  <label class="">North (in Metres)
-                    <span class="text-danger">*</span>
-                  </label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Entre North"
-                    formControlName="north">
+                  <label>North (in Metres) <span class="text-danger">*</span></label>
+                  <input class="form-control" maxlength="50" type="text" placeholder="Enter North"
+                    formControlName="north" (keypress)="allowDecimalOnly($event)"
+                    (input)="sanitizeDecimalInput('north', $event)">
+
+                  <!-- Show when invalid decimal format -->
+                  <small *ngIf="addGroundForm.get('north')?.touched && addGroundForm.get('north')?.errors?.['pattern']"
+                    class="required-msg">
+                    * Invalid North (Only decimals allowed)
+                  </small>
+
+                  <!-- Show when field is empty -->
                   <small
-                    *ngIf="addGroundForm?.get('north')?.invalid &&(addGroundForm?.get('north')?.touched) || (addGroundForm.get('north')?.invalid && submitted)"
-                    class="required-msg">North is Required
+                    *ngIf="(addGroundForm.get('north')?.touched || submitted) && addGroundForm.get('north')?.errors?.['required']"
+                    class="required-msg">
+                    North is Required
                   </small>
                 </div>
 
 
                 <div class="col-md-3">
-                  <label class="">South (in Metres)
-                    <span class="text-danger">*</span>
-                  </label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Entre South End"
-                    formControlName="south">
+                  <label>South (in Metres) <span class="text-danger">*</span></label>
+                  <input class="form-control" maxlength="50" type="text" placeholder="Enter South"
+                    formControlName="south" (keypress)="allowDecimalOnly($event)"
+                    (input)="sanitizeDecimalInput('south', $event)">
+
+                  <!-- Show when invalid decimal format -->
+                  <small *ngIf="addGroundForm.get('south')?.touched && addGroundForm.get('south')?.errors?.['pattern']"
+                    class="required-msg">
+                    * Invalid South (Only decimals allowed)
+                  </small>
+
+                  <!-- Show when field is empty -->
                   <small
-                    *ngIf="addGroundForm?.get('south')?.invalid &&(addGroundForm?.get('south')?.touched) || (addGroundForm.get('south')?.invalid && submitted)"
-                    class="required-msg">South is Required
+                    *ngIf="(addGroundForm.get('south')?.touched || submitted) && addGroundForm.get('south')?.errors?.['required']"
+                    class="required-msg">
+                    South is Required
                   </small>
                 </div>
 
+                <div class="col-md-3">
+                  <label>East (in Metres) <span class="text-danger">*</span></label>
+                  <input class="form-control" maxlength="50" type="text" placeholder="Enter East" formControlName="east"
+                    (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('east', $event)">
+
+                  <!-- Show when invalid decimal format -->
+                  <small *ngIf="addGroundForm.get('east')?.touched && addGroundForm.get('east')?.errors?.['pattern']"
+                    class="required-msg">
+                    * Invalid East (Only decimals allowed)
+                  </small>
+
+                  <!-- Show when field is empty -->
+                  <small
+                    *ngIf="(addGroundForm.get('east')?.touched || submitted) && addGroundForm.get('east')?.errors?.['required']"
+                    class="required-msg">
+                    East is Required
+                  </small>
+                </div>
 
 
 
                 <div class="col-md-3">
-                  <label class="">East (in Metres)
-                    <span class="text-danger">*</span>
-                  </label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Entre East"
-                    formControlName="east">
+                  <label>West (in Metres) <span class="text-danger">*</span></label>
+                  <input class="form-control" maxlength="50" type="text" placeholder="Enter West" formControlName="west"
+                    (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('west', $event)">
+
+                  <!-- Show when invalid decimal format -->
+                  <small *ngIf="addGroundForm.get('west')?.touched && addGroundForm.get('west')?.errors?.['pattern']"
+                    class="required-msg">
+                    * Invalid West (Only decimals allowed)
+                  </small>
+
+                  <!-- Show when field is empty -->
                   <small
-                    *ngIf="addGroundForm?.get('east')?.invalid &&(addGroundForm?.get('east')?.touched) || (addGroundForm.get('east')?.invalid && submitted)"
-                    class="required-msg">East is Required
+                    *ngIf="(addGroundForm.get('west')?.touched || submitted) && addGroundForm.get('west')?.errors?.['required']"
+                    class="required-msg">
+                    West is Required
                   </small>
                 </div>
 
-
-
-
-
-                <div class="col-md-3">
-                  <label class="">West (in Metres)
-                    <span class="text-danger">*</span>
-                  </label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Entre West "
-                    formControlName="west">
-                  <small
-                    *ngIf="addGroundForm?.get('west')?.invalid &&(addGroundForm?.get('west')?.touched) || (addGroundForm.get('west')?.invalid && submitted)"
-                    class="required-msg">West is Required
-                  </small>
-                </div>
 
               </div>
             </fieldset>

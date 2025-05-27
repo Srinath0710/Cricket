@@ -100,6 +100,10 @@ export class TeamsComponent implements OnInit {
     viewDialogVisible: boolean = false;
   countriesData: any;
   countryID: any;
+  groundNamePattern = /^[^'"]+$/; //allstringonly allow value
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
+
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -148,6 +152,19 @@ export class TeamsComponent implements OnInit {
       }
     );
   }
+//single quotes and doble quotes remove all label box 
+blockQuotesOnly(event: KeyboardEvent) {
+  if (event.key === '"' || event.key === "'") {
+    event.preventDefault();
+  }
+}
+
+
+sanitizeQuotesOnly(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  this.addTeamForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
 
 
   gridLoad() {
@@ -170,7 +187,7 @@ export class TeamsComponent implements OnInit {
           val.profile_img = `${val.profile_img}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
 
       });
 
@@ -189,7 +206,7 @@ export class TeamsComponent implements OnInit {
       next: (res) => {
         if (res.status && res.data) {
           this.selectedTeams = res.data.teams; // or res.data.ground based on response shape
-          console.log('resground', this.selectedTeams);
+          console.log('resteams', this.selectedTeams);
           this.viewDialogVisible = true;
         }
       },
@@ -249,18 +266,18 @@ export class TeamsComponent implements OnInit {
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+        res.statusConstants === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
 
   StatusConfirm(team_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-      (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
 
     if (AlreadyStatestatus) {
       return;
@@ -272,7 +289,7 @@ export class TeamsComponent implements OnInit {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activeTeam : this.urlConstant.deactiveTeam;
+        const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activeTeam : this.urlConstant.deactiveTeam;
         this.status(team_id, url);
         this.confirmationService.close();
       },
@@ -380,15 +397,15 @@ export class TeamsComponent implements OnInit {
     if (this.addTeamForm.value.team_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateTeam, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.addTeam, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
   }
@@ -405,7 +422,7 @@ export class TeamsComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.team_id = team_id?.toString();
     this.apiService.post(this.urlConstant.editTeam, params).subscribe((res) => {
-      if (res.status_code == 200) {
+      if (res.statusConstants == 200) {
         const editRecord: EditTeam = res.data.teams[0] ?? {};
         if (editRecord != null) {
           this.addTeamForm.setValue({
@@ -431,7 +448,7 @@ export class TeamsComponent implements OnInit {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 

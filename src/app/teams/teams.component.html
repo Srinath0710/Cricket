@@ -42,7 +42,8 @@
                     placeholder="  Search"
                    (input)="filterGlobal()"
                     (keydown.enter)="$event.preventDefault(); filterGlobal()"
-                  />
+                  (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
               
                 <button
@@ -115,11 +116,11 @@
                     <i class="fa-solid fa-user-pen"></i>
                   </span>
   
-                  <span class="icon-green"  (click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.active_status,teams.record_status)" pTooltip="Activate" tooltipPosition="top">
+                  <span class="icon-green"  (click)="StatusConfirm(teams.team_id,conditionConstants.active_status,teams.record_status)" pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
   
-                  <span class="icon-red"(click)="StatusConfirm(teams.team_id,cricketKeyConstant.condition_key.deactive_status,teams.record_status)" pTooltip="Deactivate" tooltipPosition="top">
+                  <span class="icon-red"(click)="StatusConfirm(teams.team_id,conditionConstants.deactive_status,teams.record_status)" pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
                   </td>
@@ -212,7 +213,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Team Name"
-                formControlName="team_name">
+                formControlName="team_name"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('team_name', $event)">
               <small
                 *ngIf="addTeamForm?.get('team_name')?.invalid &&(addTeamForm?.get('team_name')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
                 class="required-msg">Team
@@ -225,7 +227,8 @@
                
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Short Name"
-                formControlName="team_short">
+                formControlName="team_short"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('team_short', $event)">
             </div>
 
             <div class="col-md-6">
@@ -294,13 +297,15 @@
               <label class="">Primary Color
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Primary Color"
-                formControlName="primary_color">
+                formControlName="primary_color"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('primary_color', $event)">
             </div>
             <div class="col-md-6">
               <label class="">Secondary Color
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Secondary Color"
-                formControlName="secondary_color">
+                formControlName="secondary_color"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('secondary_color', $event)">
             </div>
 
 
@@ -358,7 +363,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="20" type="text" placeholder="Enter Reference Sourece ID"
-                formControlName="reference_id">
+                formControlName="reference_id"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('reference_id', $event)">
               <small
                 *ngIf="addTeamForm?.get('reference_id')?.invalid &&(addTeamForm?.get('reference_id')?.touched) || (addTeamForm.get('reference_id')?.invalid && submitted)"
                 class="required-msg">Reference Sourece ID Required

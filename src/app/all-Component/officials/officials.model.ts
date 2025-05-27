@@ -55,6 +55,7 @@ export class offcialedit{
   official_type_id:number;
   official_id:string|number;
   reference_id:string|number;
+   club_id: string;
   
 
 
@@ -73,6 +74,7 @@ export class offcialedit{
     this.official_type_id = item.official_type_id || 0;
     this.official_id = item.official_id || 0;
     this.reference_id = item.reference_id || 0;
+       this.club_id = item.club_id || '';
    
 
   }
@@ -97,6 +99,7 @@ export class offcialupdate{
   official_id : string|number;
   reference_id : string|number;
   action_flag: string;
+   club_id: string|number;
 
 
   constructor(item: Partial<offcialupdate> = {}) {
@@ -114,6 +117,7 @@ export class offcialupdate{
    this.official_id=item.official_id||0;
    this.reference_id=item.reference_id||0;
    this.action_flag=item.action_flag||'';
+           this.club_id = item.club_id || 0;
 
 
 

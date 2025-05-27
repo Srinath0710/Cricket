@@ -75,10 +75,11 @@ export class CountryComponent implements OnInit {
   filedata: any;
   searchKeyword: string = '';
   visible2: boolean = false;
-
   submitted: boolean = true;
   time_zone_id: any;
 
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
@@ -131,7 +132,7 @@ export class CountryComponent implements OnInit {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [], this.totalData = this.countriesData.length);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [], this.totalData = this.countriesData.length);
 
     });
 
@@ -192,15 +193,15 @@ export class CountryComponent implements OnInit {
     if (this.addCountryForm.value.country_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateCountry, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.addCountry, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -237,7 +238,7 @@ export class CountryComponent implements OnInit {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 
@@ -251,18 +252,18 @@ export class CountryComponent implements OnInit {
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
 
   StatusConfirm(country_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+    (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+    (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
 
   if (AlreadyStatestatus) {
     return; 
@@ -274,7 +275,7 @@ export class CountryComponent implements OnInit {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key
+        const url: string = this.conditionConstants.active_status.key === actionObject.key
           ? this.urlConstant.activeCountry
           : this.urlConstant.deactiveCountry;
         this.status(country_id, url);

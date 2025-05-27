@@ -69,7 +69,7 @@ interface DuplicatePlayer {
     RadioButtonModule,
     Drawer,
     ToastModule,
-    
+
 
 
 
@@ -99,12 +99,12 @@ export class PlayerRegistrationComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10; // Default records shown is 10
   totalData: any = 0;
-  
+
   isEditMode: boolean = false;
   filedata: any;
   searchKeyword: string = '';
   visible: boolean = false;
-  isEditing: boolean = false; 
+  isEditing: boolean = false;
   public ShowForm: any = false;
   position: 'center' = 'center';
   playerRegistrationform!: FormGroup;
@@ -124,39 +124,37 @@ export class PlayerRegistrationComponent implements OnInit {
   bowlingstyle: player[] = [];
   bowlingtype: player[] = [];
   bowlingspec: player[] = [];
-   
-clientData: any[] = [];
-
+  clientData: any[] = [];
   filteredSpecs: any[] = [];
-
   playerId: any;
-
-
   duplicatePlayers: any[] = [];
   // position: 'left' | 'right' | 'top' | 'bottom' | 'center' | 'topleft' | 'topright' | 'bottomleft' | 'bottomright' = 'center';
-
-
-
-
-
-
+  mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
+  emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
+  playerNamePattern = /^[^'"]+$/; //allstringonly allow value
   // Filter options
   filterStatus: string = '';
   filterPlayerType: string = '';
   form: any;
 
+
+ default_img= CricketKeyConstant.default_image_url.players;
+  // dropDownConstants= CricketKeyConstant.dropdown_keys;
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
+
+  
   constructor(
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
-    private confirmationService: ConfirmationService,
-    public cricketKeyConstant: CricketKeyConstant,
+    private confirmationService: ConfirmationService
 
   ) { }
 
   ngOnInit() {
-     this.Clientdropdown();
+    this.Clientdropdown();
     this.playerRegistrationform = this.formBuilder.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
@@ -164,8 +162,8 @@ clientData: any[] = [];
       display_name: ['', [Validators.required]],
       nationality_id: ['', [Validators.required]],
       player_dob: ['',],
-      mobile_no: [''],
-      email: [''],
+      mobile_no: ['', [Validators.pattern(this.mobileRegex)]],
+      email: ['', [Validators.pattern(this.emailRegex)]],
       gender_id: ['', [Validators.required]],
       player_role_id: ['', [Validators.required]],
       batting_style_id: ['', [Validators.required]],
@@ -178,9 +176,9 @@ clientData: any[] = [];
       profile_image: [''],
       team_represent: [''],
       player_id: [''],
-      club_id:['',[]],
-      scorecard_name:['',[]],
-      reference_id:['',[]],
+      club_id: ['', []],
+      scorecard_name: ['', []],
+      reference_id: ['', []],
 
 
 
@@ -191,7 +189,7 @@ clientData: any[] = [];
 
 
     this.Nationalitydropdown();
-    
+
 
   }
 
@@ -200,7 +198,7 @@ clientData: any[] = [];
   }
 
 
- clubsdropdown() {
+  clubsdropdown() {
     const params: any = {
       action_flag: 'dropdown',
       user_id: this.user_id.toString(),
@@ -222,6 +220,28 @@ clientData: any[] = [];
       }
     );
   }
+  //mobileno enter the only number alowed
+  onPhoneNumberInput(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
+    this.playerRegistrationform.get('mobile_no')?.setValue(phoneNumber, { emitEvent: false });
+  }
+
+  //single quotes and doble quotes remove all label box 
+  blockQuotesOnly(event: KeyboardEvent) {
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
+  }
+
+
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+    this.playerRegistrationform.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
+
+
 
 
   Clientdropdown() {
@@ -233,7 +253,7 @@ clientData: any[] = [];
       this.client_id = this.clientData[0].client_id;
       console.log(this.client_id);
       this.gridLoad();
-    
+
       this.dropdownplayer();
       this.radiobutton();
 
@@ -255,20 +275,20 @@ clientData: any[] = [];
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString(),
 
-    this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
-      this.PlayerData = res.data.players ?? [];
-      this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
-       this.clubsdropdown();
-      this.PlayerData.forEach((val: any) => {
-        val.country_image = `${val.country_image}?${Math.random()}`;
-      });
-    }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.PlayerData = [], this.totalData = this.PlayerData.length);
+      this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
+        this.PlayerData = res.data.players ?? [];
+        this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
+        this.clubsdropdown();
+        this.PlayerData.forEach((val: any) => {
+          val.country_image = `${val.country_image}?${Math.random()}`;
+        });
+      }, (err: any) => {
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.PlayerData = [], this.totalData = this.PlayerData.length);
 
-    });
+      });
 
   }
- 
+
 
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
@@ -314,7 +334,7 @@ clientData: any[] = [];
 
       // console.log(this.genderSelect,res.data.teams);
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {  
+      if (err.status === 401 && err.error.message === "Expired") {
         this.apiService.RefreshToken();
 
       }
@@ -328,7 +348,7 @@ clientData: any[] = [];
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-       this.configDataList = res.data.clubs ?? [];
+      this.configDataList = res.data.clubs ?? [];
       this.playerrole = res.data.clubs
         .filter((item: any) => item.config_key == 'player_role')
 
@@ -341,46 +361,46 @@ clientData: any[] = [];
       this.bowlingstyle = res.data.clubs
         .filter((item: any) => item.config_key == 'bowling_style')
 
-          this.bowlingtype = this.configDataList.
-            filter((item: any) => item.config_key === 'bowling_type')
+      this.bowlingtype = this.configDataList.
+        filter((item: any) => item.config_key === 'bowling_type')
 
-        this.bowlingspec = this.configDataList.
-            filter((item: any) => item.config_key === 'bowling_spec')
+      this.bowlingspec = this.configDataList.
+        filter((item: any) => item.config_key === 'bowling_spec')
 
-  this.filteredSpecs = [];
-  this.formSetValue();
+      this.filteredSpecs = [];
+      this.formSetValue();
     });
   }
-onBowlingTypeChange(selectedBowlingTypeId: number) {
-  this.filteredSpecs = this.bowlingspec.filter(
-    spec => spec.parent_config_id === selectedBowlingTypeId
-  );
+  onBowlingTypeChange(selectedBowlingTypeId: number) {
+    this.filteredSpecs = this.bowlingspec.filter(
+      spec => spec.parent_config_id === selectedBowlingTypeId
+    );
 
-  // Reset only if form and control are initialized
-  if (this.form?.get('bowling_spec_id')) {
-    this.form.get('bowling_spec_id')!.setValue(null);
+    // Reset only if form and control are initialized
+    if (this.form?.get('bowling_spec_id')) {
+      this.form.get('bowling_spec_id')!.setValue(null);
+    }
   }
-}
 
 
-formSetValue() {
-  // Find the "Fast bowler" item in bowlingtype list
-  const fastBowler = this.bowlingtype.find(
-    (type: any) => type.config_name.toLowerCase().includes('fast')
-  );
+  formSetValue() {
+    // Find the "Fast bowler" item in bowlingtype list
+    const fastBowler = this.bowlingtype.find(
+      (type: any) => type.config_name.toLowerCase().includes('fast')
+    );
 
-  if (fastBowler) {
-    const fastBowlerId = fastBowler.config_id;
+    if (fastBowler) {
+      const fastBowlerId = fastBowler.config_id;
 
-    // Patch the value to the form
-    this.playerRegistrationform.patchValue({
-      bowling_type_id: fastBowlerId
-    });
+      // Patch the value to the form
+      this.playerRegistrationform.patchValue({
+        bowling_type_id: fastBowlerId
+      });
 
-    // Trigger the spec filter
-    this.onBowlingTypeChange(fastBowlerId);
+      // Trigger the spec filter
+      this.onBowlingTypeChange(fastBowlerId);
+    }
   }
-}
 
   duplicateChange() {
     this.submitted = true;
@@ -400,18 +420,18 @@ formSetValue() {
     this.apiService.post(this.urlConstant.duplicateplayer, params).subscribe(
       (res) => {
         if (
-          res.status_code === this.cricketKeyConstant.status_code.success &&
+          res.status_code === this.statusConstants.success &&
           res.status &&
           (res.data !== null && res.data.players.length !== 0)
         ) {
           this.showDuplicatePopup(res);
         } else {
-          //  this.addplayerdata(); // call add only if no duplicates
+          this.addplayerdata(); // call add only if no duplicates
         }
       },
       (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh &&
-          err.error.message === this.cricketKeyConstant.status_code.refresh_msg
+        err.status === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);
       }
@@ -433,14 +453,14 @@ formSetValue() {
   hideDialog() {
     this.visible = false;
   }
-editLabel(){
-   this.isEditMode =false;
+  editLabel() {
+    this.isEditMode = false;
 
-}
+  }
   addplayerdata() {
     this.submitted = true;
     this.isEditMode = false;
-        if (this.playerRegistrationform.invalid) {
+    if (this.playerRegistrationform.invalid) {
       this.playerRegistrationform.markAllAsTouched();
       return
     }
@@ -454,7 +474,7 @@ editLabel(){
       display_name: this.playerRegistrationform.value.display_name != null ? this.playerRegistrationform.value.display_name.toString() : null,
       nationality_id: this.playerRegistrationform.value.nationality_id != null ? this.playerRegistrationform.value.nationality_id.toString() : null,
       player_dob: this.playerRegistrationform.value.player_dob != null ? this.playerRegistrationform.value.player_dob.toString() : null,
-      mobile_no: this.playerRegistrationform.value.mobile_no != null ? this.playerRegistrationform.value.mobile_no.toString() : null,
+      mobile_no: this.playerRegistrationform.value.mobile_no,
       email: this.playerRegistrationform.value.email != null ? this.playerRegistrationform.value.email.toString() : null,
       gender_id: this.playerRegistrationform.value.gender_id != null ? this.playerRegistrationform.value.gender_id.toString() : null,
       player_role_id: this.playerRegistrationform.value.player_role_id != null ? this.playerRegistrationform.value.player_role_id.toString() : null,
@@ -479,18 +499,18 @@ editLabel(){
     if (this.playerRegistrationform.value.player_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateplayer, params).subscribe((res) => {
-         this.visible = false;
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        this.visible = false;
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addplayer, params).subscribe((res) => {
-         this.visible = false;
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        this.visible = false;
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -549,9 +569,9 @@ editLabel(){
             jersey_no: editRecord.jersey_no,
             profile_image: null,
             player_id: editRecord.player_id,
-             club_id: editRecord.club_id,
-             scorecard_name: editRecord.scorecard_name,
-             reference_id: editRecord.reference_id,
+            club_id: editRecord.club_id,
+            scorecard_name: editRecord.scorecard_name,
+            reference_id: editRecord.reference_id,
 
           });
           this.showAddForm();
@@ -560,7 +580,7 @@ editLabel(){
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
   }
@@ -635,7 +655,7 @@ editLabel(){
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
         error: (err: any) => {
@@ -652,7 +672,7 @@ editLabel(){
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activeplayer : this.urlConstant.deactiveplayer;
+        const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activeplayer : this.urlConstant.deactiveplayer;
         this.status(player_id, url);
         this.confirmationService.close();
       },
@@ -672,14 +692,14 @@ editLabel(){
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
   clear() {
-  this.searchKeyword = '';   
-  this.dt.clear();          
-  this.gridLoad();          
-}
-// onEnterPress(event: KeyboardEvent): void {
-//   event.preventDefault();
-//   this.filterGlobal();
-// }
+    this.searchKeyword = '';
+    this.dt.clear();
+    this.gridLoad();
+  }
+  // onEnterPress(event: KeyboardEvent): void {
+  //   event.preventDefault();
+  //   this.filterGlobal();
+  // }
 
 
 

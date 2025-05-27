@@ -73,6 +73,13 @@ export class GroundsComponent implements OnInit {
   ClientID: any = [];
   groundsData: any;
   configDataList: any;
+ decimalPattern = /^\d*\.?\d+$/;
+decimalnoPattern = /^\d+$/; // Only digits
+GroundsNamePattern = /^[^'"]+$/; //allstringonly allow value
+
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
+
 
   constructor(private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -89,24 +96,24 @@ export class GroundsComponent implements OnInit {
     this.Clientdropdown();
 
     this.addGroundForm = this.formBuilder.group({
-      ground_name: ['', [Validators.required]],
+ground_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
       country_id: ['', [Validators.required]],
       state_id: [''],
       city_id: [''],
-      address_1: ['', [Validators.required]],
-      address_2: ['', [Validators.required]],
+      address_1: [''],
+      address_2: [''],
       post_code: ['', [Validators.required]],
       northern_end: ['', [Validators.required]],
       sourthern_end: ['', [Validators.required]],
-      north: ['', [Validators.required]],
-      south: ['', [Validators.required]],
-      east: ['', [Validators.required]],
-      west: ['', [Validators.required]],
+      north: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
+      south: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
+      east: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
+      west: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
       club_id: ['',[]],
       latitude: ['', []],
       longitude: ['', []],
-      capacity: ['', []],
+      capacity:  [''],
       profile: ['', []],
       ground_photo: ['', []],
       ground_id: ['',[]],
@@ -116,6 +123,63 @@ export class GroundsComponent implements OnInit {
 
 
   }
+
+
+  // Allow only numbers and one decimal point
+allowDecimalOnly(event: KeyboardEvent) {
+  const allowedKeys = ['0','1','2','3','4','5','6','7','8','9','.'];
+  const inputChar = event.key;
+
+  if (!allowedKeys.includes(inputChar)) {
+    event.preventDefault(); // block all except digits and "."
+    return;
+  }
+
+  // Prevent multiple decimals
+  const inputElement = event.target as HTMLInputElement;
+  if (inputChar === '.' && inputElement.value.includes('.')) {
+    event.preventDefault();
+  }
+}
+
+// Clean unwanted characters if pasted
+sanitizeDecimalInput(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'); // Only one "."
+  this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
+
+
+
+// Allow only digits (0-9), block dot and others
+allowNumberOnly(event: KeyboardEvent) {
+  const inputChar = event.key;
+  const isNumber = /^[0-9]$/.test(inputChar);
+  if (!isNumber) {
+    event.preventDefault(); // Block non-numeric keys (including dot)
+  }
+}
+
+sanitizeNumberInput(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/[^0-9]/g, ''); // Keep only digits
+  this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
+
+//single quotes and doble quotes remove all label box 
+blockQuotesOnly(event: KeyboardEvent) {
+  if (event.key === '"' || event.key === "'") {
+    event.preventDefault();
+  }
+}
+
+
+sanitizeQuotesOnly(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
+
 
   Clientdropdown() {
     const params: any = {
@@ -147,14 +211,14 @@ export class GroundsComponent implements OnInit {
       (err: any) => {
         if (err.status === 401 && err.error.message === "Expired") {
           this.apiService.RefreshToken();
-        } else {
+        } else {  
           this.configDataList = [];
           console.error("Error fetching clubs dropdown:", err);
         }
       }
     );
   }
-
+  
 
   gridload() {
     const params: any = {
@@ -174,8 +238,8 @@ export class GroundsComponent implements OnInit {
         },
         error: (err) => {
           if (
-            err.status === this.cricketKeyConstant.status_code.refresh &&
-            err.error.message === this.cricketKeyConstant.status_code.refresh_msg
+            err.status === this.statusConstants.refresh &&
+            err.error.message === this.statusConstants.refresh_msg
           ) {
             this.apiService.RefreshToken();
           } else {
@@ -289,7 +353,7 @@ export class GroundsComponent implements OnInit {
       club_id: String(this.addGroundForm.value.club_id),
       latitude: this.addGroundForm.value.latitude,
       longitude: this.addGroundForm.value.longitude,
-      capacity: this.addGroundForm.value.capacity,
+      capacity: String(this.addGroundForm.value.capacity),
       profile: this.addGroundForm.value.profile,
       ground_photo: this.addGroundForm.value.ground_photo,
       reference_id: this.addGroundForm.value.reference_id,
@@ -302,16 +366,16 @@ export class GroundsComponent implements OnInit {
       console.log(this.addGroundForm.value.ground_id)
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
   }
@@ -367,8 +431,8 @@ export class GroundsComponent implements OnInit {
       }
     },
       (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh &&
-          err.error.message === this.cricketKeyConstant.status_code.refresh_msg
+        err.status === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);
       }
@@ -385,13 +449,13 @@ export class GroundsComponent implements OnInit {
 
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status
+        res.status_code === this.statusConstants.success && res.status
           ? (this.successToast(res), this.gridload())
           : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh &&
-          err.error.message === this.cricketKeyConstant.status_code.refresh_msg
+        err.status === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);
       }
@@ -401,8 +465,8 @@ export class GroundsComponent implements OnInit {
 
   StatusConfirm(ground_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-      (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
 
     if (AlreadyStatestatus) {
       return;
@@ -414,7 +478,7 @@ export class GroundsComponent implements OnInit {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activateGround : this.urlConstant.deactivateGround;
+        const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activateGround : this.urlConstant.deactivateGround;
         this.status(ground_id, url);
         this.confirmationService.close();
       },

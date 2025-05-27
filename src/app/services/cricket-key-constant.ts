@@ -1,11 +1,29 @@
 export class CricketKeyConstant {
-    status_code = {
+   static status_code = {
         success: '200',
         refresh: '401',
-        refresh_msg:'Expired'
+        refresh_msg: 'Expired'
     }
-    condition_key={
-        active_status:{key:'active','label':'Activate'},
-        deactive_status:{key:'deactive','label':'Deactivate'}
+   static   = {
+        active_status: { key: 'active', label: 'Activate', status: 'Active' },
+        deactive_status: { key: 'deactive', label: 'Deactivate', status: 'InActive' }
     }
+   static dropdown_keys = {
+        config_key: {
+            team_format:'team_format',
+            officials:'officials'
+        },
+        official_keys: {
+            analyst: { short_key: 'VDA', label: 'Analyst Level', key: 'analyst' },
+            scorer: { short_key: 'SCR', label: 'Scorer Type', key: 'scorer' },
+            umpire_category: { short_key: 'UMP', label: 'Umpire Category', key: 'umpire_category' }
+        }
+
+    }
+   static default_image_url={
+        officials:'assets/images/default-player.png',
+        players:'assets/images/default-player.png',
+        grounds:'assets/images/default-player.png',
+    }
+  static condition_key: any
 }

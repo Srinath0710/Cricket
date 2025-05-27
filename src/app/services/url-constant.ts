@@ -48,11 +48,9 @@ export class URLCONSTANT {
       activateofficial = "Official/activate_official"
       deactivateofficial = "Official/deactivate_official"
       profileofficial = "Official/official_profile_update"
-
-      countryofficial = "Country/get_country_dropdown"
-      
+      countryofficial = {action_flag:'dropdown',url:"Country/get_country_dropdown"}
       clientdropdown="Client/get_client_dropdown"
-
+      officialclubdropdown="Official/get_official_dropdown"
 
 
       /*State List*/

@@ -82,6 +82,8 @@ export class AllCitiesComponent implements OnInit {
   countryId: any;
   addAnother: boolean = false;
   FormValue: boolean = false;
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
 
   constructor(private formBuilder:FormBuilder, private apiService: ApiService,
     private urlConstant: URLCONSTANT, private msgService: MessageService,
@@ -243,13 +245,13 @@ gridLoad() {
   
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status
+        res.statusConstants === this.statusConstants.success && res.status
           ? (this.successToast(res), this.gridLoad())
           : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh &&
-        err.error.message === this.cricketKeyConstant.status_code.refresh_msg
+        err.status === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);
       }
@@ -282,15 +284,15 @@ gridLoad() {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateCity, params).subscribe((res) => { 
 
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.addCity, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -329,7 +331,7 @@ gridLoad() {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key
+        const url: string = this.conditionConstants.active_status.key === actionObject.key
           ? this.urlConstant.activecity
           : this.urlConstant.deactiveCity;
         this.status(city_id, url);

@@ -68,6 +68,9 @@ export class ClientComponent implements OnInit{
   seletedclient: any = [];
   viewDialogVisible: boolean = false;
 
+    conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
+
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -113,7 +116,7 @@ export class ClientComponent implements OnInit{
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : (this.Clientdata = [], this.totalData = this.Clientdata.length);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.Clientdata = [], this.totalData = this.Clientdata.length);
 
     });
 
@@ -160,16 +163,16 @@ export class ClientComponent implements OnInit{
       params.action_flag = 'update';
       params.client_id = String(this.addClientForm.value.client_id);
       this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.createclient, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -212,7 +215,7 @@ export class ClientComponent implements OnInit{
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 
@@ -255,17 +258,17 @@ export class ClientComponent implements OnInit{
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
   StatusConfirm(client_id: number, actionObject: { key: string, label: string },currentStatus:string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+    (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+    (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
 
   if (AlreadyStatestatus) {
     return; 
@@ -277,7 +280,7 @@ export class ClientComponent implements OnInit{
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
+        const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
         this.status(client_id, url);
         this.confirmationService.close();
       },

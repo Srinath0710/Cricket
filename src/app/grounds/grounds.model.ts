@@ -47,7 +47,7 @@ export class EditGround {
     club_id: string;
     latitude: string;
     longitude: string;
-    capacity: string;
+    capacity: string|number;
     reference_id: string;
 
 
@@ -70,7 +70,7 @@ export class EditGround {
         this.club_id = item.club_id || '';
         this.latitude = item.latitude || '';
         this.longitude = item.longitude || '';
-        this.capacity = item.capacity || '';
+        this.capacity = item.capacity || 0;
         this.reference_id = item.reference_id || '';
     }
 }
@@ -96,7 +96,7 @@ export class UpdateGround {
     club_id: string|number;
     latitude: string;
     longitude: string;
-    capacity: string;
+    capacity: string|number;
     reference_id: string;
     profile: string;
     ground_photo: string;
@@ -125,7 +125,7 @@ export class UpdateGround {
         this.club_id = item.club_id || 0;
         this.latitude = item.latitude || '';
         this.longitude = item.longitude || '';
-        this.capacity = item.capacity || '';
+        this.capacity = item.capacity || 0;
         this.reference_id = item.reference_id || '';
         this.profile = item.profile || '';
         this.ground_photo = item.ground_photo || '';

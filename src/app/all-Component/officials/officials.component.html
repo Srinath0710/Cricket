@@ -14,7 +14,7 @@
                 optionLabel="client_name" 
                 optionValue="client_id"
                 [(ngModel)]="client_id" 
-                (ngModelChange)="gridload()" 
+                (ngModelChange)="callBackClientChange()" 
                 placeholder="Client Id"  
                 [filter]="true" 
                 appendTo="body"
@@ -32,7 +32,8 @@
               <div class="p-input-icon-right flex-grow-1">
 
                 <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                  placeholder="  Search" (input)="filterGlobal()" />
+                  placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('Search', $event)">
               </div>
               <button type="button" class="clear-button" (click)="clear()"> Clear </button>
 
@@ -128,13 +129,13 @@
                   </span>
 
                   <span class="icon-green"
-                    (click)="StatusConfirm(official.official_id,cricketKeyConstant.condition_key.active_status,official.record_status)"
+                    (click)="StatusConfirm(official.official_id,conditionConstants.active_status,official.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
 
                   <span class="icon-red"
-                    (click)="StatusConfirm(official.official_id,cricketKeyConstant.condition_key.deactive_status,official.record_status)"
+                    (click)="StatusConfirm(official.official_id,conditionConstants.deactive_status,official.record_status)"
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
@@ -166,7 +167,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter First Name"
-                formControlName="first_name">
+                formControlName="first_name"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('first_name', $event)">
               <small
                 *ngIf="addOfficialForm?.get('first_name')?.invalid &&(addOfficialForm?.get('first_name')?.touched) || (addOfficialForm.get('first_name')?.invalid && submitted)"
                 class="required-msg"> First name is Required
@@ -179,7 +181,8 @@
               <label class="">Middle Name
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Middle Name"
-                formControlName="middle_name">
+                formControlName="middle_name"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('middle_name', $event)">
 
             </div>
 
@@ -187,7 +190,8 @@
               <label class="">Sur Name
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Sure Name "
-                formControlName="sur_name">
+                formControlName="sur_name"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('sur_name', $event)">
               <small
                 *ngIf="addOfficialForm.get('sur_name')?.invalid &&(addOfficialForm.get('sur_name')?.touched) || (addOfficialForm.get('sur_name')?.invalid && submitted)"
                 class="text-danger">Sur name is Required
@@ -200,7 +204,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Display Name "
-                formControlName="display_name">
+                formControlName="display_name"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('display_name', $event)">
               <small
                 *ngIf="addOfficialForm.get('display_name')?.invalid &&(addOfficialForm.get('display_name')?.touched) || (addOfficialForm.get('display_name')?.invalid && submitted)"
                 class="required-msg">Display name is Required
@@ -208,11 +213,32 @@
             </div>
 
 
+                   <div class="col-md-6">
+            <label>Club ID</label>
+            <span class="text-danger">*</span>
+            <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
+              optionLabel="club_name" placeholder="Select Club Id">
+              <ng-template let-club pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ club.club_name }}
+                  </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              *ngIf="addOfficialForm?.get('club_id')?.invalid &&(addOfficialForm?.get('club_id')?.touched) || (addOfficialForm.get('club_id')?.invalid && submitted)"
+              class="required-msg"> Club ID is Required
+            </small>
+          </div>
+
+
+
               <div class="col-md-6">
               <label class="">Reference Sourece ID 
               </label>
               <input class="form-control" maxlength="20" type="text" placeholder="Enter Reference Sourece ID "
-                formControlName="reference_id">
+                formControlName="reference_id"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('reference_id', $event)">
 
             </div>
 

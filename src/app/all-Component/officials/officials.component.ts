@@ -75,7 +75,7 @@ export class OfficialsComponent implements OnInit {
   public ShowForm: boolean = false;
   position: 'right' = 'right';
   addOfficialForm!: FormGroup;
-    first: number = 1;
+  first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
   rows: number = 10;
@@ -98,11 +98,15 @@ export class OfficialsComponent implements OnInit {
   childOptions: any[] = [];
   childLabel: string = '';
   officialId: any;
-  default_img: any = 'assets/images/default-player.png';
   clientData: any[] = [];
+  officialNamePattern = /^[^'"]+$/; //allstringonly allow value
+  default_img= CricketKeyConstant.default_image_url.officials;
+  dropDownConstants= CricketKeyConstant.dropdown_keys;
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
 
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT, public cricketKeyConstant: CricketKeyConstant,
+  constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT,
     private msgService: MessageService, private confirmationService: ConfirmationService
   ) {
 
@@ -110,29 +114,126 @@ export class OfficialsComponent implements OnInit {
 
 
   ngOnInit() {
-
+    this.countrydropdown();
     this.Clientdropdown()
-      this.addOfficialForm = this.fb.group({
+    this.addOfficialForm = this.fb.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
       sur_name: [''],
       display_name: ['', [Validators.required]],
-       format_id: ['', [Validators.required]],
-      official_category_id: ['',[Validators.required]],
+      format_id: ['', [Validators.required]],
+      official_category_id: ['', [Validators.required]],
       official_type_id: ['', [Validators.required]],
       profile_img: [''],
       country_id: ['', [Validators.required]],
       official_id: [''],
       reference_id: [''],
+      club_id: ['', []],
 
     })
-  
-    this.countrydropdown();
+
+
 
   }
 
+  countrydropdown() {
+
+    const params: any = {};
+    params.action_flag = this.urlConstant.countryofficial.action_flag;
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
+      this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
+
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken();
+
+      }
+    })
+
+
+  }
+  Clientdropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+      this.clientData = res.data ?? [];
+      this.client_id = this.clientData[0].client_id;
+      console.log(this.client_id);
+      this.callBackClientChange();
+
+
+    }, (err) => {
+      if (err.status === 401 && err.error.message === 'Token expired') {
+        this.apiService.RefreshToken();
+      }
+    });
+  }
+
+  callBackClientChange() {
+    this.clubsdropdown();
+    this.dropdown();
+    this.gridload();
+  }
+  clubsdropdown() {
+    const params: any = {
+      action_flag: 'dropdown',
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString()
+    };
+
+    this.apiService.post(this.urlConstant.officialclubdropdown, params).subscribe(
+      (res) => {
+        this.configDataList = res.data?.clubs || [];
+        console.log("All clubs:", this.configDataList);
+      },
+      (err: any) => {
+        if (err.status === 401 && err.error.message === "Expired") {
+          this.apiService.RefreshToken();
+        } else {
+          this.configDataList = [];
+          console.error("Error fetching clubs dropdown:", err);
+        }
+      }
+    );
+  }
+
+
+  dropdown() {
+    const params: any = {};
+    params.action_flag = 'dropdown';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.dropdownofficial, params).subscribe((res) => {
+      this.configDataList = res.data.dropdowns != undefined ? res.data.dropdowns : [];
+      const configFilterKeys = this.dropDownConstants.config_key
+      this.teamformat = res.data.dropdowns
+        .filter((item: any) => item.config_key === configFilterKeys.team_format)
+        .map((item: any) => ({ ...item }));
+      this.officialtype = res.data.dropdowns
+        .filter((item: any) => item.config_key === configFilterKeys.officials)
+        .map((item: any) => ({ ...item }));
+
+
+      setTimeout(() => {
+        const teamId = this.addOfficialForm.get('team_id')?.value;
+        if (!teamId) {
+          this.formSetValue();
+        }
+      }, 100);
+
+    }, (err: any) => {
+      if (err.status === 401 && err.error.message === "Expired") {
+        this.apiService.RefreshToken();
+
+      }
+    })
+  }
 
   gridload() {
+
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -140,21 +241,29 @@ export class OfficialsComponent implements OnInit {
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString();
     this.apiService.post(this.urlConstant.officiallist, params).subscribe((res) => {
+
+
       if (res.data?.officials) {
         this.officialDataList = res.data.officials;
         this.totalData = this.officialDataList.length !== 0 ? res.data.officials[0].total_records : 0;
+
       } else {
         this.officialDataList = [];
         this.totalData = 0;
       }
       // this.officialDataList = res.data.officials ?? [];
       // this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
-    }, (err: any) => {
-      error: (err: any) => {
-        console.error('Error loading official list:', err);
-      }
 
-    });
+    },
+
+      (err: any) => {
+
+
+        error: (err: any) => {
+          console.error('Error loading official list:', err);
+        }
+
+      });
   }
 
   calculateFirst(): number {
@@ -165,11 +274,28 @@ export class OfficialsComponent implements OnInit {
     this.pageData = event.first;
     this.rows = event.rows;
     this.gridload();
-    
+
+
   }
+
+  //single quotes and doble quotes remove all label box 
+  blockQuotesOnly(event: KeyboardEvent) {
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
+  }
+
+
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+    this.addOfficialForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
+
+
   addOfficialdata() {
     this.submitted = true;
-    this.isEditMode=false;
+    this.isEditMode = false;
     if (this.addOfficialForm.invalid) {
       this.addOfficialForm.markAllAsTouched();
       return
@@ -188,6 +314,7 @@ export class OfficialsComponent implements OnInit {
       profile_img: String(this.addOfficialForm.value.profile_img),
       official_id: String(this.addOfficialForm.value.official_id),
       reference_id: String(this.addOfficialForm.value.reference_id),
+      club_id: String(this.addOfficialForm.value.club_id),
       action_flag: 'create'
 
     };
@@ -196,16 +323,16 @@ export class OfficialsComponent implements OnInit {
     if (this.addOfficialForm.value.official_id) {
       // params.action_flag='update';
       this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -234,84 +361,33 @@ export class OfficialsComponent implements OnInit {
 
 
 
-  countrydropdown() {
-
-    const params: any = {};
-    params.action_flag = 'dropdown';
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
-    this.apiService.post(this.urlConstant.countryofficial, params).subscribe((res) => {
-      this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
-
-    }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
-
-      }
-    })
-
-
-  }
 
   onOfficialChange(selectedId: number) {
     const selectedItem = this.officialtype.find(item => item.config_id === selectedId);
     this.addOfficialForm.patchValue({
       official_category_id: null
-      
+
     })
-    switch (selectedItem.config_short) {
-      case 'UMP':
-        this.childOptions = this.configDataList.filter((item: any) => item.config_key === 'umpire_category');
-        this.childLabel = 'Umpire Category';
-        break;
-      case 'VDA':
+    const officialConstants = this.dropDownConstants.official_keys;
 
-        this.childOptions = this.configDataList.filter((item: any) => item.config_key === 'analyst');
-        this.childLabel = 'Analyst Level';
-        break;
-      case 'SCR':
+    const roleMap: any = {
+      [officialConstants.umpire_category.short_key]: officialConstants.umpire_category,
+      [officialConstants.scorer.short_key]: officialConstants.scorer,
+      [officialConstants.analyst.short_key]: officialConstants.analyst,
+    };
 
-        this.childOptions = this.configDataList.filter((item: any) => item.config_key === 'scorer');
-        this.childLabel = 'Scorer Type';
-        break;
-      default:
-        this.childOptions = [];
-        this.childLabel = '';
-        break;
+    const selectedRole = roleMap[selectedItem.config_short];
+
+    if (selectedRole) {
+      this.childOptions = this.configDataList.filter(
+        (item: any) => item.config_key === selectedRole.key
+      );
+      this.childLabel = selectedRole.label;
+    } else {
+      this.childOptions = [];
+      this.childLabel = '';
     }
 
-  }
-
-
-  dropdown() {
-    const params: any = {};
-    params.action_flag = 'dropdown';
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
-    this.apiService.post(this.urlConstant.dropdownofficial, params).subscribe((res) => {
-      this.configDataList = res.data.dropdowns != undefined ? res.data.dropdowns : [];
-
-      this.teamformat = res.data.dropdowns
-        .filter((item: any) => item.config_key === 'team_format')
-        .map((item: any) => ({ ...item }));
-      this.officialtype = res.data.dropdowns
-        .filter((item: any) => item.config_key === 'officials')
-        .map((item: any) => ({ ...item }));
-
-
-      setTimeout(() => {
-        const teamId = this.addOfficialForm.get('team_id')?.value;
-        if (!teamId) {
-          this.formSetValue();
-        }
-      }, 100);
-
-    }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
-
-      }
-    })
   }
 
   formSetValue() {
@@ -323,7 +399,7 @@ export class OfficialsComponent implements OnInit {
   }
 
   Editofficial(official: any) {
-    this.isEditMode=true;
+    this.isEditMode = true;
     this.officialId = official.official_id;
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -355,7 +431,7 @@ export class OfficialsComponent implements OnInit {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
   }
@@ -402,7 +478,7 @@ export class OfficialsComponent implements OnInit {
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
       },
       (err: any) => {
         error: (err: any) => {
@@ -411,14 +487,14 @@ export class OfficialsComponent implements OnInit {
       });
   }
 
-  StatusConfirm(official_id: number, actionObject: { key: string, label: string },currentStatus:string) {
+  StatusConfirm(official_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-    (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
 
-  if (AlreadyStatestatus) {
-    return; 
-  }
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this Official?`,
       header: 'Confirmation',
@@ -426,7 +502,7 @@ export class OfficialsComponent implements OnInit {
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key ? this.urlConstant.activateofficial : this.urlConstant.deactivateofficial;
+        const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activateofficial : this.urlConstant.deactivateofficial;
         this.status(official_id, url);
         this.confirmationService.close();
       },
@@ -442,35 +518,18 @@ export class OfficialsComponent implements OnInit {
     target.src = fallbackUrl;
   }
 
-    filterGlobal() {
-    this.first = 1; 
+  filterGlobal() {
+    this.first = 1;
     this.gridload();
 
   }
 
   clear() {
-  this.searchKeyword = '';   
-  this.dt.clear();          
-  this.gridload();          
-}
-
-Clientdropdown() {
-  const params: any = {
-    user_id: this.user_id?.toString()
-  };
-  this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
-    this.clientData = res.data ?? [];
-    this.client_id = this.clientData[0].client_id;
-    console.log(this.client_id);
-    this.dropdown();
+    this.searchKeyword = '';
+    this.dt.clear();
     this.gridload();
+  }
 
-  }, (err) => {
-    if (err.status === 401 && err.error.message === 'Token expired') {
-      this.apiService.RefreshToken();
-    }
-  });
-}
 
 
 }
