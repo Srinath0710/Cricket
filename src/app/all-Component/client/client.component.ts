@@ -67,6 +67,9 @@ export class ClientComponent implements OnInit{
   submitted: boolean = true;
   seletedclient: any = [];
   viewDialogVisible: boolean = false;
+    mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
+  emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
+  ClientNamePattern = /^[^'"]+$/; //allstringonly allow value
 
     conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
@@ -84,8 +87,8 @@ export class ClientComponent implements OnInit{
       address_1: [''],
       address_2: [''],
       post_code:[''],
-      email_id: [''],
-      mobile: [''],
+      email_id: ['', [Validators.pattern(this.emailRegex)]],
+      mobile:  ['', [Validators.pattern(this.mobileRegex)]],
       website: [''],
       description: [''],
       connection_id: [''],
@@ -101,6 +104,26 @@ export class ClientComponent implements OnInit{
       button_font_color: [''],
     })
   }
+
+    //mobileno enter the only number alowed
+  onPhoneNumberInput(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
+    this.addClientForm.get('mobile')?.setValue(phoneNumber, { emitEvent: false });
+  }
+  //single quotes and doble quotes remove all label box 
+blockQuotesOnly(event: KeyboardEvent) {
+  if (event.key === '"' || event.key === "'") {
+    event.preventDefault();
+  }
+}
+
+
+sanitizeQuotesOnly(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  this.addClientForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
   gridLoad() {
     this.Clientdata = [];
     const params: any = {};

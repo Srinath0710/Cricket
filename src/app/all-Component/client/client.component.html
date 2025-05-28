@@ -14,7 +14,8 @@
                             <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
-                                        class="width-search" placeholder="  Search" (input)="filterGlobal()" />
+                                        class="width-search" placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('team_name', $event)">
                                 </div>
 
                                 <button type="button" class="clear-button" (click)="clear()"> Clear </button>
@@ -117,7 +118,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Name"
-                            formControlName="client_name">
+                            formControlName="client_name"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('client_name', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_name')?.invalid &&(addClientForm?.get('client_name')?.touched) || (addClientForm.get('client_name')?.invalid && submitted)"
                             class="required-msg">Client
@@ -130,7 +132,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Code"
-                            formControlName="client_code">
+                            formControlName="client_code"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('client_code', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_code')?.invalid &&(addClientForm?.get('client_code')?.touched) || (addClientForm.get('client_code')?.invalid && submitted)"
                             class="required-msg">Client
@@ -191,8 +194,9 @@
                         <label>Address 1
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Address 1"
-                            formControlName="address_1">
+                        <input class="form-control" maxlength="200" type="text" placeholder="Enter Address 1"
+                            formControlName="address_1"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('address_1', $event)">
                         <small
                             *ngIf="addClientForm?.get('address_1')?.invalid &&(addClientForm?.get('address_1')?.touched) || (addClientForm.get('address_1')?.invalid && submitted)"
                             class="required-msg">Address 1 Is Required
@@ -203,7 +207,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Address 2"
-                            formControlName="address_2">
+                            formControlName="address_2"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('address_2', $event)">
                     
                     </div>
                     <div class="col-md-6">
@@ -211,35 +216,52 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Post Code"
-                            formControlName="post_code">
+                            formControlName="post_code"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('post_code', $event)">
                     </div>
                     <div class="col-md-6">
                         <label>Email Id 
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Email Id"
+                        <input class="form-control" maxlength="100" type="text" placeholder="Enter Email Id"
                             formControlName="email_id">
+                                  <div
+                            *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
+                            <small *ngIf="addClientForm.get('email_id')?.errors?.['pattern']"
+                              class="required-msg">
+                              * Invalid email ID: abcd&#64;example.com
+                            </small>
+                            </div>
                     </div>
-                    <div class="col-md-6">
-                        <label>Mobile
-                            <span class="text-danger">*</span>
-                        </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Mobile"
-                            formControlName="mobile">
-                    </div>
+          <div class="col-md-6">
+  <label>Phone No <span class="text-danger">*</span></label>
+  <input class="form-control" type="text" maxlength="10" placeholder="Enter Phone No"
+    formControlName="mobile" (input)="onPhoneNumberInput($event)">
+  <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
+    <!-- Show when pattern is invalid -->
+    <small *ngIf="addClientForm.get('mobile')?.errors?.['pattern']" class="required-msg">
+      * Invalid mobile number
+    </small>
+
+    
+  </div>
+</div>
+
                     <div class="col-md-6">
                         <label>Website
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Website"
-                            formControlName="website">
-                    </div>
+                            formControlName="website"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('website', $event)">                    </div>
                     <div class="col-md-6">
                         <label>Description
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter description"
-                            formControlName="description">
+                            formControlName="description"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('description', $event)">
+              
                     </div>
 
             
