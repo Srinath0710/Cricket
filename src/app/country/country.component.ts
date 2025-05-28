@@ -77,7 +77,7 @@ export class CountryComponent implements OnInit {
   visible2: boolean = false;
   submitted: boolean = true;
   time_zone_id: any;
-
+  CountryNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
 
@@ -137,6 +137,19 @@ export class CountryComponent implements OnInit {
     });
 
   }
+
+  blockQuotesOnly(event: KeyboardEvent) {
+  if (event.key === '"' || event.key === "'") {
+    event.preventDefault();
+  }
+}
+
+
+sanitizeQuotesOnly(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  this.addCountryForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }

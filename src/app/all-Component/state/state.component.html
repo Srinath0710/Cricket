@@ -37,7 +37,8 @@
               <form class="d-flex align-items-center  gap-2"(submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="  Search" (input)="filterGlobal()" />
+                    placeholder="  Search" (input)="filterGlobal()"   (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
 
                   <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
@@ -159,7 +160,9 @@
             <span class="text-danger">*
             </span>
             <input class="form-control" maxlength="50" type="text" placeHolder="Entre State Name"
-              formControlName="state_name" [ngModel]="addStateForm.get('state_Name')?.value" />
+              formControlName="state_name" [ngModel]="addStateForm.get('state_Name')?.value"   (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('state_name', $event)">
+
             <small
               *ngIf="addStateForm?.get('state_name')?.invalid &&(addStateForm?.get('state_name')?.touched) || (addStateForm.get('state_name')?.invalid && submitted)"
               class="required-msg">State
@@ -172,7 +175,8 @@
             <span class="text-danger">*
             </span>
             <input class="form-control" maxlength="50" type="text" placeHolder="Entre State Name"
-              formControlName="state_code" />
+              formControlName="state_code"   (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('state_code', $event)">
             <small
               *ngIf="addStateForm?.get('state_code')?.invalid && (addStateForm?.get('state_code')?.touched) || (addStateForm.get('state_code')?.invalid && submitted)"
               class="required-msg">State Code is Required

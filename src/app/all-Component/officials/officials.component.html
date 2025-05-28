@@ -216,7 +216,7 @@
                    <div class="col-md-6">
             <label>Club ID</label>
             <span class="text-danger">*</span>
-            <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
+            <p-dropdown [options]="clubsDropdownData" class="drop-error " formControlName="club_id" optionValue="club_id"
               optionLabel="club_name" placeholder="Select Club Id">
               <ng-template let-club pTemplate="item">
                 <div class="flex align-items-center gap-2">
@@ -252,6 +252,31 @@
 
             </div>
 
+
+               <div class="col-md-6">
+                          <label>Gender</label>
+                          <span class="text-danger">*</span>
+
+                          <p-dropdown [options]="genderSelect" class="drop-error " formControlName="gender_id"
+                            optionValue="config_id" optionLabel="config_name" placeholder="Select Gender"
+                            [panelStyleClass]="'custom-dropdown-panel'">
+                            <ng-template let-gender pTemplate="item">
+                              <div class="flex align-items-center gap-2">
+                                <div>{{ gender.config_name }}
+                                </div>
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
+                          <small
+                            *ngIf="addOfficialForm.get('gender_id')?.invalid &&(addOfficialForm.get('gender_id')?.touched) || (addOfficialForm.get('gender_id')?.invalid && submitted)"
+                            class="required-msg"> Gender is Required
+                          </small>
+                        </div>
+
+                         <div class="col-md-6">
+                          <label>Player DOB</label>
+                          <input class="form-control" type="date" placeholder="Enter DOB" formControlName="dob">
+                        </div>
 
             <div class="col-md-6">
 
@@ -290,6 +315,7 @@
                 class="required-msg"> format is Required
               </small>
             </div>
+
 
 
             <div class="col-md-6">

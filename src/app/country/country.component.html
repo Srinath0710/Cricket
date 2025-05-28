@@ -21,7 +21,8 @@
                 class="width-search"
                 placeholder="  Search"
                 (input)="filterGlobal()"
-              />
+              (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('team_name', $event)">
             </div>
           
              <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
@@ -149,7 +150,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Country Name"
-                formControlName="country_name">
+                formControlName="country_name"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('team_name', $event)">
               <small
                 *ngIf="addCountryForm?.get('country_name')?.invalid &&(addCountryForm?.get('country_name')?.touched) || (addCountryForm.get('country_name')?.invalid && submitted)"
                 class="required-msg">Country
@@ -183,7 +185,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="2" type="text" placeholder="Enter Iso Code 2"
-                formControlName="iso_code_2">
+                formControlName="iso_code_2"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('iso_code_2', $event)">
               <small
                 *ngIf="addCountryForm?.get('iso_code_2')?.invalid &&(addCountryForm?.get('iso_code_2')?.touched) || (addCountryForm.get('iso_code_2')?.invalid && submitted)"
                 class="required-msg"> Iso Code 2 Is Required
@@ -195,7 +198,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="3" type="text" placeholder="Enter Iso Code 3"
-                formControlName="iso_code_3">
+                formControlName="iso_code_3"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('iso_code_3', $event)">
               <small
                 *ngIf="addCountryForm?.get('iso_code_3')?.invalid &&(addCountryForm?.get('iso_code_3')?.touched) || (addCountryForm.get('iso_code_3')?.invalid && submitted)"
                 class="required-msg">Iso Code 3 Is Required
@@ -207,7 +211,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Sub Region "
-                formControlName="sub_region">
+                formControlName="sub_region"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('sub_region', $event)">
               <small
                 *ngIf="addCountryForm.get('sub_region')?.invalid &&(addCountryForm.get('sub_region')?.touched) || (addCountryForm.get('sub_region')?.invalid && submitted)"
                 class="required-msg">Sub Region Is Required

@@ -10,8 +10,10 @@ export class CricketKeyConstant {
     }
    static dropdown_keys = {
         config_key: {
+
             team_format:'team_format',
-            officials:'officials'
+            officials:'officials',
+             gender :'gender',
         },
         official_keys: {
             analyst: { short_key: 'VDA', label: 'Analyst Level', key: 'analyst' },

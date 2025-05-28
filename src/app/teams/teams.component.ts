@@ -100,7 +100,7 @@ export class TeamsComponent implements OnInit {
     viewDialogVisible: boolean = false;
   countriesData: any;
   countryID: any;
-  groundNamePattern = /^[^'"]+$/; //allstringonly allow value
+  TeamsNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
 

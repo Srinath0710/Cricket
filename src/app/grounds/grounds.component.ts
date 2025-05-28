@@ -73,6 +73,8 @@ export class GroundsComponent implements OnInit {
   ClientID: any = [];
   groundsData: any;
   configDataList: any;
+    previewUrl: string | ArrayBuffer | null = null;
+    uploadedImage: string | ArrayBuffer | null = null;
  decimalPattern = /^\d*\.?\d+$/;
 decimalnoPattern = /^\d+$/; // Only digits
 GroundsNamePattern = /^[^'"]+$/; //allstringonly allow value
@@ -438,7 +440,29 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       }
     );
   }
+  onImageUpload(event: any) {
+    const file = event.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.uploadedImage = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  onProfileImageSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.filedata = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
 
+      };
+      reader.readAsDataURL(file);
+
+    }
+
+
+  }
 
   status(ground_id: number, url: string) {
     const params: any = {

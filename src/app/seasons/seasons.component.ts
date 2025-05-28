@@ -66,6 +66,7 @@ export class SeasonsComponent implements OnInit {
     searchKeyword : string = '';
     submitted: boolean = true;
     season: any;
+      SeasonsNamePattern = /^[^'"]+$/; //allstringonly allow value
 
       conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
@@ -114,6 +115,19 @@ export class SeasonsComponent implements OnInit {
       });
     }
     
+    //single quotes and doble quotes remove all label box 
+blockQuotesOnly(event: KeyboardEvent) {
+  if (event.key === '"' || event.key === "'") {
+    event.preventDefault();
+  }
+}
+
+
+sanitizeQuotesOnly(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  this.addSeasonsForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
 
     calculateFirst(): number{
        return (this.first - 1)* this.rows;

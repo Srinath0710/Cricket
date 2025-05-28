@@ -59,6 +59,7 @@ export class StateComponent implements OnInit {
   data: any;
   searchKeyword: string = '';
   countryID: any;
+    StateNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
 
@@ -80,7 +81,19 @@ export class StateComponent implements OnInit {
       state_id: [''],
     });
   }
+//single quotes and doble quotes remove all label box 
+blockQuotesOnly(event: KeyboardEvent) {
+  if (event.key === '"' || event.key === "'") {
+    event.preventDefault();
+  }
+}
 
+
+sanitizeQuotesOnly(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  this.addStateForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+}
   countryDropdown() {
     const params: any = {
       user_id: this.User_id?.toString(),

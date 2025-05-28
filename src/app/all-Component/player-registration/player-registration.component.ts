@@ -174,13 +174,11 @@ export class PlayerRegistrationComponent implements OnInit {
       remarks: [''],
       jersey_no: [''],
       profile_image: [''],
-      team_represent: [''],
+      // team_represent: [''],
       player_id: [''],
       club_id: ['', []],
       scorecard_name: ['', []],
       reference_id: ['', []],
-
-
 
 
 
@@ -241,9 +239,6 @@ export class PlayerRegistrationComponent implements OnInit {
     this.playerRegistrationform.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
 
-
-
-
   Clientdropdown() {
     const params: any = {
       user_id: this.user_id?.toString()
@@ -256,6 +251,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
       this.dropdownplayer();
       this.radiobutton();
+      
 
 
     }, (err) => {
@@ -264,8 +260,6 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     });
   }
-
-
 
   gridLoad() {
     const params: any = {};
@@ -288,7 +282,6 @@ export class PlayerRegistrationComponent implements OnInit {
       });
 
   }
-
 
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
@@ -369,7 +362,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
       this.filteredSpecs = [];
       this.formSetValue();
-    });
+    }); 
   }
   onBowlingTypeChange(selectedBowlingTypeId: number) {
     this.filteredSpecs = this.bowlingspec.filter(
@@ -382,25 +375,36 @@ export class PlayerRegistrationComponent implements OnInit {
     }
   }
 
-
-  formSetValue() {
-    // Find the "Fast bowler" item in bowlingtype list
-    const fastBowler = this.bowlingtype.find(
-      (type: any) => type.config_name.toLowerCase().includes('fast')
-    );
-
-    if (fastBowler) {
-      const fastBowlerId = fastBowler.config_id;
-
-      // Patch the value to the form
-      this.playerRegistrationform.patchValue({
-        bowling_type_id: fastBowlerId
-      });
-
-      // Trigger the spec filter
-      this.onBowlingTypeChange(fastBowlerId);
+formSetValue() {
+  // 🔁 Generic setter
+  const setDefaultValue = (list: any[], field: string, keyword: string) => {
+    const match = list.find(item => item.config_name?.toLowerCase().includes(keyword));
+    if (match) {
+      this.playerRegistrationform.patchValue({ [field]: match.config_id });
     }
+  };
+
+  // 🏏 Set defaults using helper
+  setDefaultValue(this.playerrole, 'player_role_id', 'batsman');
+  setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
+  setDefaultValue(this.bowlingstyle, 'bowling_style_id', 'right');
+
+  const fastBowler = this.bowlingtype.find(type => type.config_name?.toLowerCase().includes('fast'));
+  if (fastBowler) {
+    const fastBowlerId = fastBowler.config_id;
+    this.playerRegistrationform.patchValue({ bowling_type_id: fastBowlerId });
+    this.onBowlingTypeChange(fastBowlerId);
+
+    // 🕒 Set default spec after filter
+    // setTimeout(() => {
+    //   const defaultSpec = this.filteredSpecs[0];
+    //   if (defaultSpec) {
+    //     this.playerRegistrationform.patchValue({ bowling_spec_id: defaultSpec.config_id });
+    //   }
+    // }, 0);
   }
+}
+
 
   duplicateChange() {
     this.submitted = true;
@@ -487,7 +491,7 @@ export class PlayerRegistrationComponent implements OnInit {
       jersey_no: this.playerRegistrationform.value.jersey_no != null ? this.playerRegistrationform.value.jersey_no.toString() : null,
       profile_image: this.playerRegistrationform.value.profile_image != null ? this.playerRegistrationform.value.profile_image.toString() : null,
       player_id: this.playerRegistrationform.value.player_id != null ? this.playerRegistrationform.value.player_id.toString() : null,
-      team_represent: this.playerRegistrationform.value.team_represent != null ? this.playerRegistrationform.value.team_represent.toString() : null,
+      // team_represent: this.playerRegistrationform.value.team_represent != null ? this.playerRegistrationform.value.team_represent.toString() : null,
       club_id: this.playerRegistrationform.value.club_id != null ? this.playerRegistrationform.value.club_id.toString() : null,
       scorecard_name: this.playerRegistrationform.value.scorecard_name != null ? this.playerRegistrationform.value.scorecard_name.toString() : null,
       reference_id: this.playerRegistrationform.value.reference_id != null ? this.playerRegistrationform.value.reference_id.toString() : null,
@@ -525,7 +529,10 @@ export class PlayerRegistrationComponent implements OnInit {
 
   resetForm() {
     this.playerRegistrationform.reset();
+       this.formSetValue();  // reload and set defaults
+    
     this.submitted = false;
+  
   }
 
   showAddForm() {
@@ -564,7 +571,7 @@ export class PlayerRegistrationComponent implements OnInit {
             bowling_style_id: editRecord.bowling_style_id,
             bowling_type_id: editRecord.bowling_type_id,
             bowling_spec_id: editRecord.bowling_spec_id,
-            team_represent: editRecord.team_represent ?? '',
+            // team_represent: editRecord.team_represent ?? '',
             remarks: editRecord.remarks,
             jersey_no: editRecord.jersey_no,
             profile_image: null,

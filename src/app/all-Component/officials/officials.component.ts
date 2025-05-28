@@ -92,6 +92,7 @@ export class OfficialsComponent implements OnInit {
   officialDataList = [];
   configDataList: official[] = [];
   countrydropdownData: any;
+  genderSelect: official[] = [];
   teamformat: official[] = [];
   officialcategory: official[] = [];
   officialtype: any[] = [];
@@ -104,6 +105,7 @@ export class OfficialsComponent implements OnInit {
   dropDownConstants= CricketKeyConstant.dropdown_keys;
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
+  clubsDropdownData: any;
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT,
@@ -129,6 +131,8 @@ export class OfficialsComponent implements OnInit {
       official_id: [''],
       reference_id: [''],
       club_id: ['', []],
+       dob: ['',],
+      gender_id: ['', [Validators.required]],
 
     })
 
@@ -186,14 +190,14 @@ export class OfficialsComponent implements OnInit {
 
     this.apiService.post(this.urlConstant.officialclubdropdown, params).subscribe(
       (res) => {
-        this.configDataList = res.data?.clubs || [];
-        console.log("All clubs:", this.configDataList);
+        this.clubsDropdownData = res.data?.clubs || [];
+        console.log("All clubs:", this.clubsDropdownData);
       },
       (err: any) => {
         if (err.status === 401 && err.error.message === "Expired") {
           this.apiService.RefreshToken();
         } else {
-          this.configDataList = [];
+          this.clubsDropdownData = [];
           console.error("Error fetching clubs dropdown:", err);
         }
       }
@@ -212,11 +216,15 @@ export class OfficialsComponent implements OnInit {
       this.teamformat = res.data.dropdowns
         .filter((item: any) => item.config_key === configFilterKeys.team_format)
         .map((item: any) => ({ ...item }));
+
+         this.genderSelect = res.data.dropdowns
+          .filter((item: any) => item.config_key === configFilterKeys.gender)
+        .map((item: any) => ({ ...item }));
+     
       this.officialtype = res.data.dropdowns
         .filter((item: any) => item.config_key === configFilterKeys.officials)
         .map((item: any) => ({ ...item }));
-
-
+        
       setTimeout(() => {
         const teamId = this.addOfficialForm.get('team_id')?.value;
         if (!teamId) {
@@ -251,8 +259,8 @@ export class OfficialsComponent implements OnInit {
         this.officialDataList = [];
         this.totalData = 0;
       }
-      // this.officialDataList = res.data.officials ?? [];
-      // this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
+      this.officialDataList = res.data.officials ?? [];
+      this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
 
     },
 
@@ -315,6 +323,9 @@ export class OfficialsComponent implements OnInit {
       official_id: String(this.addOfficialForm.value.official_id),
       reference_id: String(this.addOfficialForm.value.reference_id),
       club_id: String(this.addOfficialForm.value.club_id),
+      gender_id: String(this.addOfficialForm.value.gender_id),
+      dob: String(this.addOfficialForm.value.dob),
+
       action_flag: 'create'
 
     };
@@ -357,9 +368,6 @@ export class OfficialsComponent implements OnInit {
     this.addOfficialForm.reset();
     this.submitted = false;
   }
-
-
-
 
 
   onOfficialChange(selectedId: number) {
@@ -424,6 +432,9 @@ export class OfficialsComponent implements OnInit {
             profile_img: null,
             official_id: editRecord.official_id,
             reference_id: editRecord.reference_id,
+            gender_id: editRecord.gender_id,
+            dob: editRecord.dob,
+            club_id: editRecord.club_id,
           });
           this.showAddForm();
         }

@@ -138,6 +138,8 @@
                       (click)="StatusConfirm(player.player_id,conditionConstants.deactive_status)"
                       pTooltip="Deactivate" tooltipPosition="top">
                       <i class="fa-solid fa-trash-can-arrow-up"></i>
+                      <!-- <i class="fa-solid fa-eye"></i> -->
+                      
                     </span>
 
                   </td>
@@ -331,12 +333,12 @@
                             formControlName="jersey_no">
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                           <label>Team Represent</label>
                           <input class="form-control" type="text" maxlength="50" placeholder="Enter Team Represent"
                             formControlName="team_represent"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('team_represent', $event)">
-                        </div>
+                        </div> -->
 
                         <div class="col-md-6">
                           <label>Profile Image</label>

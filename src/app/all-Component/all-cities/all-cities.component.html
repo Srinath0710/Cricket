@@ -39,7 +39,8 @@
               <div class="d-flex align-items-center  gap-2">
                 <div class="p-input-icon-right flex-grow-1">
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="  Search" (keyup.enter)="gridLoad()" />
+                    placeholder="  Search" (keyup.enter)="gridLoad()" (keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
 
                 <button type="button" class="clear-button" (click)="searchKeyword = ''">
@@ -162,7 +163,8 @@
           <div class="col-md-6">
             <label for="city_name">City Name <span class="text-danger">*</span></label>
             <input id="city_name" type="text" class="form-control drop-error" placeholder="Enter City Name"
-              formControlName="city_name" maxlength="50">
+              formControlName="city_name" maxlength="50"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('city_name', $event)">
             <small *ngIf="addCityForm.get('city_name')?.invalid && (addCityForm.get('city_name')?.touched || submitted)"
               class="required-msg">City Name is required
             </small>
@@ -171,7 +173,8 @@
           <div class="col-md-6">
             <label for="city_code">City Code <span class="text-danger">*</span></label>
             <input id="city_code" type="text" class="form-control drop-error" placeholder="Enter City Code"
-              formControlName="city_code" maxlength="10">
+              formControlName="city_code" maxlength="10"(keypress)="blockQuotesOnly($event)"
+              (input)="sanitizeQuotesOnly('city_code', $event)">
 
             <small *ngIf="addCityForm.get('city_code')?.invalid && (addCityForm.get('city_code')?.touched || submitted)"
               class="required-msg">City Code is required

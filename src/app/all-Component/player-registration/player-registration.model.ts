@@ -48,7 +48,7 @@ export class playerupdate{
   profile_image : string;
   reference_id : string;
   player_id : string|number;
-  team_represent : string;
+  // team_represent : string;
   action_flag : string;
     club_id: string|number;
 
@@ -80,7 +80,7 @@ export class playerupdate{
             this.profile_image = item.profile_image || '';
             this.reference_id = item.reference_id || '';
             this.player_id = item.player_id|| 0;
-            this.team_represent = item.team_represent || '';
+            // this.team_represent = item.team_represent || '';
             this.action_flag = item.action_flag || '';
             this.club_id = item.club_id || 0;
 
@@ -119,7 +119,7 @@ export class playeredit{
   profile_image : string;
   reference_id : string;
   player_id : string|number;
-  team_represent : string;
+  // team_represent : string;
   club_id: string;
 
 
@@ -150,7 +150,7 @@ export class playeredit{
             this.profile_image = item.profile_image || '';
             this.reference_id = item.reference_id || '';
             this.player_id = item.player_id|| 0;
-            this.team_represent = item.team_represent || '';
+            // this.team_represent = item.team_represent || '';
               this.club_id = item.club_id || '';
 
 
