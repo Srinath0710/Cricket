@@ -1,0 +1,10 @@
+.highlight-target {
+    background-color: #2ec9d1 !important;
+    width: 100%;
+  }
+  
+
+@keyframes fadeOut {
+  0% { background-color: #2e75d1; }
+  100% { background-color: transparent; }
+}

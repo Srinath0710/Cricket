@@ -1,17 +1,21 @@
 <div class="parent-container">
 <button class="new-button p-button-text Comp-child-butn"(click)="updateGround()">UpdateGround</button>
 </div>
-<p-pickList  [source]="sourceGround" 
-[target]="targetGround"
-[dragdrop]="true"
-[responsive]="true"
-[showSourceFilter]="true"
-[showTargetFilter]="true"
-filterBy="ground_name"  
-sourceFilterPlaceholder="Search Available..." 
-targetFilterPlaceholder="Search Target..."
-[dragdrop]="true" [responsive]="true" [sourceStyle]="{ height: '30rem' }" 
-[targetStyle]="{ height: '30rem' }" >
+<p-pickList 
+  [source]="sourceGround" 
+  [target]="targetGround"
+  [dragdrop]="true"
+  [responsive]="true"
+  [showSourceFilter]="true"
+  [showTargetFilter]="true"
+  filterBy="ground_name"  
+  sourceFilterPlaceholder="Search Available..." 
+  targetFilterPlaceholder="Search Target..."
+  [sourceStyle]="{ height: '30rem' }" 
+  [targetStyle]="{ height: '30rem' }"
+  (onMoveToTarget)="onMoveToTarget($event)"
+>
+
 <ng-template pTemplate="sourceHeader">
   <div class="p-d-flex p-ai-center">
     Available
@@ -44,3 +48,4 @@ targetFilterPlaceholder="Search Target..."
   </div>
 </ng-template>
 </p-pickList>
+<p-toast key="tc" position="top-right"></p-toast>

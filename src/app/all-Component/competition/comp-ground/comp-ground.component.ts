@@ -6,10 +6,12 @@ import { URLCONSTANT } from '../../../services/url-constant';
 import { PickListModule } from 'primeng/picklist';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastModule } from 'primeng/toast';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-comp-ground',
-  imports: [PickListModule, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [PickListModule, CommonModule, FormsModule, ReactiveFormsModule,ToastModule],
   templateUrl: './comp-ground.component.html',
   styleUrl: './comp-ground.component.css',
   providers: [
@@ -26,13 +28,17 @@ export class CompGroundComponent implements OnInit {
   default_img: any ='assets/images/default-player.png';
   sourceGround!: [];
   targetGround!:[];
+  movedToTarget: any[] = [];
   user_id: number = Number(localStorage.getItem('user_id'));
+  movedToTargetIds: Set<number> = new Set();
+
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
-    private messageService: MessageService,
+    private msgService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private router: Router
   ) { }
   ngOnInit() {
     this.gridLoad();
@@ -61,7 +67,7 @@ export class CompGroundComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.ground_list = this.targetGround.map((p: any) => p.ground_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-console.log("target:",this.targetGround);
+    console.log("target:",this.targetGround);
 
     this.apiService.post(this.urlConstant.compgroundupdate, params).subscribe((res: any) => {
       this.gridLoad();
@@ -73,5 +79,28 @@ console.log("target:",this.targetGround);
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
+  successToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+
+  }
+
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
+
+  onMoveToTarget(event: any) {
+    event.items.forEach((item: any) => {
+      this.movedToTargetIds.add(item.ground_id);
+    });
+  }
+
+// isNewlyAdded(item: any): boolean {
+//   return this.movedToTargetIds.has(item.ground_id);
+// }
+
+goback(){
+}
+
 }
 
