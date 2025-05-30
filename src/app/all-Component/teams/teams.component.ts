@@ -7,10 +7,10 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { ApiService } from '../services/api.service';
+import { ApiService } from '../../services/api.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { URLCONSTANT } from '../services/url-constant';
-import { CricketKeyConstant } from '../services/cricket-key-constant';
+import { URLCONSTANT } from '../../services/url-constant';
+import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { PaginatorModule } from 'primeng/paginator';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
