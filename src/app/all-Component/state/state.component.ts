@@ -16,7 +16,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { State, UpdateState, EditState } from './state.model';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
-import { Country } from '../../country/country.model';
+import { Country } from '../country/country.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';

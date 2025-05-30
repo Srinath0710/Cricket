@@ -9,15 +9,15 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 // import { Sidebar } from 'primeng/sidebar';
-import { ApiService } from '../services/api.service';
-import { URLCONSTANT } from '../services/url-constant';
+import { ApiService } from '../../services/api.service';
+import { URLCONSTANT } from '../../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { Country, EditCountry, UpdateCountry } from './country.model';
-import { CricketKeyConstant } from '../services/cricket-key-constant';
+import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
 
