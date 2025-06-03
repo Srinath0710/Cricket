@@ -110,7 +110,7 @@ export class URLCONSTANT {
       editcompetition = 'Competition/edit_competition'
 
       compTeamsList = 'Competition/get_competition_teams'
-      compTeamsUpdate = 'Competition/add_competition_teams'
+      compTeamsUpdate = 'Competition/update_competition_teams'
       compTeamadd ='Competition/add_competition_teams'
       compOfficialList = 'Competition/get_competition_officials'
       compOfficialupdate = 'Competition/add_competition_officials'
