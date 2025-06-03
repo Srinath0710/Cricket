@@ -14,38 +14,42 @@
   [sourceStyle]="{ height: '30rem' }" 
   [targetStyle]="{ height: '30rem' }"
   (onMoveToTarget)="onMoveToTarget($event)"
->
+  (onMoveToSource)="onMoveToSource($event)"  >
 
 <ng-template pTemplate="sourceHeader">
   <div class="p-d-flex p-ai-center">
-    Available
+    Available Ground 
   </div>
 </ng-template>
 
 <ng-template pTemplate="targetHeader">
   <div class="p-d-flex p-ai-center">
-    Target 
+   Selected Ground 
   </div>
 </ng-template>
 
 <ng-template pTemplate="item" let-product let-i="index">
-  <div class="flex flex-wrap p-2 align-items-center gap-3">
+  <div 
+    class="flex flex-wrap p-2 align-items-center gap-3" 
+    [ngClass]="{ 'highlight-target': product.highlighted }"
+  >
     <div class="flex-1 flex flex-column gap-2">
-            <span class="person-image-team-player">
-              <img 
-                class="player-img" 
-                *ngIf="!product.profile_img || !product.player_profile" 
-                [src]="default_img">
-                
-              <img 
-                class="player-img" 
-                *ngIf="product.profile_img && product.player_profile" 
-                [src]="product.profile_img" 
-                (error)="handleImageError($event, default_img)">
-            </span>
+      <span class="person-image-team-player">
+        <img 
+          class="player-img" 
+          *ngIf="!product.profile_img || !product.player_profile" 
+          [src]="default_img">
+
+        <img 
+          class="player-img" 
+          *ngIf="product.profile_img && product.player_profile" 
+          [src]="product.profile_img" 
+          (error)="handleImageError($event, default_img)">
+      </span>
       <span class="font-bold">{{ product.ground_name }}</span>
     </div>
   </div>
 </ng-template>
+
 </p-pickList>
 <p-toast key="tc" position="top-right"></p-toast>

@@ -100,13 +100,9 @@ export interface ManageDataItem {
 })
 export class CompetitionComponent implements OnInit {
   public addCompetitionForm!: FormGroup<any>;
-
-
-
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   searchKeyword: string = '';
-  isEditing: boolean = false;
   public ShowForm: any = false;
   position: string = 'right';
   backScreen: any;
@@ -197,7 +193,6 @@ export class CompetitionComponent implements OnInit {
       trophy_name: ['', Validators.required],
       start_date: ['', Validators.required],
       end_date: ['', Validators.required],
-      // is_practice: [null, Validators.required],
       video_path: ['', Validators.required],
       overs_per_innings: [''],
       overs_per_bowler: [''],
@@ -209,12 +204,12 @@ export class CompetitionComponent implements OnInit {
       calculation: [''],
       competition_image: [null],
       distrib_id: [null],
-      is_practice: [null]
+      is_practice: ['',Validators.required]
     });
   }
 
   showDialog() {
-    this.isEditing = false;
+    this.isEditMode = false;
     this.addCompetitionForm.reset();
     this.addCompetitionForm.patchValue({ status: 'Active' });
     this.ShowForm = true;
@@ -298,6 +293,8 @@ export class CompetitionComponent implements OnInit {
   }
 
   editCompitition(comp: any) {
+    this.isEditMode = true;
+
     console.log(comp)
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -333,7 +330,7 @@ export class CompetitionComponent implements OnInit {
             calculation: editRecord.calculation,
             competition_image: null,
             distrib_id: null,
-            is_practice: null
+            is_practice: editRecord.is_practice,
           });
           this.ShowForm = true;
         }
@@ -432,6 +429,7 @@ export class CompetitionComponent implements OnInit {
 
 
   onAddCompetition() {
+    this.isEditMode = false;
     this.submitted = true;
     if (this.addCompetitionForm.invalid) {
       this.addCompetitionForm.markAllAsTouched();
@@ -452,7 +450,7 @@ export class CompetitionComponent implements OnInit {
       competition_format_id: String(this.addCompetitionForm.value.competition_format_id),
       start_date: this.addCompetitionForm.value.start_date,
       end_date: this.addCompetitionForm.value.end_date,
-      // is_practice: this.addCompetitionForm.value.is_practice,
+      is_practice: String(this.addCompetitionForm.value.is_practice),
       video_path: this.addCompetitionForm.value.video_path,
       overs_per_innings: String(this.addCompetitionForm.value.overs_per_innings),
       overs_per_bowler: String(this.addCompetitionForm.value.overs_per_bowler),
@@ -515,7 +513,7 @@ export class CompetitionComponent implements OnInit {
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
-      this.client_id= this.clientData[1].client_id;
+      this.client_id= this.clientData[0].client_id;
       console.log(this.client_id);
       this.loadCompetitions();
 

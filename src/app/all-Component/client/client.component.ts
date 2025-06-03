@@ -14,6 +14,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
 import { DropdownModule } from 'primeng/dropdown';
+import { environment } from '../../environments/environment';
+import { ImageCropperComponent } from 'ngx-image-cropper';
+import type { ImageCroppedEvent } from 'ngx-image-cropper';
 interface Country {
   country_id: number;
   country_name: string;
@@ -35,8 +38,7 @@ interface Country {
     Drawer,
     ReactiveFormsModule,
     DropdownModule,
-
-
+    ImageCropperComponent
   ],
 
   providers: [
@@ -49,6 +51,9 @@ interface Country {
 export class ClientComponent implements OnInit{
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
+  default_img= CricketKeyConstant.default_image_url.officials;
+  previewUrl: string | ArrayBuffer | null = null;
+
   searchKeyword: string = '';
   public addClientForm!: FormGroup<any>;
   @ViewChild('dt') dt!: Table;
@@ -71,9 +76,22 @@ export class ClientComponent implements OnInit{
   emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
   ClientNamePattern = /^[^'"]+$/; //allstringonly allow value
 
-    conditionConstants= CricketKeyConstant.condition_key;
+  conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
 
+  envImagePath = environment.imagePath;
+  showCropperModal = false;
+  imageBase64: any = null;
+  profile_img: any
+  length: any
+  profileImages: any;
+  imageCropAlter: any;
+  imageDefault: any;
+  filedata: any;
+  url: any;
+  src: any;
+  oldPath: any;
+  base64: any;
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -402,5 +420,98 @@ viewClient(client_id: any) {
     }
   });
 }
+handleImageError(event: Event, fallbackUrl: string): void {
+  const target = event.target as HTMLImageElement;
+  target.src = fallbackUrl;
+}
 
+     /* profile image File onchange event */
+     fileEvent(event: any) {
+      if (this.addClientForm.value.profile_img_url.value !== null && this.addClientForm.value.profile_img_url.value !== '') {
+          this.profileImages = null;
+      }
+      // console.log(event);
+      if(event && event.target && event.target.files && event.target.files.length > 0){
+          this.filedata = event.target.files[0];
+          var reader = new FileReader();
+          reader.readAsDataURL(event.target.files[0]);
+          reader.onload = (event:any) =>{
+              var img = new Image;
+              this.url = event.target.result;
+              this.imageCropAlter=event.target.result
+              this.imageDefault=event.target.result
+      }
+      }else{
+          this.url =this.imageDefault
+          this.filedata=this.base64ToBinary(this.imageDefault);
+
+      }
+  
+ 
+      }
+
+cropPopOpen(){
+  this.showCropperModal=true;
+  this.imageBase64=this.imageDefault
+}
+saveCroppedImage(): void {
+  this.profileImages = this.filedata;
+  this.imageCropAlter = this.filedata;
+  this.filedata=this.base64ToBinary(this.filedata);
+  this.showCropperModal = false;
+
+}
+cancelImg(): void {
+  this.showCropperModal = false;
+  this.url=this.imageCropAlter;
+  this.filedata=this.base64ToBinary(this.imageCropAlter);
+}
+base64ToBinary(base64:any){
+  // Convert base64 to binary (Blob)
+  const byteCharacters = atob(base64.split(',')[1]); // Decode base64 string
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset++) {
+      byteArrays.push(byteCharacters.charCodeAt(offset));
+  }
+
+  const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' }); 
+  return blob;
+}
+convertUrlToBase64(imageUrl: string): void {
+  fetch(imageUrl)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
+      }
+      return response.blob(); // Convert response to a Blob
+    })
+    .then((blob) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Image = reader.result as string; 
+        this.imageBase64 = base64Image; 
+        this.imageCropAlter=base64Image
+        this.imageDefault=base64Image
+      };
+      reader.readAsDataURL(blob); 
+    })
+    .catch((error) => {
+    });
+}
+cancel() {
+  this.filedata = null;
+  this.url = null;
+  this.profileImages = null;
+  this.imageCropAlter=null;
+  this.imageBase64 = null;
+}
+imageCropped(event: ImageCroppedEvent): void {
+  this.url = event.base64
+  this.filedata = event.base64
+   this.profileImages=null
+}
+loadImageFailed(): void {
+  console.error('Image loading failed');
+}
 }

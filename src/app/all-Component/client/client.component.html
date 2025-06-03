@@ -14,8 +14,9 @@
                             <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
-                                        class="width-search" placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('team_name', $event)">
+                                        class="width-search" placeholder="  Search" (input)="filterGlobal()"
+                                        (keypress)="blockQuotesOnly($event)"
+                                        (input)="sanitizeQuotesOnly('team_name', $event)">
                                 </div>
 
                                 <button type="button" class="clear-button" (click)="clear()"> Clear </button>
@@ -55,10 +56,23 @@
                         <ng-template pTemplate="body" let-client>
                             <tr>
                                 <td>
-                                    <span class="groundnameover" (click)="viewClient(client.client_id)"> {{ client.Client
-                                    }}</span>
+                                    <span class="person-image-team-player">
+                                        <img class="player-img"
+                                            *ngIf="!client.profile_img || !client.player_profile"
+                                            [src]="default_img">
+
+                                        <img class="player-img" *ngIf="client.profile_img && client.player_profile"
+                                            [src]="client.profile_img"
+                                            (error)="handleImageError($event, default_img)">
+                                    </span>
+                                    <span class="groundnameover" (click)="viewClient(client.client_id)"> {{
+                                        client.Client
+                                        }}</span>
                                 </td>
-                                <td>{{ client.country }}</td>
+                                <td>
+       
+                                    {{ client.country }}
+                                </td>
                                 <td>{{ client.email_id }}</td>
                                 <td>{{ client.mobile }}</td>
                                 <td>
@@ -118,26 +132,26 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Name"
-                            formControlName="client_name"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('client_name', $event)">
+                            formControlName="client_name" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('client_name', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_name')?.invalid &&(addClientForm?.get('client_name')?.touched) || (addClientForm.get('client_name')?.invalid && submitted)"
                             class="required-msg">Client
                             Name Is Required
                         </small>
-                 
+
                     </div>
                     <div class="col-md-6">
                         <label>Client Code
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Code"
-                            formControlName="client_code"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('client_code', $event)">
+                            formControlName="client_code" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('client_code', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_code')?.invalid &&(addClientForm?.get('client_code')?.touched) || (addClientForm.get('client_code')?.invalid && submitted)"
                             class="required-msg">Client
-                           Code Is Required
+                            Code Is Required
                         </small>
                     </div>
                     <div class="col-md-6">
@@ -195,93 +209,168 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="200" type="text" placeholder="Enter Address 1"
-                            formControlName="address_1"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('address_1', $event)">
+                            formControlName="address_1" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('address_1', $event)">
                         <small
                             *ngIf="addClientForm?.get('address_1')?.invalid &&(addClientForm?.get('address_1')?.touched) || (addClientForm.get('address_1')?.invalid && submitted)"
                             class="required-msg">Address 1 Is Required
                         </small>
                     </div>
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <label>address_2
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Address 2"
-                            formControlName="address_2"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('address_2', $event)">
-                    
+                            formControlName="address_2" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('address_2', $event)">
+
                     </div>
                     <div class="col-md-6">
                         <label>Post Code
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Post Code"
-                            formControlName="post_code"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('post_code', $event)">
+                            formControlName="post_code" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('post_code', $event)">
                     </div>
                     <div class="col-md-6">
-                        <label>Email Id 
+                        <label>Email Id
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="100" type="text" placeholder="Enter Email Id"
                             formControlName="email_id">
-                                  <div
-                            *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
-                            <small *ngIf="addClientForm.get('email_id')?.errors?.['pattern']"
-                              class="required-msg">
-                              * Invalid email ID: abcd&#64;example.com
+                        <div *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
+                            <small *ngIf="addClientForm.get('email_id')?.errors?.['pattern']" class="required-msg">
+                                * Invalid email ID: abcd&#64;example.com
                             </small>
-                            </div>
-                    </div>
-          <div class="col-md-6">
-  <label>Phone No <span class="text-danger">*</span></label>
-  <input class="form-control" type="text" maxlength="10" placeholder="Enter Phone No"
-    formControlName="mobile" (input)="onPhoneNumberInput($event)">
-  <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
-    <!-- Show when pattern is invalid -->
-    <small *ngIf="addClientForm.get('mobile')?.errors?.['pattern']" class="required-msg">
-      * Invalid mobile number
-    </small>
+                        </div>
+                    </div> -->
+                    <div class="col-md-6">
+                        <label>Phone No <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" maxlength="10" placeholder="Enter Phone No"
+                            formControlName="mobile" (input)="onPhoneNumberInput($event)">
+                        <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
+                            <!-- Show when pattern is invalid -->
+                            <small *ngIf="addClientForm.get('mobile')?.errors?.['pattern']" class="required-msg">
+                                * Invalid mobile number
+                            </small>
 
-    
-  </div>
-</div>
+
+                        </div>
+                    </div>
 
                     <div class="col-md-6">
                         <label>Website
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Website"
-                            formControlName="website"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('website', $event)">                    </div>
+                            formControlName="website" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('website', $event)">
+                    </div>
                     <div class="col-md-6">
                         <label>Description
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter description"
-                            formControlName="description"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('description', $event)">
-              
+                            formControlName="description" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('description', $event)">
+
                     </div>
+     <!--Preview of profile image-->
+     <div class="col-md-6">
+        <div class="form-group formItem">
+         
+                    <label class="formItemLabel">Profile Image Preview</label>
+                    <a class=" clear-width margin-right table-counts" style ="width: 84px;"(click)="cropPopOpen()">Crop Image</a>
+                    <!-- <div class="col profile-img-wrap edit-img img-scroll" >
+                
+                        <a *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                            class="inline-block">
+                            <img alt="" [src]="envImagePath + '/images/avatar.png'">
+                        </a>
+                        <a *ngIf="filedata != null && filedata != ''" class="inline-block">
+                            <img [src]="url" height="200" width="200">
+                        </a>
+                        <a *ngIf="profileImages != null && profileImages != ''" class="inline-block">
+                            <img [src]="profileImages" height="200" width="200">
+                        </a>
+    
 
-            
-            </div> 
-
-                    <div class="row mt-4 sticky-footer-buttons">
-                        <div class="col-12 text-end">
-                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-                                (click)="cancelForm()"></button>
-
-                            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                                *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
-                                (click)="resetForm()"></button>
-
-                            <button pButton type="button" label="Save" class="save-button"
-                                (click)="onAddClient()"></button>
-
-
+                        <div class="img_cancel" 
+                            *ngIf="(filedata != null && filedata != '') || (profileImages != null && profileImages != '')" 
+                            (click)="cancel()">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </div>
+    
+                        <div class="fileupload btn">
+                            <span class="btn-text">Upload</span>
+                            <input class="upload" (change)="fileEvent($event)" type="file" formControlName="profile_img_url">
+                        </div>
+                       
+                    
+                    </div> -->
+    
+                    <div class="image-upload-container text-center">
+                        <label for="profileImageInput" class="upload-label">
+                          <div class="image-preview-wrapper">
+                            <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
+                            <ng-template #placeholder>
+                            </ng-template>
+                          </div>
+                          <div class="upload-btn">Upload</div>
+                        </label>
+                        <input
+                          type="file"
+                          id="profileImageInput"
+                          accept="image/*"
+                          (change)="fileEvent($event)"
+                          hidden
+                          formControlName="profile_img_url"
+                        />
+                      </div>                                
+                    <!-- Cropper Modal -->
+                    <div *ngIf="showCropperModal" class="modal img-croper-popup">
+                        <div class="modal-content crop-image">
+                            <div class="modal-header modal-header-img">
+                                <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                            </div>
+                            <div class="modal-body img-fix">
+                        
+                                <image-cropper
+                                [imageBase64]="imageBase64"
+                                [maintainAspectRatio]="true"
+                                format="png"
+                                (imageCropped)="imageCropped($event)"
+                                (loadImageFailed)="loadImageFailed()">
+                              </image-cropper>
+                              
+                            </div>
+                            <div class="modal-footer crop-footer">
+                                <button class="save-btn submit-btn margin-right" (click)="saveCroppedImage()">Save</button>
+                                <button class="clear-button submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                            </div>
                         </div>
                     </div>
+          
+        </div>
+    </div>
+
+                </div>
+
+                <div class="row mt-4 sticky-footer-buttons">
+                    <div class="col-12 text-end">
+                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                            (click)="cancelForm()"></button>
+
+                        <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                            *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
+                            (click)="resetForm()"></button>
+
+                        <button pButton type="button" label="Save" class="save-button" (click)="onAddClient()"></button>
+
+
+                    </div>
+                </div>
             </form>
 
 
@@ -290,44 +379,55 @@
             <div class="popup-container">
 
                 <!-- ✅ Top bar: Image on left, Cancel button on right -->
-              <div class="top-bar">
-                <div class="profile-image-wrapper">
-                  <img [src]="seletedclient[0]?.profileImageUrl" alt="Profile Image" class="profile-image" />
+                <div class="top-bar">
+                    <div class="profile-image-wrapper">
+                        <img [src]="seletedclient[0]?.profileImageUrl" alt="Profile Image" class="profile-image" />
+                    </div>
+                    <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
                 </div>
-                <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
-              </div>
-              
-              
+
+
                 <div *ngFor="let client of seletedclient" class="popup-content">
-              
-                  <header class="popup-header no-icon">
-                    <h1 class="popup-title">{{ client['client_name'] | uppercase }}</h1>
-                  </header>
-              
-              
-                  <!-- Client Details -->
-                  <section class="popup-section">
-                    <h2 class="section-title">⛳Client Details</h2>
-                    <div class="info-row"><span class="info-label">👤Client Code</span><span class="separator">|</span><span class="info-value">{{ client.client_code }}</span></div>
-                    <div class="info-row"><span class="info-label">🏠Address 1</span><span class="separator">|</span><span class="info-value">{{ client.address_1 }}</span></div>
-                    <div class="info-row"><span class="info-label">🏘️Address 2</span><span class="separator">|</span><span class="info-value">{{ client.address_2 }}</span></div>
-                    <div class="info-row"><span class="info-label">🔢Post Code</span><span class="separator">|</span><span class="info-value">{{ client.post_code }}</span></div>
-                    <div class="info-row"><span class="info-label">📧Email</span><span class="separator">|</span><span class="info-value">{{ client.email_id }}</span></div>
-                    <div class="info-row"><span class="info-label">📱Mobile</span><span class="separator">|</span><span class="info-value">{{ client.mobile }}</span></div>
-                    <div class="info-row"><span class="info-label">🌐Website</span><span class="separator">|</span><span class="info-value">{{ client.website }}</span></div>
-                  </section>
-              
-                  <!-- Location Details -->
-                  <section class="popup-section">
-                    <h2 class="section-title">🌐Location</h2>
-                    <div class="info-row"><span class="info-label">🌎Country</span><span class="separator">|</span><span class="info-value">{{ client.country_name }}</span></div>
-                    <div class="info-row"><span class="info-label">🏴State</span><span class="separator">|</span><span class="info-value">{{ client.state_name }}</span></div>
-                    <div class="info-row"><span class="info-label">🏢City</span><span class="separator">|</span><span class="info-value">{{ client.city_name }}</span></div>
-                  </section>
-              
+
+                    <header class="popup-header no-icon">
+                        <h1 class="popup-title">{{ client['client_name'] | uppercase }}</h1>
+                    </header>
+
+
+                    <!-- Client Details -->
+                    <section class="popup-section">
+                        <h2 class="section-title">⛳Client Details</h2>
+                        <div class="info-row"><span class="info-label">👤Client Code</span><span
+                                class="separator">|</span><span class="info-value">{{ client.client_code }}</span></div>
+                        <div class="info-row"><span class="info-label">🏠Address 1</span><span
+                                class="separator">|</span><span class="info-value">{{ client.address_1 }}</span></div>
+                        <div class="info-row"><span class="info-label">🏘️Address 2</span><span
+                                class="separator">|</span><span class="info-value">{{ client.address_2 }}</span></div>
+                        <div class="info-row"><span class="info-label">🔢Post Code</span><span
+                                class="separator">|</span><span class="info-value">{{ client.post_code }}</span></div>
+                        <div class="info-row"><span class="info-label">📧Email</span><span
+                                class="separator">|</span><span class="info-value">{{ client.email_id }}</span></div>
+                        <div class="info-row"><span class="info-label">📱Mobile</span><span
+                                class="separator">|</span><span class="info-value">{{ client.mobile }}</span></div>
+                        <div class="info-row"><span class="info-label">🌐Website</span><span
+                                class="separator">|</span><span class="info-value">{{ client.website }}</span></div>
+                    </section>
+
+                    <!-- Location Details -->
+                    <section class="popup-section">
+                        <h2 class="section-title">🌐Location</h2>
+                        <div class="info-row"><span class="info-label">🌎Country</span><span
+                                class="separator">|</span><span class="info-value">{{ client.country_name }}</span>
+                        </div>
+                        <div class="info-row"><span class="info-label">🏴State</span><span
+                                class="separator">|</span><span class="info-value">{{ client.state_name }}</span></div>
+                        <div class="info-row"><span class="info-label">🏢City</span><span
+                                class="separator">|</span><span class="info-value">{{ client.city_name }}</span></div>
+                    </section>
+
                 </div>
-              </div>
-              </p-dialog>
+            </div>
+        </p-dialog>
 
     </div>
 </div>

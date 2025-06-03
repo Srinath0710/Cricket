@@ -5,7 +5,7 @@ import { CricketKeyConstant } from '../../../services/cricket-key-constant';
 import { URLCONSTANT } from '../../../services/url-constant';
 import { PickListModule } from 'primeng/picklist';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ManageDataItem } from '../competition.component';
 @Component({
   selector: 'app-comp-team',
@@ -21,42 +21,66 @@ import { ManageDataItem } from '../competition.component';
   ],
   standalone: true
 
-})
+})    
 export class CompTeamComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem={ competition_id: 0,name:'',match_type:'',gender:'',age_category:'',start_date:'',end_date:'' };
   client_id: number = Number(localStorage.getItem('client_id'));
+  default_img: any = 'assets/images/default-player.png';
   sourceTeams!: [];
-
   targetTeams!: [];
   user_id: number = Number(localStorage.getItem('user_id'));
+  team_id: any;
+  public compTeamsList = [];
+  public ManageTeamsForm!: FormGroup;
+  isEditPopupVisible = false;
+  selectedTeam: any = null;
+
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
+    private formBuilder: FormBuilder, 
     private messageService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService
   ) { }
   ngOnInit() {
     this.gridLoad();
+    this.ManageTeamsForm = this.formBuilder.group({
+      team_name: [''],
+      team_id: ['', [Validators.required]],
+      ground_list: ['', []],
+      client_id: ['', [Validators.required]],
+      competition_id: ['', [Validators.required]],
+      sponser_name: ['', [Validators.required]],
+      scorecard_name: ['', [Validators.required]],
+      profile_url: [''],
+  })
   }
 
   gridLoad() {
-    const params: any = {}
+    const params: any = {};
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-    this.apiService.post(this.urlConstant.compTeamsList, params).subscribe((res: any) => {
-      console.log(res);
-      const allItems =res.data.all_teams;
-      const mappedIds = res.data.selected_teams.map((value: any) => value.team_id);
-      this.sourceTeams = allItems.filter((item: any) => !mappedIds.includes(item.team_id));
-      this.targetTeams = res.data.selected_teams
-    console.log(this.sourceTeams,this.targetTeams,mappedIds)
-    }, (err: any) => {
-
-    })
+    this.apiService.post(this.urlConstant.compTeamsList, params).subscribe(
+      (res: any) => {
+        const allItems = res.data.all_teams.map((val: any) => ({
+          ...val,
+          scorecard: ''
+        }));
+          const mappedIds = res.data.selected_teams.map((value: any) => value.team_id);
+          this.sourceTeams = allItems.filter((item: any) => !mappedIds.includes(item.team_id));
+          this.targetTeams = res.data.selected_teams.map((val: any) => ({
+          ...val,
+          scorecard: val.team_name || ''
+        }));
+      },
+      (err: any) => {
+        console.error('Error loading team grid:', err);
+      }
+    );
   }
-  updateTeam() {
+  AddTeam() {
     const params: any = {}
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
@@ -64,10 +88,71 @@ export class CompTeamComponent implements OnInit {
     params.competition_id = this.CompetitionData.competition_id.toString();
 
 
-    this.apiService.post(this.urlConstant.compTeamsUpdate, params).subscribe((res: any) => {
+    this.apiService.post(this.urlConstant.compTeamadd, params).subscribe((res: any) => {
       this.gridLoad();
     }, (err: any) => {
 
     })
   }
+updateTeam(): void {
+  if (!this.selectedTeam) {
+    console.error('No team selected for update!');
+    return;
+  }
+
+  const params: any = {
+    client_id: this.client_id.toString(),
+    user_id: this.user_id.toString(),
+    competition_id: this.CompetitionData.competition_id.toString(),
+    team_id: this.selectedTeam.team_id?.toString(),
+    scorecard: this.ManageTeamsForm.get('scorecard_name')?.value || ''
+  };
+
+  params.team_list = this.targetTeams.map((p: any) => p.team_id).join(',').toString();
+
+  console.log('Saving team:', this.selectedTeam.team_id, 'Scorecard:', params.scorecard);
+
+  this.apiService.post(this.urlConstant.compTeamsUpdate, params).subscribe(
+    (res: any) => {
+      this.gridLoad();
+      this.closeEditPopup();
+    },
+    (err: any) => {
+      console.error('Error updating team:', err);
+    }
+  );
+}
+
+  onMoveToTarget(event: any) {
+    event.items.forEach((item: any) => {
+      item.highlighted = true; 
+    });
+  }
+  
+  onMoveToSource(event: any) {
+    event.items.forEach((item: any) => {
+      item.highlighted = false; 
+    });
+  }
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
+  }
+
+
+showEditPopup(team: any) {
+  this.selectedTeam = team;
+  this.ManageTeamsForm.patchValue({
+    scorecard_name: team.scorecard_name || '',
+    sponser_name: team.sponser_name || ''
+  });
+  this.isEditPopupVisible = true;
+}
+
+closeEditPopup() {
+  this.isEditPopupVisible = false;
+  this.selectedTeam = null;
+}
+
+
 }

@@ -41,7 +41,7 @@ export class UpdateCompetition {
   competition_format_id: string|number;
   start_date: string|number;
   end_date: string|number;
-  // is_practice: string|number;
+  is_practice: string|number;
   video_path: string|number;
   overs_per_innings: string|number;
   overs_per_bowler: string|number;
@@ -72,7 +72,7 @@ export class UpdateCompetition {
     this.competition_format_id = item.competition_format_id || 0;
     this.start_date = item.start_date || 0;
     this.end_date = item.end_date || 0;
-    // this.is_practice = item.is_practice || 0;
+    this.is_practice = item.is_practice || 0;
     this.video_path = item.video_path || 0;
     this.overs_per_innings = item.overs_per_innings || 0;
     this.overs_per_bowler = item.overs_per_bowler || 0;

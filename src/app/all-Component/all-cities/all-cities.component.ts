@@ -153,7 +153,7 @@ getStates() {
     params.country_id = this.countryId.toString();
     this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
         this.statesList = res.data.states ?? [];
-        this.stateId = this.FormValue?this.stateId:this.statesList[0].state_id;
+        this.stateId = this.FormValue?this.stateId:this.statesList[1].state_id;
        
         this.gridLoad();
   

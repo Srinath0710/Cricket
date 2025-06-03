@@ -30,7 +30,7 @@ export class CompGroundComponent implements OnInit {
   targetGround!:[];
   movedToTarget: any[] = [];
   user_id: number = Number(localStorage.getItem('user_id'));
-  movedToTargetIds: Set<number> = new Set();
+  movedToTargetIds = new Set<number>();
 
   constructor(
     private apiService: ApiService,
@@ -89,11 +89,19 @@ export class CompGroundComponent implements OnInit {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
 
+
   onMoveToTarget(event: any) {
     event.items.forEach((item: any) => {
-      this.movedToTargetIds.add(item.ground_id);
+      item.highlighted = true; // Add highlight
     });
   }
+  
+  onMoveToSource(event: any) {
+    event.items.forEach((item: any) => {
+      item.highlighted = false; // Remove highlight
+    });
+  }
+  
 
 // isNewlyAdded(item: any): boolean {
 //   return this.movedToTargetIds.has(item.ground_id);
