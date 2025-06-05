@@ -5,7 +5,7 @@ import { CricketKeyConstant } from '../../../services/cricket-key-constant';
 import { URLCONSTANT } from '../../../services/url-constant';
 import { PickListModule } from 'primeng/picklist';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { ManageDataItem } from '../competition.component';
@@ -35,17 +35,26 @@ export class CompPlayerComponent implements OnInit {
   client_id: number = Number(localStorage.getItem('client_id'));
   default_img: any = 'assets/images/default-player.png';
   sourcePlayer!: [];
-  targetPlayer!: [];
+  targetPlayer!: any[];
   teamsDropDown: any;
   initilized: boolean = false;
   selectedTeamData: any;
   selectedTeamId: number | null = null;
+  isEditPopupVisible = false;
+  public ManagePlayerForm!: FormGroup<any>;
+
+  selectedPlayer: any = null;
 
   team_id: any;
+  player_id: any;
   user_id: number = Number(localStorage.getItem('user_id'));
+  ImportMappingData: any;
+  targetProducts: any;
+  ImportData: any;
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
+    private formBuilder: FormBuilder, 
     private messageService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService
@@ -53,6 +62,16 @@ export class CompPlayerComponent implements OnInit {
   ngOnInit() {
 
     this.gridLoad();
+    this.ManagePlayerForm = this.formBuilder.group({
+      player_id: ['',[]],
+      client_id: ['',[]],
+      competition_id: ['',[]],
+      jersey_number: ['', [Validators.required]],
+      scorecard_name: ['', [Validators.required]],
+      profile_url: ['',[]],
+      user_id: ['',[]],
+      team_id: ['',[]],
+    });
   }
 
   chooseTeam(teamId: any) {
@@ -80,20 +99,47 @@ export class CompPlayerComponent implements OnInit {
     })
   }
 
-  updateplayer() {
+  addplayer() {
     const params: any = {};
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     params.team_id = this.team_id?.toString();
+    params.player_id = this.player_id?.toString();
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',');
 
-    this.apiService.post(this.urlConstant.compplayerupdate, params).subscribe(
+    this.apiService.post(this.urlConstant.compplayeradd, params).subscribe(
       (res: any) => {
         this.gridLoad();
       },
       (err: any) => {
 
+      }
+    );
+  }
+  updateplayer(): void {
+    if (!this.selectedPlayer) {
+      console.error('No team selected for update!');
+      return;
+    }
+  
+    const params: any = {
+      client_id: this.client_id.toString(),
+      user_id: this.user_id.toString(),
+      team_id: this.team_id?.toString(),
+      competition_id: this.CompetitionData.competition_id.toString(),
+      player_id: this.selectedPlayer.player_id?.toString(),
+      scorecard: this.ManagePlayerForm.get('scorecard_name')?.value || ''
+    };
+  
+    params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();  
+    this.apiService.post(this.urlConstant.compplayerupdate, params).subscribe(
+      (res: any) => {
+        this.gridLoad();
+        this.closeEditPopup();
+      },
+      (err: any) => {
+        console.error('Error updating player:', err);
       }
     );
   }
@@ -105,7 +151,18 @@ export class CompPlayerComponent implements OnInit {
   }
   onMoveToTarget(event: any) {
     event.items.forEach((item: any) => {
-      item.highlighted = true; // Add highlight
+      item.highlighted = true; 
+    });
+  }
+  
+  onMoveAllToTarget(event: any) {
+    const highlightedIds = new Set(event.items.map((squard: any) => squard.player_id));
+  
+    this.targetPlayer = this.targetPlayer.map((player: any) => {
+      if (highlightedIds.has(player.player_id)) {
+        return { ...player, highlighted: true };
+      }
+      return player;
     });
   }
   
@@ -118,5 +175,19 @@ export class CompPlayerComponent implements OnInit {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
+  showEditPopup(player: any) {
+    this.selectedPlayer = player;
+    this.ManagePlayerForm.patchValue({
+      scorecard_name: player.scorecard_name || '',
+      jersey_number: player.jersey_number || ''
+    });
+    this.isEditPopupVisible = true;
+  }
+  
+  closeEditPopup() {
+    this.isEditPopupVisible = false;
+    this.selectedPlayer = null;
+  }
+
   
 }

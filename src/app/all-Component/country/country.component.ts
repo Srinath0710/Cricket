@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-// import { Sidebar } from 'primeng/sidebar';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
@@ -35,7 +34,6 @@ import { DrawerModule } from 'primeng/drawer';
     FileUploadModule,
     InputTextModule,
     ReactiveFormsModule,
-    // Sidebar,
     PaginatorModule,
     TagModule,
     ConfirmDialogModule,
@@ -61,7 +59,6 @@ export class CountryComponent implements OnInit {
   client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: any = false;
   isEditMode: boolean = false;
-  // viewMode: boolean = false;
   region_id: any;
   loading = false;
   regionsData = [];
@@ -77,7 +74,7 @@ export class CountryComponent implements OnInit {
   visible2: boolean = false;
   submitted: boolean = true;
   time_zone_id: any;
-  CountryNamePattern = /^[^'"]+$/; //allstringonly allow value
+  CountryNamePattern = /^[^'"]+$/; 
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
 
@@ -100,7 +97,6 @@ export class CountryComponent implements OnInit {
 
     })
   }
-
 
   timezoneDropdown() {
     const params: any = {};
@@ -147,7 +143,7 @@ export class CountryComponent implements OnInit {
 
 sanitizeQuotesOnly(controlName: string, event: Event) {
   const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  const cleaned = input.replace(/['"]/g, ''); 
   this.addCountryForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
 }
   calculateFirst(): number {

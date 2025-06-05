@@ -115,7 +115,9 @@ export class URLCONSTANT {
       toggleCompetitionStatus = 'Competition/toggle_status'
       dropdownlookups = 'Competition/get_competition_dropdown'
       editcompetition = 'Competition/edit_competition'
-
+      activecompetition = 'Competition/activate_competition'
+      deactivecompetition = 'Competition/deactivate_competition'
+ 
       compTeamsList = 'Competition/get_competition_teams'
       compTeamsUpdate = 'Competition/update_competition_teams'
       compTeamadd = 'Competition/add_competition_teams'
@@ -124,7 +126,8 @@ export class URLCONSTANT {
       compgroundList = 'Competition/get_competition_grounds'
       compgroundupdate = 'Competition/add_competition_grounds'
       compplayerlist = 'Competition/get_competition_players'
-      compplayerupdate = 'Competition/add_competition_players'
+      compplayeradd = 'Competition/add_competition_players'
+      compplayerupdate = 'Competition/update_competition_players'
 
       /*   FIXTURE */
       fixturedropdown = 'Fixture/get_fixtures_dropdown'

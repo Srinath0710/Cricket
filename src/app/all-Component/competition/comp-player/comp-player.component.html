@@ -1,5 +1,5 @@
 <div class="parent-container">
-  <button class="new-button p-button-text Comp-child-butn" (click)="updateplayer()">UpdatePlayer</button>
+  <button class="new-button p-button-text Comp-child-butn" (click)="addplayer()">UpdatePlayer</button>
 </div>
 
 <div style="display: flex; gap: 2rem;">
@@ -22,7 +22,9 @@
       [showSourceFilter]="true" [showTargetFilter]="true" filterBy="display_name"
       sourceFilterPlaceholder="Search Available..." targetFilterPlaceholder="Search Selected Player..."
       [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" (onMoveToTarget)="onMoveToTarget($event)"
-      (onMoveToSource)="onMoveToSource($event)">
+      (onMoveToSource)="onMoveToSource($event)"
+      (onMoveAllToSource)="onMoveAllToTarget($event)"
+  >
 
       <ng-template pTemplate="sourceHeader">
         <div class="p-d-flex p-ai-center">
@@ -55,10 +57,11 @@
             </span>
             <span class="font-bold">{{ player.display_name }}</span>
             <span *ngIf="player.highlighted">
-              <button class=" clear-width edit-button">
-                Edit
+              <button class="clear-width edit-button" (click)="showEditPopup(player)" title="Edit Player">
+                 Edit
               </button>
             </span>
+            
           </div>
         </div>
       </ng-template>
@@ -66,3 +69,56 @@
     </p-pickList>
   </div>
 </div>
+    <!-- Edit Popup for Selected Player -->
+    <div *ngIf="isEditPopupVisible" class="popup-backdrop">
+      <div class="popup-wrapper">
+
+      <div class="popup">
+        
+        <form [formGroup]="ManagePlayerForm" class="p-4 border rounded shadow-sm bg-white">
+          <div class="mb-3">
+            <label for="scorecardName" class="form-label fw-semibold">
+              Scorecard Name <span class="text-danger">*</span>
+            </label>
+            <input
+              id="scorecardName"
+              type="text"
+              class="form-control"
+              formControlName="scorecard_name"
+              placeholder="Enter scorecard name"
+            />
+          </div>
+        
+          <div class="mb-3">
+            <label for="sponsorName" class="form-label fw-semibold">
+              Sponsor Name
+            </label>
+            <input
+              id="sponsorName"
+              type="text"
+              class="form-control"
+              formControlName="jersey_number"
+          
+            />
+          </div>
+        
+          <div class="text-end">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              (click)="updateplayer()" >
+              Submit
+            </button>
+          
+            <button
+              type="submit"
+              class="btn btn-secondary ms-2"
+             
+              (click)="closeEditPopup()" >
+              Close
+            </button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>

@@ -92,13 +92,13 @@ export class CompGroundComponent implements OnInit {
 
   onMoveToTarget(event: any) {
     event.items.forEach((item: any) => {
-      item.highlighted = true; // Add highlight
+      item.highlighted = true; 
     });
   }
   
   onMoveToSource(event: any) {
     event.items.forEach((item: any) => {
-      item.highlighted = false; // Remove highlight
+      item.highlighted = false; 
     });
   }
   
@@ -107,8 +107,7 @@ export class CompGroundComponent implements OnInit {
 //   return this.movedToTargetIds.has(item.ground_id);
 // }
 
-goback(){
-}
+
 
 }
 

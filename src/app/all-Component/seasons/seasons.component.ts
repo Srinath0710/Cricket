@@ -8,8 +8,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators  }
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { ApiService } from '../services/api.service';
-import { URLCONSTANT } from '../services/url-constant';
+import { ApiService } from '../../services/api.service';
+import { URLCONSTANT } from '../../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UpdateSeason, EditSeason, Season } from './seasons.model';
@@ -17,7 +17,7 @@ import { TagModule } from 'primeng/tag';
 import { CalendarModule } from 'primeng/calendar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { CricketKeyConstant } from '../services/cricket-key-constant';
+import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Drawer } from 'primeng/drawer';
 
 @Component({

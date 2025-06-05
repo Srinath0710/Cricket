@@ -210,9 +210,9 @@ export class CompetitionComponent implements OnInit {
 
   showDialog() {
     this.isEditMode = false;
-    this.addCompetitionForm.reset();
     this.addCompetitionForm.patchValue({ status: 'Active' });
     this.ShowForm = true;
+    this.resetForm()
   }
 
   loadCompetitions() {
@@ -523,5 +523,45 @@ export class CompetitionComponent implements OnInit {
       }
     });
   }
-
+  StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to ${actionObject.label} this city?`, 
+      header: 'Confirmation',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url: string = this.conditionConstants.active_status.key === actionObject.key
+          ? this.urlConstant.activecompetition
+          : this.urlConstant.deactivecompetition;
+        this.status(competition_id, url);
+        this.confirmationService.close();
+      },
+      reject: () => {
+        this.confirmationService.close();
+      }
+    });
+  }
+  status(competition_id: number, url: string) {
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      competition_id: competition_id?.toString()
+    };
+  
+    this.apiService.post(url, params).subscribe(
+      (res: any) => {
+        res.statusConstants === this.statusConstants.success && res.status
+          ? (this.successToast(res), this.loadCompetitions())
+          : this.failedToast(res);
+      },
+      (err: any) => {
+        err.status === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
+          ? this.apiService.RefreshToken()
+          : this.failedToast(err);
+      }
+    );
+  }
+  
 }
