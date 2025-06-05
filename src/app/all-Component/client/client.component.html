@@ -57,20 +57,18 @@
                             <tr>
                                 <td>
                                     <span class="person-image-team-player">
-                                        <img class="player-img"
-                                            *ngIf="!client.profile_img || !client.player_profile"
+                                        <img class="player-img" *ngIf="!client.profile_img || !client.player_profile"
                                             [src]="default_img">
 
                                         <img class="player-img" *ngIf="client.profile_img && client.player_profile"
-                                            [src]="client.profile_img"
-                                            (error)="handleImageError($event, default_img)">
+                                            [src]="client.profile_img" (error)="handleImageError($event, default_img)">
                                     </span>
                                     <span class="groundnameover" (click)="viewClient(client.client_id)"> {{
                                         client.Client
                                         }}</span>
                                 </td>
                                 <td>
-       
+
                                     {{ client.country }}
                                 </td>
                                 <td>{{ client.email_id }}</td>
@@ -216,7 +214,7 @@
                             class="required-msg">Address 1 Is Required
                         </small>
                     </div>
-                    <!-- <div class="col-md-6">
+                  <div class="col-md-6">
                         <label>address_2
                             <span class="text-danger">*</span>
                         </label>
@@ -244,7 +242,7 @@
                                 * Invalid email ID: abcd&#64;example.com
                             </small>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="col-md-6">
                         <label>Phone No <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" maxlength="10" placeholder="Enter Phone No"
@@ -276,13 +274,14 @@
                             (input)="sanitizeQuotesOnly('description', $event)">
 
                     </div>
-     <!--Preview of profile image-->
-     <div class="col-md-6">
-        <div class="form-group formItem">
-         
-                    <label class="formItemLabel">Profile Image Preview</label>
-                    <a class=" clear-width margin-right table-counts" style ="width: 84px;"(click)="cropPopOpen()">Crop Image</a>
-                    <!-- <div class="col profile-img-wrap edit-img img-scroll" >
+                    <!--Preview of profile image-->
+                    <div class="col-md-6">
+                        <div class="form-group formItem">
+
+                            <label class="formItemLabel">Profile Image Preview</label>
+                            <a class=" clear-width margin-right table-counts" style="width: 84px;"
+                                (click)="cropPopOpen()">Crop Image</a>
+                            <!-- <div class="col profile-img-wrap edit-img img-scroll" >
                 
                         <a *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
                             class="inline-block">
@@ -309,51 +308,45 @@
                        
                     
                     </div> -->
-    
-                    <div class="image-upload-container text-center">
-                        <label for="profileImageInput" class="upload-label">
-                          <div class="image-preview-wrapper">
-                            <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
-                            <ng-template #placeholder>
-                            </ng-template>
-                          </div>
-                          <div class="upload-btn">Upload</div>
-                        </label>
-                        <input
-                          type="file"
-                          id="profileImageInput"
-                          accept="image/*"
-                          (change)="fileEvent($event)"
-                          hidden
-                          formControlName="profile_img_url"
-                        />
-                      </div>                                
-                    <!-- Cropper Modal -->
-                    <div *ngIf="showCropperModal" class="modal img-croper-popup">
-                        <div class="modal-content crop-image">
-                            <div class="modal-header modal-header-img">
-                                <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+
+                            <div class="image-upload-container text-center">
+                                <label for="profileImageInput" class="upload-label">
+                                    <div class="image-preview-wrapper">
+                                        <img *ngIf="previewUrl; else placeholder" [src]="previewUrl"
+                                            alt="Profile Image" />
+                                        <ng-template #placeholder>
+                                        </ng-template>
+                                    </div>
+                                    <div class="upload-btn">Upload</div>
+                                </label>
+                                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)"
+                                    hidden formControlName="profile_img_url" />
                             </div>
-                            <div class="modal-body img-fix">
-                        
-                                <image-cropper
-                                [imageBase64]="imageBase64"
-                                [maintainAspectRatio]="true"
-                                format="png"
-                                (imageCropped)="imageCropped($event)"
-                                (loadImageFailed)="loadImageFailed()">
-                              </image-cropper>
-                              
+                            <!-- Cropper Modal -->
+                            <div *ngIf="showCropperModal" class="modal img-croper-popup">
+                                <div class="modal-content crop-image">
+                                    <div class="modal-header modal-header-img">
+                                        <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                                    </div>
+                                    <div class="modal-body img-fix">
+
+                                        <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true"
+                                            format="png" (imageCropped)="imageCropped($event)"
+                                            (loadImageFailed)="loadImageFailed()">
+                                        </image-cropper>
+
+                                    </div>
+                                    <div class="modal-footer crop-footer">
+                                        <button class="save-btn submit-btn margin-right"
+                                            (click)="saveCroppedImage()">Save</button>
+                                        <button class="clear-button submit-btn margin-right"
+                                            (click)="cancelImg()">Cancel</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-footer crop-footer">
-                                <button class="save-btn submit-btn margin-right" (click)="saveCroppedImage()">Save</button>
-                                <button class="clear-button submit-btn margin-right" (click)="cancelImg()">Cancel</button>
-                            </div>
+
                         </div>
                     </div>
-          
-        </div>
-    </div>
 
                 </div>
 

@@ -103,7 +103,7 @@ export class TeamsComponent implements OnInit {
   TeamsNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
-
+  dropDownConstants=CricketKeyConstant.dropdown_keys;
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -119,7 +119,7 @@ export class TeamsComponent implements OnInit {
       gender_id: ['', [Validators.required]],
       age_category_id: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
-      // team_profile: [''],
+      team_profile: [''],
       primary_color: [''],
       secondary_color: [''],
       club_id:['',[]],
@@ -140,14 +140,15 @@ export class TeamsComponent implements OnInit {
     this.apiService.post(this.urlConstant.playerclubdropdown, params).subscribe(
       (res) => {
         this.configDataList = res.data?.clubs || [];
-        console.log("All clubs:", this.configDataList);
       },
       (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error?.message === this.statusConstants.refresh_msg
+        ) {
           this.apiService.RefreshToken();
         } else {
-          this.configDataList = [];
-          console.error("Error fetching clubs dropdown:", err);
+          this.failedToast(err);
         }
       }
     );
@@ -168,7 +169,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
 
   gridLoad() {
-        const params: any = {};
+    const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
@@ -187,7 +188,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           val.profile_img = `${val.profile_img}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
 
       });
 
@@ -201,12 +202,10 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       user_id: String(this.user_id)
     };
 
-
     this.apiService.post(this.urlConstant.viewgroundTeams, params).subscribe({
       next: (res) => {
-        if (res.status && res.data) {
+        if (res.status_code && res.data) {
           this.selectedTeams = res.data.teams; // or res.data.ground based on response shape
-          console.log('resteams', this.selectedTeams);
           this.viewDialogVisible = true;
         }
       },
@@ -216,7 +215,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     });
   }
 
-
   closePopup() {
     this.showPopup = false;
   }
@@ -224,9 +222,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   openPopup() {
     this.showPopup = true;
   }
-
-
-
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
@@ -266,18 +261,18 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.statusConstants === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
 
   StatusConfirm(team_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
 
     if (AlreadyStatestatus) {
       return;
@@ -306,39 +301,27 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.gridLoad();
   }
   getGlobalData() {
-    const params: any = {};
-    params.action_flag = 'dropdown';
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
-    this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe((res) => {
-      this.configDataList = res.data.dropdowns != undefined ? res.data : [];
-
-      this.ageGroupList = res.data.dropdowns
-        .filter((item: any) => item.config_key === 'age_category')
-        .map((item: any) => ({ ...item })); 
-
-      this.genderList = res.data.dropdowns
-        .filter((item: any) => item.config_key === 'gender')
-        .map((item: any) => ({ ...item }));
-
-      this.formatList = res.data.dropdowns
-        .filter((item: any) => item.config_key === 'team_format')
-        .map((item: any) => ({ ...item }));
-
-      setTimeout(() => {
-        const teamId = this.addTeamForm.get('team_id')?.value;
-        if (!teamId) {
-          this.formSetValue();
-        }
-      }, 100);
-
-    }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
-
+    const params: any = {
+      action_flag: 'dropdown',
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString()
+    };
+  
+    this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
+      (res) => {
+        const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
+        this.ageGroupList = dropdowns.filter((item: any) => item.config_key === 'age_category');
+        this.genderList = dropdowns.filter((item: any) => item.config_key === 'gender');
+        this.formatList = dropdowns.filter((item: any) => item.config_key === 'team_format');
+      },
+      (err: any) => {
+        this.ageGroupList = [];
+        this.genderList = [];
+        this.formatList = [];
       }
-    })
+    );
   }
+  
 
   formSetValue() {
     this.addTeamForm.patchValue({
@@ -347,9 +330,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       ageGroup: this.ageGroupList[0].config_id
     })
   }
-
-
-
 
   countryDropdown() {
     const params: any = {
@@ -361,14 +341,12 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.countryID = this.countriesData[0].country_id;
       this.gridLoad();
 
-    }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
-        this.apiService.RefreshToken();
-      }
+    },
+      (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      
     });
   }
-
-
 
   onAddTeam() {
     this.submitted = true;
@@ -388,10 +366,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       club_id: String(this.addTeamForm.value.club_id),
       reference_id: String(this.addTeamForm.value.reference_id),
       country_id:String(this.addTeamForm.value.country_id),
-
-
-      
-
       action_flag: 'create',
     };
     if (this.addTeamForm.value.team_id) {
@@ -399,30 +373,25 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.apiService.post(this.urlConstant.updateTeam, params).subscribe((res) => {
         res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.addTeam, params).subscribe((res) => {
         res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
   }
 
-  uploadImageToAssets() {
-
-  }
-
   EditTeam(team_id: number) {
-    console.log("hiii",this.showAddForm())
     this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.team_id = team_id?.toString();
     this.apiService.post(this.urlConstant.editTeam, params).subscribe((res) => {
-      if (res.statusConstants == 200) {
+      if (res.status_code == this.statusConstants.success && res.status) {
         const editRecord: EditTeam = res.data.teams[0] ?? {};
         if (editRecord != null) {
           this.addTeamForm.setValue({
@@ -437,20 +406,12 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             club_id: editRecord.club_id,
             reference_id: editRecord.reference_id,
             country_id: editRecord.country_id,
-
-            // team_profile: null
+            team_profile: editRecord.team_profile
           });
-          console.log(this.showAddForm())
-
-          this.showAddForm();
         }
-      } else {
-        this.failedToast(res);
-      }
-    }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      } 
     });
-
+    this.showAddForm();
 
   }
 
@@ -474,8 +435,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       reader.readAsDataURL(file);
 
     }
-
-
   }
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;
@@ -502,14 +461,11 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id = this.clientData[0].client_id;
-      console.log(this.client_id);
       this.gridLoad();
       this.getGlobalData();
 
     }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
-        this.apiService.RefreshToken();
-      }
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
   }
 

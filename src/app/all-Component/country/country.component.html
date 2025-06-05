@@ -104,10 +104,7 @@
     [closable]="false"
     [styleClass]="'p-confirm-dialog-custom'">
   </p-confirmDialog>
-  
-    <!-- <p-sidebar  [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
-      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false"> -->
- <!-- <div class="sidebar-wrapper" (click)="$event.stopPropagation()"> -->
+
   <p-drawer [(visible)]="ShowForm"  [baseZIndex]="10000" position="right" [showCloseIcon]="false">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -149,7 +146,7 @@
               <label >Country Name
                 <span class="text-danger">*</span>
               </label>
-              <input class="form-control" maxlength="50" type="text" placeholder="Enter Country Name"
+              <input class="form-control" maxlength="50" type="text"
                 formControlName="country_name"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('team_name', $event)">
               <small
@@ -164,7 +161,7 @@
                 <p-dropdown [options]="timezoneData" class="drop-error "
                   [ngModel]="addCountryForm.get('time_zone_id')?.value" formControlName="time_zone_id"
                   optionValue="time_zone_id" optionLabel="time_zone_anme" [filter]="true"
-                  filterBy="time_zone_anme" [showClear]="false" placeholder="Select Time Zone" 
+                  filterBy="time_zone_anme" [showClear]="false"
                   [panelStyleClass]="'custom-dropdown-panel'">
 
                   <ng-template let-timezone pTemplate="item">
@@ -184,7 +181,7 @@
               <label >Iso Code 2
                 <span class="text-danger">*</span>
               </label>
-              <input class="form-control" maxlength="2" type="text" placeholder="Enter Iso Code 2"
+              <input class="form-control" maxlength="2" type="text"
                 formControlName="iso_code_2"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('iso_code_2', $event)">
               <small
@@ -197,7 +194,7 @@
               <label >Iso Code 3
                 <span class="text-danger">*</span>
               </label>
-              <input class="form-control" maxlength="3" type="text" placeholder="Enter Iso Code 3"
+              <input class="form-control" maxlength="3" type="text"
                 formControlName="iso_code_3"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('iso_code_3', $event)">
               <small
@@ -210,7 +207,7 @@
               <label>Sub Region
                 <span class="text-danger">*</span>
               </label>
-              <input class="form-control" maxlength="50" type="text" placeholder="Enter Sub Region "
+              <input class="form-control" maxlength="50" type="text"
                 formControlName="sub_region"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('sub_region', $event)">
               <small
@@ -237,9 +234,6 @@
             
           </div>
         </form>
-      <!-- </div> -->
-    <!-- </p-sidebar> -->
-
   </p-drawer>
 
 

@@ -159,7 +159,7 @@
 
             <span class="text-danger">*
             </span>
-            <input class="form-control" maxlength="50" type="text" placeHolder="Entre State Name"
+            <input class="form-control" maxlength="50" type="text"
               formControlName="state_name" [ngModel]="addStateForm.get('state_Name')?.value"   (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('state_name', $event)">
 
@@ -174,7 +174,7 @@
             <label for="state_code">State Code</label>
             <span class="text-danger">*
             </span>
-            <input class="form-control" maxlength="50" type="text" placeHolder="Entre State Name"
+            <input class="form-control" maxlength="50" type="text"
               formControlName="state_code"   (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('state_code', $event)">
             <small

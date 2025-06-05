@@ -9,16 +9,9 @@
               All Teams
             </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
-              <p-dropdown 
-                [options]="clientData" 
-                optionLabel="client_name" 
-                optionValue="client_id"
-                [(ngModel)]="client_id" 
-                (ngModelChange)="gridLoad()" 
-                placeholder="Client Id"  
-                [filter]="true" 
-                appendTo="body"
-                class=" w-100 
+              <p-dropdown [options]="clientData" optionLabel="client_name" optionValue="client_id"
+                [(ngModel)]="client_id" (ngModelChange)="gridLoad()" placeholder="Client Id" [filter]="true"
+                appendTo="body" class=" w-100 
                  drop-error header-drop">
                 <ng-template let-Client pTemplate="item">
                   <div class="country-item">
@@ -28,43 +21,32 @@
               </p-dropdown>
             </div>
             <div class="d-flex align-items-center">
-             
+
               <!-- Search Form -->
               <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
                   <!-- <i class="pi pi-search" ></i> -->
-                  <input
-                    pInputText
-                    type="text"
-                    [(ngModel)]="searchKeyword"
-                    name="searchKeyword"
-                    class="width-search"
-                    placeholder="  Search"
-                   (input)="filterGlobal()"
-                    (keydown.enter)="$event.preventDefault(); filterGlobal()"
-                  (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('Search', $event)">
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="  Search" (input)="filterGlobal()"
+                    (keydown.enter)="$event.preventDefault(); filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
-              
-                <button
-                  type="button"
-                  class="clear-button"
-                  (click)="searchKeyword = ''; filterGlobal();"
-                >
+
+                <button type="button" class="clear-button" (click)="searchKeyword = ''; filterGlobal();">
                   Clear
                 </button>
               </form>
 
-            <div class="card flex justify-center">
-              <button  *ngIf="!ShowForm" class="new-button p-button-text"
-                (click)="resetForm()" (click)="showAddForm()"> <i class="fas fa-plus"></i> Team</button>
+              <div class="card flex justify-center">
+                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                  (click)="showAddForm()"> <i class="fas fa-plus"></i> Team</button>
+              </div>
             </div>
-          </div>
 
           </div>
 
-          <p-table  #dt [value]="teamData" [styleClass]="'custom-table'" [globalFilterFields]="['team_name','age_category','team_category','gender','record_status']"
-             >
+          <p-table #dt [value]="teamData" [styleClass]="'custom-table'"
+            [globalFilterFields]="['team_name','age_category','team_category','gender','record_status']">
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="team_name">Team Name <p-sortIcon field="team_name"></p-sortIcon>
@@ -85,21 +67,16 @@
               <tr>
                 <td>
                   <span class="person-image-team-player">
-                    <img 
-                      class="player-img" 
-                      *ngIf="!teams.profile_img || !teams.player_profile" 
-                      [src]="default_img">
-                      
-                    <img 
-                      class="player-img" 
-                      *ngIf="teams.profile_img && teams.player_profile" 
-                      [src]="teams.profile_img" 
+                    <img class="player-img" *ngIf="!teams.profile_img || !teams.player_profile" [src]="default_img">
+
+                    <img class="player-img" *ngIf="teams.profile_img && teams.player_profile" [src]="teams.profile_img"
                       (error)="handleImageError($event, default_img)">
                   </span>
-                  <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)">  {{ teams.team_name }}</span>
-                
+                  <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)"> {{ teams.team_name
+                    }}</span>
+
                 </td>
-                
+
                 <td>{{ teams.age_category }}</td>
                 <td>{{ teams.team_category }}</td>
                 <td>{{ teams.gender }}</td>
@@ -115,28 +92,27 @@
                   <span class="icon-blue" (click)="EditTeam(teams.team_id)" pTooltip="Edit" tooltipPosition="top">
                     <i class="fa-solid fa-user-pen"></i>
                   </span>
-  
-                  <span class="icon-green"  (click)="StatusConfirm(teams.team_id,conditionConstants.active_status,teams.record_status)" pTooltip="Activate" tooltipPosition="top">
+
+                  <span class="icon-green"
+                    (click)="StatusConfirm(teams.team_id,conditionConstants.active_status,teams.record_status)"
+                    pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
-  
-                  <span class="icon-red"(click)="StatusConfirm(teams.team_id,conditionConstants.deactive_status,teams.record_status)" pTooltip="Deactivate" tooltipPosition="top">
+
+                  <span class="icon-red"
+                    (click)="StatusConfirm(teams.team_id,conditionConstants.deactive_status,teams.record_status)"
+                    pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
-                  </td>
+                </td>
 
               </tr>
             </ng-template>
           </p-table>
 
-
-
-
-
-            
           <p-dialog header="Teams Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
 
-        
+
             <div class="popup-container">
 
               <!-- ✅ Top bar: Image on left, Cancel button on right -->
@@ -159,32 +135,17 @@
                 <!-- Teams Details -->
                 <section class="popup-section">
                   <h2 class="section-title">⛳ Teams Details</h2>
-                  <div class="info-row"><span class="info-label">🚻Gender</span><span
-                      class="separator">|</span><span class="info-value">{{ teams['gender'] }}</span></div>
+                  <div class="info-row"><span class="info-label">🚻Gender</span><span class="separator">|</span><span
+                      class="info-value">{{ teams['gender'] }}</span></div>
                   <div class="info-row"><span class="info-label">📊 Age Group</span><span
                       class="separator">|</span><span class="info-value">{{ teams['age group'] }}</span></div>
                   <div class="info-row"><span class="info-label">🔢 Team Category</span><span
                       class="separator">|</span><span class="info-value">{{ teams['team category'] }}</span></div>
-                  
+
                 </section>
               </div>
             </div>
-
-
-
-
-
           </p-dialog>
-
-
-
-
-
-
-
-
-
-
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
             [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
@@ -197,151 +158,140 @@
       [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
 
-    <!-- Sidebar Modal -->
-      <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+    <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right"
+     [showCloseIcon]="false">
       <div class="d-flex justify-content-between align-items-center mb-4">
-<h3 class="small-heading">
-  {{ isEditMode ? 'Edit Team' : 'Add Team' }}
-</h3>
+        <h3 class="small-heading">
+          {{ isEditMode ? 'Edit Team' : 'Add Team' }}
+        </h3>
       </div>
-
-     
-        <form [formGroup]="addTeamForm">
-          <div class="row gy-3">
-            <div class="col-md-6">
-              <label class="">Team Name
-                <span class="text-danger">*</span>
-              </label>
-              <input class="form-control" maxlength="50" type="text" placeholder="Enter Team Name"
-                formControlName="team_name"(keypress)="blockQuotesOnly($event)"
+      <form [formGroup]="addTeamForm">
+        <div class="row gy-3">
+          <div class="col-md-6">
+            <label class="">Team Name
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Enter Team Name"
+              formControlName="team_name" 
+              (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('team_name', $event)">
-              <small
-                *ngIf="addTeamForm?.get('team_name')?.invalid &&(addTeamForm?.get('team_name')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
-                class="required-msg">Team
-                Name Is Required
-              </small>
-            </div>
+            <small
+              *ngIf="addTeamForm?.get('team_name')?.invalid &&(addTeamForm?.get('team_name')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
+              class="required-msg">Team
+              Name Is Required
+            </small>
+          </div>
 
-            <div class="col-md-6">
-              <label class="">Short Name
-               
-              </label>
-              <input class="form-control" maxlength="50" type="text" placeholder="Enter Short Name"
-                formControlName="team_short"(keypress)="blockQuotesOnly($event)"
+          <div class="col-md-6">
+            <label class="">Short Name
+
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Enter Short Name"
+              formControlName="team_short" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('team_short', $event)">
-            </div>
+          </div>
 
-            <div class="col-md-6">
-              <label for="gender">Gender
-                <span class="text-danger">*</span>
-              </label>
+          <div class="col-md-6">
+            <label for="gender">Gender
+              <span class="text-danger">*</span>
+            </label>
 
-              <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id" optionValue="config_id"
-                optionLabel="config_name" placeholder="select gender">
-                <ng-template let-gender pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ gender.config_name }}
-                    </div>
+            <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id" optionValue="config_id"
+              optionLabel="config_name" placeholder="select gender">
+              <ng-template let-gender pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ gender.config_name }}
                   </div>
-                </ng-template>
-              </p-dropdown>
-              <small
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
               *ngIf="addTeamForm?.get('gender_id')?.invalid &&(addTeamForm?.get('gender_id')?.touched) || (addTeamForm.get('gender_id')?.invalid && submitted)"
               class="required-msg">Gender
               Is Required
             </small>
-            </div>
+          </div>
 
-            <div class="col-md-6">
-              <label>Format Name
-                <span class="text-danger">*</span>
-              </label>
-              <p-dropdown [options]="formatList" class="drop-error " formControlName="format_id" optionValue="config_id"
-                optionLabel="config_name" placeholder="select Format Name"
-                >
-                <ng-template let-ageformat pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ ageformat.config_name }}
-                    </div>
+          <div class="col-md-6">
+            <label>Format Name
+              <span class="text-danger">*</span>
+            </label>
+            <p-dropdown [options]="formatList" class="drop-error " formControlName="format_id" optionValue="config_id"
+              optionLabel="config_name" placeholder="select Format Name">
+              <ng-template let-ageformat pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ ageformat.config_name }}
                   </div>
-                </ng-template>
-              </p-dropdown>
-              <small
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
               *ngIf="addTeamForm?.get('format_id')?.invalid &&(addTeamForm?.get('format_id')?.touched) || (addTeamForm.get('format_id')?.invalid && submitted)"
               class="required-msg">Format Name
               Is Required
 
             </small>
-            </div>
+          </div>
 
-            <div class="col-md-6">
-              <label>Age Group
-                <span class="text-danger">*</span>
-              </label>
-              <p-dropdown [options]="ageGroupList" class="drop-error " formControlName="age_category_id"
-                optionValue="config_id" optionLabel="config_name" placeholder="select Age Group">
-                <ng-template let-agegroup pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ agegroup.config_name }}
-                    </div>
+          <div class="col-md-6">
+            <label>Age Group
+              <span class="text-danger">*</span>
+            </label>
+            <p-dropdown [options]="ageGroupList" class="drop-error " formControlName="age_category_id"
+              optionValue="config_id" optionLabel="config_name" placeholder="select Age Group">
+              <ng-template let-agegroup pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ agegroup.config_name }}
                   </div>
-                </ng-template>
-              </p-dropdown>
-              <small
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
               *ngIf="addTeamForm?.get('age_category_id')?.invalid &&(addTeamForm?.get('age_category_id')?.touched) || (addTeamForm.get('age_category_id')?.invalid && submitted)"
               class="required-msg">Age Category
               Is Required
             </small>
-            </div>
-            <div class="col-md-6">
-              <label class="">Primary Color
-              </label>
-              <input class="form-control" maxlength="50" type="text" placeholder="Enter Primary Color"
-                formControlName="primary_color"(keypress)="blockQuotesOnly($event)"
+          </div>
+          <div class="col-md-6">
+            <label class="">Primary Color
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Enter Primary Color"
+              formControlName="primary_color" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('primary_color', $event)">
-            </div>
-            <div class="col-md-6">
-              <label class="">Secondary Color
-              </label>
-              <input class="form-control" maxlength="50" type="text" placeholder="Enter Secondary Color"
-                formControlName="secondary_color"(keypress)="blockQuotesOnly($event)"
+          </div>
+          <div class="col-md-6">
+            <label class="">Secondary Color
+            </label>
+            <input class="form-control" maxlength="50" type="text" placeholder="Enter Secondary Color"
+              formControlName="secondary_color" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('secondary_color', $event)">
-            </div>
+          </div>
 
-
-
-<div class="col-md-6">
-              <label>Club ID</label>
-               <span class="text-danger">*</span>
-              <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
-                optionLabel="club_name" placeholder="Select Club Id">
-                <ng-template let-club pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ club.club_name }}
-                    </div>
+          <div class="col-md-6">
+            <label>Club ID</label>
+            <span class="text-danger">*</span>
+            <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
+              optionLabel="club_name" placeholder="Select Club Id">
+              <ng-template let-club pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ club.club_name }}
                   </div>
-                </ng-template>
-              </p-dropdown>
-              <small
-                *ngIf="addTeamForm?.get('club_id')?.invalid &&(addTeamForm?.get('club_id')?.touched) || (addTeamForm.get('club_id')?.invalid && submitted)"
-                class="required-msg"> Club ID is Required
-              </small>
-            </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              *ngIf="addTeamForm?.get('club_id')?.invalid &&(addTeamForm?.get('club_id')?.touched) || (addTeamForm.get('club_id')?.invalid && submitted)"
+              class="required-msg"> Club ID is Required
+            </small>
+          </div>
 
-
-
-
-
-               <div class="col-md-6">
+          <div class="col-md-6">
             <label>Country
               <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="countriesData" class="drop-error " formControlName="country_id"
-              optionValue="country_id" optionLabel="country_name"
-               placeholder="select Country" appendTo="self" 
-                [panelStyleClass]="'custom-dropdown-panel'"
-                [filter]="true" filterBy="country_name" [showClear]="false"
-                 >
+              optionValue="country_id" optionLabel="country_name" placeholder="select Country" appendTo="self"
+              [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" filterBy="country_name" [showClear]="false">
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ country.country_name }}
@@ -356,64 +306,52 @@
             </small>
           </div>
 
-
-
-     <div class="col-md-6">
-              <label class="">Reference Sourece ID
-                <span class="text-danger">*</span>
-              </label>
-              <input class="form-control" maxlength="20" type="text" placeholder="Enter Reference Sourece ID"
-                formControlName="reference_id"(keypress)="blockQuotesOnly($event)"
+          <div class="col-md-6">
+            <label class="">Reference Sourece ID
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="20" type="text" placeholder="Enter Reference Sourece ID"
+              formControlName="reference_id" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('reference_id', $event)">
-              <small
-                *ngIf="addTeamForm?.get('reference_id')?.invalid &&(addTeamForm?.get('reference_id')?.touched) || (addTeamForm.get('reference_id')?.invalid && submitted)"
-                class="required-msg">Reference Sourece ID Required
-              </small>
+            <small
+              *ngIf="addTeamForm?.get('reference_id')?.invalid &&(addTeamForm?.get('reference_id')?.touched) || (addTeamForm.get('reference_id')?.invalid && submitted)"
+              class="required-msg">Reference Sourece ID Required
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <div class="image-upload-container text-center">
+              <label for="profileImageInput" class="upload-label">
+                <div class="image-preview-wrapper">
+                  <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
+                  <ng-template #placeholder>
+                  </ng-template>
+                </div>
+                <div class="upload-btn">Upload</div>
+              </label>
+              <input type="file" id="profileImageInput" accept="image/*" (change)="onProfileImageSelected($event)"
+                hidden formControlName="team_profile" />
             </div>
+          </div>
 
+        </div>
+        <div class="row mt-4 sticky-footer-buttons" >
+          <div class="col-12 text-end">
+            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+              (click)="cancelForm()"></button>
 
+            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+              *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
+              (click)="resetForm()"></button>
 
-
-            <div class="col-md-6">
-              <div class="image-upload-container text-center">
-                <label for="profileImageInput" class="upload-label">
-                  <div class="image-preview-wrapper">
-                    <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
-                    <ng-template #placeholder>
-                    </ng-template>
-                  </div>
-                  <div class="upload-btn">Upload</div>
-                </label>
-                <input
-                  type="file"
-                  id="profileImageInput"
-                  accept="image/*"
-                  (change)="onProfileImageSelected($event)"
-                  hidden
-                  formControlName="profile_img_url"
-                />
-              </div>
-            </div>
+            <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>
 
           </div>
-       <div class="row mt-4" *ngIf="!viewMode">
-                        <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-                (click)="cancelForm()"></button>
 
-              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
-                (click)="resetForm()"></button>
-
-              <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>
-
-            </div>
-          
         </div>
-        </form>
-        </p-drawer>
-      <!-- </div>
-    </p-sidebar> -->
+      </form>
+    </p-drawer>
+
   </div>
 </div>
 <p-toast key="tc" position="top-right"></p-toast>

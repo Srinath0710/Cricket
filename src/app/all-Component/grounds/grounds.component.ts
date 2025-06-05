@@ -80,7 +80,6 @@ GroundsNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
 
-
   constructor(private formBuilder: FormBuilder,
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
@@ -96,7 +95,7 @@ GroundsNamePattern = /^[^'"]+$/; //allstringonly allow value
     this.Clientdropdown();
 
     this.addGroundForm = this.formBuilder.group({
-ground_name: ['', [Validators.required]],
+      ground_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
       country_id: ['', [Validators.required]],
       state_id: [''],
@@ -190,9 +189,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.ClientID = this.clientData[0].client_id;
       this.gridload();
     }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
-        this.apiService.RefreshToken();
-      }
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
   }
 
@@ -209,9 +206,11 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         console.log("All clubs:", this.configDataList);
       },
       (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
-        } else {  
+          this.failedToast(err);
+        } 
+        else {  
           this.configDataList = [];
           console.error("Error fetching clubs dropdown:", err);
         }
@@ -238,7 +237,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         },
         error: (err) => {
           if (
-            err.status === this.statusConstants.refresh &&
+            err.status_code === this.statusConstants.refresh &&
             err.error.message === this.statusConstants.refresh_msg
           ) {
             this.apiService.RefreshToken();
@@ -368,14 +367,14 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
   }
@@ -431,7 +430,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       }
     },
       (err: any) => {
-        err.status === this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);
@@ -476,7 +475,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);
@@ -487,8 +486,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
   StatusConfirm(ground_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
 
     if (AlreadyStatestatus) {
       return;
@@ -519,14 +518,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.countriesList = res.data.countries != undefined ? res.data.countries : [];
       this.loading = false;
       this.country_id = this.countriesList[0].country_id;
-      // this.gridload();
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
-
-      } else {
-        this.failedToast(err);
-      }
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
   }
 
@@ -544,12 +537,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
       this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
 
-      } else {
-        this.failedToast(err);
-      }
     });
   }
 
@@ -566,10 +555,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.statesList = res.data.states != undefined ? res.data.states : [];
       this.loading = false;
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
 
-      }
     });
   }
   formSetValue() {

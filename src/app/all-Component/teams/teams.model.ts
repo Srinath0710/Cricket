@@ -32,7 +32,7 @@ export class EditTeam {
   club_id: string;
   reference_id: number;
   country_id: string;
-  //  team_profile: '';
+   team_profile: string;
 
 
   constructor(item: Partial<EditTeam> = {}) {
@@ -48,7 +48,7 @@ export class EditTeam {
     this.club_id = item.club_id || '';
     this.reference_id = item.reference_id || 0;
     this.country_id = item.country_id || '';
-    // /this.team_profile = '';
+    this.team_profile = item.team_profile || '';
      }
 }
 
