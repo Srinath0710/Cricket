@@ -1,0 +1,39 @@
+/* ::ng-deep .p-drawer-right {
+    width: 97vw !important;
+} */
+
+::ng-deep .drawer-personal.p-drawer.p-drawer-right {
+  width: 97vw !important;
+  max-width: 97vw !important;
+}
+
+
+
+
+/* ::ng-deep .p-dropdown {
+  text-align: center !important;
+}
+
+::ng-deep .p-dropdown-label {
+  justify-content: center !important;
+  display: flex !important;
+  align-items: center !important;
+  text-align: center !important;
+} */
+
+.readonly-true,
+.readonly-false {
+  position: absolute;
+  right: 85%;
+  width: 150px; /* fix width */
+  padding: 5px 10px;
+  text-align: center;
+  background-color: rgb(211, 27, 27) !important;
+  color: white !important;
+  border: 1px solid rgb(211, 27, 27) !important;
+}
+
+.readonly-false {
+  background-color: rgb(21, 133, 21) !important;
+  border: 1px solid rgb(21, 133, 21) !important;
+}

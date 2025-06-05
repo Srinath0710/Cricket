@@ -9,16 +9,9 @@
               All Official
             </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
-              <p-dropdown 
-                [options]="clientData" 
-                optionLabel="client_name" 
-                optionValue="client_id"
-                [(ngModel)]="client_id" 
-                (ngModelChange)="callBackClientChange()" 
-                placeholder="Client Id"  
-                [filter]="true" 
-                appendTo="body"
-                class=" w-100 
+              <p-dropdown [options]="clientData" optionLabel="client_name" optionValue="client_id"
+                [(ngModel)]="client_id" (ngModelChange)="callBackClientChange()" placeholder="Client Id" [filter]="true"
+                appendTo="body" class=" w-100 
                  drop-error header-drop">
                 <ng-template let-Client pTemplate="item">
                   <div class="country-item">
@@ -33,7 +26,7 @@
 
                 <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
                   placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('Search', $event)">
+                  (input)="sanitizeQuotesOnly('Search', $event)">
               </div>
               <button type="button" class="clear-button" (click)="clear()"> Clear </button>
 
@@ -124,9 +117,11 @@
 
                 <td>
 
+
                   <span class="icon-blue" (click)="Editofficial(official)" pTooltip="Edit" tooltipPosition="top">
                     <i class="fa-solid fa-user-pen"></i>
                   </span>
+
 
                   <span class="icon-green"
                     (click)="StatusConfirm(official.official_id,conditionConstants.active_status,official.record_status)"
@@ -139,6 +134,20 @@
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
+
+                  <!-- <span class="icon-white" (click)="Perfoileupdate(official)" pTooltip="Edit" tooltipPosition="top">
+                       <i class="fa-solid fa-eye"></i> 
+                  </span> -->
+
+                  <!-- <span class="icon-rose" (click)="personalAddShowForm(official)" pTooltip="Edit" tooltipPosition="top">
+                    <i class="fa-solid fa-building-columns"></i>
+                  </span> -->
+                  <span class="icon-rose" pTooltip="Edit" tooltipPosition="top"
+                    (click)="Editpersonalofficial(official)">
+                    <i class="fa-solid fa-building-columns"></i>
+                  </span>
+
+
 
                 </td>
 
@@ -167,8 +176,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter First Name"
-                formControlName="first_name"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('first_name', $event)">
+                formControlName="first_name" (keypress)="blockQuotesOnly($event)"
+                (input)="sanitizeQuotesOnly('first_name', $event)">
               <small
                 *ngIf="addOfficialForm?.get('first_name')?.invalid &&(addOfficialForm?.get('first_name')?.touched) || (addOfficialForm.get('first_name')?.invalid && submitted)"
                 class="required-msg"> First name is Required
@@ -181,8 +190,8 @@
               <label class="">Middle Name
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Middle Name"
-                formControlName="middle_name"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('middle_name', $event)">
+                formControlName="middle_name" (keypress)="blockQuotesOnly($event)"
+                (input)="sanitizeQuotesOnly('middle_name', $event)">
 
             </div>
 
@@ -190,8 +199,8 @@
               <label class="">Sur Name
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Sure Name "
-                formControlName="sur_name"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('sur_name', $event)">
+                formControlName="sur_name" (keypress)="blockQuotesOnly($event)"
+                (input)="sanitizeQuotesOnly('sur_name', $event)">
               <small
                 *ngIf="addOfficialForm.get('sur_name')?.invalid &&(addOfficialForm.get('sur_name')?.touched) || (addOfficialForm.get('sur_name')?.invalid && submitted)"
                 class="text-danger">Sur name is Required
@@ -204,8 +213,8 @@
                 <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" placeholder="Enter Display Name "
-                formControlName="display_name"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('display_name', $event)">
+                formControlName="display_name" (keypress)="blockQuotesOnly($event)"
+                (input)="sanitizeQuotesOnly('display_name', $event)">
               <small
                 *ngIf="addOfficialForm.get('display_name')?.invalid &&(addOfficialForm.get('display_name')?.touched) || (addOfficialForm.get('display_name')?.invalid && submitted)"
                 class="required-msg">Display name is Required
@@ -213,32 +222,32 @@
             </div>
 
 
-                   <div class="col-md-6">
-            <label>Club ID</label>
-            <span class="text-danger">*</span>
-            <p-dropdown [options]="clubsDropdownData" class="drop-error " formControlName="club_id" optionValue="club_id"
-              optionLabel="club_name" placeholder="Select Club Id">
-              <ng-template let-club pTemplate="item">
-                <div class="flex align-items-center gap-2">
-                  <div>{{ club.club_name }}
+            <div class="col-md-6">
+              <label>Club ID</label>
+              <span class="text-danger">*</span>
+              <p-dropdown [options]="clubsDropdownData" class="drop-error " formControlName="club_id"
+                optionValue="club_id" optionLabel="club_name" placeholder="Select Club Id">
+                <ng-template let-club pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ club.club_name }}
+                    </div>
                   </div>
-                </div>
-              </ng-template>
-            </p-dropdown>
-            <small
-              *ngIf="addOfficialForm?.get('club_id')?.invalid &&(addOfficialForm?.get('club_id')?.touched) || (addOfficialForm.get('club_id')?.invalid && submitted)"
-              class="required-msg"> Club ID is Required
-            </small>
-          </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addOfficialForm?.get('club_id')?.invalid &&(addOfficialForm?.get('club_id')?.touched) || (addOfficialForm.get('club_id')?.invalid && submitted)"
+                class="required-msg"> Club ID is Required
+              </small>
+            </div>
 
 
 
-              <div class="col-md-6">
-              <label class="">Reference Sourece ID 
+            <div class="col-md-6">
+              <label class="">Reference Sourece ID
               </label>
               <input class="form-control" maxlength="20" type="text" placeholder="Enter Reference Sourece ID "
-                formControlName="reference_id"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('reference_id', $event)">
+                formControlName="reference_id" (keypress)="blockQuotesOnly($event)"
+                (input)="sanitizeQuotesOnly('reference_id', $event)">
 
             </div>
 
@@ -253,35 +262,35 @@
             </div>
 
 
-               <div class="col-md-6">
-                          <label>Gender</label>
-                          <span class="text-danger">*</span>
+            <div class="col-md-6">
+              <label>Gender</label>
+              <span class="text-danger">*</span>
 
-                          <p-dropdown [options]="genderSelect" class="drop-error " formControlName="gender_id"
-                            optionValue="config_id" optionLabel="config_name" placeholder="Select Gender"
-                            [panelStyleClass]="'custom-dropdown-panel'">
-                            <ng-template let-gender pTemplate="item">
-                              <div class="flex align-items-center gap-2">
-                                <div>{{ gender.config_name }}
-                                </div>
-                              </div>
-                            </ng-template>
-                          </p-dropdown>
-                          <small
-                            *ngIf="addOfficialForm.get('gender_id')?.invalid &&(addOfficialForm.get('gender_id')?.touched) || (addOfficialForm.get('gender_id')?.invalid && submitted)"
-                            class="required-msg"> Gender is Required
-                          </small>
-                        </div>
+              <p-dropdown [options]="genderSelect" class="drop-error " formControlName="gender_id"
+                optionValue="config_id" optionLabel="config_name" placeholder="Select Gender"
+                [panelStyleClass]="'custom-dropdown-panel'">
+                <ng-template let-gender pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ gender.config_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addOfficialForm.get('gender_id')?.invalid &&(addOfficialForm.get('gender_id')?.touched) || (addOfficialForm.get('gender_id')?.invalid && submitted)"
+                class="required-msg"> Gender is Required
+              </small>
+            </div>
 
-                         <div class="col-md-6">
-                          <label>Player DOB</label>
-                          <input class="form-control" type="date" placeholder="Enter DOB" formControlName="dob">
-                        </div>
+            <div class="col-md-6">
+              <label>Player DOB</label>
+              <input class="form-control" type="date" placeholder="Enter DOB" formControlName="dob">
+            </div>
 
             <div class="col-md-6">
 
               <label>Country</label>
-                <span class="text-danger">*</span>
+              <span class="text-danger">*</span>
               <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="country_id"
                 optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country">
                 <ng-template let-gender pTemplate="item">
@@ -291,7 +300,7 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-               <small
+              <small
                 *ngIf="addOfficialForm?.get('country_id')?.invalid &&(addOfficialForm?.get('country_id')?.touched) || (addOfficialForm.get('country_id')?.invalid && submitted)"
                 class="required-msg"> country is Required
               </small>
@@ -300,7 +309,7 @@
 
             <div class="col-md-6">
               <label>Format</label>
-               <span class="text-danger">*</span>
+              <span class="text-danger">*</span>
               <p-dropdown [options]="teamformat" class="drop-error " formControlName="format_id" optionValue="config_id"
                 optionLabel="config_name" placeholder="Select Format Id">
                 <ng-template let-gender pTemplate="item">
@@ -320,7 +329,7 @@
 
             <div class="col-md-6">
               <label>Official Type</label>
-               <span class="text-danger">*</span>
+              <span class="text-danger">*</span>
               <p-dropdown [options]="officialtype" class="drop-error" formControlName="official_type_id"
                 optionValue="config_id" optionLabel="config_name" placeholder="Select Official Type"
                 (onChange)="onOfficialChange($event.value)">
@@ -330,17 +339,17 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-                 <small
+              <small
                 *ngIf="addOfficialForm?.get('official_type_id')?.invalid &&(addOfficialForm?.get('official_type_id')?.touched) || (addOfficialForm.get('official_type_id')?.invalid && submitted)"
                 class="required-msg"> official type is Required
               </small>
-              
+
             </div>
 
             <!-- Child Dropdown with dynamic label -->
             <div class="col-md-6" *ngIf="childOptions.length > 0">
               <label>{{ childLabel }}</label>
-               <span class="text-danger">*</span>
+              <span class="text-danger">*</span>
               <p-dropdown [options]="childOptions" class="drop-error" formControlName="official_category_id"
                 optionValue="config_id" optionLabel="config_name" placeholder="Select {{ childLabel }}">
                 <ng-template let-option pTemplate="item">
@@ -354,7 +363,7 @@
                 class="required-msg"> official type is Required
               </small>
             </div>
-         </div>
+          </div>
 
 
 
@@ -368,7 +377,12 @@
                 <button pButton type="button" label="Clear" class="p-button-secondary me-3"
                   (click)="resetForm()"></button>
 
+
                 <button pButton type="button" label="Save" class="save-button" (click)="addOfficialdata()"></button>
+
+
+
+
               </div>
             </div>
           </div>
@@ -376,6 +390,443 @@
         <!-- </div>
       </p-sidebar> -->
       </p-drawer>
+
+
+
+
+      <!-- Personal Upadte Form Page -->
+      <p-drawer [(visible)]="personalShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false"
+        styleClass="drawer-personal">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="small-heading">
+            {{ isEditPersonal ? 'Add Personal Information' : '' }}
+
+          </h3>
+        </div>
+
+        <form [formGroup]="addPersonalForm">
+          <div class="row gy-3">
+
+            <div class="col-md-3">
+              <label>Country OF Birth
+                <span class="text-danger">*</span>
+              </label>
+              <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_of_birth"
+                (ngModelChange)="getStates(addPersonalForm.get('country_id')?.value)" optionValue="country_id"
+                optionLabel="country_name" appendTo="self" [panelStyleClass]="'custom-dropdown-panel'"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-country pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ country.country_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addPersonalForm?.get('country_id')?.invalid &&(addPersonalForm.get('country_id')?.touched) || (addPersonalForm.get('country_id')?.invalid && submitted)"
+                class="required-msg">Country
+                Is Required
+              </small>
+            </div>
+
+            <div class="col-md-3">
+              <label>Primary Email Id</label>
+              <input class="form-control" type="email" maxlength="100" formControlName="primary_email_id"
+                [readonly]="disableReadonly&&isPersonalDataIntialized" />
+              <div
+                *ngIf="addPersonalForm.get('primary_email_id')?.touched && addPersonalForm.get('primary_email_id')?.invalid">
+                <small *ngIf="addPersonalForm.get('primary_email_id')?.errors?.['pattern']" class="required-msg">
+                  * Invalid email: abcd&#64;example.com
+                </small>
+
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label>Secondary Email Id</label>
+              <input class="form-control" type="email" maxlength="100" formControlName="secondary_email_id"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+              <div
+                *ngIf="addPersonalForm.get('secondary_email_id')?.touched && addPersonalForm.get('secondary_email_id')?.invalid">
+                <small *ngIf="addPersonalForm.get('secondary_email_id')?.errors?.['pattern']" class="required-msg">
+                  * Invalid email: abcd&#64;example.com
+                </small>
+
+              </div>
+            </div>
+
+            <div class="col-md-3">
+
+              <label>Nationality</label>
+              <span class="text-danger">*</span>
+              <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="nationality_id"
+                optionValue="region_id" optionLabel="region_name" [filter]="true"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-gender pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ gender.region_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addPersonalForm?.get('nationality_id')?.invalid &&(addPersonalForm?.get('nationality_id')?.touched) || (addPersonalForm.get('nationality_id')?.invalid && submitted)"
+                class="required-msg"> country is Required
+              </small>
+            </div>
+
+
+
+            <div class="col-md-3">
+              <label>Residence Country ID
+                <span class="text-danger">*</span>
+              </label>
+              <p-dropdown [options]="countriesList" class="drop-error " formControlName="residence_country_id"
+                (ngModelChange)="getStates(addPersonalForm.get('country_id')?.value)" optionValue="country_id"
+                optionLabel="country_name" appendTo="self" [panelStyleClass]="'custom-dropdown-panel'"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-country pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ country.country_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addPersonalForm?.get('country_id')?.invalid &&(addPersonalForm.get('country_id')?.touched) || (addPersonalForm.get('country_id')?.invalid && submitted)"
+                class="required-msg">Country
+                Is Required
+              </small>
+            </div>
+
+
+
+            <div class="col-md-3">
+              <label>Primary Phone NO</label>
+              <input class="form-control" type="text" maxlength="10" formControlName="primary_phone"
+                (input)="onPhoneNumberInput($event, 'primary_phone')"
+                [readonly]="disableReadonly&&isPersonalDataIntialized" />
+
+              <div
+                *ngIf="addPersonalForm.get('primary_phone')?.touched && addPersonalForm.get('primary_phone')?.invalid">
+                <small *ngIf="addPersonalForm.get('primary_phone')?.errors?.['pattern']" class="required-msg">
+                  * Invalid mobile number
+                </small>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label>Secondary Phone NO</label>
+              <input class="form-control" type="text" maxlength="10" formControlName="secondary_phone"
+                (input)="onPhoneNumberInput($event, 'secondary_phone')"
+                [readonly]="disableReadonly&&isPersonalDataIntialized" />
+
+              <div
+                *ngIf="addPersonalForm.get('secondary_phone')?.touched && addPersonalForm.get('secondary_phone')?.invalid">
+                <small *ngIf="addPersonalForm.get('secondary_phone')?.errors?.['pattern']" class="required-msg">
+                  * Invalid mobile number
+                </small>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Father Name
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="father_name"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Mother Name
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="mother_name"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+
+            <div class="col-md-3">
+              <label class="">Guardian
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="guardian_name"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Address 1
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="address_1"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Address 2
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="address_2"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <!-- Country Dropdown -->
+            <div class="col-md-3">
+              <label>Country
+                <span class="text-danger">*</span>
+              </label>
+              <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_id"
+                (ngModelChange)="getStates(addPersonalForm.get('country_id')?.value)" optionValue="country_id"
+                optionLabel="country_name" appendTo="self" [panelStyleClass]="'custom-dropdown-panel'"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-country pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ country.country_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addPersonalForm?.get('country_id')?.invalid &&(addPersonalForm.get('country_id')?.touched) || (addPersonalForm.get('country_id')?.invalid && submitted)"
+                class="required-msg">Country
+                Is Required
+              </small>
+            </div>
+            <div class="col-md-3">
+              <label>State
+              </label>
+              <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
+                (ngModelChange)="getCities(addPersonalForm.get('state_id')?.value)" optionValue="state_id"
+                optionLabel="state_name" [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-state pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ state.state_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+
+            </div>
+            <div class="col-md-3">
+              <label>City
+              </label>
+              <p-dropdown [options]="citiesList" class="drop-error " formControlName="city_id" optionValue="city_id"
+                optionLabel="city_name" [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-city pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ city.city_name }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+
+            </div>
+            <div class="col-md-3">
+              <label class="">Post Code
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="10" type="text" formControlName="post_code"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('post_code', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+
+            </div>
+
+
+            <div class="col-md-3">
+              <label>Emergency Phone NO</label>
+              <input class="form-control" type="text" maxlength="10" formControlName="emergency_number"
+                (input)="onPhoneNumberInput($event, 'emergency_number')"
+                [readonly]="disableReadonly&&isPersonalDataIntialized" />
+
+              <div
+                *ngIf="addPersonalForm.get('emergency_number')?.touched && addPersonalForm.get('emergency_number')?.invalid">
+                <small *ngIf="addPersonalForm.get('emergency_number')?.errors?.['pattern']" class="required-msg">
+                  * Invalid mobile number
+                </small>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label>Emergency Email Id</label>
+              <input class="form-control" type="email" maxlength="100" formControlName="emergency_email"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+              <div
+                *ngIf="addPersonalForm.get('emergency_email')?.touched && addPersonalForm.get('emergency_email')?.invalid">
+                <small *ngIf="addPersonalForm.get('emergency_email')?.errors?.['pattern']" class="required-msg">
+                  * Invalid email: abcd&#64;example.com
+                </small>
+
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Emergency Contact
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="emergency_contact"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <div class="col-md-3">
+              <label>Emergency Type <span class="text-danger">*</span></label>
+              <p-dropdown [options]="emergencyTypeList" class="drop-error" formControlName="emergency_type"
+                optionValue="config_id" optionLabel="config_name"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-item pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ item.config_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+            <div class="col-md-3">
+              <label>Accreditation Level <span class="text-danger">*</span></label>
+              <p-dropdown [options]="accreditationList" class="drop-error" formControlName="accreditation_level_id"
+                optionValue="config_id" optionLabel="config_name"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-item pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ item.config_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Accreditation Id
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="accreditation_id"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <div class="col-md-3">
+              <label>Official Profile Status <span class="text-danger">*</span></label>
+              <p-dropdown [options]="officialStatusList" class="drop-error" formControlName="profile_status_id"
+                optionValue="config_id" optionLabel="config_name"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-item pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ item.config_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+            <div class="col-md-3">
+              <label>Accreditation Expiry Date</label>
+              <input class="form-control" type="date" formControlName="accreditation_expiry_date"
+                [readonly]="disableReadonly && isPersonalDataIntialized" />
+            </div>
+
+
+            <div class="col-md-3">
+              <label>Blood Group <span class="text-danger">*</span></label>
+              <p-dropdown [options]="bloodgroup" class="drop-error" formControlName="blood_group_id"
+                optionValue="config_id" optionLabel="config_name"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+                <ng-template let-item pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ item.config_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+
+
+            <div class="col-md-3">
+              <label class="">Years OF Experience
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="years_of_experience"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+
+
+            <div class="col-md-3">
+              <label class="">Twitter Handle
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="twitter_handle"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Instagram Handle
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="instagram_handle"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+            <div class="col-md-3">
+              <label class="">Facebook Url
+                <span class="text-danger">*</span>
+              </label>
+              <input class="form-control" maxlength="50" type="text" formControlName="facebook_url"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
+                [readonly]="disableReadonly&&isPersonalDataIntialized">
+
+            </div>
+
+          </div>
+
+          <div class="form-wrapper pb-5">
+
+            <div class="row mt-4 sticky-footer-buttons">
+              <div class="col-12 text-end">
+
+                <button *ngIf="isPersonalDataIntialized" pButton type="button"
+                  [label]="disableReadonly ? 'EnableReadOnly' : 'DisableReadOnly'"
+                  [ngClass]="disableReadonly ? 'readonly-true' : 'readonly-false'" (click)="enableEditMode()">
+                </button>
+
+
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                  (click)="cancelForm()"></button>
+
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                  (click)="resetForm()"></button>
+
+                <button pButton type="button" label="Save" class="save-button"
+                  (click)="PersonalupdateOfficial()"></button>
+
+
+
+
+              </div>
+            </div>
+          </div>
+        </form>
+        <!-- </div>
+      </p-sidebar> -->
+
+      </p-drawer>
+
     </main>
   </div>
 </div>
