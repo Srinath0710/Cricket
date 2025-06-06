@@ -19,9 +19,9 @@ export class URLCONSTANT {
       editTeam = "Teams/edit_team"
       updateTeam = "Teams/update_team"
       addTeam = "Teams/add_team"
-      teamclubdropdown ="Teams/get_teams_dropdown"
+      teamclubdropdown = "Teams/get_teams_dropdown"
       teamcountrydropdown = "Global/get_countries"
-      viewgroundTeams ="Teams/view_team"
+      viewgroundTeams = "Teams/view_team"
 
 
 
@@ -36,10 +36,13 @@ export class URLCONSTANT {
       deactiveplayer = "Player/deactivate_player"
       duplicateplayer = "Player/dupcheck_player"
       nationalityplayer = "Country/get_country_dropdown"
-       playerclubdropdown ="Teams/get_teams_dropdown"
+      playerclubdropdown = "Teams/get_teams_dropdown"
+      playerpersonalupadate = "Player/update_player_personal"
+      playersPersonalEdit = "Player/edit_player_personal"
+      playerspersonaldropdown = "Official/get_official_dropdown"
 
 
- // Official  List 
+      // Official  List 
       dropdownofficial = "Official/get_official_dropdown"
       officiallist = "Official/get_official_list"
       addofficial = "Official/add_official"
@@ -48,9 +51,13 @@ export class URLCONSTANT {
       activateofficial = "Official/activate_official"
       deactivateofficial = "Official/deactivate_official"
       profileofficial = "Official/official_profile_update"
-      countryofficial = {action_flag:'dropdown',url:"Country/get_country_dropdown"}
-      clientdropdown="Client/get_client_dropdown"
-      officialclubdropdown="Official/get_official_dropdown"
+      countryofficial = { action_flag: 'dropdown', url: "Country/get_country_dropdown" }
+      clientdropdown = "Client/get_client_dropdown"
+      officialclubdropdown = "Official/get_official_dropdown"
+      officialprofileupadate = "Official/official_profile_update"
+      officialpersonalupadate = "Official/update_official_personal"
+      officialpersonaledit = "Official/edit_official_personal"
+      officialpersonaldropdown = "Official/get_official_dropdown"
 
 
       /*State List*/
@@ -84,7 +91,7 @@ export class URLCONSTANT {
       getstate = "Global/get_state_by_country"
       CountryDropdown = "Global/get_countries"
 
-/*Grounds List*/
+      /*Grounds List*/
       getGroundList = "Ground/get_ground_list"
       addGround = "Ground/add_ground"
       editGround = "Ground/edit_ground"
@@ -95,7 +102,7 @@ export class URLCONSTANT {
       profileGround = "Ground/update_ground_photo"
 
       groundUserClient = "User/get_user_client_list"
-      groundclubdropdown ="Ground/get_ground_dropdown"
+      groundclubdropdown = "Ground/get_ground_dropdown"
 
 
 
@@ -108,16 +115,19 @@ export class URLCONSTANT {
       toggleCompetitionStatus = 'Competition/toggle_status'
       dropdownlookups = 'Competition/get_competition_dropdown'
       editcompetition = 'Competition/edit_competition'
-
+      activecompetition = 'Competition/activate_competition'
+      deactivecompetition = 'Competition/deactivate_competition'
+ 
       compTeamsList = 'Competition/get_competition_teams'
-      compTeamsUpdate = 'Competition/add_competition_teams'
-      compTeamadd ='Competition/add_competition_teams'
+      compTeamsUpdate = 'Competition/update_competition_teams'
+      compTeamadd = 'Competition/add_competition_teams'
       compOfficialList = 'Competition/get_competition_officials'
       compOfficialupdate = 'Competition/add_competition_officials'
       compgroundList = 'Competition/get_competition_grounds'
       compgroundupdate = 'Competition/add_competition_grounds'
       compplayerlist = 'Competition/get_competition_players'
-      compplayerupdate = 'Competition/add_competition_players'
+      compplayeradd = 'Competition/add_competition_players'
+      compplayerupdate = 'Competition/update_competition_players'
 
       /*   FIXTURE */
       fixturedropdown = 'Fixture/get_fixtures_dropdown'
@@ -134,18 +144,18 @@ export class URLCONSTANT {
       updateMenuPermissionsList = 'User/update_menu_permissions'
       updateRoleList = 'User/update_role'
       createRoleList = 'User/create_role'
-      activeRole = 'User/activate_role' 
+      activeRole = 'User/activate_role'
       deactivateRole = 'User/deactivate_role'
 
       /*   Client List */
       createclient = 'Client/add_client'
-      updateclient='Client/update_client'
-      editclient='Client/edit_client'
-      activeClient='Client/activate_client'
-      deactiveClient='Client/deactivate_client'
-      getclientList='Client/get_client_list'
-      viewclient='Client/view_client'
-      lookupdropdown='Client/get_client_dropdown'
+      updateclient = 'Client/update_client'
+      editclient = 'Client/edit_client'
+      activeClient = 'Client/activate_client'
+      deactiveClient = 'Client/deactivate_client'
+      getclientList = 'Client/get_client_list'
+      viewclient = 'Client/view_client'
+      lookupdropdown = 'Client/get_client_dropdown'
 
       /* Club List */
       Clubdropdown = 'Club/get_club_dropdown'

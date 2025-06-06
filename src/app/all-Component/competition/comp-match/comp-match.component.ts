@@ -79,7 +79,7 @@ export class CompMatchComponent implements OnInit {
       match_end_date: ['', []],
       time_zone_id: ['', []],
       day_type: ['', []],
-      // is_neutral_venue: ['', []],
+      is_neutral_venue: ['', []],
       team_1_code: ['', []],
       team_2_code: ['', []],
       ground_id: ['', []],
@@ -250,12 +250,12 @@ export class CompMatchComponent implements OnInit {
       action_flag: 'create',
 
     }
-    // if (this.competitionFixturesForm.controls['is_neutral_venue'].value == "1") {
-    //   params.is_neutral_venue = "1"
-    // }
-    // else {
-    //   params.is_neutral_venue = "0"
-    // }
+    if (this.competitionFixturesForm.controls['is_neutral_venue'].value == "1") {
+      params.is_neutral_venue = "1"
+    }
+    else {
+      params.is_neutral_venue = "0"
+    }
    
     if (this.competitionFixturesForm.value.match_id){
       params.action_flag = 'update';
@@ -300,10 +300,56 @@ export class CompMatchComponent implements OnInit {
     }
 }
 
-editCardData(match_id:any){
+editCardData(match_id: number){
   console.log("hello edit ")
+    const params: any = {};
+    params.user_id = this.user_id?.toString();
+    params.client_id = this.client_id?.toString();
+    params.competition_id = this.CompetitionData.competition_id.toString();
+    params.match_id= match_id.toString(), 
+    this.apiService.post(this.urlConstant.editfixture, params).subscribe((res) => {
+      if (res.status_code == 200) {
+        const editRecord: any = res.data.fixtures[0] ?? {};
+        if (editRecord != null) {
+          this.competitionFixturesForm.setValue({
+            match_id: editRecord.match_id,
+            match_name: editRecord.match_name,
+            match_overs: editRecord.match_overs,
+            match_start_date: editRecord.match_start_date,
+            match_end_date: editRecord.match_end_date,
+            time_zone_id: editRecord.time_zone_id,
+            day_type: editRecord.day_type,
+            is_neutral_venue: editRecord.is_neutral_venue,
+            team_1_code: editRecord.team_1_code,
+            team_2_code: editRecord.team_2_code,
+            ground_id: editRecord.ground_id,
+            // description: editRecord.description ,
+            match_group_id: editRecord.match_group_id,
+            match_phase_id:  editRecord.match_phase_id,
+            umpire_1:  editRecord.umpire_1,
+            umpire_2:  editRecord.umpire_2,
+            umpire_3:  editRecord.umpire_3,
+            umpire_4:  editRecord.umpire_4,
+            referee_id:  editRecord.match_phase_id,
+            sr_video:  editRecord.sr_video,
+            jr_video:  editRecord.jr_video,
+            manual_scorer_id:  editRecord.manual_scorer_id,
+            digital_scorer_id:  editRecord.digital_scorer_id,
+            local_video_path:  editRecord.local_video_path,
+            sequence_no:  editRecord.sequence_no,
+          });
+          this.ShowForm = true;
+           }
+      } else {
+        this.failedToast(res);
+      }
+    }, (err: any) => {
+      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+    });
 
-}
+
+  }
+
 // status(match_id: any, url: string) {
 //   const params: any = {
 //     user_id: this.user_id?.toString(),

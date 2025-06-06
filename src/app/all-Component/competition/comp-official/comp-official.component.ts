@@ -24,7 +24,6 @@ export class CompOfficialComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem={ competition_id: 0,name:'',match_type:'',gender:'',age_category:'',start_date:'',end_date:'' };
   client_id: number = Number(localStorage.getItem('client_id'));
   sourceOfficial!: [];
-
   targetOfficial!:[];
   user_id: number = Number(localStorage.getItem('user_id'));
   constructor(

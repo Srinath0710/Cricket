@@ -13,22 +13,23 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { SidebarModule } from 'primeng/sidebar';
-// import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { offcialupdate } from './officials.model';
 import { ReactiveFormsModule } from '@angular/forms';
 import { offcialedit } from './officials.model';
+import { offcialpersonalupadate } from './officials.model';
+import { offcialpersonaledit } from './officials.model';
+
 import { OnInit } from '@angular/core';
-import { HostListener } from '@angular/core';
 import { Drawer } from 'primeng/drawer';
 import { PaginatorModule } from 'primeng/paginator';
 import { ToastModule } from 'primeng/toast';
 
 interface official {
   config_id: string;
+  country_id: number;
 }
 
 @Component({
@@ -73,25 +74,30 @@ export class OfficialsComponent implements OnInit {
   visible: boolean = false;
   isEditing: boolean = false;
   public ShowForm: boolean = false;
+  public personalShowForm: boolean = false;
   position: 'right' = 'right';
   addOfficialForm!: FormGroup;
+  addPersonalForm!: FormGroup;
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
   rows: number = 10;
   totalData: any = 0;
-
+ filedata: any;
+ previewUrl: string | ArrayBuffer | null = null;
   backScreen: any;
   selectedOfficial: any = null;
   visibleDialog: boolean = false;
   official: officials[] = [];
   officialList: any[] = [];
-  // sidebarVisible: boolean = false;
   isEditMode: boolean = false;
+  ispersonalupadate: boolean = false;
+  isEditPersonal: boolean = false;
   submitted: boolean = false;
   officialDataList = [];
   configDataList: official[] = [];
   countrydropdownData: any;
+  countriesData: any;
   genderSelect: official[] = [];
   teamformat: official[] = [];
   officialcategory: official[] = [];
@@ -100,12 +106,42 @@ export class OfficialsComponent implements OnInit {
   childLabel: string = '';
   officialId: any;
   clientData: any[] = [];
+  countryData: official[] = [];
+  loading = false;
+  countriesList: official[] = [];
+  statesFormList: any[] = [];
+  stateId: any;
+  countryId: any;
+  cityData: any = [];
+  statesList: any[] = [];
+  FormValue: boolean = false;
+  country_id: any;
+  citiesList = [];
+
+  accreditationList: any[] = [];
+  childAccreditationList: any[] = [];
+  officialStatusList: any[] = [];
+  emergencyTypeList: any[] = [];
+  bloodgroup: any[] = [];
+
+  mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   officialNamePattern = /^[^'"]+$/; //allstringonly allow value
-  default_img= CricketKeyConstant.default_image_url.officials;
-  dropDownConstants= CricketKeyConstant.dropdown_keys;
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
+  emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
+  default_img = CricketKeyConstant.default_image_url.officials;
+  dropDownConstants = CricketKeyConstant.dropdown_keys;
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
   clubsDropdownData: any;
+  personal_official_id: any;
+  isFormEmpty: boolean = true;
+  // personalupadteformvalue
+
+  isPersonalDataIntialized: boolean = false;
+  disableReadonly: boolean = true;
+
+  enableEditMode() {
+    this.disableReadonly = !this.disableReadonly;
+  }
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT,
@@ -116,8 +152,11 @@ export class OfficialsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.countrydropdown();
     this.Clientdropdown()
+    this.Natinalitydropdown()
+    this.getCountries();
+    this.getGlobalData();
+
     this.addOfficialForm = this.fb.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
@@ -130,34 +169,49 @@ export class OfficialsComponent implements OnInit {
       country_id: ['', [Validators.required]],
       official_id: [''],
       reference_id: [''],
-      club_id: ['', []],
-       dob: ['',],
+      club_id: ['', [Validators.required]],
+      dob: ['',],
       gender_id: ['', [Validators.required]],
 
     })
 
+    this.addPersonalForm = this.fb.group({
+
+      nationality_id: ['', [Validators.required]],
+      country_of_birth: ['', [Validators.required]],
+      residence_country_id: ['', [Validators.required]],
+      primary_email_id: ['', [Validators.required, Validators.pattern(this.emailRegex)]],
+      secondary_email_id: [''],
+      primary_phone:['', [Validators.required, Validators.pattern(this.mobileRegex)]],
+      secondary_phone: [''],
+      blood_group_id: [''],
+      father_name: [''],
+      mother_name: [''],
+      guardian_name: [''],
+      address_1: [''],
+      address_2: [''],
+      country_id: ['', [Validators.required]],
+      state_id: ['', [Validators.required]],
+      city_id: [''],
+      post_code: [''],
+      emergency_contact: [''],
+      emergency_type: [''],
+      emergency_number: [''],
+      emergency_email: [''],
+      profile_status_id: [''],
+      accreditation_level_id: [''],
+      accreditation_id: [''],
+      accreditation_expiry_date: [''],
+      years_of_experience: [''],
+      twitter_handle: [''],
+      instagram_handle: [''],
+      facebook_url: ['']
+    });
+
 
 
   }
 
-  countrydropdown() {
-
-    const params: any = {};
-    params.action_flag = this.urlConstant.countryofficial.action_flag;
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
-    this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
-      this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
-
-    }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
-        this.apiService.RefreshToken();
-
-      }
-    })
-
-
-  }
   Clientdropdown() {
     const params: any = {
       user_id: this.user_id?.toString()
@@ -169,8 +223,9 @@ export class OfficialsComponent implements OnInit {
       this.callBackClientChange();
 
 
+
     }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
       }
     });
@@ -180,6 +235,7 @@ export class OfficialsComponent implements OnInit {
     this.clubsdropdown();
     this.dropdown();
     this.gridload();
+
   }
   clubsdropdown() {
     const params: any = {
@@ -194,7 +250,7 @@ export class OfficialsComponent implements OnInit {
         console.log("All clubs:", this.clubsDropdownData);
       },
       (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
           this.clubsDropdownData = [];
@@ -217,14 +273,14 @@ export class OfficialsComponent implements OnInit {
         .filter((item: any) => item.config_key === configFilterKeys.team_format)
         .map((item: any) => ({ ...item }));
 
-         this.genderSelect = res.data.dropdowns
-          .filter((item: any) => item.config_key === configFilterKeys.gender)
+      this.genderSelect = res.data.dropdowns
+        .filter((item: any) => item.config_key === configFilterKeys.gender)
         .map((item: any) => ({ ...item }));
-     
+
       this.officialtype = res.data.dropdowns
         .filter((item: any) => item.config_key === configFilterKeys.officials)
         .map((item: any) => ({ ...item }));
-        
+
       setTimeout(() => {
         const teamId = this.addOfficialForm.get('team_id')?.value;
         if (!teamId) {
@@ -233,7 +289,7 @@ export class OfficialsComponent implements OnInit {
       }, 100);
 
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       }
@@ -260,18 +316,14 @@ export class OfficialsComponent implements OnInit {
         this.totalData = 0;
       }
       this.officialDataList = res.data.officials ?? [];
-      this.totalData = this.officialDataList.length!=0 ? res.data.officials[0].total_records:0
+      this.totalData = this.officialDataList.length != 0 ? res.data.officials[0].total_records : 0
 
     },
 
-      (err: any) => {
+    (err: any) => {
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [], this.totalData = this.officialDataList.length);
 
-
-        error: (err: any) => {
-          console.error('Error loading official list:', err);
-        }
-
-      });
+    });
   }
 
   calculateFirst(): number {
@@ -286,6 +338,14 @@ export class OfficialsComponent implements OnInit {
 
   }
 
+  onPhoneNumberInput(event: Event, controlName: string) {
+    const inputElement = event.target as HTMLInputElement;
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
+    this.addPersonalForm.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
+  }
+
+
+
   //single quotes and doble quotes remove all label box 
   blockQuotesOnly(event: KeyboardEvent) {
     if (event.key === '"' || event.key === "'") {
@@ -294,10 +354,14 @@ export class OfficialsComponent implements OnInit {
   }
 
 
-  sanitizeQuotesOnly(controlName: string, event: Event) {
+  sanitizeQuotesOnly(controlName: string, event: Event): void {
     const input = (event.target as HTMLInputElement).value;
-    const cleaned = input.replace(/['"]/g, ''); // remove ' and "
-    this.addOfficialForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+    const cleaned = input.replace(/['"]/g, '').trim(); // remove ' and " and trim whitespace
+    const control = this.addOfficialForm.get(controlName);
+
+    if (control) {
+      control.setValue(cleaned, { emitEvent: false });
+    }
   }
 
 
@@ -324,7 +388,7 @@ export class OfficialsComponent implements OnInit {
       reference_id: String(this.addOfficialForm.value.reference_id),
       club_id: String(this.addOfficialForm.value.club_id),
       gender_id: String(this.addOfficialForm.value.gender_id),
-      dob: String(this.addOfficialForm.value.dob),
+      dob: this.addOfficialForm.value.dob,
 
       action_flag: 'create'
 
@@ -336,14 +400,14 @@ export class OfficialsComponent implements OnInit {
       this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -360,12 +424,28 @@ export class OfficialsComponent implements OnInit {
     this.ShowForm = true;
   }
 
+  // personalAddShowForm(official: any) {
+  //   this.isEditPersonal = false; 
+  //   this.isPersonalDataIntialized = false;
+  //   this.disableReadonly = false;
+  //   this.personal_official_id = official?.official_id ?? null;
+  //   this.personalShowForm = true;
+  //   this.addPersonalForm.reset(); 
+  // }
+
+
   cancelForm() {
     this.ShowForm = false;
+    this.personalShowForm = false;
+    this.addPersonalForm.reset();
+    this.disableReadonly = true;
+
+
   }
 
   resetForm() {
     this.addOfficialForm.reset();
+    this.addPersonalForm.reset();
     this.submitted = false;
   }
 
@@ -414,7 +494,7 @@ export class OfficialsComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.official_id = official.official_id?.toString();
     this.apiService.post(this.urlConstant.editofficial, params).subscribe((res) => {
-      if (res.status_code == 200) {
+      if (res.status_code === this.statusConstants.success && res.status) {
         const editRecord: offcialedit = res.data.officials[0] ?? {};
         if (editRecord != null) {
           this.onOfficialChange(editRecord.official_type_id);
@@ -433,7 +513,7 @@ export class OfficialsComponent implements OnInit {
             official_id: editRecord.official_id,
             reference_id: editRecord.reference_id,
             gender_id: editRecord.gender_id,
-            dob: editRecord.dob,
+            dob: editRecord.dob != null ? editRecord.dob.split('T')[0] : null,
             club_id: editRecord.club_id,
           });
           this.showAddForm();
@@ -442,8 +522,287 @@ export class OfficialsComponent implements OnInit {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
+
+  }
+
+  PersonalupdateOfficial() {
+    this.submitted = true;
+    this.ispersonalupadate = false;
+
+    if (this.addPersonalForm.invalid) {
+      this.addPersonalForm.markAllAsTouched();
+      return;
+    }
+
+    const params: offcialpersonalupadate = {
+      user_id: String(this.user_id),
+      client_id: String(this.client_id),
+      official_id: String(this.personal_official_id),
+      nationality_id: String(this.addPersonalForm.value.nationality_id),
+      country_of_birth: String(this.addPersonalForm.value.country_of_birth),
+      residence_country_id: String(this.addPersonalForm.value.residence_country_id),
+      primary_email_id: String(this.addPersonalForm.value.primary_email_id),
+      secondary_email_id: String(this.addPersonalForm.value.secondary_email_id),
+      primary_phone: String(this.addPersonalForm.value.primary_phone),
+      secondary_phone: String(this.addPersonalForm.value.secondary_phone),
+      blood_group_id: String(this.addPersonalForm.value.blood_group_id),
+      father_name: this.addPersonalForm.value.father_name,
+      mother_name: this.addPersonalForm.value.mother_name,
+      guardian_name: this.addPersonalForm.value.guardian_name,
+      address_1: this.addPersonalForm.value.address_1,
+      address_2: this.addPersonalForm.value.address_2,
+      country_id: String(this.addPersonalForm.value.country_id),
+      state_id: String(this.addPersonalForm.value.state_id),
+      city_id: String(this.addPersonalForm.value.city_id),
+      post_code: String(this.addPersonalForm.value.post_code),
+      emergency_contact: String(this.addPersonalForm.value.emergency_contact),
+      emergency_type: String(this.addPersonalForm.value.emergency_type),
+      emergency_number: String(this.addPersonalForm.value.emergency_number),
+      emergency_email: String(this.addPersonalForm.value.emergency_email),
+      profile_status_id: String(this.addPersonalForm.value.profile_status_id),
+      accreditation_level_id: String(this.addPersonalForm.value.accreditation_level_id),
+      accreditation_id: String(this.addPersonalForm.value.accreditation_id),
+      accreditation_expiry_date: String(this.addPersonalForm.value.accreditation_expiry_date),
+      years_of_experience: String(this.addPersonalForm.value.years_of_experience),
+      twitter_handle: String(this.addPersonalForm.value.twitter_handle),
+      instagram_handle: String(this.addPersonalForm.value.instagram_handle),
+      facebook_url: String(this.addPersonalForm.value.facebook_url),
+    };
+
+    console.log(params);
+
+    this.apiService.post(this.urlConstant.officialpersonalupadate, params).subscribe(
+      (res) => {
+        if (res.status_code === this.statusConstants.success && res.status) {
+          this.addCallBack(res);
+
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err);
+        }
+      }
+    );
+  }
+
+  formInputAccess(): boolean {
+
+    return this.isPersonalDataIntialized && !this.disableReadonly !== null && this.addPersonalForm.value.true
+  }
+
+  Editpersonalofficial(official: any) {
+    this.personalShowForm = true;
+    this.isPersonalDataIntialized = true;
+    this.disableReadonly = true;
+    this.isEditPersonal = true;
+    this.personal_official_id = official.official_id;
+    // this.officialId = official.official_id;  
+
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      official_id: official.official_id?.toString(),
+    };
+
+    this.apiService.post(this.urlConstant.officialpersonaledit, params).subscribe(
+      (res) => {
+
+        if (res.data != null) {
+          const editpersonalRecord: offcialpersonaledit = res.data?.officials[0] ?? {};
+          this.isPersonalDataIntialized = true;
+          this.addPersonalForm.setValue({
+            nationality_id: editpersonalRecord.nationality_id,
+            country_of_birth: editpersonalRecord.country_of_birth,
+            residence_country_id: editpersonalRecord.residence_country_id,
+            primary_email_id: editpersonalRecord.primary_email_id,
+            secondary_email_id: editpersonalRecord.secondary_email_id,
+            primary_phone: editpersonalRecord.primary_phone,
+            secondary_phone: editpersonalRecord.secondary_phone,
+            blood_group_id: editpersonalRecord.blood_group_id,
+            father_name: editpersonalRecord.father_name,
+            mother_name: editpersonalRecord.mother_name,
+            guardian_name: editpersonalRecord.guardian_name,
+            address_1: editpersonalRecord.address_1,
+            address_2: editpersonalRecord.address_2,
+            country_id: editpersonalRecord.country_id,
+            state_id: editpersonalRecord.state_id,
+            city_id: editpersonalRecord.city_id,
+            post_code: editpersonalRecord.post_code,
+            emergency_contact: editpersonalRecord.emergency_contact,
+            emergency_type: Number(editpersonalRecord.emergency_type) || null,
+            emergency_number: editpersonalRecord.emergency_number,
+            emergency_email: editpersonalRecord.emergency_email,
+            profile_status_id: editpersonalRecord.profile_status_id,
+            accreditation_level_id: editpersonalRecord.accreditation_level_id,
+            accreditation_id: editpersonalRecord.accreditation_id,
+            accreditation_expiry_date: editpersonalRecord.accreditation_expiry_date != null ? editpersonalRecord.accreditation_expiry_date.split('T')[0] : null,
+            years_of_experience: editpersonalRecord.years_of_experience,
+            twitter_handle: editpersonalRecord.twitter_handle,
+            instagram_handle: editpersonalRecord.instagram_handle,
+            facebook_url: editpersonalRecord.facebook_url,
+          });
+
+        } else {
+          this.isEditPersonal = false;
+          this.isPersonalDataIntialized = false;
+          // this.addPersonalForm.reset();
+            this.resetForm();
+
+        }
+      },
+      (err: any) => {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err);
+        }
+      }
+    );
+  }
+
+
+
+
+
+  Natinalitydropdown() {
+
+    const params: any = {};
+    params.action_flag = this.urlConstant.countryofficial.action_flag;
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
+      this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
+
+    }, (err: any) => {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
+
+      }
+    })
+
+
+  }
+
+
+
+
+
+
+  getCountries() {
+    const params: any = {};
+    params.action_flag = 'get_countries';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
+      this.countriesList = res.data.countries != undefined ? res.data.countries : [];
+      this.loading = false;
+      this.country_id = this.countriesList[0].country_id;
+      this.gridload();
+    }, (err: any) => {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
+
+      } else {
+        this.failedToast(err);
+      }
+    });
+  }
+
+  getCities(state_id: any) {
+    const params: any = {};
+
+    if (state_id == null || state_id == '') {
+      return
+    }
+
+    params.action_flag = 'get_city_by_state';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    params.state_id = state_id.toString();
+    this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
+      this.citiesList = res.data.cities != undefined ? res.data.cities : [];
+    }, (err: any) => {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
+
+      } else {
+        this.failedToast(err);
+      }
+    });
+  }
+
+  getStates(country_id: any) {
+    const params: any = {};
+    if (country_id == null || country_id == '') {
+      return
+    }
+    params.action_flag = 'get_state_by_country';
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
+    params.country_id = country_id.toString();
+    this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
+      this.statesList = res.data.states != undefined ? res.data.states : [];
+      this.loading = false;
+    }, (err: any) => {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
+
+      }
+    });
+  }
+
+
+
+  getGlobalData() {
+    const params: any = {
+      action_flag: 'dropdown',
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString(),
+    };
+
+    this.apiService.post(this.urlConstant.officialpersonaldropdown, params).subscribe((res) => {
+      const dropdowns = res.data?.dropdowns || [];
+
+
+      this.accreditationList = dropdowns.filter((d: any) => d.config_key === 'accreditation_level');
+      this.officialStatusList = dropdowns.filter((d: any) => d.config_key === 'official_profile_status');
+      this.emergencyTypeList = dropdowns.filter((d: any) => d.config_key === 'emergency_type');
+      this.bloodgroup = dropdowns.filter((d: any) => d.config_key === 'blood_group');
+
+
+      setTimeout(() => {
+        const teamId = this.addPersonalForm.get('official_id')?.value;
+        if (!teamId) {
+          this.formSetValue();
+        }
+      }, 100);
+    }, (err: any) => {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
+      }
+    });
+  }
+
+ onProfileImageSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.filedata = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+
+      };
+      reader.readAsDataURL(file);
+
+    }
+
 
   }
 
@@ -498,16 +857,10 @@ export class OfficialsComponent implements OnInit {
       });
   }
 
-  StatusConfirm(official_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
 
-    if (AlreadyStatestatus) {
-      return;
-    }
+  StatusConfirm(official_id: number, actionObject: { key: string, label: string }) {
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this Official?`,
+      message: `Are you sure you want to ${actionObject.label} this official?`,
       header: 'Confirmation',
       icon: 'pi pi-question-circle',
       acceptLabel: 'Yes',
@@ -522,7 +875,6 @@ export class OfficialsComponent implements OnInit {
       }
     });
   }
-
 
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;

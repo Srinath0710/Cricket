@@ -1,46 +1,124 @@
 <div class="parent-container">
-  <button class="new-button p-button-text Comp-child-butn"(click)="updateplayer()">UpdatePlayer</button>
+  <button class="new-button p-button-text Comp-child-butn" (click)="addplayer()">UpdatePlayer</button>
 </div>
 
-<!-- Team List -->
-<div class="team-row">
-  <div *ngFor="let team of teamsDropDown"
-       class="team-card"
-       (click)="chooseTeam(team.team_id)">
-    {{ team.team_name }}
-  </div>
-</div>
+<div style="display: flex; gap: 2rem;">
 
+  <div
+    style="display: flex; background-color: white; padding: 6px; border-radius: 3px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+    <!-- Left: Team List -->
+    <div style="width: 200px;">
+      <div style="text-align:center; font-weight: bold; ">Select Team</div>
 
-  <p-pickList  [source]="sourcePlayer" 
-  [target]="targetPlayer"
-  [dragdrop]="true"
-  [responsive]="true"
-  [showSourceFilter]="true"
-  [showTargetFilter]="true"
-  filterBy="display_name"  
-  sourceFilterPlaceholder="Search Available..." 
-  targetFilterPlaceholder="Search Target..."
-  [dragdrop]="true" [responsive]="true" [sourceStyle]="{ height: '30rem' }"
-   [targetStyle]="{ height: '30rem' }" 
-  >
-  <ng-template pTemplate="sourceHeader">
-    <div class="p-d-flex p-ai-center">
-      Available
-    </div>
-  </ng-template>
-  
-  <ng-template pTemplate="targetHeader">
-    <div class="p-d-flex p-ai-center">
-      Target 
-    </div>
-  </ng-template>
-  
-  <ng-template pTemplate="item" let-product let-i="index">
-    <div class="flex flex-wrap p-2 align-items-center gap-3">
-      <div class="flex-1 flex flex-column gap-2">
-        <span class="font-bold">{{ product.display_name }}</span>
+      <div *ngFor="let team of teamsDropDown" class="team-card" [ngClass]="{ 'selected': team.team_id === team_id }"
+        (click)="chooseTeam(team.team_id)">
+
+        {{ team.team_name }}
       </div>
     </div>
-  </ng-template>
-  </p-pickList>
+  </div>
+  <div style="flex: 1;">
+    <p-pickList [source]="sourcePlayer" [target]="targetPlayer" [dragdrop]="true" [responsive]="true"
+      [showSourceFilter]="true" [showTargetFilter]="true" filterBy="display_name"
+      sourceFilterPlaceholder="Search Available..." targetFilterPlaceholder="Search Selected Player..."
+      [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" (onMoveToTarget)="onMoveToTarget($event)"
+      (onMoveToSource)="onMoveToSource($event)"
+      (onMoveAllToSource)="onMoveAllToTarget($event)"
+  >
+
+      <ng-template pTemplate="sourceHeader">
+        <div class="p-d-flex p-ai-center">
+          Available Player
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="targetHeader">
+        <div class="p-d-flex p-ai-center">
+          Selected Player
+        </div>
+      </ng-template>
+
+
+      <ng-template pTemplate="targetItem" let-player>
+        <div style="padding: 8px;">
+          {{ player.display_name }}
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="item" let-player let-i="index">
+        <div class="flex flex-wrap p-2 align-items-center gap-3"
+         [ngClass]="{ 'highlight-target': player.highlighted }">
+          <div class="flex-1 flex flex-column gap-2">
+            <span class="person-image-team-player">
+              <img class="player-img" *ngIf="!player.profile_img || !player.player_profile" [src]="default_img">
+
+              <img class="player-img" *ngIf="player.profile_img && player.player_profile" [src]="player.profile_img"
+                (error)="handleImageError($event, default_img)">
+            </span>
+            <span class="font-bold">{{ player.display_name }}</span>
+            <span *ngIf="player.highlighted">
+              <button class="clear-width edit-button" (click)="showEditPopup(player)" title="Edit Player">
+                 Edit
+              </button>
+            </span>
+            
+          </div>
+        </div>
+      </ng-template>
+
+    </p-pickList>
+  </div>
+</div>
+    <!-- Edit Popup for Selected Player -->
+    <div *ngIf="isEditPopupVisible" class="popup-backdrop">
+      <div class="popup-wrapper">
+
+      <div class="popup">
+        
+        <form [formGroup]="ManagePlayerForm" class="p-4 border rounded shadow-sm bg-white">
+          <div class="mb-3">
+            <label for="scorecardName" class="form-label fw-semibold">
+              Scorecard Name <span class="text-danger">*</span>
+            </label>
+            <input
+              id="scorecardName"
+              type="text"
+              class="form-control"
+              formControlName="scorecard_name"
+              placeholder="Enter scorecard name"
+            />
+          </div>
+        
+          <div class="mb-3">
+            <label for="sponsorName" class="form-label fw-semibold">
+              Sponsor Name
+            </label>
+            <input
+              id="sponsorName"
+              type="text"
+              class="form-control"
+              formControlName="jersey_number"
+          
+            />
+          </div>
+        
+          <div class="text-end">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              (click)="updateplayer()" >
+              Submit
+            </button>
+          
+            <button
+              type="submit"
+              class="btn btn-secondary ms-2"
+             
+              (click)="closeEditPopup()" >
+              Close
+            </button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>

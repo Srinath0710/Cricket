@@ -841,9 +841,26 @@ label {
 }
 .icon-red {
   font-size: 15px;
+  margin-right: 10px;
   color: #dc3545; 
   cursor: pointer;
 }
+.icon-white {
+  font-size: 15px;
+  margin-right: 10px;
+  color: #08b1ef;
+  cursor: pointer;
+}
+
+.icon-rose {
+  font-size: 15px;
+  margin-right: 10px;
+  color: #b11c96;
+  cursor: pointer;
+}
+
+
+
 .content.container-fluid {
   padding: 0 !important;
   width: 100% !important;
@@ -1344,7 +1361,7 @@ input.form-control:focus {
 
 .parent-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .Comp-child-butn {

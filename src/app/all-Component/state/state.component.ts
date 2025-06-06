@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -6,7 +6,6 @@ import { BadgeModule } from 'primeng/badge';
 import { DialogModule } from 'primeng/dialog';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-// import { Sidebar } from 'primeng/sidebar';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
@@ -25,7 +24,7 @@ import { Drawer } from 'primeng/drawer';
   selector: 'app-state',
   standalone: true,
   imports: [CommonModule, TableModule, ButtonModule, BadgeModule, DialogModule, FormsModule, InputTextModule, ReactiveFormsModule, PaginatorModule, TagModule, ConfirmDialogModule, DropdownModule, TooltipModule, Drawer
-    ,ToastModule
+    , ToastModule
   ],
   templateUrl: './state.component.html',
   styleUrls: ['./state.component.css'],
@@ -37,13 +36,12 @@ import { Drawer } from 'primeng/drawer';
   ],
 })
 export class StateComponent implements OnInit {
-    @ViewChild('dt') dt!: Table;
+  @ViewChild('dt') dt!: Table;
   public addStateForm!: FormGroup<any>;
   User_id: number = Number(localStorage.getItem('user_id'));
   Client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: boolean = false;
   isEditMode: boolean = false;
-  // country_id: any;
   sidebarTitle: string = '';
   countriesData: Country[] = [];
   selected_country: number | null = null;
@@ -59,9 +57,9 @@ export class StateComponent implements OnInit {
   data: any;
   searchKeyword: string = '';
   countryID: any;
-    StateNamePattern = /^[^'"]+$/; //allstringonly allow value
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
+  StateNamePattern = /^[^'"]+$/; //allstringonly allow value
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -81,19 +79,19 @@ export class StateComponent implements OnInit {
       state_id: [''],
     });
   }
-//single quotes and doble quotes remove all label box 
-blockQuotesOnly(event: KeyboardEvent) {
-  if (event.key === '"' || event.key === "'") {
-    event.preventDefault();
+  //single quotes and doble quotes remove all label box 
+  blockQuotesOnly(event: KeyboardEvent) {
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
   }
-}
 
 
-sanitizeQuotesOnly(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
-  this.addStateForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
-}
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+    this.addStateForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
   countryDropdown() {
     const params: any = {
       user_id: this.User_id?.toString(),
@@ -104,55 +102,57 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.countryID = this.countriesData[0].country_id;
       this.gridLoad();
 
-    }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
+    }, (err) =>  {
+      if (
+        err.status_code === this.statusConstants.refresh &&
+        err.error?.message === this.statusConstants.refresh_msg
+      ) {
         this.apiService.RefreshToken();
+      } else {
+        this.failedToast(err);
       }
-    });
+    }
+    );
   }
 
 
   gridLoad() {
-   
-    if (this.countryID != null && this.countryID != '') {
-       
-        setTimeout(()=>{
-        const params: any = {};
-        params.user_id = this.User_id.toString();
-        params.action_flag = "grid_load";
-        params.country_id = this.countryID.toString();
-         params.client_id =this.Client_id.toString();
-         params.page_no=this.first.toString();
-         params.records = this.rows.toString();
-         params.search_text = this.searchKeyword.toString(),
-
-
-        this.apiService.post(this.urlConstant.getStateList, params).subscribe((res) => {
+    if (this.countryID != null && this.countryID !== '') {
+      setTimeout(() => {
+        const params: any = {
+          user_id: this.User_id.toString(),
+          action_flag: 'grid_load',
+          country_id: this.countryID.toString(),
+          client_id: this.Client_id.toString(),
+          page_no: this.first.toString(),
+          records: this.rows.toString(),
+          search_text: this.searchKeyword.toString()
+        };
+  
+        this.apiService.post(this.urlConstant.getStateList, params).subscribe(
+          (res) => {
             this.statesData = res.data.states ?? [];
-
-                  this.totalData = this.statesData.length!=0 ? res.data.states[0].total_records:0
-
-            // this.totalData = this.statesData.length;
-          //  this.totalData = 500;
-
-
-        }, (err: any) => {
-            if (err.status === 401 && err.error.message === "Expired") {
-                this.apiService.RefreshToken()
-                
+            this.totalData = this.statesData.length !== 0 ? res.data.states[0].total_records : 0;
+          },
+          (err: any) => {
+            if (
+              err.status_code === this.statusConstants.refresh &&
+              err.error?.message === this.statusConstants.refresh_msg
+            ) {
+              this.apiService.RefreshToken();
+            } else {
+              this.statesData = [];
+              this.totalData = 0;
             }
-            else {
-              this.statesData = []
-            }
-        });
+          }
+        );
+      });
+    } else {
+      this.statesData = [];
+      this.totalData = 0;
     }
-    )}
-
-    else {
-       this.statesData = [];
-        this.totalData=0
-    }
-}
+  }
+  
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
@@ -208,12 +208,12 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
   StatusConfirm(state_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-    (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
 
-  if (AlreadyStatestatus) {
-    return; 
-  }
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this state?`,
       header: 'Confirmation',
@@ -234,7 +234,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
   addCallBack(res: any) {
-    this.countryID=this.addStateForm.value.country_id;
+    this.countryID = this.addStateForm.value.country_id;
     this.resetForm();
     this.ShowForm = false;
 
@@ -263,17 +263,17 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
     if (this.addStateForm.value.state_id) {
       this.apiService.post(this.urlConstant.updateState, params).subscribe((res) => {
-      
+
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addState, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -282,7 +282,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
   editState(editRecord: any) {
     this.isEditMode = true;
-    const params: any = {}
     this.addStateForm.setValue({
       state_id: editRecord.state_id,
       country_id: editRecord.country_id,
@@ -290,22 +289,18 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       state_code: editRecord.state_code
     });
     this.showAddForm();
-    this.isEditMode = true;
   }
 
-//     filterGlobal() {
-//   this.dt.filterGlobal(this.searchKeyword, 'contains');   
-// }
   filterGlobal() {
-    this.first = 1; 
+    this.first = 1;
     this.gridLoad();
 
   }
   clear() {
-  this.searchKeyword = '';   
-  this.dt.clear();          
-  this.gridLoad();          
-}
+    this.searchKeyword = '';
+    this.dt.clear();
+    this.gridLoad();
+  }
 
 }
 

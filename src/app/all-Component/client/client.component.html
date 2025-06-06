@@ -11,17 +11,26 @@
                         <div class="d-flex align-items-center">
 
                             <!-- Search Form -->
-                            <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                            <form class="d-flex align-items-center gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
-                                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
-                                        class="width-search" placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('team_name', $event)">
+                                  <input pInputText type="text"
+                                         [(ngModel)]="searchKeyword"
+                                         name="searchKeyword"
+                                         class="width-search"
+                                         placeholder="Search"
+                                         (input)="filterGlobal()"
+                                         (keypress)="blockQuotesOnly($event)"
+                                         (input)="sanitizeQuotesOnly('team_name', $event)"
+                                         style="background-color: white; 
+                                                color: #495057; 
+                                                border: 1px solid #ced4da; 
+                                                padding-left: 18px; 
+                                                box-shadow: none; 
+                                                outline: none;" />
                                 </div>
-
-                                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
-
-                            </form>
-
+                              
+                                <button type="button" class="clear-button" (click)="clear()">Clear</button>
+                              </form>
 
                             <div class="card flex justify-center">
                                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
@@ -55,10 +64,20 @@
                         <ng-template pTemplate="body" let-client>
                             <tr>
                                 <td>
-                                    <span class="groundnameover" (click)="viewClient(client.client_id)"> {{ client.Client
-                                    }}</span>
+                                    <span class="person-image-team-player">
+                                        <img class="player-img" *ngIf="!client.profile_img || !client.player_profile"
+                                            [src]="default_img">
+
+                                        <img class="player-img" *ngIf="client.profile_img && client.player_profile"
+                                            [src]="client.profile_img" (error)="handleImageError($event, default_img)">
+                                    </span>
+                                    <span class="groundnameover" (click)="viewClient(client.client_id)"> {{
+                                        client.Client
+                                        }}</span>
                                 </td>
-                                <td>{{ client.country }}</td>
+                                <td>
+                                    {{ client.country }}
+                                </td>
                                 <td>{{ client.email_id }}</td>
                                 <td>{{ client.mobile }}</td>
                                 <td>
@@ -118,26 +137,26 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Name"
-                            formControlName="client_name"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('client_name', $event)">
+                            formControlName="client_name" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('client_name', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_name')?.invalid &&(addClientForm?.get('client_name')?.touched) || (addClientForm.get('client_name')?.invalid && submitted)"
                             class="required-msg">Client
                             Name Is Required
                         </small>
-                 
+
                     </div>
                     <div class="col-md-6">
                         <label>Client Code
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Code"
-                            formControlName="client_code"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('client_code', $event)">
+                            formControlName="client_code" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('client_code', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_code')?.invalid &&(addClientForm?.get('client_code')?.touched) || (addClientForm.get('client_code')?.invalid && submitted)"
                             class="required-msg">Client
-                           Code Is Required
+                            Code Is Required
                         </small>
                     </div>
                     <div class="col-md-6">
@@ -146,7 +165,7 @@
                         </label>
                         <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_id"
                             (ngModelChange)="getStates(addClientForm.get('country_id')?.value)" optionValue="country_id"
-                            optionLabel="country_name" placeholder="select Country" appendTo="self"
+                            optionLabel="country_name" placeholder="Select Country" appendTo="self"
                             [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-country pTemplate="item">
                                 <div class="flex align-items-center gap-2">
@@ -156,17 +175,19 @@
                             </ng-template>
                         </p-dropdown>
                         <small
-                            *ngIf="addClientForm?.get('country_id')?.invalid &&(addClientForm.get('country_id')?.touched) || (addClientForm.get('country_id')?.invalid && submitted)"
-                            class="required-msg">Country
-                            Is Required
+                            *ngIf="addClientForm.get('country_id')?.invalid && (addClientForm.get('country_id')?.touched || submitted)"
+                            class="required-msg">
+                            Country is required
                         </small>
+
                     </div>
                     <div class="col-md-6">
                         <label>State
+                            <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
                             (ngModelChange)="getCities(addClientForm.get('state_id')?.value)" optionValue="state_id"
-                            optionLabel="state_name" placeholder="select State">
+                            optionLabel="state_name" placeholder="Select State">
                             <ng-template let-state pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ state.state_name }}
@@ -174,13 +195,18 @@
                                 </div>
                             </ng-template>
                         </p-dropdown>
-
+                        <small
+                        *ngIf="addClientForm.get('state_id')?.invalid && (addClientForm.get('state_id')?.touched || submitted)"
+                        class="required-msg">
+                        State is required
+                    </small>
                     </div>
                     <div class="col-md-6">
                         <label>City
+                            <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="citiesList" class="drop-error " formControlName="city_id"
-                            optionValue="city_id" optionLabel="city_name" placeholder="select City">
+                            optionValue="city_id" optionLabel="city_name" placeholder="Select City">
                             <ng-template let-city pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ city.city_name }}
@@ -188,6 +214,11 @@
                                 </div>
                             </ng-template>
                         </p-dropdown>
+                        <small
+                        *ngIf="addClientForm.get('city_id')?.invalid && (addClientForm.get('city_id')?.touched || submitted)"
+                        class="required-msg">
+                        City is required
+                    </small>
 
                     </div>
                     <div class="col-md-6">
@@ -195,93 +226,114 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="200" type="text" placeholder="Enter Address 1"
-                            formControlName="address_1"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('address_1', $event)">
+                            formControlName="address_1" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('address_1', $event)">
                         <small
                             *ngIf="addClientForm?.get('address_1')?.invalid &&(addClientForm?.get('address_1')?.touched) || (addClientForm.get('address_1')?.invalid && submitted)"
                             class="required-msg">Address 1 Is Required
                         </small>
+
                     </div>
                     <div class="col-md-6">
                         <label>address_2
-                            <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Address 2"
-                            formControlName="address_2"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('address_2', $event)">
-                    
+                            formControlName="address_2" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('address_2', $event)">
+
                     </div>
                     <div class="col-md-6">
                         <label>Post Code
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Post Code"
-                            formControlName="post_code"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('post_code', $event)">
+                            formControlName="post_code" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('post_code', $event)">
+                            <small
+                            *ngIf="addClientForm?.get('post_code')?.invalid &&(addClientForm?.get('post_code')?.touched) || (addClientForm.get('post_code')?.invalid && submitted)"
+                            class="required-msg">Post Code Is Required
+                        </small>
+
                     </div>
                     <div class="col-md-6">
-                        <label>Email Id 
+                        <label>Email Id
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="100" type="text" placeholder="Enter Email Id"
                             formControlName="email_id">
-                                  <div
-                            *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
-                            <small *ngIf="addClientForm.get('email_id')?.errors?.['pattern']"
-                              class="required-msg">
-                              * Invalid email ID: abcd&#64;example.com
-                            </small>
-                            </div>
+                        <div *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
+                            <small *ngIf="addClientForm.get('email_id')?.hasError('required') && (addClientForm.get('email_id')?.touched || submitted)" class="required-msg">
+                                * Email is required
+                              </small>
+                              <small *ngIf="addClientForm.get('email_id')?.hasError('pattern') && (addClientForm.get('email_id')?.touched || submitted)" class="required-msg">
+                                * Invalid email format
+                              </small>
+                              
+                        </div>
                     </div>
-          <div class="col-md-6">
-  <label>Phone No <span class="text-danger">*</span></label>
-  <input class="form-control" type="text" maxlength="10" placeholder="Enter Phone No"
-    formControlName="mobile" (input)="onPhoneNumberInput($event)">
-  <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
-    <!-- Show when pattern is invalid -->
-    <small *ngIf="addClientForm.get('mobile')?.errors?.['pattern']" class="required-msg">
-      * Invalid mobile number
-    </small>
+                    <div class="col-md-6">
+                        <label>Phone No <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" maxlength="10" placeholder="Enter Phone No"
+                            formControlName="mobile" (input)="onPhoneNumberInput($event)">
+                        <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
+                            <!-- Show when pattern is invalid -->
+                            <small *ngIf="addClientForm.get('mobile')?.hasError('required') && (addClientForm.get('mobile')?.touched || submitted)" class="required-msg">
+                                * Mobile number is required
+                              </small>
+                              <small *ngIf="addClientForm.get('mobile')?.hasError('pattern') && (addClientForm.get('mobile')?.touched || submitted)" class="required-msg">
+                                * Invalid mobile number
+                              </small>
+                              
 
-    
-  </div>
-</div>
+
+                        </div>
+                    </div>
 
                     <div class="col-md-6">
                         <label>Website
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Website"
-                            formControlName="website"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('website', $event)">                    </div>
+                            formControlName="website" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('website', $event)">
+                    </div>
                     <div class="col-md-6">
                         <label>Description
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter description"
-                            formControlName="description"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('description', $event)">
-              
+                            formControlName="description" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('description', $event)">
+
                     </div>
+                    <!--Preview of profile image-->
+                    <!-- <div class="col-md-6">
+                        <div class="form-group formItem">
 
-            
-            </div> 
-
-                    <div class="row mt-4 sticky-footer-buttons">
-                        <div class="col-12 text-end">
-                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-                                (click)="cancelForm()"></button>
-
-                            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                                *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
-                                (click)="resetForm()"></button>
-
-                            <button pButton type="button" label="Save" class="save-button"
-                                (click)="onAddClient()"></button>
-
-
+                            <label class="formItemLabel">Profile Image Preview</label>
+                            <a class=" clear-width margin-right table-counts" style="width: 84px;"
+                               ></a>
+                    
                         </div>
+                    </div> -->
+
+                </div>
+                <div class="form-wrapper pb-5">
+                <div class="row mt-4 sticky-footer-buttons">
+                    <div class="col-12 text-end">
+                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                            (click)="cancelForm()"></button>
+
+                        <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                            *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
+                            (click)="resetForm()"></button>
+
+                        <button pButton type="button" label="Save" class="save-button" (click)="onAddClient()"></button>
+
+
                     </div>
+                </div>
+                </div>
             </form>
 
 
@@ -290,44 +342,55 @@
             <div class="popup-container">
 
                 <!-- ✅ Top bar: Image on left, Cancel button on right -->
-              <div class="top-bar">
-                <div class="profile-image-wrapper">
-                  <img [src]="seletedclient[0]?.profileImageUrl" alt="Profile Image" class="profile-image" />
+                <div class="top-bar">
+                    <div class="profile-image-wrapper">
+                        <img [src]="seletedclient[0]?.profileImageUrl" alt="Profile Image" class="profile-image" />
+                    </div>
+                    <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
                 </div>
-                <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
-              </div>
-              
-              
+
+
                 <div *ngFor="let client of seletedclient" class="popup-content">
-              
-                  <header class="popup-header no-icon">
-                    <h1 class="popup-title">{{ client['client_name'] | uppercase }}</h1>
-                  </header>
-              
-              
-                  <!-- Client Details -->
-                  <section class="popup-section">
-                    <h2 class="section-title">⛳Client Details</h2>
-                    <div class="info-row"><span class="info-label">👤Client Code</span><span class="separator">|</span><span class="info-value">{{ client.client_code }}</span></div>
-                    <div class="info-row"><span class="info-label">🏠Address 1</span><span class="separator">|</span><span class="info-value">{{ client.address_1 }}</span></div>
-                    <div class="info-row"><span class="info-label">🏘️Address 2</span><span class="separator">|</span><span class="info-value">{{ client.address_2 }}</span></div>
-                    <div class="info-row"><span class="info-label">🔢Post Code</span><span class="separator">|</span><span class="info-value">{{ client.post_code }}</span></div>
-                    <div class="info-row"><span class="info-label">📧Email</span><span class="separator">|</span><span class="info-value">{{ client.email_id }}</span></div>
-                    <div class="info-row"><span class="info-label">📱Mobile</span><span class="separator">|</span><span class="info-value">{{ client.mobile }}</span></div>
-                    <div class="info-row"><span class="info-label">🌐Website</span><span class="separator">|</span><span class="info-value">{{ client.website }}</span></div>
-                  </section>
-              
-                  <!-- Location Details -->
-                  <section class="popup-section">
-                    <h2 class="section-title">🌐Location</h2>
-                    <div class="info-row"><span class="info-label">🌎Country</span><span class="separator">|</span><span class="info-value">{{ client.country_name }}</span></div>
-                    <div class="info-row"><span class="info-label">🏴State</span><span class="separator">|</span><span class="info-value">{{ client.state_name }}</span></div>
-                    <div class="info-row"><span class="info-label">🏢City</span><span class="separator">|</span><span class="info-value">{{ client.city_name }}</span></div>
-                  </section>
-              
+
+                    <header class="popup-header no-icon">
+                        <h1 class="popup-title">{{ client['client_name'] | uppercase }}</h1>
+                    </header>
+
+
+                    <!-- Client Details -->
+                    <section class="popup-section">
+                        <h2 class="section-title">⛳Client Details</h2>
+                        <div class="info-row"><span class="info-label">👤Client Code</span><span
+                                class="separator">|</span><span class="info-value">{{ client.client_code }}</span></div>
+                        <div class="info-row"><span class="info-label">🏠Address 1</span><span
+                                class="separator">|</span><span class="info-value">{{ client.address_1 }}</span></div>
+                        <div class="info-row"><span class="info-label">🏘️Address 2</span><span
+                                class="separator">|</span><span class="info-value">{{ client.address_2 }}</span></div>
+                        <div class="info-row"><span class="info-label">🔢Post Code</span><span
+                                class="separator">|</span><span class="info-value">{{ client.post_code }}</span></div>
+                        <div class="info-row"><span class="info-label">📧Email</span><span
+                                class="separator">|</span><span class="info-value">{{ client.email_id }}</span></div>
+                        <div class="info-row"><span class="info-label">📱Mobile</span><span
+                                class="separator">|</span><span class="info-value">{{ client.mobile }}</span></div>
+                        <div class="info-row"><span class="info-label">🌐Website</span><span
+                                class="separator">|</span><span class="info-value">{{ client.website }}</span></div>
+                    </section>
+
+                    <!-- Location Details -->
+                    <section class="popup-section">
+                        <h2 class="section-title">🌐Location</h2>
+                        <div class="info-row"><span class="info-label">🌎Country</span><span
+                                class="separator">|</span><span class="info-value">{{ client.country_name }}</span>
+                        </div>
+                        <div class="info-row"><span class="info-label">🏴State</span><span
+                                class="separator">|</span><span class="info-value">{{ client.state_name }}</span></div>
+                        <div class="info-row"><span class="info-label">🏢City</span><span
+                                class="separator">|</span><span class="info-value">{{ client.city_name }}</span></div>
+                    </section>
+
                 </div>
-              </div>
-              </p-dialog>
+            </div>
+        </p-dialog>
 
     </div>
 </div>

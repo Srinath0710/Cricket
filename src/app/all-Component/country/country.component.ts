@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-// import { Sidebar } from 'primeng/sidebar';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
@@ -35,7 +34,6 @@ import { DrawerModule } from 'primeng/drawer';
     FileUploadModule,
     InputTextModule,
     ReactiveFormsModule,
-    // Sidebar,
     PaginatorModule,
     TagModule,
     ConfirmDialogModule,
@@ -61,7 +59,6 @@ export class CountryComponent implements OnInit {
   client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: any = false;
   isEditMode: boolean = false;
-  // viewMode: boolean = false;
   region_id: any;
   loading = false;
   regionsData = [];
@@ -77,9 +74,9 @@ export class CountryComponent implements OnInit {
   visible2: boolean = false;
   submitted: boolean = true;
   time_zone_id: any;
-  CountryNamePattern = /^[^'"]+$/; //allstringonly allow value
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
+  CountryNamePattern = /^[^'"]+$/;
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
@@ -101,7 +98,6 @@ export class CountryComponent implements OnInit {
     })
   }
 
-
   timezoneDropdown() {
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -110,14 +106,20 @@ export class CountryComponent implements OnInit {
       this.timezoneData = res.data.timezone ?? [];
       this.regionsData = res.data.region ?? [];
 
-    }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+    }, 
+    (err: any) => {
+      if (
+        err.status_code === this.statusConstants.refresh &&
+        err.error?.message === this.statusConstants.refresh_msg
+      ) {
         this.apiService.RefreshToken();
+      } else {
+        this.failedToast(err);
       }
-
-    });
-  }
-  gridLoad() {
+    }
+  );
+}
+ gridLoad() {
     this.countriesData = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -125,31 +127,31 @@ export class CountryComponent implements OnInit {
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString(),
-    this.apiService.post(this.urlConstant.getCountryList, params).subscribe((res) => {
-      this.countriesData = res.data.countries ?? [];
-      this.totalData = this.countriesData.length != 0 ? res.data.countries[0].total_records : 0
-      this.countriesData.forEach((val: any) => {
-        val.country_image = `${val.country_image}?${Math.random()}`;
-      });
-    }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [], this.totalData = this.countriesData.length);
+      this.apiService.post(this.urlConstant.getCountryList, params).subscribe((res) => {
+        this.countriesData = res.data.countries ?? [];
+        this.totalData = this.countriesData.length != 0 ? res.data.countries[0].total_records : 0
+        this.countriesData.forEach((val: any) => {
+          val.country_image = `${val.country_image}?${Math.random()}`;
+        });
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [], this.totalData = this.countriesData.length);
 
-    });
+      });
 
   }
 
   blockQuotesOnly(event: KeyboardEvent) {
-  if (event.key === '"' || event.key === "'") {
-    event.preventDefault();
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
   }
-}
 
 
-sanitizeQuotesOnly(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
-  this.addCountryForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
-}
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, '');
+    this.addCountryForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
@@ -167,7 +169,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   cancelForm() {
     this.ShowForm = false;
   }
-
 
   resetForm() {
     this.addCountryForm.reset();
@@ -208,13 +209,13 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.apiService.post(this.urlConstant.updateCountry, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.addCountry, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -232,7 +233,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     params.client_id = this.client_id?.toString();
     params.country_id = country_id?.toString();
     this.apiService.post(this.urlConstant.editCountry, params).subscribe((res) => {
-      if (res.status_code == 200) {
+      if (res.status_code == this.statusConstants.success && res.status) {
         const editRecord: EditCountry = res.data.countries[0] ?? {};
         if (editRecord != null) {
           this.addCountryForm.setValue({
@@ -247,11 +248,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           });
           this.showAddForm();
         }
-      } else {
-        this.failedToast(res);
       }
-    }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 
@@ -268,19 +265,19 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
 
   StatusConfirm(country_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-    (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus ===this.conditionConstants.deactive_status.status);
 
-  if (AlreadyStatestatus) {
-    return; 
-  }
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this country?`,
       header: 'Confirmation',
@@ -303,8 +300,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
   clear() {
-  this.searchKeyword = '';   
-  this.dt.clear();          
-  this.gridLoad();          
-}
+    this.searchKeyword = '';
+    this.dt.clear();
+    this.gridLoad();
   }
+}
