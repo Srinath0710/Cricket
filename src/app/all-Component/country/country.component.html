@@ -162,6 +162,8 @@
                   [ngModel]="addCountryForm.get('time_zone_id')?.value" formControlName="time_zone_id"
                   optionValue="time_zone_id" optionLabel="time_zone_anme" [filter]="true"
                   filterBy="time_zone_anme" [showClear]="false"
+                  placeholder="Select Timezone"
+
                   [panelStyleClass]="'custom-dropdown-panel'">
 
                   <ng-template let-timezone pTemplate="item">
@@ -216,27 +218,21 @@
               </small>
             </div>
           </div>
-
+          <div class="form-wrapper pb-5">
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
               <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
                 (click)="cancelForm()"></button>
-
                 <button pButton type="button" label="Clear" class="p-button-secondary me-3"
                 *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null"
                 (click)="resetForm()"></button>
-
               <button pButton type="button" label="Save" class="save-button"
-                (click)="onAddCountry()"></button>
-            
-              
+                (click)="onAddCountry()"></button>      
             </div>
-            
+          </div>
           </div>
         </form>
   </p-drawer>
-
-
   </div>
 </div>
  <p-toast key="tc" position="top-right"></p-toast>

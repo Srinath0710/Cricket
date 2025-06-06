@@ -395,7 +395,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
     this.apiService.post(this.urlConstant.editGround, params).subscribe((res) => {
       console.log(res);
-      if (res.status_code == 200) {
+      if (res.status_code == this.statusConstants.success && res.status)  {
         const editRecord: EditGround = res.data.grounds[0] ?? {};
 
         if (editRecord != null) {

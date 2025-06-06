@@ -11,18 +11,26 @@
                         <div class="d-flex align-items-center">
 
                             <!-- Search Form -->
-                            <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                            <form class="d-flex align-items-center gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
-                                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
-                                        class="width-search" placeholder="  Search" (input)="filterGlobal()"
-                                        (keypress)="blockQuotesOnly($event)"
-                                        (input)="sanitizeQuotesOnly('team_name', $event)">
+                                  <input pInputText type="text"
+                                         [(ngModel)]="searchKeyword"
+                                         name="searchKeyword"
+                                         class="width-search"
+                                         placeholder="Search"
+                                         (input)="filterGlobal()"
+                                         (keypress)="blockQuotesOnly($event)"
+                                         (input)="sanitizeQuotesOnly('team_name', $event)"
+                                         style="background-color: white; 
+                                                color: #495057; 
+                                                border: 1px solid #ced4da; 
+                                                padding-left: 18px; 
+                                                box-shadow: none; 
+                                                outline: none;" />
                                 </div>
-
-                                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
-
-                            </form>
-
+                              
+                                <button type="button" class="clear-button" (click)="clear()">Clear</button>
+                              </form>
 
                             <div class="card flex justify-center">
                                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
@@ -68,7 +76,6 @@
                                         }}</span>
                                 </td>
                                 <td>
-
                                     {{ client.country }}
                                 </td>
                                 <td>{{ client.email_id }}</td>
@@ -158,7 +165,7 @@
                         </label>
                         <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_id"
                             (ngModelChange)="getStates(addClientForm.get('country_id')?.value)" optionValue="country_id"
-                            optionLabel="country_name" placeholder="select Country" appendTo="self"
+                            optionLabel="country_name" placeholder="Select Country" appendTo="self"
                             [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-country pTemplate="item">
                                 <div class="flex align-items-center gap-2">
@@ -168,17 +175,19 @@
                             </ng-template>
                         </p-dropdown>
                         <small
-                            *ngIf="addClientForm?.get('country_id')?.invalid &&(addClientForm.get('country_id')?.touched) || (addClientForm.get('country_id')?.invalid && submitted)"
-                            class="required-msg">Country
-                            Is Required
+                            *ngIf="addClientForm.get('country_id')?.invalid && (addClientForm.get('country_id')?.touched || submitted)"
+                            class="required-msg">
+                            Country is required
                         </small>
+
                     </div>
                     <div class="col-md-6">
                         <label>State
+                            <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
                             (ngModelChange)="getCities(addClientForm.get('state_id')?.value)" optionValue="state_id"
-                            optionLabel="state_name" placeholder="select State">
+                            optionLabel="state_name" placeholder="Select State">
                             <ng-template let-state pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ state.state_name }}
@@ -186,13 +195,18 @@
                                 </div>
                             </ng-template>
                         </p-dropdown>
-
+                        <small
+                        *ngIf="addClientForm.get('state_id')?.invalid && (addClientForm.get('state_id')?.touched || submitted)"
+                        class="required-msg">
+                        State is required
+                    </small>
                     </div>
                     <div class="col-md-6">
                         <label>City
+                            <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="citiesList" class="drop-error " formControlName="city_id"
-                            optionValue="city_id" optionLabel="city_name" placeholder="select City">
+                            optionValue="city_id" optionLabel="city_name" placeholder="Select City">
                             <ng-template let-city pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ city.city_name }}
@@ -200,6 +214,11 @@
                                 </div>
                             </ng-template>
                         </p-dropdown>
+                        <small
+                        *ngIf="addClientForm.get('city_id')?.invalid && (addClientForm.get('city_id')?.touched || submitted)"
+                        class="required-msg">
+                        City is required
+                    </small>
 
                     </div>
                     <div class="col-md-6">
@@ -213,10 +232,10 @@
                             *ngIf="addClientForm?.get('address_1')?.invalid &&(addClientForm?.get('address_1')?.touched) || (addClientForm.get('address_1')?.invalid && submitted)"
                             class="required-msg">Address 1 Is Required
                         </small>
+
                     </div>
-                  <div class="col-md-6">
+                    <div class="col-md-6">
                         <label>address_2
-                            <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Address 2"
                             formControlName="address_2" (keypress)="blockQuotesOnly($event)"
@@ -230,6 +249,11 @@
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Post Code"
                             formControlName="post_code" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('post_code', $event)">
+                            <small
+                            *ngIf="addClientForm?.get('post_code')?.invalid &&(addClientForm?.get('post_code')?.touched) || (addClientForm.get('post_code')?.invalid && submitted)"
+                            class="required-msg">Post Code Is Required
+                        </small>
+
                     </div>
                     <div class="col-md-6">
                         <label>Email Id
@@ -238,9 +262,13 @@
                         <input class="form-control" maxlength="100" type="text" placeholder="Enter Email Id"
                             formControlName="email_id">
                         <div *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
-                            <small *ngIf="addClientForm.get('email_id')?.errors?.['pattern']" class="required-msg">
-                                * Invalid email ID: abcd&#64;example.com
-                            </small>
+                            <small *ngIf="addClientForm.get('email_id')?.hasError('required') && (addClientForm.get('email_id')?.touched || submitted)" class="required-msg">
+                                * Email is required
+                              </small>
+                              <small *ngIf="addClientForm.get('email_id')?.hasError('pattern') && (addClientForm.get('email_id')?.touched || submitted)" class="required-msg">
+                                * Invalid email format
+                              </small>
+                              
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -249,9 +277,13 @@
                             formControlName="mobile" (input)="onPhoneNumberInput($event)">
                         <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
                             <!-- Show when pattern is invalid -->
-                            <small *ngIf="addClientForm.get('mobile')?.errors?.['pattern']" class="required-msg">
+                            <small *ngIf="addClientForm.get('mobile')?.hasError('required') && (addClientForm.get('mobile')?.touched || submitted)" class="required-msg">
+                                * Mobile number is required
+                              </small>
+                              <small *ngIf="addClientForm.get('mobile')?.hasError('pattern') && (addClientForm.get('mobile')?.touched || submitted)" class="required-msg">
                                 * Invalid mobile number
-                            </small>
+                              </small>
+                              
 
 
                         </div>
@@ -275,81 +307,18 @@
 
                     </div>
                     <!--Preview of profile image-->
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <div class="form-group formItem">
 
                             <label class="formItemLabel">Profile Image Preview</label>
                             <a class=" clear-width margin-right table-counts" style="width: 84px;"
-                                (click)="cropPopOpen()">Crop Image</a>
-                            <!-- <div class="col profile-img-wrap edit-img img-scroll" >
-                
-                        <a *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
-                            class="inline-block">
-                            <img alt="" [src]="envImagePath + '/images/avatar.png'">
-                        </a>
-                        <a *ngIf="filedata != null && filedata != ''" class="inline-block">
-                            <img [src]="url" height="200" width="200">
-                        </a>
-                        <a *ngIf="profileImages != null && profileImages != ''" class="inline-block">
-                            <img [src]="profileImages" height="200" width="200">
-                        </a>
-    
-
-                        <div class="img_cancel" 
-                            *ngIf="(filedata != null && filedata != '') || (profileImages != null && profileImages != '')" 
-                            (click)="cancel()">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </div>
-    
-                        <div class="fileupload btn">
-                            <span class="btn-text">Upload</span>
-                            <input class="upload" (change)="fileEvent($event)" type="file" formControlName="profile_img_url">
-                        </div>
-                       
+                               ></a>
                     
+                        </div>
                     </div> -->
 
-                            <div class="image-upload-container text-center">
-                                <label for="profileImageInput" class="upload-label">
-                                    <div class="image-preview-wrapper">
-                                        <img *ngIf="previewUrl; else placeholder" [src]="previewUrl"
-                                            alt="Profile Image" />
-                                        <ng-template #placeholder>
-                                        </ng-template>
-                                    </div>
-                                    <div class="upload-btn">Upload</div>
-                                </label>
-                                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)"
-                                    hidden formControlName="profile_img_url" />
-                            </div>
-                            <!-- Cropper Modal -->
-                            <div *ngIf="showCropperModal" class="modal img-croper-popup">
-                                <div class="modal-content crop-image">
-                                    <div class="modal-header modal-header-img">
-                                        <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
-                                    </div>
-                                    <div class="modal-body img-fix">
-
-                                        <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true"
-                                            format="png" (imageCropped)="imageCropped($event)"
-                                            (loadImageFailed)="loadImageFailed()">
-                                        </image-cropper>
-
-                                    </div>
-                                    <div class="modal-footer crop-footer">
-                                        <button class="save-btn submit-btn margin-right"
-                                            (click)="saveCroppedImage()">Save</button>
-                                        <button class="clear-button submit-btn margin-right"
-                                            (click)="cancelImg()">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
                 </div>
-
+                <div class="form-wrapper pb-5">
                 <div class="row mt-4 sticky-footer-buttons">
                     <div class="col-12 text-end">
                         <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
@@ -363,6 +332,7 @@
 
 
                     </div>
+                </div>
                 </div>
             </form>
 

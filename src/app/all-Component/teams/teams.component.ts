@@ -68,7 +68,6 @@ export class TeamsComponent implements OnInit {
   uploadedImage: string | ArrayBuffer | null = null;
   default_img: string = 'assets/images/default-player.png';
   previewUrl: string | ArrayBuffer | null = null;
-  // team_short : string;
   configDataList: Team[] = [];
   ageGroupList: Team[] = [];
   genderList: Team[] = [];
@@ -148,7 +147,7 @@ export class TeamsComponent implements OnInit {
         ) {
           this.apiService.RefreshToken();
         } else {
-          this.failedToast(err);
+          this.failedToast(err.error);
         }
       }
     );
@@ -205,7 +204,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.viewgroundTeams, params).subscribe({
       next: (res) => {
         if (res.status_code && res.data) {
-          this.selectedTeams = res.data.teams; // or res.data.ground based on response shape
+          this.selectedTeams = res.data.teams; 
           this.viewDialogVisible = true;
         }
       },
@@ -250,6 +249,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
   /* Failed Toast */
   failedToast(data: any) {
+    console.log(data)
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
 
@@ -264,7 +264,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       }
     );
   }
@@ -310,9 +310,9 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
       (res) => {
         const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
-        this.ageGroupList = dropdowns.filter((item: any) => item.config_key === 'age_category');
-        this.genderList = dropdowns.filter((item: any) => item.config_key === 'gender');
-        this.formatList = dropdowns.filter((item: any) => item.config_key === 'team_format');
+        this.ageGroupList = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.age_category);
+        this.genderList = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.gender);
+        this.formatList = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.team_format);
       },
       (err: any) => {
         this.ageGroupList = [];
@@ -343,7 +343,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
     },
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       
     });
   }
@@ -371,15 +371,15 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     if (this.addTeamForm.value.team_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateTeam, params).subscribe((res) => {
-        res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
       this.apiService.post(this.urlConstant.addTeam, params).subscribe((res) => {
-        res.statusConstants === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
   }
@@ -465,7 +465,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.getGlobalData();
 
     }, (err) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
 

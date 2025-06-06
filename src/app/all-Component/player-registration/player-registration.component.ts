@@ -10,9 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { CalendarModule } from 'primeng/calendar';
 import { PaginatorModule } from 'primeng/paginator';
-import { PlayerConstants } from '../constants/player.constant';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
 import { playeredit, Players, playerupdate, playerspersonalupadate, playersPersonalEdit } from './player-registration.model';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
@@ -24,7 +22,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Drawer } from 'primeng/drawer';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { Dialog } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 
 interface player {
@@ -240,8 +237,9 @@ previewUrl: string | ArrayBuffer | null = null;
         console.log("All clubs:", this.configDataList);
       },
       (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if (err.status_code ===this.statusConstants.refresh && err.error.message ) {
           this.apiService.RefreshToken();
+          this.failedToast(err.error)
         } else {
           this.configDataList = [];
           console.error("Error fetching clubs dropdown:", err);
@@ -298,7 +296,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.radiobutton();
       
     }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
+      if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
       }
     });
@@ -320,7 +318,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           val.country_image = `${val.country_image}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.PlayerData = [], this.totalData = this.PlayerData.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.PlayerData = [], this.totalData = this.PlayerData.length);
 
       });
   }
@@ -344,7 +342,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.nationalityplayer, params).subscribe((res) => {
       this.NationalitydropdownData = res.data.region != undefined ? res.data.region : [];
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
       }
     })
@@ -361,14 +359,13 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         .filter((item: any) => item.config_key == 'gender')
       // console.log(this.genderSelect,res.data.teams);
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
       }
     })
   }
 
   radiobutton() {
-    console.log('hi');
     const params: any = {};
     params.action_flag = 'dropdown';
     params.user_id = this.user_id.toString();
@@ -462,10 +459,10 @@ formSetValue() {
         }
       },
       (err: any) => {
-        err.status === this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
-          : this.failedToast(err);
+          : this.failedToast(err.error);
       }
     );
   }
@@ -532,7 +529,7 @@ formSetValue() {
         this.visible = false;
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
 
@@ -540,7 +537,7 @@ formSetValue() {
         this.visible = false;
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
 
@@ -589,8 +586,7 @@ formSetValue() {
     params.client_id = this.client_id?.toString();
     params.player_id = player.player_id?.toString();
     this.apiService.post(this.urlConstant.editplayer, params).subscribe((res) => {
-      console.log(res);
-      if (res.status_code == 200) {
+      if (res.status_code ==this.statusConstants.success && res.status) {
         const editRecord: playeredit = res.data.players[0] ?? {};
         if (editRecord != null) {
           this.playerRegistrationform.setValue({
@@ -625,7 +621,7 @@ formSetValue() {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
 
@@ -717,10 +713,10 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
         }
       },
       (err: any) => {
-        if (err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
-          this.failedToast(err);
+          this.failedToast(err.error);
         }
       }
     );
@@ -792,10 +788,10 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
         }
       },
       (err: any) => {
-        if (err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
-          this.failedToast(err);
+          this.failedToast(err.error);
         }
       }
     );
@@ -810,7 +806,7 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
     this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
       this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
       }
     })
@@ -827,11 +823,11 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
         this.country_id = this.countriesList[0].country_id;
         this.gridLoad();
     }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
-            this.apiService.RefreshToken();
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
            
         } else {
-            this.failedToast(err);
+            this.failedToast(err.error);
         }
     });
 }
@@ -848,10 +844,10 @@ getCities(state_id:any) {
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
         this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
-            this.apiService.RefreshToken();
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
         } else {
-            this.failedToast(err);
+            this.failedToast(err.error);
         }
     });
 }
@@ -869,8 +865,8 @@ getStates(country_id:any) {
         this.statesList = res.data.states != undefined ? res.data.states : [];
         this.loading = false;
     }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
-            this.apiService.RefreshToken();
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
         }
     });
 }
@@ -893,7 +889,7 @@ getStates(country_id:any) {
         }
       }, 100);
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
       }
     });

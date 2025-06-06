@@ -17,6 +17,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { environment } from '../../environments/environment';
 import { ImageCropperComponent } from 'ngx-image-cropper';
 import type { ImageCroppedEvent } from 'ngx-image-cropper';
+import { Client, EditClient, UpdateClient } from './client.model';
 interface Country {
   country_id: number;
   country_name: string;
@@ -38,7 +39,6 @@ interface Country {
     Drawer,
     ReactiveFormsModule,
     DropdownModule,
-    ImageCropperComponent
   ],
 
   providers: [
@@ -58,7 +58,7 @@ export class ClientComponent implements OnInit{
   public addClientForm!: FormGroup<any>;
   @ViewChild('dt') dt!: Table;
   public ShowForm: any = false;
-  Clientdata: any = [];
+  Clientdata: Client[] = [];
   rows: number = 10;
   totalData: any = 0;
   first: number = 1;
@@ -93,7 +93,7 @@ export class ClientComponent implements OnInit{
   oldPath: any;
   base64: any;
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
+  private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
   }
 
@@ -102,17 +102,17 @@ export class ClientComponent implements OnInit{
     this.addClientForm = this.formBuilder.group({
       client_name: ['',[Validators.required]],
       client_code: ['',[Validators.required]],
-      address_1: [''],
+      address_1: ['',[Validators.required]],
       address_2: [''],
-      post_code:[''],
-      email_id: ['', [Validators.pattern(this.emailRegex)]],
-      mobile:  ['', [Validators.pattern(this.mobileRegex)]],
+      post_code:['',[Validators.required]],
+      email_id: ['', [Validators.required, Validators.pattern(this.emailRegex)]],
+      mobile: ['', [Validators.required, Validators.pattern(this.mobileRegex)]],
       website: [''],
       description: [''],
       connection_id: [''],
-      country_id: [''],
-      state_id: [''],
-      city_id: [''],
+      country_id: ['',[Validators.required]],
+      state_id: ['',[Validators.required]],
+      city_id: ['',[Validators.required]],
       profile_img_url: [''],
       client_id: [''],
       header_color: [''],
@@ -157,22 +157,21 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.Clientdata = [], this.totalData = this.Clientdata.length);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.Clientdata = [], this.totalData = this.Clientdata.length);
 
     });
 
   }
   onAddClient() {
-    this.submitted = true;
     this.isEditMode = false;
-    // if (this.addClientForm.invalid) {
-    //   console.log(this.addClientForm)
-
-    //   this.addClientForm.markAllAsTouched();
-    //   return
-    // }
-    const params: any = {
+    this.submitted = true;
+    if (this.addClientForm.invalid) {
+      this.addClientForm.markAllAsTouched();
+      return
+    }
+    const params: UpdateClient = {
       user_id: String(this.user_id),
+      client_id: String(this.client_id),
       client_name: this.addClientForm.value.client_name,
       address_1: this.addClientForm.value.address_1,
       address_2: this.addClientForm.value.address_2,
@@ -181,8 +180,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       mobile: this.addClientForm.value.mobile,
       website: this.addClientForm.value.website,
       description: this.addClientForm.value.description,
-      // profile_img_url: this.addClientForm.value.profile_img_url,
-      // connection_id: this.addClientForm.value.connection_id,
       client_code: this.addClientForm.value.client_code,
       state_id: String(this.addClientForm.value.state_id),
       country_id: String(this.addClientForm.value.country_id),
@@ -206,26 +203,27 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
 
       this.apiService.post(this.urlConstant.createclient, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
 
   }
+  
   EditClient(client_id: number) {
     this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = client_id?.toString();
     this.apiService.post(this.urlConstant.editclient, params).subscribe((res) => {
-      if (res.status_code == 200) {
-        const editRecord: any = res.data[0] ?? {};
+      if (res.status_code == this.statusConstants.success && res.status) {
+        const editRecord: EditClient = res.data[0] ?? {};
         if (editRecord != null) {
           this.addClientForm.setValue({
             client_id: editRecord.client_id,
@@ -247,7 +245,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             tbl_header_font_color: null,
             button_color: null,
             button_font_color: null,
-            connection_id: editRecord.connection_id ?? null // <-- Add this line
+            connection_id: editRecord.connection_id ?? null 
           });
           
           this.showAddForm();
@@ -256,7 +254,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
 
 
@@ -302,7 +300,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       }
     );
   }
@@ -349,11 +347,12 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         this.country_id = this.countriesList[0].country_id;
         this.gridLoad();
     }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if ( err.status_code === this.statusConstants.refresh &&
+          err.error?.message === this.statusConstants.refresh_msg) {
             this.apiService.RefreshToken();
            
         } else {
-            this.failedToast(err);
+            this.failedToast(err.error);
         }
     });
 }
@@ -372,11 +371,12 @@ getCities(state_id:any) {
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
         this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if ( err.status_code === this.statusConstants.refresh &&
+          err.error?.message === this.statusConstants.refresh_msg) {
             this.apiService.RefreshToken();
            
         } else {
-            this.failedToast(err);
+            this.failedToast(err.error);
         }
     });
 }
@@ -394,7 +394,8 @@ getStates(country_id:any) {
         this.statesList = res.data.states != undefined ? res.data.states : [];
         this.loading = false;
     }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if ( err.status_code === this.statusConstants.refresh &&
+          err.error?.message === this.statusConstants.refresh_msg) {
             this.apiService.RefreshToken();
             
         }
@@ -403,11 +404,8 @@ getStates(country_id:any) {
 viewClient(client_id: any) {
   const params = { 
     client_id: client_id.toString() ,
-    // client_id: String(this.client_id),
     user_id: String(this.user_id )
   };
-
-
   this.apiService.post(this.urlConstant.viewclient, params).subscribe({
     next: (res) => {
       if (res.status && res.data) {

@@ -13,8 +13,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { SidebarModule } from 'primeng/sidebar';
-// import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -25,7 +23,6 @@ import { offcialpersonalupadate } from './officials.model';
 import { offcialpersonaledit } from './officials.model';
 
 import { OnInit } from '@angular/core';
-import { HostListener } from '@angular/core';
 import { Drawer } from 'primeng/drawer';
 import { PaginatorModule } from 'primeng/paginator';
 import { ToastModule } from 'primeng/toast';
@@ -93,7 +90,6 @@ export class OfficialsComponent implements OnInit {
   visibleDialog: boolean = false;
   official: officials[] = [];
   officialList: any[] = [];
-  // sidebarVisible: boolean = false;
   isEditMode: boolean = false;
   ispersonalupadate: boolean = false;
   isEditPersonal: boolean = false;
@@ -194,7 +190,7 @@ export class OfficialsComponent implements OnInit {
       guardian_name: [''],
       address_1: [''],
       address_2: [''],
-  country_id: ['', [Validators.required]],
+      country_id: ['', [Validators.required]],
       state_id: ['', [Validators.required]],
       city_id: [''],
       post_code: [''],
@@ -229,7 +225,7 @@ export class OfficialsComponent implements OnInit {
 
 
     }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
       }
     });
@@ -254,7 +250,7 @@ export class OfficialsComponent implements OnInit {
         console.log("All clubs:", this.clubsDropdownData);
       },
       (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
           this.clubsDropdownData = [];
@@ -293,7 +289,7 @@ export class OfficialsComponent implements OnInit {
       }, 100);
 
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       }
@@ -324,9 +320,10 @@ export class OfficialsComponent implements OnInit {
 
     },
 
-      (err: any) => {
+    (err: any) => {
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [], this.totalData = this.officialDataList.length);
 
-      });
+    });
   }
 
   calculateFirst(): number {
@@ -403,14 +400,14 @@ export class OfficialsComponent implements OnInit {
       this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -497,7 +494,7 @@ export class OfficialsComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.official_id = official.official_id?.toString();
     this.apiService.post(this.urlConstant.editofficial, params).subscribe((res) => {
-      if (res.status_code == 200) {
+      if (res.status_code === this.statusConstants.success && res.status) {
         const editRecord: offcialedit = res.data.officials[0] ?? {};
         if (editRecord != null) {
           this.onOfficialChange(editRecord.official_type_id);
@@ -525,7 +522,7 @@ export class OfficialsComponent implements OnInit {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
   }
@@ -586,7 +583,7 @@ export class OfficialsComponent implements OnInit {
         }
       },
       (err: any) => {
-        if (err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
           this.failedToast(err);
@@ -661,7 +658,7 @@ export class OfficialsComponent implements OnInit {
         }
       },
       (err: any) => {
-        if (err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
           this.failedToast(err);
@@ -684,7 +681,7 @@ export class OfficialsComponent implements OnInit {
       this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
 
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       }
@@ -709,7 +706,7 @@ export class OfficialsComponent implements OnInit {
       this.country_id = this.countriesList[0].country_id;
       this.gridload();
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       } else {
@@ -732,7 +729,7 @@ export class OfficialsComponent implements OnInit {
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
       this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       } else {
@@ -754,7 +751,7 @@ export class OfficialsComponent implements OnInit {
       this.statesList = res.data.states != undefined ? res.data.states : [];
       this.loading = false;
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       }
@@ -787,7 +784,7 @@ export class OfficialsComponent implements OnInit {
         }
       }, 100);
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
       }
     });
