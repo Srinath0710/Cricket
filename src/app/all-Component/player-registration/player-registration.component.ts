@@ -234,7 +234,6 @@ previewUrl: string | ArrayBuffer | null = null;
     this.apiService.post(this.urlConstant.teamclubdropdown, params).subscribe(
       (res) => {
         this.configDataList = res.data?.clubs || [];
-        console.log("All clubs:", this.configDataList);
       },
       (err: any) => {
         if (err.status_code ===this.statusConstants.refresh && err.error.message ) {
@@ -289,7 +288,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id = this.clientData[0].client_id;
-      console.log(this.client_id);
       this.gridLoad();
 
       this.dropdownplayer();
@@ -471,8 +469,6 @@ formSetValue() {
 
     this.duplicatePlayers = response.data.players; // assuming response.data is an array
     this.showDialog();
-
-    console.log(response);
   }
   showDialog() {
     this.position = 'center';

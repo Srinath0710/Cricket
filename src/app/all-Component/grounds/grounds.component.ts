@@ -189,7 +189,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.ClientID = this.clientData[0].client_id;
       this.gridload();
     }, (err) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
 
@@ -203,12 +203,11 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.groundclubdropdown, params).subscribe(
       (res) => {
         this.configDataList = res.data?.clubs || [];
-        console.log("All clubs:", this.configDataList);
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
-          this.failedToast(err);
+          this.failedToast(err.error);
         } 
         else {  
           this.configDataList = [];
@@ -264,7 +263,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       next: (res) => {
         if (res.status && res.data) {
           this.selectedGround = res.data.grounds; // or res.data.ground based on response shape
-          console.log('resground', this.selectedGround);
           this.viewDialogVisible = true;
         }
       },
@@ -319,16 +317,13 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
   onAddGround() {
-    console.log("hii function start")
     this.submitted = true;
     this.isEditMode = false;
     if (this.addGroundForm.invalid) {
-      console.log("hii function if")
 
       this.addGroundForm.markAllAsTouched();
       return
     }
-    console.log(this.addGroundForm.value)
 
     const params: UpdateGround = {
 
@@ -359,22 +354,20 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
       action_flag: 'create',
     };
-    console.log("hii function update")
 
     if (this.addGroundForm.value.ground_id) {
-      console.log(this.addGroundForm.value.ground_id)
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
   }
@@ -394,7 +387,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     params.ground_id = ground.ground_id?.toString();
 
     this.apiService.post(this.urlConstant.editGround, params).subscribe((res) => {
-      console.log(res);
       if (res.status_code == this.statusConstants.success && res.status)  {
         const editRecord: EditGround = res.data.grounds[0] ?? {};
 
@@ -433,7 +425,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
-          : this.failedToast(err);
+          : this.failedToast(err.error);
       }
     );
   }
@@ -478,7 +470,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
-          : this.failedToast(err);
+          : this.failedToast(err.error);
       }
     );
   }
@@ -519,7 +511,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.loading = false;
       this.country_id = this.countriesList[0].country_id;
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
 
@@ -537,7 +529,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
       this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
 
     });
   }
@@ -555,7 +547,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.statesList = res.data.states != undefined ? res.data.states : [];
       this.loading = false;
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
 
     });
   }

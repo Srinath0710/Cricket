@@ -259,7 +259,7 @@ export class CompetitionComponent implements OnInit {
         }
       },
       (err) => {
-        if (err.status === this.statusConstants.refresh &&
+        if (err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
@@ -294,15 +294,12 @@ export class CompetitionComponent implements OnInit {
 
   editCompitition(comp: any) {
     this.isEditMode = true;
-
-    console.log(comp)
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.competition_id = comp.competition_id?.toString();
     this.apiService.post(this.urlConstant.editcompetition, params).subscribe((res) => {
-      console.log(res);
-      if (res.status_code == 200) {
+      if (res.status_code == this.statusConstants.success && res.status)  {
         const editRecord: EditCompitition = res.data.competitions[0] ?? {};
         if (editRecord != null) {
           this.addCompetitionForm.setValue({
@@ -338,7 +335,7 @@ export class CompetitionComponent implements OnInit {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 
@@ -364,21 +361,13 @@ export class CompetitionComponent implements OnInit {
       competition_id: competition.competition_id.toString(),
       status: newStatus
     };
-
-
     competition.status = newStatus;
-    console.log(`Competition status changed to: ${competition.status}`);
-
     this.messageService.add({
       severity: 'success',
       summary: 'Status Updated',
       detail: `Competition status changed to ${newStatus}`
     });
   }
-
-
-
-
 
   changeTabs(tabName: string, competition: Competition) {
     this.activeTab = tabName;
@@ -393,7 +382,6 @@ export class CompetitionComponent implements OnInit {
       start_date:competition.start_date,
       end_date:competition.end_date
     }
-    console.log(this.showTabs)
 
   }
 
@@ -468,13 +456,13 @@ export class CompetitionComponent implements OnInit {
       this.apiService.post(this.urlConstant.updateCompetition, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.createCompetition, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -496,8 +484,10 @@ export class CompetitionComponent implements OnInit {
 
 
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh && err.error.message  ){
+      
         this.apiService.RefreshToken();
+        this.failedToast(err.error)
 
       }
 
@@ -514,12 +504,13 @@ export class CompetitionComponent implements OnInit {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id= this.clientData[0].client_id;
-      console.log(this.client_id);
       this.loadCompetitions();
 
     }, (err) => {
-      if (err.status === 401 && err.error.message === 'Token expired') {
+      if (err.status_code === this.statusConstants.refresh && err.error.message  ){
+        this.failedToast(err.error)
         this.apiService.RefreshToken();
+
       }
     });
   }
@@ -551,12 +542,12 @@ export class CompetitionComponent implements OnInit {
   
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.statusConstants === this.statusConstants.success && res.status
+        res.status_code === this.statusConstants.success && res.status
           ? (this.successToast(res), this.loadCompetitions())
           : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
         err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);

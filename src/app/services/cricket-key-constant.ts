@@ -15,6 +15,7 @@ export class CricketKeyConstant {
             team_format: 'team_format',
             officials: 'officials',
             gender: 'gender',
+            age_category: 'age_category',
         },
         official_keys: {
             analyst: { short_key: 'VDA', label: 'Analyst Level', key: 'analyst' },

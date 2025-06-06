@@ -113,7 +113,7 @@ export class CompMatchComponent implements OnInit {
         this.MatchData = [];
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
 
     });
   }
@@ -167,7 +167,7 @@ export class CompMatchComponent implements OnInit {
 
 
       }, (err: any) => {
-        if (err.status === 401 && err.error.message === "Expired") {
+        if (err.status_code === 401 && err.error.message === "Expired") {
           this.apiService.RefreshToken();
 
         }
@@ -277,7 +277,7 @@ export class CompMatchComponent implements OnInit {
           }
 
         }, (err: any) => {
-          if (err.status === 401 && err.error.message === "Expired") {
+          if (err.status_code === 401 && err.error.message === "Expired") {
             this.apiService.RefreshToken();
 
           }
@@ -295,13 +295,12 @@ export class CompMatchComponent implements OnInit {
       this.apiService.post(this.urlConstant.addfixture, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 }
 
 editCardData(match_id: number){
-  console.log("hello edit ")
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -344,7 +343,7 @@ editCardData(match_id: number){
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
 
 

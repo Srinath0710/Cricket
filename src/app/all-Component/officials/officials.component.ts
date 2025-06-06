@@ -219,7 +219,6 @@ export class OfficialsComponent implements OnInit {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id = this.clientData[0].client_id;
-      console.log(this.client_id);
       this.callBackClientChange();
 
 
@@ -247,7 +246,6 @@ export class OfficialsComponent implements OnInit {
     this.apiService.post(this.urlConstant.officialclubdropdown, params).subscribe(
       (res) => {
         this.clubsDropdownData = res.data?.clubs || [];
-        console.log("All clubs:", this.clubsDropdownData);
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
@@ -570,8 +568,6 @@ export class OfficialsComponent implements OnInit {
       instagram_handle: String(this.addPersonalForm.value.instagram_handle),
       facebook_url: String(this.addPersonalForm.value.facebook_url),
     };
-
-    console.log(params);
 
     this.apiService.post(this.urlConstant.officialpersonalupadate, params).subscribe(
       (res) => {

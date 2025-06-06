@@ -31,6 +31,7 @@ export class CompGroundComponent implements OnInit {
   movedToTarget: any[] = [];
   user_id: number = Number(localStorage.getItem('user_id'));
   movedToTargetIds = new Set<number>();
+  statusConstants= CricketKeyConstant.status_code;
 
   constructor(
     private apiService: ApiService,
@@ -50,14 +51,18 @@ export class CompGroundComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compgroundList, params).subscribe((res: any) => {
-      console.log(res);
       const allItems =res.data.all_grounds;
       const mappedIds = res.data.selected_grounds.map((value: any) => value.ground_id);
       this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
       // this.targetGround = res.data.all_grounds
       this.targetGround = res.data.selected_grounds
-    console.log(this.sourceGround,this.targetGround,mappedIds)
     }, (err: any) => {
+      if (
+        err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
+      ) {
+        this.apiService.RefreshToken();
+      }
 
     })
   }
@@ -67,12 +72,16 @@ export class CompGroundComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.ground_list = this.targetGround.map((p: any) => p.ground_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-    console.log("target:",this.targetGround);
 
     this.apiService.post(this.urlConstant.compgroundupdate, params).subscribe((res: any) => {
       this.gridLoad();
     }, (err: any) => {
-
+      if (
+        err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
+      ) {
+        this.apiService.RefreshToken();
+      }
     })
   }
   handleImageError(event: Event, fallbackUrl: string): void {
@@ -101,13 +110,5 @@ export class CompGroundComponent implements OnInit {
       item.highlighted = false; 
     });
   }
-  
-
-// isNewlyAdded(item: any): boolean {
-//   return this.movedToTargetIds.has(item.ground_id);
-// }
-
-
-
 }
 
