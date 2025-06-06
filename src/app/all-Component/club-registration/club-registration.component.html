@@ -1,0 +1,381 @@
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <main>
+            <div class="card margin-card">
+                <div class="card-body">
+                    <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+                        <div class="main-page-title page-title playerbackground">
+                            <i class="fa-solid fa-chess fa-fw" aria-hidden="true"></i>
+                            Club Registrations
+                        </div>
+                        <div class="d-flex align-items-center">
+
+
+                            <form class="d-flex align-items-center gap-2" (submit)="gridload()" #searchForm="ngForm">
+                                <div class="p-input-icon-right flex-grow-1">
+                                    <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
+                                        class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"
+                                        (input)="sanitizeQuotesOnly('club_name', $event)"
+                                        (ngModelChange)="onSearchChange()" />
+                                </div>
+                                <button type="button" class="clear-button" (click)="clearSearch()">Clear</button>
+                            </form>
+
+                            <div class="card flex justify-center">
+                                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                                    (click)="openAddClubForm()">
+                                    <i class="fas fa-plus"></i>
+                                    Club
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p-table #dt [value]="clubsData" [styleClass]="'custom-table'" [globalFilterFields]="['club_name', 'parent_club_name', 
+                        'country_name', 'state_name', 'record_status']">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="col-2" pSortableColumn="club_name">Club Name <p-sortIcon
+                                        field="club_name"></p-sortIcon>
+                                </th>
+                                <th class="col-2" pSortableColumn="parent_club_name">Parent Club Name <p-sortIcon
+                                        field="parent_club_name">
+                                    </p-sortIcon>
+                                </th>
+                                <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon
+                                        field="country_name"></p-sortIcon>
+                                </th>
+                                <th class="col-2" pSortableColumn="state_name">State Name <p-sortIcon
+                                        field="state_name"></p-sortIcon>
+                                </th>
+                                <th class="col-2" pSortableColumn="record_status">Status <p-sortIcon
+                                        field="record_status"></p-sortIcon>
+                                </th>
+                                <th class="col-2" class="custom-header action-column-header">Actions</th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-club>
+                            <tr>
+                                <td>{{ club.club_name }}</td>
+                                <td>{{ club.parent_club_name }}</td>
+                                <td>{{ club.country_name }}</td>
+                                <td>{{ club.state_name }}</td>
+                                <td>
+                                    <span [ngClass]="{
+                                        'bg-success': club.record_status === 'Active',
+                                        'bg-danger' : club.record_status === 'Inactive'
+                                    }">
+                                        {{ club.record_status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="icon-blue" (click)="EditClub(club.club_id)" pTooltip="Edit"
+                                        tooltipPosition="top">
+                                        <i class="fas fa-user-pen" aria-hidden="true"></i>
+                                    </span>
+
+                                    <span class="icon-green"
+                                        (click)="StatusConfirm(club.club_id,conditionConstants.active_status,club.record_status)"
+                                        pTooltip="Active" tooltipPosition="top">
+                                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                                    </span>
+
+                                    <span class="icon-red"
+                                        (click)="StatusConfirm(club.club_id,conditionConstants.deactive_status,club.record_status)"
+                                        pTooltip="Deactive" tooltipPosition="top">
+                                        <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+                        [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="onPageChange($event)">
+                    </p-paginator>
+
+                </div>
+            </div>
+        </main>
+
+        <p-confirmDialog [style]="{ width: '300px' , height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+            [closable]="false" [styleClass]="'p-confirm-dialog-custom'"></p-confirmDialog>
+
+        <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="small-heading">
+                    {{ isEditMode ? 'Edit Club' : 'Add Club' }}
+                </h3>
+            </div>
+
+            <form [formGroup]="addClubForm">
+                <div class="row gy-3">
+                    <div class="col-md-4">
+                        <label>Club Name<span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="20" type="text" formControlName="club_name">
+
+                        <small
+                            *ngIf="addClubForm.get('club_name')?.invalid && (addClubForm.get('club_name')?.touched || submitted)"
+                            class="required-msg">
+                            Club Name is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Parent Club Name
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="clubsData" formControlName="parent_club_id" optionLabel="club_name"
+                            optionValue="club_id" class="drop-error" [panelStyleClass]="'custom-dropdown-panel'">
+                        </p-dropdown>
+                        <small
+                            *ngIf="addClubForm.get('parent_club_id')?.invalid && (addClubForm.get('parent_club_id')?.touched || submitted)"
+                            class="required-msg">
+                            Parent Club Name is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label> Club Short
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="20" type="text" formControlName="club_short"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('club_short',$event)">
+                        <small
+                            *ngIf="addClubForm.get('club_short')?.invalid && (addClubForm.get('club_short')?.touched || submitted)"
+                            class="required-msg">
+                            Club Short is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Country
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="countriesList" class="drop-error" formControlName="country_id"
+                            optionValue="country_id" optionLabel="country_name"
+                            (ngModelChange)="getStates(addClubForm.get('country_id')?.value)" appendTo="self"
+                            [panelStyleClass]="'custom-dropdown-panel'">
+                            <ng-template let-country pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div> {{ country.country_name }}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+
+                        <!-- <small
+                            *ngIf="addClubForm?.get('country_id')?.invalid &&(addClubForm.get('country_id')?.touched) || (addClubForm.get('country_id')?.invalid && submitted)"
+                            class="required-msg">
+                            Country Name is Required
+                        </small> -->
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>State Name
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="stateList" class="drop-error " formControlName="state_id"
+                            (ngModelChange)="getCities(addClubForm.get('state_id')?.value)" optionValue="state_id"
+                            optionLabel="state_name" appendTo="self">
+                            <ng-template let-state pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ state.state_name }}
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <!-- 
+                        <small
+                            *ngIf="addClubForm.get('state_id')?.invalid && (addClubForm.get('state_id')?.touched || submitted)"
+                            class="required-msg">
+                            State Name is Required
+                        </small> -->
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>City Name
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="citiesList" class="drop-error" formControlName="city_id"
+                            optionValue="city_id" optionLabel="city_name">
+                            <ng-template let-city pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div> {{ city.city_name }}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <small
+                            *ngIf="addClubForm.get('city_id')?.invalid && (addClubForm.get('city_id')?.touched || submitted)"
+                            class="required-msg">
+                            City Name is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-4"><label> Address 1
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="50" type="text" formControlName="address_1"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_1',$event)">
+                        <small
+                            *ngIf="addClubForm.get('address_1')?.invalid && (addClubForm.get('address_1')?.touched || submitted)"
+                            class="required-msg">
+                            Address 1 is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-4"><label> Address 2
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="50" type="text" formControlName="address_2"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_2',$event)">
+                        <small
+                            *ngIf="addClubForm.get('address_2')?.invalid && (addClubForm.get('address_2')?.touched || submitted)"
+                            class="required-msg">
+                            Address 2 is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-4"><label> Post Code
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="6" type="text" formControlName="post_code"
+                            pattern="^[1-9][0-9]{5}$" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('post_code',$event)">
+                          <small
+                            *ngIf="addClubForm.get('post_code')?.invalid && (addClubForm.get('post_code')?.touched || submitted)"
+                            class="required-msg">
+                            {{
+                            addClubForm.get('post_code')?.errors?.['required']
+                            ? 'post code is Required'
+                            : addClubForm.get('post_code')?.errors?.['pattern']
+                            ? 'Please enter a valid post code (e.g., 123456)'
+                            : ''
+                            }}
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Email ID <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" formControlName="email_id"
+                            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('email_id', $event)">
+                        <small
+                            *ngIf="addClubForm.get('email_id')?.invalid && (addClubForm.get('email_id')?.touched || submitted)"
+                            class="required-msg">
+                            {{
+                            addClubForm.get('email_id')?.errors?.['required']
+                            ? 'Email ID is Required'
+                            : addClubForm.get('email_id')?.errors?.['pattern']
+                            ? 'Please enter a valid Email ID (e.g., example@domain.com)'
+                            : ''
+                            }}
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Mobile <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" maxlength="10" formControlName="mobile"
+                            pattern="^[0-9]{10}$" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('mobile', $event)">
+
+                        <small
+                            *ngIf="addClubForm.get('mobile')?.errors?.['required'] && (addClubForm.get('mobile')?.touched || submitted)"
+                            class="required-msg">
+                            Mobile Number is Required
+                        </small>
+                        <small
+                            *ngIf="addClubForm.get('mobile')?.errors?.['pattern'] && (addClubForm.get('mobile')?.touched || submitted)"
+                            class="required-msg">
+                            Please enter a valid 10-digit Mobile Number
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Website <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" formControlName="website"
+                            pattern="^https:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/.*)?$"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('website', $event)">
+
+                        <small
+                            *ngIf="addClubForm.get('website')?.errors?.['required'] && (addClubForm.get('website')?.touched || submitted)"
+                            class="required-msg">
+                            Website URL is Required
+                        </small>
+
+                        <small
+                            *ngIf="addClubForm.get('website')?.errors?.['pattern'] && (addClubForm.get('website')?.touched || submitted)"
+                            class="required-msg">
+                            Please enter a valid Website URL (e.g., https://example.com)
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Contact <span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" maxlength="10" formControlName="contact"
+                            pattern="^[0-9]{10}$" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('contact', $event)">
+
+                        <small
+                            *ngIf="addClubForm.get('contact')?.errors?.['required'] && (addClubForm.get('contact')?.touched || submitted)"
+                            class="required-msg">
+                            Contact Number is Required
+                        </small>
+                        <small
+                            *ngIf="addClubForm.get('contact')?.errors?.['pattern'] && (addClubForm.get('contact')?.touched || submitted)"
+                            class="required-msg">
+                            Please enter a valid 10-digit Contact Number
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Remarks</label>
+                        <textarea class="form-control" formControlName="remarks" rows="4" maxlength="500"
+                            (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('remarks', $event)"></textarea>
+
+                        <small
+                            *ngIf="addClubForm.get('remarks')?.errors?.['maxlength'] && (addClubForm.get('remarks')?.touched || submitted)"
+                            class="required-msg">
+                            Remarks cannot exceed 500 characters.
+                        </small>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>profile Image </label>
+                        <input class="form-control" type="file" formControlName="profile_img">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="image-upload-container text-center">
+                            <label for="profileImageInput" class="upload-label">
+                                <div class="image-preview-wrapper">
+                                    <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
+                                    <ng-template #placeholder>
+                                    </ng-template>
+                                </div>
+                            </label>
+                            <input type="file" id="profileImageInput" accept="image/*"
+                                (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
+                            <!-- <div class="upload-btn">Upload</div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 sticky-footer-buttons">
+                    <div class="col-12 text-end">
+                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                            (click)="cancelForm()">
+                        </button>
+
+                        <button pButton type="text" label="Clear" class="p-button-secondary me-2"
+                            *ngIf="addClubForm.get('club_id')?.value == '' || addClubForm.get('club_id')?.value === null"
+                            (click)="clearForm()">
+                        </button>
+
+                        <button pButton type="button" label="Save" class="save-button" (click)="onAddClub()"></button>
+                    </div>
+                </div>
+            </form>
+        </p-drawer>
+    </div>
+</div>
+<p-toast key="tc" position="top-right"></p-toast>

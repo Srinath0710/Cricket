@@ -147,4 +147,14 @@ export class URLCONSTANT {
       viewclient='Client/view_client'
       lookupdropdown='Client/get_client_dropdown'
 
+      /* Club List */
+      Clubdropdown = 'Club/get_club_dropdown'
+      getClubList = 'Club/get_club_list'
+      addClub = 'Club/add_club'
+      updateClub = 'Club/update_club'
+      editClub = 'Club/edit_club'
+      activateClub = 'Club/activate_club'
+      deactivateClub = 'Club/deactivate_club'
+     
+
 } 

@@ -13,6 +13,7 @@ import { GroundsComponent } from "../grounds/grounds.component";
 // import { ScoreEnginesComponent } from "../score-engines/score-engines.component";
 import { ScoreEngineComponent } from "../score-engine/score-engine.component";
 import { ClientComponent } from "./client/client.component";
+import { ClubRegistrationComponent } from "./club-registration/club-registration.component";
 
 export const AllComponentRoutes: Route[] = [
     {
@@ -79,6 +80,10 @@ export const AllComponentRoutes: Route[] = [
                 path: 'client',
                 component: ClientComponent
 
+            },
+            {
+                path: 'clubs',
+                component: ClubRegistrationComponent
             },
          
         ]
