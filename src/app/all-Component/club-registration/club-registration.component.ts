@@ -341,30 +341,33 @@ export class ClubRegistrationComponent implements OnInit {
     );
   }
 
-  StatusConfirm(club_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    const AlreadyClubsStatus =
-      (actionObject.key === this.conditionConstants.active.status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.conditionConstants.deactive.status.key && currentStatus === 'Inactive');
-
-    if (AlreadyClubsStatus) {
-      return;
-    }
-    this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this club?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        const url: string = this.conditionConstants.active.status.key === actionObject.key ? this.urlConstant.activateClub : this.urlConstant.deactivateClub;
-        this.status(club_id, url);
-        this.confirmationService.close();
-      }, reject: () => {
-        this.confirmationService.close();
-      }
-    });
-
+ StatusConfirm(club_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+  const AlreadyClubsStatus =
+  (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+  (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'Inactive');
+  if (AlreadyClubsStatus) {
+    return;
   }
+
+  this.confirmationService.confirm({
+    message: `Are you sure you want to ${actionObject.label} this club?`,
+    header: 'Confirmation',
+    icon: 'pi pi-question-circle',
+    acceptLabel: 'Yes',
+    rejectLabel: 'No',
+    accept: () => {
+      const url: string = this.conditionConstants.active_status.key === actionObject.key
+        ? this.urlConstant.activateClub
+        : this.urlConstant.deactivateClub;
+      this.status(club_id, url);
+      this.confirmationService.close();
+    },
+    reject: () => {
+      this.confirmationService.close();
+    }
+  });
+}
+
 
   getCountries() {
     const params: any = {};
