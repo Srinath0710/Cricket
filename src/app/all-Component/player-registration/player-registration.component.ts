@@ -27,10 +27,6 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { Dialog } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 
-
-
-
-
 interface player {
   parent_config_id: number;
   config_id: number;
@@ -71,11 +67,6 @@ interface DuplicatePlayer {
     Drawer,
     ToastModule,
 
-
-
-
-
-
   ],
   providers: [
     { provide: URLCONSTANT },
@@ -83,14 +74,9 @@ interface DuplicatePlayer {
     { provide: MessageService },
     { provide: ConfirmationService }
   ],
-
-
-
 })
 export class PlayerRegistrationComponent implements OnInit {
-
   @ViewChild('dt') dt!: Table;
-
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   submitted: boolean = true;
@@ -100,12 +86,12 @@ export class PlayerRegistrationComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10; // Default records shown is 10
   totalData: any = 0;
-
+previewUrl: string | ArrayBuffer | null = null;
+  filedata: any;
   isEditMode: boolean = false;
   ispersonalupadate: boolean = false;
   isEditPersonal: boolean = false;
  officialId: any;
-  filedata: any;
   searchKeyword: string = '';
   visible: boolean = false;
   isEditing: boolean = false;
@@ -143,7 +129,6 @@ export class PlayerRegistrationComponent implements OnInit {
   statesList = [];
   emergencyTypeList: any[] = [];
   bloodgroup: any[] = [];
-
   mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
   playerNamePattern = /^[^'"]+$/; //allstringonly allow value
@@ -154,18 +139,13 @@ export class PlayerRegistrationComponent implements OnInit {
   personal_player_id: any;
   isPersonalDataIntialized: boolean = false;
   disableReadonly: boolean = true;
-
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
   }
-
-
   default_img = CricketKeyConstant.default_image_url.players;
   // dropDownConstants= CricketKeyConstant.dropdown_keys;
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
-
-
   constructor(
     private fb: FormBuilder,
     private formBuilder: FormBuilder,
@@ -173,7 +153,6 @@ export class PlayerRegistrationComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private confirmationService: ConfirmationService
-
   ) { }
 
   ngOnInit() {
@@ -182,8 +161,6 @@ export class PlayerRegistrationComponent implements OnInit {
     this.getCountries();
     this.Natinalitydropdown();
     this.getGlobalData();
-
-
     this.playerRegistrationform = this.formBuilder.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
@@ -208,21 +185,14 @@ export class PlayerRegistrationComponent implements OnInit {
       club_id: ['', []],
       scorecard_name: ['', []],
       reference_id: ['', []],
-
-
-
-
     })
-
-
     this.addplayerpersonalform = this.fb.group({
-
-      nationality_id: [''],
-      country_of_birth: [''],
-      residence_country_id: [''],
-      primary_email_id: [''],
+      nationality_id: ['', [Validators.required]],
+      country_of_birth: ['', [Validators.required]],
+      residence_country_id: ['', [Validators.required]],
+     primary_email_id: ['', [Validators.required, Validators.pattern(this.emailRegex)]],
       secondary_email_id: [''],
-      primary_phone: [''],
+      primary_phone:['', [Validators.required, Validators.pattern(this.mobileRegex)]],
       secondary_phone: [''],
       blood_group_id: [''],
       father_name: [''],
@@ -230,8 +200,8 @@ export class PlayerRegistrationComponent implements OnInit {
       guardian_name: [''],
       address_1: [''],
       address_2: [''],
-      country_id: [''],
-      state_id: [''],
+      country_id: ['', [Validators.required]],
+      state_id: ['', [Validators.required]],
       city_id: [''],
       post_code: [''],
       emergency_contact: [''],
@@ -254,21 +224,16 @@ export class PlayerRegistrationComponent implements OnInit {
       facebook_url: ['']
     });
 
-
   }
-
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
   }
-
-
   clubsdropdown() {
     const params: any = {
       action_flag: 'dropdown',
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
-
     this.apiService.post(this.urlConstant.teamclubdropdown, params).subscribe(
       (res) => {
         this.configDataList = res.data?.clubs || [];
@@ -285,11 +250,19 @@ export class PlayerRegistrationComponent implements OnInit {
     );
   }
   //mobileno enter the only number alowed
-  onPhoneNumberInput(event: Event, controlName: string) {
-    const inputElement = event.target as HTMLInputElement;
-    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
+onPhoneNumberInput(event: Event, controlName: string) {
+  const inputElement = event.target as HTMLInputElement;
+  const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
+
+  // Check and update value in addplayerpersonalform
+  if (this.addplayerpersonalform?.get(controlName)) {
     this.addplayerpersonalform.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
   }
+  // Check and update value in playerRegistrationform
+  else if (this.playerRegistrationform?.get(controlName)) {
+    this.playerRegistrationform.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
+  }
+}
   //single quotes and doble quotes remove all label box 
   blockQuotesOnly(event: KeyboardEvent) {
     if (event.key === '"' || event.key === "'") {
@@ -297,12 +270,19 @@ export class PlayerRegistrationComponent implements OnInit {
     }
   }
 
+sanitizeQuotesOnly(controlName: string, event: Event) {
+  const input = (event.target as HTMLInputElement).value;
+  const cleaned = input.replace(/['"]/g, ''); // remove both ' and "
 
-  sanitizeQuotesOnly(controlName: string, event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  // Set value in addplayerpersonalform if control exists
+  if (this.addplayerpersonalform?.get(controlName)) {
+    this.addplayerpersonalform.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
+  // Else set value in playerRegistrationform if control exists
+  else if (this.playerRegistrationform?.get(controlName)) {
     this.playerRegistrationform.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
+}
 
   Clientdropdown() {
     const params: any = {
@@ -317,9 +297,6 @@ export class PlayerRegistrationComponent implements OnInit {
       this.dropdownplayer();
       this.radiobutton();
       
-
-
-
     }, (err) => {
       if (err.status === 401 && err.error.message === 'Token expired') {
         this.apiService.RefreshToken();
@@ -346,7 +323,6 @@ export class PlayerRegistrationComponent implements OnInit {
         err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.PlayerData = [], this.totalData = this.PlayerData.length);
 
       });
-
   }
 
   calculateFirst(): number {
@@ -359,7 +335,6 @@ export class PlayerRegistrationComponent implements OnInit {
     this.gridLoad();
   }
 
-
   Nationalitydropdown() {
 
     const params: any = {};
@@ -368,17 +343,12 @@ export class PlayerRegistrationComponent implements OnInit {
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.nationalityplayer, params).subscribe((res) => {
       this.NationalitydropdownData = res.data.region != undefined ? res.data.region : [];
-
     }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
         this.apiService.RefreshToken();
-
       }
     })
-
-
   }
-
 
   dropdownplayer() {
     const params: any = {};
@@ -387,15 +357,12 @@ export class PlayerRegistrationComponent implements OnInit {
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
       this.configDataList = res.data.clubs != undefined ? res.data.clubs : [];
-
       this.genderSelect = res.data.clubs
         .filter((item: any) => item.config_key == 'gender')
-
       // console.log(this.genderSelect,res.data.teams);
     }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
         this.apiService.RefreshToken();
-
       }
     })
   }
@@ -434,7 +401,6 @@ export class PlayerRegistrationComponent implements OnInit {
     this.filteredSpecs = this.bowlingspec.filter(
       spec => spec.parent_config_id === selectedBowlingTypeId
     );
-
     // Reset only if form and control are initialized
     if (this.form?.get('bowling_spec_id')) {
       this.form.get('bowling_spec_id')!.setValue(null);
@@ -449,7 +415,6 @@ formSetValue() {
       this.playerRegistrationform.patchValue({ [field]: match.config_id });
     }
   };
-
   // 🏏 Set defaults using helper
   setDefaultValue(this.playerrole, 'player_role_id', 'batsman');
   setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
@@ -471,14 +436,12 @@ formSetValue() {
   }
 }
 
-
   duplicateChange() {
     this.submitted = true;
     if (this.playerRegistrationform.invalid) {
       this.playerRegistrationform.markAllAsTouched();
       return;
     }
-
     const params: DuplicatePlayer = {
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString(),
@@ -486,7 +449,6 @@ formSetValue() {
       display_name: this.playerRegistrationform.value.display_name,
       sur_name: this.playerRegistrationform.value.sur_name,
     };
-
     this.apiService.post(this.urlConstant.duplicateplayer, params).subscribe(
       (res) => {
         if (
@@ -562,9 +524,7 @@ formSetValue() {
       scorecard_name: this.playerRegistrationform.value.scorecard_name != null ? this.playerRegistrationform.value.scorecard_name.toString() : null,
       reference_id: this.playerRegistrationform.value.reference_id != null ? this.playerRegistrationform.value.reference_id.toString() : null,
       action_flag: 'create'
-
     };
-
 
     if (this.playerRegistrationform.value.player_id) {
       params.action_flag = 'update';
@@ -598,25 +558,26 @@ formSetValue() {
        this.formSetValue();  // reload and set defaults
     this.addplayerpersonalform.reset();
     this.submitted = false;
-  
   }
-
   showAddForm() {
     this.ShowForm = true;
   }
 
-  personalAddShowForm(player: any) {
-      this.isEditPersonal = false;
-    this.personal_player_id = player.player_id;
-    this.addplayerpersonalform .reset();
-    this.personalShowForm = true;
-  }
+// personalAddShowForm(player: any) {
+//   this.resetForm();
+
+//   this.isEditPersonal = false;          
+//   this.isPersonalDataIntialized = false; 
+//   this.disableReadonly = false;        
+//   this.personalShowForm = true;
+//   this.personal_player_id = player?.player_id ?? null;
+// }
+
   cancelForm() {
     this.ShowForm = false;
     this.personalShowForm = false;
     this.addplayerpersonalform.reset();
      this.disableReadonly =true; 
-
 
   }
 
@@ -639,7 +600,7 @@ formSetValue() {
             sur_name: editRecord.sur_name,
             display_name: editRecord.display_name,
             nationality_id: editRecord.nationality_id,
-            player_dob: editRecord.player_dob,
+            player_dob: editRecord.player_dob!=null ?editRecord.player_dob.split('T')[0] :null,
             mobile_no: editRecord.mobile_no,
             email: editRecord.email,
             gender_id: editRecord.gender_id,
@@ -657,7 +618,6 @@ formSetValue() {
             club_id: editRecord.club_id,
             scorecard_name: editRecord.scorecard_name,
             reference_id: editRecord.reference_id,
-
           });
           this.showAddForm();
         }
@@ -667,19 +627,16 @@ formSetValue() {
     }, (err: any) => {
       err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
-
   }
 
   viewShowDialog() {
     this.visibleDialog = true;
     this.backScreen = "overlay1";
   }
-
   viewPlayer(player: any) {
     this.selectedplayer = player;
     this.visibleDialog = true;
   }
-
 
   onSubmit() {
     if (this.playerRegistrationform.invalid) return;
@@ -703,9 +660,7 @@ formSetValue() {
 
   Personalupdate() {
     this.submitted = true;
-    
     this.ispersonalupadate = false; // fixed variable name casing
-
     if (this.addplayerpersonalform.invalid) {
       this.addplayerpersonalform.markAllAsTouched();
       return;
@@ -771,33 +726,27 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
     );
   }
 
-
-
   formInputAccess(): boolean {
-
     return this.isPersonalDataIntialized && !this.disableReadonly !== null && this.addplayerpersonalform.value.true
   }
 
   EditpersonalPlayers(player: any) {
-    this.personalShowForm = true;
-    this.isEditPersonal = true;
-    this.personal_player_id = player.player_id;
-    this.playerId =player.player_id;
-
+     this.isEditPersonal = true;           
+  this.isPersonalDataIntialized = true; 
+  this.disableReadonly = true;         
+  this.personalShowForm = true;
+  this.personal_player_id = player.player_id;
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
       player_id: player.player_id?.toString(),
     };
-
     this.apiService.post(this.urlConstant.playersPersonalEdit, params).subscribe(
       (res) => {
-
         if (res.data != null) {
           const editpersonalRecord: playersPersonalEdit = res.data?.players[0] ?? {}; 
           this.isPersonalDataIntialized = true;
           this.addplayerpersonalform.setValue({
-
             nationality_id: editpersonalRecord.nationality_id,
             country_of_birth: editpersonalRecord.country_of_birth,
             residence_country_id: editpersonalRecord.residence_country_id,
@@ -832,14 +781,14 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
             insurance_provider: editpersonalRecord.insurance_provider,
             policy_number: editpersonalRecord.policy_number,
             policy_expiry_date: editpersonalRecord.policy_expiry_date!=null ?editpersonalRecord.policy_expiry_date.split('T')[0] :null,
-     
-
             additional_notes: editpersonalRecord.additional_notes
           });
 
         } else {
-          this.isPersonalDataIntialized = false;
-
+            this.isEditPersonal = false;
+      this.isPersonalDataIntialized = false;
+      // this.addplayerpersonalform.reset();
+      this.resetForm();
         }
       },
       (err: any) => {
@@ -852,8 +801,6 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
     );
   }
 
- 
-
   Natinalitydropdown() {
 
     const params: any = {};
@@ -862,19 +809,12 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
       this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
-
     }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
         this.apiService.RefreshToken();
-
       }
     })
-
-
   }
-
-
-
 
   getCountries() {
     const params: any = {};
@@ -898,11 +838,9 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
 
 getCities(state_id:any) {
     const params: any = {};
-
     if (state_id == null || state_id == '') {
         return
     }
-
     params.action_flag = 'get_city_by_state';
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
@@ -912,7 +850,6 @@ getCities(state_id:any) {
     }, (err: any) => {
         if (err.status === 401 && err.error.message === "Expired") {
             this.apiService.RefreshToken();
-           
         } else {
             this.failedToast(err);
         }
@@ -934,13 +871,9 @@ getStates(country_id:any) {
     }, (err: any) => {
         if (err.status === 401 && err.error.message === "Expired") {
             this.apiService.RefreshToken();
-            
         }
     });
 }
-
-
-
 
   getGlobalData() {
     const params: any = {
@@ -948,18 +881,15 @@ getStates(country_id:any) {
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString(),
     };
-
     this.apiService.post(this.urlConstant.playerspersonaldropdown, params).subscribe((res) => {
       const dropdowns = res.data?.dropdowns || [];
 
       this.emergencyTypeList = dropdowns.filter((d: any) => d.config_key === 'emergency_type');
       this.bloodgroup = dropdowns.filter((d: any) => d.config_key === 'blood_group');
-
       // Pre-fill values if necessary
       setTimeout(() => {
         const teamId = this.addplayerpersonalform.get('official_id')?.value;
         if (!teamId) {
-        
         }
       }, 100);
     }, (err: any) => {
@@ -968,9 +898,20 @@ getStates(country_id:any) {
       }
     });
   }
+ onProfileImageSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.filedata = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   applyFilters() {
-
     this.first = 1;
     this.gridLoad();
     this.showFilters = false;
@@ -1011,7 +952,6 @@ getStates(country_id:any) {
         }
       });
   }
-
   StatusConfirm(player_id: number, actionObject: { key: string, label: string }) {
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this Player?`,
@@ -1035,7 +975,6 @@ getStates(country_id:any) {
     target.src = fallbackUrl;
   }
 
-
   filterGlobal() {
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
@@ -1048,7 +987,6 @@ getStates(country_id:any) {
   //   event.preventDefault();
   //   this.filterGlobal();
   // }
-
 
 
 }
