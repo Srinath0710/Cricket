@@ -49,6 +49,7 @@ export class ClubRegistrationComponent implements OnInit {
   client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: boolean = false;
   isEditMode: boolean = false;
+  isClientShow:boolean=false;
   club_id: any;
   loading = false;
   clubsData: Club[] = [];
@@ -65,11 +66,13 @@ export class ClubRegistrationComponent implements OnInit {
   rows: number = 10;
   totalData: any = 0;
   filedata: any;
+  clientData: any[] = [];
   previewUrl: string | ArrayBuffer | null = null;
   uploadedImage: string | ArrayBuffer | null = null;
   ClubNamePattern = /^[^'"]+$/;
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
+  dropDownConstants=CricketKeyConstant.dropdown_keys;
   clubForm: any;
 gridData:any=[];
 
@@ -81,6 +84,7 @@ gridData:any=[];
   ngOnInit() {
     this.gridload();
     this.getCountries();
+    this.Clientdropdown();
     this.ClubDropdown();
     this.addClubForm = this.formBuilder.group({
       club_id: [''],
@@ -132,6 +136,7 @@ gridData:any=[];
       this.apiService.post(this.urlConstant.getClubList, params).subscribe((res) => {
         this.gridData = res.data.clubs ?? [];
         this.totalData = res.data.clubs[0].total_records ?? this.gridData.length
+        this.ClubDropdown();
         this.gridData.forEach((val: any) => {
           val.profile_image = `${val.profile_image}?${Math.random()}`;
         });
@@ -263,6 +268,24 @@ gridData:any=[];
     this.cancelForm();
     this.successToast(res);
     this.gridload();
+  }
+
+    getGlobalData() {
+    const params: any = {
+      action_flag: 'dropdown',
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString()
+    };
+  
+    this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
+      (res) => {
+        const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
+        this.clubsData = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.age_category);
+      },
+      (err: any) => {
+        this.clubsData = [];
+      }
+    );
   }
 
   EditClub(club_id: number) {
@@ -464,6 +487,22 @@ gridData:any=[];
     this.searchKeyword = '';
     this.dt.clear();
     this.gridload();
+  }
+
+    Clientdropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+      this.clientData = res.data ?? [];
+      this.client_id = this.clientData[0].client_id;
+      this.isClientShow=this.clientData.length>1?true:false;
+      this.gridload();
+      this.getGlobalData();
+
+    }, (err) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+    });
   }
 
 }

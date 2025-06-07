@@ -57,6 +57,7 @@ export class SeasonsComponent implements OnInit {
   isEditMode: boolean = false;
   viewMode: boolean = false;
   seasonsData: any[] = [];
+  isClientShow:boolean=false;
   association_id: any;
   loading = false;
   showTime = false;
@@ -66,6 +67,7 @@ export class SeasonsComponent implements OnInit {
   rows: number = 10;
   totalData: any = 50;
   fileData: any;
+  clientData: any[] = [];
   searchKeyword: string = '';
   submitted: boolean = true;
   season: any;
@@ -73,6 +75,7 @@ export class SeasonsComponent implements OnInit {
 
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
+  dropDownConstants=CricketKeyConstant.dropdown_keys;
 
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
@@ -82,6 +85,7 @@ export class SeasonsComponent implements OnInit {
 
   ngOnInit() {
     this.gridload();
+    this.Clientdropdown();
     this.addSeasonsForm = this.formBuilder.group({
       season_name: ['', [Validators.required]],
       start_date: ['', [Validators.required]],
@@ -283,6 +287,39 @@ export class SeasonsComponent implements OnInit {
     this.searchKeyword = '';
     this.dt.clear();
     this.gridload();
+  }
+
+    Clientdropdown() {
+    const params: any = {
+      user_id: this.user_id?.toString()
+    };
+    this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
+      this.clientData = res.data ?? [];
+      this.client_id = this.clientData[0].client_id;
+      this.isClientShow=this.clientData.length>1?true:false;
+      this.gridload();
+      this.getGlobalData();
+
+    }, (err) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+    });
+  }
+     getGlobalData() {
+    const params: any = {
+      action_flag: 'dropdown',
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString()
+    };
+  
+    this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
+      (res) => {
+        const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
+        this.statusOptions = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key);
+      },
+      (err: any) => {
+        this.seasonsData = [];
+      }
+    );
   }
 
 }

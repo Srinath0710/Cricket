@@ -8,6 +8,19 @@
                             <i class="fa-solid fa-chess fa-fw" aria-hidden="true"></i>
                             Club Registrations
                         </div>
+
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+                            <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
+                                optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridload()"
+                                placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
+                 drop-error header-drop">
+                                <ng-template let-Client pTemplate="item">
+                                    <div class="country-item">
+                                        <div>{{ Client.client_name }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
                         <div class="d-flex align-items-center">
 
 
