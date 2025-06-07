@@ -1,6 +1,10 @@
 <div *ngIf="!ShowForm">
   <div class="d-flex justify-content-end mb-2">
-    <button class="btn btn-primary btn-sm new-buttons" (click)="showDialog()"> + New Match</button>
+    <button class="btn btn-primary btn-sm new-buttons"
+      style="background-color:#367039; color:white; border-color:#367039;" (click)="showDialog()">
+      + New Match
+    </button>
+
   </div>
   <div class="row g-3" style="gap: 20px;">
     <div class="card shadow-sm p-3 col-md-4 mb-1 " *ngFor="let Fixtures of MatchData">
@@ -277,19 +281,27 @@
           placeholder="Enter Match Name" />
       </div>
 
-      <div class="row ">
+      <div class="row">
         <div class="col-12 text-end">
-          <button pButton type="button" class="p-button-secondary me-3" (click)="cancelForm()">Cancel</button>
+          <button pButton type="button" class="p-button-secondary me-3 large-button" style="   height: 38px !important;
+  width: 80px !important;
+  font-size: 14px !important;
+  padding: 6px 12px !important;" (click)="cancelForm()">Cancel</button>
 
-          <button pButton type="button" class="p-button-secondary me-3"
+          <button pButton type="button" class="p-button-secondary me-3 large-button" style="  height: 38px !important;
+  width: 80px !important;
+  font-size: 14px !important;
+  padding: 6px 12px !important;"
             *ngIf="competitionFixturesForm.get('team_id')?.value == '' || competitionFixturesForm.get('team_id')?.value == null"
             (click)="resetForm()">Clear</button>
 
-          <button pButton type="button" style="background-color:blue;color:white" class="p-button-secondary me-3"
-            (click)="addFixtures()">Save</button>
-
+          <button pButton type="button" class="p-button-secondary me-3 large-button" style="   height: 38px !important;
+  width: 80px !important;
+  font-size: 14px !important;
+  padding: 6px 12px !important;background-color:#3f51b5; color:white" (click)="addFixtures()">Save</button>
         </div>
       </div>
+
 
     </div>
   </form>
