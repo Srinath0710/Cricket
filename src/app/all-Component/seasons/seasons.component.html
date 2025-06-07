@@ -10,16 +10,16 @@
                         </div>
                         <div class="d-flex align-items-center">
 
-
-                            <form class="d-flex align-items-center gap-2">
+                            <!-- Search Form -->
+                            <form class="d-flex align-items-center gap-2" (submit)="gridload()">
                                 <div class="p-input-icon-right flex-grow-1">
 
                                     <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchkeyword"
-                                        class="width-search" placeholder="search" (keyup.enter)="gridload()" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('Search', $event)">
+                                        class="width-search" placeholder="search" (keypress)="blockQuotesOnly($event)"
+                                        (input)="filterGlobal()" (input)="sanitizeQuotesOnly('Search', $event)">
                                 </div>
 
-                                <button type="button" class="clear-button" (click)="searchKeyword = ''">Clear
+                                <button type="button" class="clear-button" (click)="clear()">Clear
                                 </button>
                             </form>
 
@@ -75,13 +75,13 @@
                                     </span>
 
                                     <span class="icon-green"
-                                        (click)="StatusConfirm(season.season_id,conditionConstants.active_status)"
+                                        (click)="StatusConfirm(season.season_id,conditionConstants.active_status,season.record_status)"
                                         pTooltip="Active" tooltipPosition="top">
                                         <i class="fa-solid fa-circle-check"></i>
                                     </span>
 
                                     <span class="icon-red"
-                                        (click)="StatusConfirm(season.season_id,conditionConstants.deactive_status)"
+                                        (click)="StatusConfirm(season.season_id,conditionConstants.deactive_status,season.record_status)"
                                         pTooltip="Deactivate" tooltipPosition="top">
                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
                                     </span>
@@ -90,7 +90,7 @@
                         </ng-template>
                     </p-table>
                     <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first-1) * rows"
-                        [rowsPerPageOptions]="[10,20,30]" (onPageChange)="onPageChange($event)">
+                        [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="onPageChange($event)">
                     </p-paginator>
                 </div>
             </div>
@@ -103,7 +103,7 @@
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="mb-0">{{ isEditMode ? 'Add Season' : 'Edit Season' }}</h4>
+                <h4 class="small-heading">{{ isEditMode ? 'Add Season' : 'Edit Season' }}</h4>
             </div>
 
 
@@ -118,7 +118,7 @@
 
                             <ng-template let-option pTemplate="item">
                                 <div class="flex align-items-center gap-2">
-                                    <div>{{ option.label }}</div>
+                                    <div>{{ season.season_status }}</div>
                                 </div>
                             </ng-template>
                         </p-dropdown>
@@ -126,38 +126,38 @@
 
                         <small
                             *ngIf="addSeasonsForm.get('season_status')?.invalid && (addSeasonsForm.get('season_status')?.touched) || (addSeasonsForm.get('season_status')?.invalid && submitted)"
-                            class="required-msg">*season_status is Required
+                            class="required-msg">Season Status is Required
                         </small>
                     </div>
 
                     <div class="col-md-6">
                         <label for="start_date">Start Date</label>
                         <span class="text-danger">*</span>
-                          <input class="form-control" type="date" formControlName="start_date">
-                        
- 
-                                    <!-- showTime="true" -->
+                        <input class="form-control" type="date" formControlName="start_date">
+
+
+                        <!-- showTime="true" -->
 
                         <small
                             *ngIf="addSeasonsForm?.get('start_date')?.invalid && 
                                  (addSeasonsForm?.get('start_date')?.touched) || (addSeasonsForm.get('start_date')?.invalid && submitted)"
                             class="required-msg">
-                            *Start Date is required
+                            Start Date is required
                         </small>
                     </div>
 
                     <div class="col-md-6">
                         <label for="end_date">End Date</label>
                         <span class="text-danger">*</span>
-                          <input class="form-control" type="date" formControlName="end_date">
+                        <input class="form-control" type="date" formControlName="end_date">
 
-                                     <!-- showTime="true"  -->
+                        <!-- showTime="true"  -->
 
                         <small
                             *ngIf="addSeasonsForm?.get('end_date')?.invalid && 
                         (addSeasonsForm?.get('end_date')?.touched) || (addSeasonsForm.get('end_date')?.invalid && submitted)"
                             class="required-msg">
-                            *End Date is required
+                            End Date is required
                         </small>
                     </div>
 
@@ -168,30 +168,29 @@
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Season Name"
                             formControlName="season_name" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('season_name', $event)">
+                            (input)="sanitizeQuotesOnly('season_name', $event)">
                         <small
                             *ngIf="addSeasonsForm?.get('season_name')?.invalid &&(addSeasonsForm?.get('season_name')?.touched) || (addSeasonsForm.get('season_name')?.invalid && submitted)"
-                            class="required-msg">* Season
+                            class="required-msg"> Season
                             Name Is Required
                         </small>
                     </div>
-<div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
-  <div class="col-12 text-end">
-    <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-      (click)="cancelForm()"></button>
+                    <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
+                        <div class="col-12 text-end">
+                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                                (click)="cancelForm()"></button>
 
-    <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-      *ngIf="addSeasonsForm.get('season_id')?.value == '' || addSeasonsForm.get('season_id')?.value == null"
-      (click)="resetForm()"></button>
+                            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                                *ngIf="addSeasonsForm.get('season_id')?.value == '' || addSeasonsForm.get('season_id')?.value == null"
+                                (click)="resetForm()"></button>
 
-    <button pButton type="button" label="Save" class="save-button" (click)="onAddSeason()"></button>
-  </div>
-</div>
-
-
-
+                            <button pButton type="button" label="Save" class="save-button"
+                                (click)="onAddSeason()"></button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </p-drawer>
     </div>
 </div>
+<p-toast key="ts" position="top-right"></p-toast>

@@ -94,6 +94,7 @@ export class TeamsComponent implements OnInit {
   selectedCity: string = '';
   defaultRows: number = 10;
   clientData: any[] = [];
+  isClientShow:boolean=false;
   cities = [];
   selectedTeams:any = [];
     viewDialogVisible: boolean = false;
@@ -461,6 +462,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id = this.clientData[0].client_id;
+      this.isClientShow=this.clientData.length>1?true:false;
       this.gridLoad();
       this.getGlobalData();
 

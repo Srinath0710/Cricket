@@ -1,4 +1,3 @@
-
 <div class="page-wrapper">
     <div class="content container-fluid">
         <main>
@@ -31,7 +30,7 @@
                             </div>
                         </div>
                     </div>
-                    <p-table #dt [value]="clubsData" [styleClass]="'custom-table'" [globalFilterFields]="['club_name', 'parent_club_name', 
+                    <p-table #dt [value]="gridData" [styleClass]="'custom-table'" [globalFilterFields]="['club_name', 'parent_club_name', 
                         'country_name', 'state_name', 'record_status']">
                         <ng-template pTemplate="header">
                             <tr>
@@ -42,11 +41,11 @@
                                         field="parent_club_name">
                                     </p-sortIcon>
                                 </th>
-                                <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon
-                                        field="country_name"></p-sortIcon>
+                                <th class="col-2" pSortableColumn="country">Country Name <p-sortIcon
+                                        field="country"></p-sortIcon>
                                 </th>
-                                <th class="col-2" pSortableColumn="state_name">State Name <p-sortIcon
-                                        field="state_name"></p-sortIcon>
+                                <th class="col-2" pSortableColumn="state">State Name <p-sortIcon
+                                        field="state"></p-sortIcon>
                                 </th>
                                 <th class="col-2" pSortableColumn="record_status">Status <p-sortIcon
                                         field="record_status"></p-sortIcon>
@@ -63,9 +62,9 @@
                                 <td>{{ club.state_name }}</td>
                                 <td>
                                     <span [ngClass]="{
-                                        'bg-success': club.record_status === 'Active',
-                                        'bg-danger' : club.record_status === 'Inactive'
-                                    }">
+                    ' bg-success': club.record_status === 'Active',
+                    ' bg-danger': club.record_status === 'InActive'
+                  }">
                                         {{ club.record_status }}
                                     </span>
                                 </td>
@@ -154,21 +153,14 @@
                             <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="countriesList" class="drop-error" formControlName="country_id"
-                            optionValue="country_id" optionLabel="country_name"
-                            (ngModelChange)="getStates(addClubForm.get('country_id')?.value)" appendTo="self"
-                            [panelStyleClass]="'custom-dropdown-panel'">
+                            optionValue="country_id" optionLabel="country_name" (ngModelChange)="getStates()"
+                            appendTo="self" [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-country pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div> {{ country.country_name }}</div>
                                 </div>
                             </ng-template>
                         </p-dropdown>
-
-                        <!-- <small
-                            *ngIf="addClubForm?.get('country_id')?.invalid &&(addClubForm.get('country_id')?.touched) || (addClubForm.get('country_id')?.invalid && submitted)"
-                            class="required-msg">
-                            Country Name is Required
-                        </small> -->
                     </div>
 
                     <div class="col-md-4">
@@ -185,12 +177,6 @@
                                 </div>
                             </ng-template>
                         </p-dropdown>
-                        <!-- 
-                        <small
-                            *ngIf="addClubForm.get('state_id')?.invalid && (addClubForm.get('state_id')?.touched || submitted)"
-                            class="required-msg">
-                            State Name is Required
-                        </small> -->
                     </div>
 
                     <div class="col-md-4">
@@ -242,7 +228,7 @@
                         <input class="form-control" maxlength="6" type="text" formControlName="post_code"
                             pattern="^[1-9][0-9]{5}$" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('post_code',$event)">
-                          <small
+                        <small
                             *ngIf="addClubForm.get('post_code')?.invalid && (addClubForm.get('post_code')?.touched || submitted)"
                             class="required-msg">
                             {{

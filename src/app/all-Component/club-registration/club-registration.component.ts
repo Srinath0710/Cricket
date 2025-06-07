@@ -15,7 +15,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
-import { Club, EditClub, UpdateClub } from './club.model';
+import { Club, UpdateClub, EditClub } from './club-registration.model';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
@@ -59,7 +59,6 @@ export class ClubRegistrationComponent implements OnInit {
   visible: boolean = false;
   default_img: any = 'assets/images/default-player.png';
   searchKeyword: string = '';
-  country_id: any;
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
@@ -72,7 +71,7 @@ export class ClubRegistrationComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   clubForm: any;
-
+gridData:any=[];
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
@@ -81,7 +80,6 @@ export class ClubRegistrationComponent implements OnInit {
 
   ngOnInit() {
     this.gridload();
-    this.getStates(this.country_id);
     this.getCountries();
     this.ClubDropdown();
     this.addClubForm = this.formBuilder.group({
@@ -123,7 +121,7 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   gridload() {
-    this.clubsData = [];
+    this.gridData = [];
     this.countriesList = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -132,13 +130,13 @@ export class ClubRegistrationComponent implements OnInit {
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString(),
       this.apiService.post(this.urlConstant.getClubList, params).subscribe((res) => {
-        this.clubsData = res.data.clubs ?? [];
-        this.totalData = this.clubsData.length != 0 ? res.data.clubs[0].total_records : 0
-        this.clubsData.forEach((val: any) => {
+        this.gridData = res.data.clubs ?? [];
+        this.totalData = res.data.clubs[0].total_records ?? this.gridData.length
+        this.gridData.forEach((val: any) => {
           val.profile_image = `${val.profile_image}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.clubsData = [], this.totalData = this.clubsData.length);
+        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
 
       });
 
@@ -377,7 +375,6 @@ export class ClubRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
       this.countriesList = res.data.countries != undefined ? res.data.countries : [];
       this.loading = false;
-      this.country_id = this.countriesList[0].country_id;
       // this.gridload();
     }, (err: any) => {
       if (err.status === 401 && err.error.message === "Expired") {
@@ -420,9 +417,10 @@ export class ClubRegistrationComponent implements OnInit {
     });
   }
 
-  getStates(country_id: any) {
+  getStates() {
+    const country_id:number=this.addClubForm.get('country_id')?.value
     const params: any = {};
-    if (country_id == null || country_id == '') {
+    if (country_id == null) {
       return
     }
     const isEdit = !!this.addClubForm.value.club_id;

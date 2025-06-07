@@ -9,69 +9,61 @@
               All States
             </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
-              <p-dropdown 
-                [options]="countriesData" 
-                optionLabel="country_name" 
-                optionValue="country_id"
-                [(ngModel)]="countryID" 
-                (ngModelChange)="gridLoad()" 
-                placeholder="Country"  
-                [filter]="true" 
-                appendTo="body"
-                class=" w-100 
+              <p-dropdown [options]="countriesData" optionLabel="country_name" optionValue="country_id"
+                [(ngModel)]="countryID" (ngModelChange)="gridLoad()" placeholder="Country" [filter]="true"
+                appendTo="body" class=" w-100 
                  drop-error header-drop">
-                
+
                 <ng-template let-country pTemplate="item">
                   <div class="country-item">
                     <div>{{ country.country_name }}</div>
                   </div>
                 </ng-template>
-                
+
               </p-dropdown>
             </div>
-            
 
-  <div class="d-flex align-items-center">
+
+            <div class="d-flex align-items-center">
 
               <!-- Search Form -->
-              <form class="d-flex align-items-center  gap-2"(submit)="gridLoad()">
+              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="  Search" (input)="filterGlobal()"   (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('Search', $event)">
+                    placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
 
-                  <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
+                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
 
               </form>
 
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                  (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
+                  (click)="showAddForm()"> <i class="fas fa-plus"></i> State</button>
               </div>
             </div>
+          </div>
 
-            </div>
-
-          <p-table  #dt  [value]="statesData" [styleClass]="'custom-table'"
+          <p-table #dt [value]="statesData" [styleClass]="'custom-table'"
             [globalFilterFields]="['state_name', 'state_code','country_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
-                <th class="col-md-3" pSortableColumn="state_name">State Name <p-sortIcon field="state_name">
+                <th class="col-3" pSortableColumn="state_name">State Name <p-sortIcon field="state_name">
                   </p-sortIcon>
                 </th>
-                <th class="col-md-2" pSortableColumn="state_code">State Code <p-sortIcon field="state_code">
-                  </p-sortIcon>
-                </th>
-
-                <th class="col-md-3" pSortableColumn="country_name"> Country Name <p-sortIcon field="country_name">
+                <th class="col-2" pSortableColumn="state_code">State Code <p-sortIcon field="state_code">
                   </p-sortIcon>
                 </th>
 
-                <th class="col-md-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status">
+                <th class="col-3" pSortableColumn="country_name"> Country Name <p-sortIcon field="country_name">
                   </p-sortIcon>
                 </th>
-                <th class="col-md-2" class="custom-header action-column-header">Actions</th>
+
+                <th class="col-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status">
+                  </p-sortIcon>
+                </th>
+                <th class="col-2" class="custom-header action-column-header">Actions</th>
               </tr>
             </ng-template>
 
@@ -111,95 +103,91 @@
 
           </p-table>
 
- <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>
       </div>
-    <!-- </main> -->
-    
-    <p-confirmDialog [style]="{ width: '300px' , height: '200px' }" [baseZIndex]="10000" [draggable]="false"
-      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
-    </p-confirmDialog>
+      <!-- </main> -->
 
-    <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="small-heading">
-          {{ isEditMode ? 'Edit State' : 'Add state' }}
-        </h3>
-      </div>
-      <form [formGroup]="addStateForm">
-        <div class="row gy-3">
-          <div class="col-md-6">
-            <label>Country
-              <span class="text-danger">*</span>
-            </label>
-            <p-dropdown [options]="countriesData" class="drop-error " formControlName="country_id"
-              optionValue="country_id" optionLabel="country_name"
-               placeholder="select Country" appendTo="self" 
-                [panelStyleClass]="'custom-dropdown-panel'"
-                [filter]="true" filterBy="country_name" [showClear]="false"
-                 >
-              <ng-template let-country pTemplate="item">
-                <div class="flex align-items-center gap-2">
-                  <div>{{ country.country_name }}
+      <p-confirmDialog [style]="{ width: '300px' , height: '200px' }" [baseZIndex]="10000" [draggable]="false"
+        [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+      </p-confirmDialog>
+
+      <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="small-heading">
+            {{ isEditMode ? 'Edit State' : 'Add state' }}
+          </h3>
+        </div>
+        <form [formGroup]="addStateForm">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label>Country
+                <span class="text-danger">*</span>
+              </label>
+              <p-dropdown [options]="countriesData" class="drop-error " formControlName="country_id"
+                optionValue="country_id" optionLabel="country_name" placeholder="select Country" appendTo="self"
+                [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" filterBy="country_name" [showClear]="false">
+                <ng-template let-country pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ country.country_name }}
+                    </div>
                   </div>
-                </div>
-              </ng-template>
-            </p-dropdown>
-            <small
-              *ngIf="addStateForm?.get('country_id')?.invalid &&(addStateForm?.get('country_id')?.touched) || (addStateForm.get('country_id')?.invalid && submitted)"
-              class="required-msg">Country
-              Is Required
-            </small>
+                </ng-template>
+              </p-dropdown>
+              <small
+                *ngIf="addStateForm?.get('country_id')?.invalid &&(addStateForm?.get('country_id')?.touched) || (addStateForm.get('country_id')?.invalid && submitted)"
+                class="required-msg">Country
+                Is Required
+              </small>
+            </div>
+            <div class="col-md-6">
+              <label class="state_Name">State Name</label>
+
+              <span class="text-danger">*
+              </span>
+              <input class="form-control" maxlength="50" type="text" formControlName="state_name"
+                [ngModel]="addStateForm.get('state_Name')?.value" (keypress)="blockQuotesOnly($event)"
+                (input)="sanitizeQuotesOnly('state_name', $event)">
+
+              <small
+                *ngIf="addStateForm?.get('state_name')?.invalid &&(addStateForm?.get('state_name')?.touched) || (addStateForm.get('state_name')?.invalid && submitted)"
+                class="required-msg">State
+                Name Is Required
+              </small>
+            </div>
+
+            <div class="col-md-6">
+              <label for="state_code">State Code</label>
+              <span class="text-danger">*
+              </span>
+              <input class="form-control" maxlength="50" type="text" formControlName="state_code"
+                (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('state_code', $event)">
+              <small
+                *ngIf="addStateForm?.get('state_code')?.invalid && (addStateForm?.get('state_code')?.touched) || (addStateForm.get('state_code')?.invalid && submitted)"
+                class="required-msg">State Code is Required
+              </small>
+            </div>
           </div>
-          <div class="col-md-6">
-            <label class="state_Name">State Name</label>
 
-            <span class="text-danger">*
-            </span>
-            <input class="form-control" maxlength="50" type="text"
-              formControlName="state_name" [ngModel]="addStateForm.get('state_Name')?.value"   (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('state_name', $event)">
+          <div class="row mt-4 sticky-footer-buttons">
+            <div class="col-12 text-end">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()">
+              </button>
 
-            <small
-              *ngIf="addStateForm?.get('state_name')?.invalid &&(addStateForm?.get('state_name')?.touched) || (addStateForm.get('state_name')?.invalid && submitted)"
-              class="required-msg">State
-              Name Is Required
-            </small>
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                *ngIf="addStateForm.get('state_id')?.value == '' || addStateForm.get('state_id')?.value == null"
+                (click)="resetForm()"></button>
+
+              <button pButton type="button" label="Save" class="save-button" (click)="onAddState()"></button>
+            </div>
           </div>
-
-          <div class="col-md-6">
-            <label for="state_code">State Code</label>
-            <span class="text-danger">*
-            </span>
-            <input class="form-control" maxlength="50" type="text"
-              formControlName="state_code"   (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('state_code', $event)">
-            <small
-              *ngIf="addStateForm?.get('state_code')?.invalid && (addStateForm?.get('state_code')?.touched) || (addStateForm.get('state_code')?.invalid && submitted)"
-              class="required-msg">State Code is Required
-            </small>
-          </div>
-        </div>
-
-        <div class="row mt-4 sticky-footer-buttons">  
-          <div class="col-12 text-end">
-            <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()">
-            </button>
-
-            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-              *ngIf="addStateForm.get('state_id')?.value == '' || addStateForm.get('state_id')?.value == null"
-              (click)="resetForm()"></button>
-
-            <button pButton type="button" label="Save" class="save-button" (click)="onAddState()"></button>
-          </div>
-        </div>
-      </form>
-    </p-drawer>
-</main>
-  </div> 
+        </form>
+      </p-drawer>
+    </main>
+  </div>
 
 </div>
 <p-toast key="tc" position="top-right"></p-toast>
