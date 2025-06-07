@@ -7,7 +7,6 @@ import { PickListModule } from 'primeng/picklist';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-comp-ground',
@@ -37,9 +36,6 @@ export class CompGroundComponent implements OnInit {
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
-    private cricketKeyConstant: CricketKeyConstant,
-    private confirmationService: ConfirmationService,
-    private router: Router
   ) { }
   ngOnInit() {
     this.gridLoad();

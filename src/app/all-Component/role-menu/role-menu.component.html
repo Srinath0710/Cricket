@@ -1,5 +1,5 @@
 <article [ngClass]="{'inactive' : showPermission}">
-    <div class="page-wrapper">
+<div class="page-wrapper">
         <div class="content container-fluid">
             <main>
                 <div class="card margin-card">
@@ -9,20 +9,16 @@
                                 <i class="fa fa-universal-access" aria-hidden="true"></i>
                                 All roles
                             </div>
-
                             <!-- Search Form -->
                             <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
-
                                     <input class="width-search widthsearch" pInputText type="text"
                                         [(ngModel)]="searchKeyword" name="searchKeyword" placeholder="  Search"
                                         (input)="filterGlobal($event, 'contains')"
                                         style="background-color: white; color: #495057;  border: 1px solid #ced4da; padding-left: 18px; box-shadow: none;  outline: none;" />
                                 </div>
                                 <button type="button" class="clear-button" (click)="clear(country)"> Clear </button>
-
                             </form>
-
                             <div class="card flex justify-center">
                                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                                     (click)="showAddForm()">
@@ -37,7 +33,6 @@
 
                         </div>
 
-
                         <!--grid code -->
                         <div class="page-content">
 
@@ -50,11 +45,11 @@
                                 [globalFilterFields]="['role_name','record_status']">
                                 <ng-template pTemplate="header">
                                     <tr>
-                                        <th pSortableColumn="role_name">Role Name <p-sortIcon
-                                                field="role_name"></p-sortIcon>
+                                        <th pSortableColumn="role_name">Role Name <p-sortIcon field="role_name">
+                                            </p-sortIcon>
                                         </th>
-                                        <th pSortableColumn="record_status">Status <p-sortIcon
-                                                field="record_status"></p-sortIcon>
+                                        <th pSortableColumn="record_status">Status <p-sortIcon field="record_status">
+                                            </p-sortIcon>
                                         </th>
                                         <th class="custom-header action-column-header">Actions</th>
                                     </tr>
@@ -174,7 +169,7 @@
                                                 optionLabel="role_name"
                                                 [ngModel]="roleMenuForm.get('parent_role')?.value"
                                                 placeholder="Select Parent Role" appendTo="body"
-                                                [panelStyleClass]="'custom-dropdown-panel'"  [filter]="true">
+                                                [panelStyleClass]="'custom-dropdown-panel'" [filter]="true">
 
                                                 <ng-template let-role pTemplate="item">
                                                     <div class="flex align-items-center gap-2">
@@ -189,11 +184,7 @@
                                                 *ngIf="roleMenuForm?.get('parent_role')?.invalid &&(roleMenuForm?.get('parent_role')?.touched) || (roleMenuForm?.get('parent_role')?.invalid && submitted)"
                                                 class="required-msg">* Parent Role Is Required
                                             </small>
-
-
-
                                         </div>
-
 
                                         <div class="submit-section">
                                             <div class="row mt-4 sticky-footer-buttons">
@@ -301,38 +292,41 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="formAccodiansubList"
-                                                                                    *ngFor="let files of menusData; index as i"
-                                                                                    [ngModelGroup]="i.toString()"
-                                                                                    [ngClass]="{'active' : modulesList.active == 1}">
-                                                                                    <div class="formAccodiansubList_main"
-                                                                                        data-id="{{files.menu_id}}"
-                                                                                        *ngIf="files.module_id == modulesList.module_id">
-                                                                                        <div
-                                                                                            class="mcXL-8 col-lg-8 col-md-8 col-sm-12 mcColumn noPadding">
-                                                                                            <span
-                                                                                                class="formAccodiansubListTitle">{{files.menu_name}}</span>
-                                                                                            <input class="form-control "
-                                                                                                class="document_table"
-                                                                                                type="hidden"
-                                                                                                name="menu_id"
-                                                                                                [(ngModel)]="files.menu_id">
-                                                                                        </div>
-
-                                                                                        <div
-                                                                                            class="mcXL-4 col-lg-4 col-md-4 col-sm-12 mcColumn noPadding">
-                                                                                            <div
-                                                                                                class="col-lg-3 col-md-3 col-sm-3 mcColumn">
-                                                                                                <input
-                                                                                                    class="form-control "
-                                                                                                    class="document_table"
-                                                                                                    type="checkbox"
-                                                                                                    name="is_checked"
-                                                                                                    [(ngModel)]="files.is_checked">
-                                                                                            </div>
-
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                                *ngFor="let files of menusData; index as i"
+                                                                                [ngModelGroup]="i.toString()"
+                                                                                [ngClass]="{
+                                                                                  'active': modulesList.active == 1,
+                                                                                  'bg-lightgray': i % 2 === 1
+                                                                                }">
+                                                                           
+                                                                             <div class="formAccodiansubList_main"
+                                                                                  [attr.data-id]="files.menu_id"
+                                                                                  *ngIf="files.module_id == modulesList.module_id">
+                                                                           
+                                                                               <div class="mcXL-8 col-lg-8 col-md-8 col-sm-12 mcColumn noPadding">
+                                                                                 <span class="formAccodiansubListTitle">{{ files.menu_name }}</span>
+                                                                                 <input type="hidden"
+                                                                                        name="menu_id"
+                                                                                        class="form-control document_table"
+                                                                                        [(ngModel)]="files.menu_id" />
+                                                                               </div>
+                                                                           
+                                                                               <div
+                                                                               class="mcXL-4 col-lg-4 col-md-4 col-sm-12 mcColumn noPadding">
+                                                                               <div
+                                                                                   class="col-lg-3 col-md-3 col-sm-3 mcColumn">
+                                                                                   <input
+                                                                                       class="form-control "
+                                                                                       class="document_table"
+                                                                                       type="checkbox"
+                                                                                       name="is_checked"
+                                                                                       [(ngModel)]="files.is_checked">
+                                                                               </div>
+                                                                               </div>
+                                                                           
+                                                                             </div>
+                                                                           </div>
+                                                                           
 
                                                                             </div>
                                                                         </div>
@@ -361,8 +355,8 @@
                                                                             <h2>Select Default Menu</h2>
 
                                                                             <select [(ngModel)]="selectedMenuId"
-                                                                                name="defaultMenu" required >
-                                                                                <option 
+                                                                                name="defaultMenu" required>
+                                                                                <option
                                                                                     *ngFor="let menu of selectedMenus"
                                                                                     [value]="menu.menu_id">
                                                                                     {{ menu.name }}

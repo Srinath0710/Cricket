@@ -1,6 +1,4 @@
-
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -78,7 +76,6 @@ export interface ManageDataItem {
     InputTextModule,
     DialogModule,
     CalendarModule,
-    HttpClientModule,
     ToastModule,
     PaginatorModule,
     ConfirmDialogModule,
@@ -314,8 +311,8 @@ export class CompetitionComponent implements OnInit {
             age_category_id: editRecord.age_category_id,
             competition_level: editRecord.competition_level,
             competition_format_id: editRecord.competition_format_id,
-            start_date: editRecord.start_date,
-            end_date: editRecord.end_date,
+            start_date: editRecord.start_date!=null ?editRecord.start_date.split('T')[0] :null,
+            end_date: editRecord.end_date!=null ?editRecord.end_date.split('T')[0] :null,
             video_path: editRecord.video_path,
             overs_per_innings: editRecord.overs_per_innings,
             overs_per_bowler: editRecord.overs_per_bowler,

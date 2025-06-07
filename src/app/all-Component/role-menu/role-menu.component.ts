@@ -3,7 +3,6 @@ import { ApiService } from '../../services/api.service';
 import { Table, TableModule } from "primeng/table";
 import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
 import { environment } from '../../environments/environment';
 import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
@@ -17,7 +16,6 @@ import { URLCONSTANT } from '../../services/url-constant';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { truncate } from 'fs';
 
 
  @Component({
@@ -96,10 +94,9 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
 
-        // this.spinnerService.raiseDataEmitterEvent('on');
         setTimeout(() => {
             this.gridLoad();
-        }, 1000)
+        }, 500)
 
     }
 
@@ -138,13 +135,13 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
                 console.log(this.menusData);
 
                 var modulesList: any[] = [];
-                var uniquemoduleIds: any[] = []; // Initialize as an empty array
+                var uniquemoduleIds: any[] = []; 
 
                 for (var i = 0; i < this.menusData.length; i++) {
                     if (!uniquemoduleIds.includes(this.menusData[i].module_id) && this.menusData[i].module_id != 0) {
                         uniquemoduleIds.push(this.menusData[i].module_id);
 
-                        var moduleObj: any = {}; // Initialize properly
+                        var moduleObj: any = {}; 
                         moduleObj['module_id'] = this.menusData[i].module_id;
                         moduleObj['module_name'] = this.menusData[i].module_name;
 
@@ -182,7 +179,7 @@ menuRolePermission(permissionform: NgForm) {
     console.log(permissionform);
 
     const menuIds = Object.values(permissionform.value)
-        .filter((item: any) => item && item.is_checked) // Ensure item is not null
+        .filter((item: any) => item && item.is_checked) 
         .map((item: any) => ({ 
             menu_id: item.menu_id,
             name: this.filterName(item.menu_id)
@@ -442,7 +439,6 @@ confirmSelection(permissionform: NgForm) {
         setTimeout(() => {
             this.gridLoad();
         }, 1000)
-        this.gridLoad()
 
 
     }
@@ -482,12 +478,8 @@ confirmSelection(permissionform: NgForm) {
             const url = 'User/update_role';
 
             this.apiService.post(url, params).subscribe((res: any) => {
-                setTimeout(()=>{
-                    this.gridLoad();
-                },100)
-                this.successToast(res);
                 this.showList();
-                
+                this.successToast(res);
                 this.resetForm();
                 if (this.addAnother == true) {
                     this.showAddForm()
@@ -503,7 +495,6 @@ confirmSelection(permissionform: NgForm) {
             params.action_flag = "create";
             const url = 'User/create_role';
             this.apiService.post(url, params).subscribe((res: any) => {
-                this.gridLoad();
                 this.showList();
                 this.resetForm();
                 this.successToast(res);
@@ -535,15 +526,6 @@ confirmSelection(permissionform: NgForm) {
             parent_role: Number(parent_role_id)
         })
         this.showAddForm();
-    }
-
-    combinedClick() {
-        this.showList();
-        this.cancelAnotherForm();
-    }
-    cancelAnotherForm() {
-        this.addAnother = false;
-        this.gridLoad();
     }
       clears() {
   this.searchKeyword = '';   

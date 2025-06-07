@@ -152,7 +152,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     params.search_text = this.searchKeyword.toString(),
     this.apiService.post(this.urlConstant.getclientList, params).subscribe((res) => {
       this.Clientdata = res.data?? [];
-      this.totalData = this.Clientdata.length != 0 ? res.data[0].total_records : 0
+        // this.totalData = this.Clientdata.length != 0 ? res.data[0].total_records : 0
+      this.totalData = this.Clientdata.length ?? res.data[0].total_records ;
       this.Clientdata.forEach((val: any) => {
         val.country_image = `${val.country_image}?${Math.random()}`;
       });
