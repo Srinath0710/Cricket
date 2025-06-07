@@ -43,8 +43,9 @@
                             </div>
                         </div>
                     </div>
-                    <p-table #dt [value]="gridData" [styleClass]="'custom-table'" [globalFilterFields]="['club_name', 'parent_club_name', 
-                        'country_name', 'state_name', 'record_status']">
+                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"
+                        [styleClass]="'custom-table'"
+                        [globalFilterFields]="['club_name','parent_club_name','country_name','state_name','record_status']">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th class="col-2" pSortableColumn="club_name">Club Name <p-sortIcon
@@ -102,9 +103,9 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+                    <!-- <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
                         [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="onPageChange($event)">
-                    </p-paginator>
+                    </p-paginator> -->
 
                 </div>
             </div>
