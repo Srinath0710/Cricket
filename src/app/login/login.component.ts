@@ -111,8 +111,9 @@ export class LoginComponent {
 
                   }
                 this.Route.navigate(['']);
-              } else if(res.status_code == 406) {
-                  this.errorMessage = res.message;
+              } else if(res.status_code == 406 && res.status_code == 400 ) {
+                  this.errorMessage = res.error.message;
+
               }else if(res.status_code == 401){
                   this.isMFAvisible = false
                   this.qrCodeVisible =false
@@ -121,14 +122,15 @@ export class LoginComponent {
                   });
                   localStorage.clear();
                   this.qrImage=null;
-                  this.errorMessage = res.message;
+
 
               }
           }, (err: any) => {
              var error=err.error
 
-             if(error.status_code == 406) {
+             if(error.status_code == 406 || error.status_code == 400 ) {
                   this.errorMessage = error.message;
+                 
               }else if(error.status_code == 401){
                   this.isMFAvisible = false
                   this.qrCodeVisible =false
@@ -188,13 +190,10 @@ export class LoginComponent {
                           this.loginUser();
                       }
                   },200)
-              }else{
-                  this.errorMessage = 'Invalid User Name';
               }
-             
               
           }, (err: any) => {
-              this.errorMessage = err.message;
+              this.errorMessage = err.error.message;
 
           });
   }
