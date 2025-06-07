@@ -136,6 +136,7 @@ previewUrl: string | ArrayBuffer | null = null;
   personal_player_id: any;
   isPersonalDataIntialized: boolean = false;
   disableReadonly: boolean = true;
+  isClientShow: boolean=false;
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
   }
@@ -287,6 +288,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
+      this.isClientShow=this.clientData.length>1?true:false;
       this.client_id = this.clientData[0].client_id;
       this.gridLoad();
 

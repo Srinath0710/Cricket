@@ -76,6 +76,7 @@ export class GroundsComponent implements OnInit {
  decimalPattern = /^\d*\.?\d+$/;
 decimalnoPattern = /^\d+$/; // Only digits
 GroundsNamePattern = /^[^'"]+$/; //allstringonly allow value
+isClientShow: boolean=false;
 
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
@@ -187,6 +188,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.ClientID = this.clientData[0].client_id;
+      this.isClientShow=this.clientData.length>1?true:false;
       this.gridload();
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);

@@ -155,7 +155,8 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
 
 
         }, (err: any) => {
-            if (err.status === 401 && err.error.message === "Expired") {
+            if (err.status_code === this.statusConstants.refresh &&
+                err.error.message === this.statusConstants.refresh_msg) {
                 this.apiService.RefreshToken();
 
             } else {
@@ -250,7 +251,8 @@ confirmSelection(permissionform: NgForm) {
             }
         },
         error: (err: any) => {
-            if (err.status === 401 && err.error?.message === "Expired") {
+            if (err.status_code === this.statusConstants.refresh &&
+                err.error.message === this.statusConstants.refresh_msg) {
                 this.apiService.RefreshToken();
             } else {
                 this.snackBar.open('Error updating permissions', 'Close', { duration: 3000 });
@@ -303,7 +305,7 @@ confirmSelection(permissionform: NgForm) {
                 res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
             },
             (err: any) => {
-                err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+                err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
             }
         );
     }
@@ -374,7 +376,8 @@ confirmSelection(permissionform: NgForm) {
             }
 
         }, (err: any) => {
-            if (err.status === 401 && err.error.message === "Expired") {
+            if (err.status_code === this.statusConstants.refresh &&
+                err.error.message === this.statusConstants.refresh_msg) {
                 this.apiService.RefreshToken();
 
             } else {
@@ -417,7 +420,8 @@ confirmSelection(permissionform: NgForm) {
                     // this.spinnerService.raiseDataEmitterEvent('off');
 
                 }, (err: any) => {
-                    if (err.status === 401 && err.error.message === "Expired") {
+                    if (err.status_code === this.statusConstants.refresh &&
+                        err.error.message === this.statusConstants.refresh_msg) {
                         this.apiService.RefreshToken();
 
                     } else {
@@ -485,7 +489,8 @@ confirmSelection(permissionform: NgForm) {
                     this.showAddForm()
                 }
             }, (err: any) => {
-                if (err.status === 401 && err.error.message === "Expired") {
+                if (err.status_code === this.statusConstants.refresh &&
+                    err.error.message === this.statusConstants.refresh_msg) {
                     this.apiService.RefreshToken();
 
                 }
@@ -503,7 +508,9 @@ confirmSelection(permissionform: NgForm) {
                 }
             },
                 (err: any) => {
-                    if (err.status === 401 && err.error.message === "Expired") {
+                    if (err.status_code === this.statusConstants.refresh &&
+                        err.error.message === this.statusConstants.refresh_msg) {
+
                         this.apiService.RefreshToken();
 
                     }

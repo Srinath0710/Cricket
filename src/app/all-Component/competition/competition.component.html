@@ -11,7 +11,7 @@
                   Competitions
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
-                  <p-dropdown [options]="clientData" optionLabel="client_name" optionValue="client_id"
+                  <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
                     [(ngModel)]="client_id" (ngModelChange)="loadCompetitions()" placeholder="Client Id" [filter]="true"
                     appendTo="body" class=" w-100 
                      drop-error header-drop">
@@ -399,7 +399,7 @@
                   </div>
                   <div class="form-wrapper pb-5">
                     <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
-                      <div class="col-12 text-end">
+                       <div class="col-12 text-end">
                       <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
                         (click)="cancelForm()"></button>
 
@@ -409,11 +409,8 @@
 
                       <button pButton type="button" label="Save" class="save-button"
                         (click)="onAddCompetition()"></button>
-
-
+                      </div>
                     </div>
-                    </div>
-
                   </div>
                 </form>
               </p-drawer>
@@ -445,8 +442,6 @@
                 </div>
               </p-dialog>
 
-
-
               <!-- Competition Grid Layout -->
               <div class="competition-grid">
                 <div class="grid-card" *ngFor="let competition of compititionList">
@@ -476,21 +471,29 @@
                     </div>
                   </div>
                   <div class="card-actions">
-                    <div class="action-icon" (click)="editCompitition(competition)">
-                      <span>
-                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    <div class="action-icon" (click)="editCompitition(competition)" pTooltip="Edit" tooltipPosition="top">
+                      <span> 
+                        <i class="fa fa-pencil-square" aria-hidden="true" ></i>
                       </span>
                     </div>
-                    <div class="action-icon" (click)="viewCompitition(competition)">
+                    <div class="action-icon" (click)="viewCompitition(competition)" pTooltip="View" tooltipPosition="top">
                       <span>
                         <i class="fa fa-eye" aria-hidden="true"></i>
                       </span>
                     </div>
-                    <div class="action-icon" (click)="toggleStatus(competition)">
-                      <span>
-                        <i class="fa" [ngClass]="competition.status === 'Active' ? 'fa-times' : 'fa-check-square'"></i>
+                    <div class="action-icon">
+                      <span (click)="StatusConfirm(competition.competition_id, competition.status === 'Active' 
+                            ? { key: 'inactive', label: 'deactivate' } 
+                            : { key: 'active', label: 'activate' })">
+                        <i 
+                          class="fa" 
+                          [ngClass]="competition.status === 'Active' ? 'fa-times text-danger' : 'fa-check-square text-success'" 
+                          [pTooltip]="competition.status === 'Active' ? 'Disable Active' : 'Enable Active'" 
+                          tooltipPosition="top">
+                        </i>
                       </span>
                     </div>
+                    
                   </div>
                 </div>
 
@@ -514,7 +517,6 @@
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="fw-bold mb-0" style="margin-left: 45%;">{{ manageData.name}}</h5>
                     <button class="Comp-backbtn" (click)="goBack()">Back</button>
-
                   </div>
 
                   <!-- Right Content Area -->
@@ -545,4 +547,7 @@
   </div>
   <!-- Toast for notifications -->
   <p-toast></p-toast>
+  <p-confirmDialog [style]="{ width: '300px' , height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+  [closable]="false" [styleClass]="'p-confirm-dialog-custom'"></p-confirmDialog>
+
 </div>

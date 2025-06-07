@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { officials } from './officials.model';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { URLCONSTANT } from '../../services/url-constant';
 import { CommonModule } from '@angular/common';
 import { CalendarModule } from 'primeng/calendar';
@@ -48,7 +48,6 @@ interface official {
     InputTextModule,
     DialogModule,
     CalendarModule,
-    HttpClientModule,
     DrawerModule,
     ConfirmDialogModule,
     Drawer,
@@ -138,6 +137,7 @@ export class OfficialsComponent implements OnInit {
 
   isPersonalDataIntialized: boolean = false;
   disableReadonly: boolean = true;
+  isClientShow: boolean=false;
 
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
@@ -218,6 +218,7 @@ export class OfficialsComponent implements OnInit {
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
+      this.isClientShow=this.clientData.length>1?true:false;
       this.client_id = this.clientData[0].client_id;
       this.callBackClientChange();
 

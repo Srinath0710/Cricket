@@ -9,7 +9,7 @@
               All Official
             </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
-              <p-dropdown [options]="clientData" optionLabel="client_name" optionValue="client_id"
+              <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="client_id" (ngModelChange)="callBackClientChange()" placeholder="Client Id" [filter]="true"
                 appendTo="body" class=" w-100 
                  drop-error header-drop">
@@ -420,7 +420,7 @@
 
           <button *ngIf="isPersonalDataIntialized" pButton type="button" (click)="enableEditMode()"
             [ngClass]="disableReadonly ? 'readonly-true' : 'readonly-false'">
-            {{ disableReadonly ? 'Enable' : 'Disable' }}
+            {{ disableReadonly ? 'Enable Edit' : 'Disable Edit' }}
           </button>
 
           <h3 class="small-heading">

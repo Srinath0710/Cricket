@@ -23,33 +23,29 @@
 
 
 .readonly-true {
-  position: absolute;
-  left: 90%;
-  width: 55px;
-  height: 40px;
+  left: 88%;
+  height: 26px;
   padding: 5px;
   text-align: center;
   color: white !important;
   background-color: rgb(226, 36, 36) !important;
-  border:  rgb(226, 36, 36) !important;
-  /* border: 1px solid rgb(211, 27, 27) !important; */
-  border-radius: 6px;
-  font-size: 16px;
+  border-color: rgb(226, 36, 36) !important;
+  border-radius: 0px;
+  font-size: 14px;
+  position: absolute;
 }
 
 .readonly-false {
-  position: absolute;
-  left: 90%;
-  width: 55px;
-  height: 40px;
+  left: 88%;
+  height: 26px;
   padding: 5px;
   text-align: center;
-  background-color: #367039 !important;
-  border: none !important;
-  border-color: #367039 !important;
   color: white !important;
-  border-radius: 6px;
-  font-size: 16px;
+  background-color: #367039 !important;
+  border-color: #367039 !important;
+  border-radius: 0px;
+  font-size: 14px;
+  position: absolute;
 }
 
 

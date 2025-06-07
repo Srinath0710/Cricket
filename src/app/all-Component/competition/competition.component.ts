@@ -22,6 +22,7 @@ import { CompGroundComponent } from './comp-ground/comp-ground.component';
 import { CompPlayerComponent } from './comp-player/comp-player.component';
 import { CompMatchComponent } from './comp-match/comp-match.component';
 import { Drawer } from 'primeng/drawer';
+import { TooltipModule } from 'primeng/tooltip';
 
 interface Competition {
   competition_id: number;
@@ -84,7 +85,8 @@ export interface ManageDataItem {
     CompGroundComponent,
     CompPlayerComponent,
     CompMatchComponent,
-    Drawer
+    Drawer,
+    TooltipModule
 
   ],
   providers: [
@@ -127,7 +129,7 @@ export class CompetitionComponent implements OnInit {
   teamdropList: MetaDataItem[] = [];
   clientData: any[] = [];
 
-    conditionConstants= CricketKeyConstant.condition_key;
+  conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
 
   // Filter properties
@@ -159,6 +161,7 @@ export class CompetitionComponent implements OnInit {
     status: '',
     imageUrl: ''
   };
+  isClientShow: boolean=false;
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -501,6 +504,7 @@ export class CompetitionComponent implements OnInit {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id= this.clientData[0].client_id;
+      this.isClientShow=this.clientData.length>1?true:false;
       this.loadCompetitions();
 
     }, (err) => {
@@ -512,8 +516,9 @@ export class CompetitionComponent implements OnInit {
     });
   }
   StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
+    console.log("hii")
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this city?`, 
+      message: `Are you sure you want to ${actionObject.label} this Competition?`, 
       header: 'Confirmation',
       icon: 'pi pi-question-circle',
       acceptLabel: 'Yes',
@@ -522,6 +527,7 @@ export class CompetitionComponent implements OnInit {
         const url: string = this.conditionConstants.active_status.key === actionObject.key
           ? this.urlConstant.activecompetition
           : this.urlConstant.deactivecompetition;
+          console.log(url)
         this.status(competition_id, url);
         this.confirmationService.close();
       },
@@ -531,6 +537,7 @@ export class CompetitionComponent implements OnInit {
     });
   }
   status(competition_id: number, url: string) {
+    console.log(competition_id)
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
@@ -539,11 +546,15 @@ export class CompetitionComponent implements OnInit {
   
     this.apiService.post(url, params).subscribe(
       (res: any) => {
+        console.log(res)
+
         res.status_code === this.statusConstants.success && res.status
           ? (this.successToast(res), this.loadCompetitions())
           : this.failedToast(res);
       },
       (err: any) => {
+        console.log(err)
+
         err.status_code === this.statusConstants.refresh &&
         err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()

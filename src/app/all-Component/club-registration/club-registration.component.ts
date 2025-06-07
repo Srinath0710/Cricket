@@ -118,7 +118,8 @@ gridData:any=[];
     this.apiService.post(this.urlConstant.Clubdropdown, params).subscribe((res) => {
       this.clubsData = res.data.clubs ?? [];
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === 'Expired') {
+      if (err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
       }
     });
@@ -141,7 +142,7 @@ gridData:any=[];
           val.profile_image = `${val.profile_image}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
+        err.status_code === this.statusConstants.refresh &&err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
 
       });
 
@@ -251,7 +252,7 @@ gridData:any=[];
       (err: any) => {
         console.error('API Error:', err);
         if (
-          err.status === this.statusConstants.refresh &&
+          err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
         ) {
           this.apiService.RefreshToken();
@@ -322,7 +323,7 @@ gridData:any=[];
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
   }
   onImageUpload(event: any) {
@@ -357,7 +358,7 @@ gridData:any=[];
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       }
     );
   }
@@ -400,7 +401,8 @@ gridData:any=[];
       this.loading = false;
       // this.gridload();
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       } else {
@@ -431,7 +433,8 @@ gridData:any=[];
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
       this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       } else {
@@ -464,7 +467,8 @@ gridData:any=[];
       this.getCities(this.addClubForm.value.state_id);
       this.loading = false;
     }, (err: any) => {
-      if (err.status === 401 && err.error.message === "Expired") {
+      if (err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
 
       }
