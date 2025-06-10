@@ -9,7 +9,7 @@
                             Club Registrations
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex align-items-center gap-2 mb-2">
                             <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
                                 optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridload()"
                                 placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
@@ -28,7 +28,7 @@
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
                                         class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"
-                                        (input)="sanitizeQuotesOnly('club_name', $event)"
+                                        (input)="filterGlobal()" (input)="sanitizeQuotesOnly('club_name', $event)"
                                         (ngModelChange)="onSearchChange()" />
                                 </div>
                                 <button type="button" class="clear-button" (click)="clearSearch()">Clear</button>
@@ -123,7 +123,7 @@
 
             <form [formGroup]="addClubForm">
                 <div class="row gy-3">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>Club Name<span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="20" type="text" formControlName="club_name">
@@ -135,12 +135,13 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>Parent Club Name
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown [options]="clubsData" formControlName="parent_club_id" optionLabel="club_name"
-                            optionValue="club_id" class="drop-error" [panelStyleClass]="'custom-dropdown-panel'">
+                        <p-dropdown [options]="gridData" formControlName="parent_club_id" optionLabel="club_name"
+                            placeholder="Parent Club Name" optionValue="club_id" class="drop-error"
+                            [panelStyleClass]="'custom-dropdown-panel'">
                         </p-dropdown>
                         <small
                             *ngIf="addClubForm.get('parent_club_id')?.invalid && (addClubForm.get('parent_club_id')?.touched || submitted)"
@@ -149,7 +150,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label> Club Short
                             <span class="text-danger">*</span>
                         </label>
@@ -162,26 +163,35 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>Country
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown [options]="countriesList" class="drop-error" formControlName="country_id"
-                            optionValue="country_id" optionLabel="country_name" (ngModelChange)="getStates()"
-                            appendTo="self" [panelStyleClass]="'custom-dropdown-panel'">
+                        <p-dropdown formControlName="country_id" [options]="countriesList" optionLabel="country_name"
+                            (onChange)="getStates()" optionValue="country_id" placeholder="Select Country"
+                            [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" filterBy="country_name"
+                            [showClear]="false">
+
+
                             <ng-template let-country pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div> {{ country.country_name }}</div>
                                 </div>
                             </ng-template>
                         </p-dropdown>
+                        <small
+                            *ngIf="addClubForm.get('country_id')?.invalid && (addClubForm.get('country_id')?.touched || submitted)"
+                            class="required-msg">
+                            Country Name is Required
+                        </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>State Name
                             <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="stateList" class="drop-error " formControlName="state_id"
+                            placeholder="Enter State Name"
                             (ngModelChange)="getCities(addClubForm.get('state_id')?.value)" optionValue="state_id"
                             optionLabel="state_name" appendTo="self">
                             <ng-template let-state pTemplate="item">
@@ -191,14 +201,19 @@
                                 </div>
                             </ng-template>
                         </p-dropdown>
+                        <small
+                            *ngIf="addClubForm.get('state_id')?.invalid && (addClubForm.get('state_id')?.touched || submitted)"
+                            class="required-msg">
+                            State Name is Required
+                        </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>City Name
                             <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="citiesList" class="drop-error" formControlName="city_id"
-                            optionValue="city_id" optionLabel="city_name">
+                            placeholder="Enter City Name" optionValue="city_id" optionLabel="city_name">
                             <ng-template let-city pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div> {{ city.city_name }}</div>
@@ -212,7 +227,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4"><label> Address 1
+                    <div class="col-md-6"><label> Address 1
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" formControlName="address_1"
@@ -224,7 +239,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4"><label> Address 2
+                    <div class="col-md-6"><label> Address 2
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" formControlName="address_2"
@@ -236,7 +251,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4"><label> Post Code
+                    <div class="col-md-6"><label> Post Code
                             <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="6" type="text" formControlName="post_code"
@@ -255,7 +270,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>Email ID <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" formControlName="email_id"
                             pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
@@ -273,7 +288,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>Mobile <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" maxlength="10" formControlName="mobile"
                             pattern="^[0-9]{10}$" (keypress)="blockQuotesOnly($event)"
@@ -291,7 +306,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>Website <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" formControlName="website"
                             pattern="^https:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/.*)?$"
@@ -303,14 +318,14 @@
                             Website URL is Required
                         </small>
 
-                        <small
+                        <!-- <small
                             *ngIf="addClubForm.get('website')?.errors?.['pattern'] && (addClubForm.get('website')?.touched || submitted)"
                             class="required-msg">
                             Please enter a valid Website URL (e.g., https://example.com)
-                        </small>
+                        </small> -->
                     </div>
 
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-6">
                         <label>Contact <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" maxlength="10" formControlName="contact"
                             pattern="^[0-9]{10}$" (keypress)="blockQuotesOnly($event)"
@@ -326,9 +341,9 @@
                             class="required-msg">
                             Please enter a valid 10-digit Contact Number
                         </small>
-                    </div>
+                    </div> -->
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label>Remarks</label>
                         <textarea class="form-control" formControlName="remarks" rows="4" maxlength="500"
                             (keypress)="blockQuotesOnly($event)"
@@ -341,11 +356,7 @@
                         </small>
                     </div>
 
-                    <div class="col-md-4">
-                        <label>profile Image </label>
-                        <input class="form-control" type="file" formControlName="profile_img">
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="image-upload-container text-center">
                             <label for="profileImageInput" class="upload-label">
                                 <div class="image-preview-wrapper">
@@ -353,10 +364,10 @@
                                     <ng-template #placeholder>
                                     </ng-template>
                                 </div>
+                                <div class="upload-btn">Upload</div>
                             </label>
                             <input type="file" id="profileImageInput" accept="image/*"
-                                (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
-                            <!-- <div class="upload-btn">Upload</div> -->
+                                (change)="onProfileImageSelected($event)" hidden formControlName="team_profile" />
                         </div>
                     </div>
                 </div>

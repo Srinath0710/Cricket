@@ -127,7 +127,6 @@ gridData:any=[];
 
   gridload() {
     this.gridData = [];
-    this.countriesList = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -323,7 +322,7 @@ gridData:any=[];
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
   onImageUpload(event: any) {
@@ -358,7 +357,7 @@ gridData:any=[];
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
       },
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       }
     );
   }
@@ -406,7 +405,7 @@ gridData:any=[];
         this.apiService.RefreshToken();
 
       } else {
-        this.failedToast(err);
+        this.failedToast(err.error);
       }
     });
   }
@@ -438,7 +437,7 @@ gridData:any=[];
         this.apiService.RefreshToken();
 
       } else {
-        this.failedToast(err);
+        this.failedToast(err.error);
       }
     });
   }

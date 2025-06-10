@@ -18,6 +18,7 @@ import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Country, UpdateCity } from './all-cities.model';
 import { Drawer } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 interface City {
   name: string;
   code: string;
@@ -43,7 +44,8 @@ interface City {
     ConfirmDialogModule,
     PaginatorModule,
     Drawer,
-    ToastModule
+    ToastModule,
+TooltipModule
   ],
   templateUrl: './all-cities.component.html',
   styleUrls: ['./all-cities.component.css'],
@@ -135,7 +137,7 @@ export class AllCitiesComponent implements OnInit {
       ) {
         this.apiService.RefreshToken();
       } else {
-        this.failedToast(err);
+        this.failedToast(err.error);
       }
     });
   }
@@ -195,7 +197,6 @@ export class AllCitiesComponent implements OnInit {
 
   gridLoad() {
     this.cityData = [];
-    this.totalData = 0;
     this.FormValue = false;
     const params: any = {};
     params.client_id = this.client_id?.toString();
@@ -207,7 +208,7 @@ export class AllCitiesComponent implements OnInit {
 
     this.apiService.post(this.urlConstant.getCityList, params).subscribe((res) => {
       this.cityData = res.data.states ?? [];
-      this.totalData = this.cityData.length;
+            this.totalData = this.cityData.length !== 0 ? res.data.states[0].total_records : 0;
     }, (err: any) => {
       err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.cityData = [], this.totalData = this.cityData.length);
 
@@ -217,15 +218,17 @@ export class AllCitiesComponent implements OnInit {
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
+
   onPageChange(event: any) {
     this.first = (event.page) + 1;
     this.pageData = event.first;
     this.rows = event.rows;
     this.gridLoad();
   }
-
   showAddForm() {
     this.ShowForm = true;
+     this.isEditMode = false;
+
   }
   cancelForm() {
     this.ShowForm = false;
@@ -266,14 +269,13 @@ export class AllCitiesComponent implements OnInit {
         err.status_code=== this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
-          : this.failedToast(err);
+          : this.failedToast(err.error);
       }
     );
   }
 
   onAddCity() {
     this.submitted = true;
-    this.isEditMode = false;
     if (this.addCityForm.invalid) {
       this.addCityForm.markAllAsTouched();
       return;
@@ -285,7 +287,7 @@ export class AllCitiesComponent implements OnInit {
       country_id: String(this.addCityForm.value.country_id),
       city_name: this.addCityForm.value.city_name,
       city_code: this.addCityForm.value.city_code,
-      city_id: this.addCityForm.value.city_id,
+      city_id: String(this.addCityForm.value.city_id),
       action_flag: 'create',
       capital: '',
     };
@@ -296,13 +298,13 @@ export class AllCitiesComponent implements OnInit {
 
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
       this.apiService.post(this.urlConstant.addCity, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
 

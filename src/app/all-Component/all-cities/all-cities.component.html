@@ -110,8 +110,8 @@
               </tr>
             </ng-template>
           </p-table>
-          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
+   <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+      [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>
@@ -199,4 +199,11 @@
         </div>
       </form>
     </p-drawer>
+      <p-confirmDialog 
+    [style]="{width: '300px', height: '200px'}"
+    [baseZIndex]="10000"
+    [draggable]="false"
+    [closable]="false"
+    [styleClass]="'p-confirm-dialog-custom'">
+  </p-confirmDialog>
     <p-toast key="tc" position="top-right"></p-toast>
