@@ -13,24 +13,19 @@
                             <!-- Search Form -->
                             <form class="d-flex align-items-center gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
-                                  <input pInputText type="text"
-                                         [(ngModel)]="searchKeyword"
-                                         name="searchKeyword"
-                                         class="width-search"
-                                         placeholder="Search"
-                                         (input)="filterGlobal()"
-                                         (keypress)="blockQuotesOnly($event)"
-                                         (input)="sanitizeQuotesOnly('team_name', $event)"
-                                         style="background-color: white; 
+                                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
+                                        class="width-search" placeholder="Search" (input)="filterGlobal()"
+                                        (keypress)="blockQuotesOnly($event)"
+                                        (input)="sanitizeQuotesOnly('team_name', $event)" style="background-color: white; 
                                                 color: #495057; 
                                                 border: 1px solid #ced4da; 
                                                 padding-left: 18px; 
                                                 box-shadow: none; 
                                                 outline: none;" />
                                 </div>
-                              
+
                                 <button type="button" class="clear-button" (click)="clear()">Clear</button>
-                              </form>
+                            </form>
 
                             <div class="card flex justify-center">
                                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
@@ -196,10 +191,10 @@
                             </ng-template>
                         </p-dropdown>
                         <small
-                        *ngIf="addClientForm.get('state_id')?.invalid && (addClientForm.get('state_id')?.touched || submitted)"
-                        class="required-msg">
-                        State is required
-                    </small>
+                            *ngIf="addClientForm.get('state_id')?.invalid && (addClientForm.get('state_id')?.touched || submitted)"
+                            class="required-msg">
+                            State is required
+                        </small>
                     </div>
                     <div class="col-md-6">
                         <label>City
@@ -215,10 +210,10 @@
                             </ng-template>
                         </p-dropdown>
                         <small
-                        *ngIf="addClientForm.get('city_id')?.invalid && (addClientForm.get('city_id')?.touched || submitted)"
-                        class="required-msg">
-                        City is required
-                    </small>
+                            *ngIf="addClientForm.get('city_id')?.invalid && (addClientForm.get('city_id')?.touched || submitted)"
+                            class="required-msg">
+                            City is required
+                        </small>
 
                     </div>
                     <div class="col-md-6">
@@ -249,7 +244,7 @@
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Post Code"
                             formControlName="post_code" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('post_code', $event)">
-                            <small
+                        <small
                             *ngIf="addClientForm?.get('post_code')?.invalid &&(addClientForm?.get('post_code')?.touched) || (addClientForm.get('post_code')?.invalid && submitted)"
                             class="required-msg">Post Code Is Required
                         </small>
@@ -262,13 +257,17 @@
                         <input class="form-control" maxlength="100" type="text" placeholder="Enter Email Id"
                             formControlName="email_id">
                         <div *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
-                            <small *ngIf="addClientForm.get('email_id')?.hasError('required') && (addClientForm.get('email_id')?.touched || submitted)" class="required-msg">
+                            <small
+                                *ngIf="addClientForm.get('email_id')?.hasError('required') && (addClientForm.get('email_id')?.touched || submitted)"
+                                class="required-msg">
                                 * Email is required
-                              </small>
-                              <small *ngIf="addClientForm.get('email_id')?.hasError('pattern') && (addClientForm.get('email_id')?.touched || submitted)" class="required-msg">
+                            </small>
+                            <small
+                                *ngIf="addClientForm.get('email_id')?.hasError('pattern') && (addClientForm.get('email_id')?.touched || submitted)"
+                                class="required-msg">
                                 * Invalid email format
-                              </small>
-                              
+                            </small>
+
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -277,13 +276,17 @@
                             formControlName="mobile" (input)="onPhoneNumberInput($event)">
                         <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
                             <!-- Show when pattern is invalid -->
-                            <small *ngIf="addClientForm.get('mobile')?.hasError('required') && (addClientForm.get('mobile')?.touched || submitted)" class="required-msg">
+                            <small
+                                *ngIf="addClientForm.get('mobile')?.hasError('required') && (addClientForm.get('mobile')?.touched || submitted)"
+                                class="required-msg">
                                 * Mobile number is required
-                              </small>
-                              <small *ngIf="addClientForm.get('mobile')?.hasError('pattern') && (addClientForm.get('mobile')?.touched || submitted)" class="required-msg">
+                            </small>
+                            <small
+                                *ngIf="addClientForm.get('mobile')?.hasError('pattern') && (addClientForm.get('mobile')?.touched || submitted)"
+                                class="required-msg">
                                 * Invalid mobile number
-                              </small>
-                              
+                            </small>
+
 
 
                         </div>
@@ -291,7 +294,6 @@
 
                     <div class="col-md-6">
                         <label>Website
-                            <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter Website"
                             formControlName="website" (keypress)="blockQuotesOnly($event)"
@@ -299,7 +301,6 @@
                     </div>
                     <div class="col-md-6">
                         <label>Description
-                            <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" placeholder="Enter description"
                             formControlName="description" (keypress)="blockQuotesOnly($event)"
@@ -307,32 +308,73 @@
 
                     </div>
                     <!--Preview of profile image-->
-                    <!-- <div class="col-md-6">
-                        <div class="form-group formItem">
-
-                            <label class="formItemLabel">Profile Image Preview</label>
-                            <a class=" clear-width margin-right table-counts" style="width: 84px;"
-                               ></a>
-                    
+                    <div class="col-md-6">
+                        <label class="form-label">Profile Image</label>
+                        <div class="profile-img-container">
+                          
+                          <!-- Image Preview -->
+                          <div class="image-wrappers">
+                            <!-- Default Avatar -->
+                            <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                                 [src]="envImagePath + '/images/avatar.png'"
+                                 class="profile-images"
+                                 alt="Default Avatar">
+                          
+                            <img *ngIf="filedata != null && filedata != ''"
+                                 [src]="url"
+                                 class="profile-images"
+                                 alt="Preview">
+                          
+                            <img *ngIf="profileImages != null && profileImages != ''"
+                                 [src]="profileImages"
+                                 class="profile-images"
+                                 alt="Uploaded Image">
+                          
+                            <!-- Cancel Button -->
+                            <button type="button"
+                                    class="cancel-btn"
+                                    *ngIf="(filedata != null && filedata != '') || (profileImages != null && profileImages != '')"
+                                    (click)="cancel()">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </div>
+                          
+                      
+                          <!-- Upload Button -->
+                          <div class="upload-section">
+                            <label class="upload-label btn btn-primary Upload-color">
+                              Upload
+                              <input type="file" (change)="fileEvent($event)" hidden>
+                            </label>
+                          </div>
+                          
+                      <!-- <div>
+                                <small class="text-danger" *ngIf="addClientForm.get('profile_img_url').errors">
+                                    * Only PNG, JPEG, or JPG files are allowed
+                                </small>
+                            </div> -->
                         </div>
-                    </div> -->
+                      </div>
+                      
 
                 </div>
+
                 <div class="form-wrapper pb-5">
-                <div class="row mt-4 sticky-footer-buttons">
-                    <div class="col-12 text-end">
-                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
-                            (click)="cancelForm()"></button>
+                    <div class="row mt-4 sticky-footer-buttons">
+                        <div class="col-12 text-end">
+                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                                (click)="cancelForm()"></button>
 
-                        <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                            *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
-                            (click)="resetForm()"></button>
+                            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                                *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
+                                (click)="resetForm()"></button>
 
-                        <button pButton type="button" label="Save" class="save-button" (click)="onAddClient()"></button>
+                            <button pButton type="button" label="Save" class="save-button"
+                                (click)="onAddClient()"></button>
 
 
+                        </div>
                     </div>
-                </div>
                 </div>
             </form>
 

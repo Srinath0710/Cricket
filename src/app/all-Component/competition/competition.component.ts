@@ -516,7 +516,6 @@ export class CompetitionComponent implements OnInit {
     });
   }
   StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
-    console.log("hii")
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this Competition?`, 
       header: 'Confirmation',
@@ -527,7 +526,6 @@ export class CompetitionComponent implements OnInit {
         const url: string = this.conditionConstants.active_status.key === actionObject.key
           ? this.urlConstant.activecompetition
           : this.urlConstant.deactivecompetition;
-          console.log(url)
         this.status(competition_id, url);
         this.confirmationService.close();
       },
@@ -537,7 +535,6 @@ export class CompetitionComponent implements OnInit {
     });
   }
   status(competition_id: number, url: string) {
-    console.log(competition_id)
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
@@ -546,15 +543,11 @@ export class CompetitionComponent implements OnInit {
   
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        console.log(res)
-
         res.status_code === this.statusConstants.success && res.status
           ? (this.successToast(res), this.loadCompetitions())
           : this.failedToast(res);
       },
       (err: any) => {
-        console.log(err)
-
         err.status_code === this.statusConstants.refresh &&
         err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()

@@ -22,7 +22,7 @@ export const AllComponentRoutes: Route[] = [
         children:[
             {
                 path: '',
-                redirectTo: 'country',
+                redirectTo: 'client',
                 pathMatch: 'full',
             },
             {

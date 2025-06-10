@@ -113,7 +113,7 @@ export class ClientComponent implements OnInit{
       country_id: ['',[Validators.required]],
       state_id: ['',[Validators.required]],
       city_id: ['',[Validators.required]],
-      profile_img_url: [''],
+      profile_img_url: this.filedata,
       client_id: [''],
       header_color: [''],
       tbl_header_color: [''],
@@ -193,7 +193,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       button_color: '',
       button_font_color: '',
       connection_id:'',
-      profile_img_url:''
+      profile_img_url:this.addClientForm.value.profile_img_url
 
     };
 
@@ -240,7 +240,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             mobile: editRecord.mobile,
             website: editRecord.website,
             description: editRecord.description,
-            profile_img_url: null,
+            profile_img_url: editRecord.profile_img_url,
             header_color: null,
             tbl_header_color: null,
             tbl_header_font_color: null,
@@ -424,30 +424,33 @@ handleImageError(event: Event, fallbackUrl: string): void {
   target.src = fallbackUrl;
 }
 
-     /* profile image File onchange event */
-     fileEvent(event: any) {
-      if (this.addClientForm.value.profile_img_url.value !== null && this.addClientForm.value.profile_img_url.value !== '') {
-          this.profileImages = null;
+/* profile image File onchange event */
+fileEvent(event: any) {
+      // Reset preview if new file
+      if (this.addClientForm.get('profile_img_url')?.value) {
+        this.profileImages = null;
       }
-      // console.log(event);
-      if(event && event.target && event.target.files && event.target.files.length > 0){
-          this.filedata = event.target.files[0];
-          var reader = new FileReader();
-          reader.readAsDataURL(event.target.files[0]);
-          reader.onload = (event:any) =>{
-              var img = new Image;
-              this.url = event.target.result;
-              this.imageCropAlter=event.target.result
-              this.imageDefault=event.target.result
+    
+      if (event?.target?.files?.length > 0) {
+        this.filedata = event.target.files[0];
+    
+        const reader = new FileReader();
+        reader.readAsDataURL(this.filedata);
+        reader.onload = (e: any) => {
+          this.url = e.target.result;
+          this.imageCropAlter = e.target.result;
+          this.imageDefault = e.target.result;
+    
+          this.addClientForm.patchValue({
+            profile_img_url: this.filedata
+          });
+        };
+      } else {
+        this.url = this.imageDefault;
+        this.filedata = this.base64ToBinary(this.imageDefault);
       }
-      }else{
-          this.url =this.imageDefault
-          this.filedata=this.base64ToBinary(this.imageDefault);
-
-      }
-  
- 
-      }
+    }
+    
 
 cropPopOpen(){
   this.showCropperModal=true;

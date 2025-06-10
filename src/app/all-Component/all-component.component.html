@@ -1,3 +1,14 @@
-<router-outlet></router-outlet>
+<!-- <router-outlet></router-outlet>
 <app-header (openSideBar)="callsidebar($event)"></app-header>
-<app-sidebar [sidebarVisible]="sidebarVisible"></app-sidebar>
+<app-sidebar [sidebarVisible]="sidebarVisible"></app-sidebar> -->
+
+
+
+
+<div class="main-layout" [class.sidebar-visible]="sidebarVisible">
+    <app-header (openSideBar)="callsidebar($event)"></app-header>
+    <app-sidebar [sidebarVisible]="sidebarVisible"></app-sidebar>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>

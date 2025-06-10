@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-all-component',
@@ -12,12 +13,18 @@ import { HeaderComponent } from './header/header.component';
      SidebarComponent,
      HeaderComponent,
      CommonModule,
-     RouterModule
+     RouterModule,
    ],
 })
 export class AllComponentComponent {
 
   sidebarVisible = false;
+
+  constructor(private themeService: ThemeService) {}
+
+  ngOnInit() {
+    
+  }
 
   callsidebar(value: any) {
     this.sidebarVisible = value;

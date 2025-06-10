@@ -9,6 +9,7 @@ import { AuthService } from '../services/auth.service';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CricketKeyConstant } from '../services/cricket-key-constant';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 })
 export class LoginComponent {
   public loginForm: FormGroup<any>;
+  statusConstants= CricketKeyConstant.status_code;
   errors = [];
   password = true;
   submitted = false;
@@ -74,7 +76,7 @@ export class LoginComponent {
       const url = 'Login/user_login'
       this._authService.loginUser(params, url)
           .subscribe((res: any) => {
-              if (res.status_code == 200) {
+              if ( res.status_code === this.statusConstants.success) {
                   var userData = res.data[0];
                   if (isPlatformBrowser(this.platformId)) {
                   localStorage.setItem('user_name', userData.user_name)
@@ -173,7 +175,7 @@ export class LoginComponent {
       const url = 'Login/get_user_identity'
       this._authService.loginUser(params, url)
           .subscribe((res: any) => {
-              if (res.status_code==200 && res.data !=null) {
+              if (res.status_code === this.statusConstants.success && res.status ) {
                   var response = res.data[0] != undefined ? res.data[0] : null
 
                   localStorage.setItem('user_name', response.user_name != undefined ? response.user_name : null);

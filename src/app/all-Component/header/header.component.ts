@@ -40,7 +40,8 @@ export class HeaderComponent implements OnInit{
  @Output() openSideBar: EventEmitter<any> = new EventEmitter();  
   sidebarOpen=false;
   envImagePath = environment.imagePath;
-
+  showModal = false;
+  isLoggingOut=false;
     // constructor(private confirmationService: ConfirmationService, private messageService: MessageService ,private apiService: ApiService, ) {}
 
     constructor(private confirmationService: ConfirmationService, private messageService: MessageService,private router: Router,private apiService: ApiService) {}
@@ -81,6 +82,7 @@ export class HeaderComponent implements OnInit{
         // navbar.style.backgroundColor = this.userData.header_color!=null && this.userData.header_color!=''? this.userData.header_color: 'rgba(121, 0, 0, 1)';
       }
   logOut() {
+    this.isLoggingOut=true;
       const params: any = {};
       params.token = localStorage.getItem('token');
 
@@ -157,5 +159,35 @@ export class HeaderComponent implements OnInit{
           }
       });
   }
- 
+  onImageError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    target.src = this.envImagePath + '/images/default-logo.png';
+  }
+  // toggleTheme() {
+  //   console.log('Header toggle theme clicked, current mode:', this.isDarkMode);
+  //   this.themeService.toggleTheme();
+  // }
+
+  showLogoutModal() {
+    this.showModal = true;
+    this.closeAllMenus();
+  }
+  closeAllMenus() {
+    throw new Error('Method not implemented.');
+  }
+
+  hideLogoutModal(event?: Event) {
+    if (event && event.target === event.currentTarget) {
+      this.showModal = false;
+    } else if (!event) {
+      this.showModal = false;
+    }
+  }
+  private clearStorageAndNavigate() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    localStorage.clear();
+    this.isLoggingOut = false;
+    this.router.navigate(['login']);
+  }
 }

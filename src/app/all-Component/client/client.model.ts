@@ -45,6 +45,7 @@ export class Client {
     website: string;
     description: string;
     connection_id: string|number;
+    profile_img_url:string;
 
   
     constructor(item: Partial<EditClient> = {}) {
@@ -62,6 +63,7 @@ export class Client {
       this.website = item.website ||'';
       this.description = item.description ||'';
       this.connection_id = item.connection_id ||'';
+      this.profile_img_url = item.profile_img_url ||'';
 
   
     }

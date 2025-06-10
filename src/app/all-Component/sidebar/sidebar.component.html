@@ -1,140 +1,71 @@
-<nav class="sidebar inactive" >
-        <div class="menu_content">
-          <ul class="menu_items">
-                <ng-container *ngFor="let module of modules;">
-            <div class="menu_title name-titile" ><span *ngIf="!is_sidbar_minimize">{{module.module_name}}</span> <span *ngIf="is_sidbar_minimize"></span></div>
-            <!-- duplicate or remove this li tag if you want to add or remove navlink with submenu -->
-            <!-- start -->
-            <ng-container *ngFor="let parent_menu of module?.sub_parent">
-            <ng-container *ngIf="parent_menu['has_submenu']">
-                <li class="item" >
-                        <div href="#" class="nav_link submenu_item"[ngClass]="{'show_submenu':clickedModule==parent_menu.menu_id}" (click)="clickedModule=parent_menu.menu_id!=clickedModule?parent_menu.menu_id:''">
-                          <span class="navlink_icon">
-                            <i [class]="parent_menu.menu_image"></i>
-                          </span>
-                          <span class="navlink">{{parent_menu.menu_name}}</span>
-                          <i class="fa fa-caret-right"></i>
-                        </div>
+<!-- Fixed Sidebar Template -->
+<div class="overlay" [class.show]="showSubmenuPopup && isMobile" (click)="closeSubmenuPopup()"></div>
 
-                        <ul class="menu_items submenu" *ngFor="let sub_menu of parent_menu?.sub_menu">
+<nav class="modern-sidebar" [class.visible]="sidebarVisible || showSidebarByDefault">
+  <!-- Menu Items -->
+  <ul class="menu-items">
+    <li class="menu-item" *ngIf="!modules || modules.length === 0">
+      <a class="menu-link">
+        <span class="menu-icon">
+          <i class="fas fa-home"></i>
+        </span>
+        <span class="menu-text">Test Menu</span>
+      </a>
+    </li>
+    
+    <ng-container *ngFor="let module of modules">
+      <ng-container *ngFor="let parent_menu of module?.sub_parent">
+        <li class="menu-item">
+          <a *ngIf="parent_menu['has_submenu'] && parent_menu?.sub_menu && parent_menu.sub_menu.length > 0" 
+             class="menu-link"
+             [class.active]="activeRoute == parent_menu.menu_link"
+             (click)="showSubmenuInPopup(parent_menu, $event)">
+            <span class="menu-icon">
+              <i [class]="parent_menu.menu_image || 'fas fa-folder'"></i>
+            </span>
+            <span class="menu-text">{{parent_menu.menu_name}}</span>
+          </a>
 
-                          <a [routerLink]="sub_menu.menu_link"class="nav_link sublink"  [ngClass]="{'active-route':activeRoute=='/'+sub_menu.menu_link}"(click)="activeRoute='/'+sub_menu.menu_link">   <i [class]="sub_menu.menu_image"></i>
-                                <span class="sub-name" >{{sub_menu.menu_name}}</span></a>
+          <a *ngIf="!parent_menu['has_submenu'] || !parent_menu?.sub_menu || parent_menu.sub_menu.length === 0" 
+             [routerLink]="parent_menu.menu_link"
+             class="menu-link"
+             [class.active]="activeRoute == parent_menu.menu_link"
+             (click)="activeRoute = parent_menu.menu_link; setImage(parent_menu.menu_image)">
+            <span class="menu-icon">
+              <i [class]="parent_menu.menu_image || 'fas fa-file'"></i>
+            </span>
+            <span class="menu-text">{{parent_menu.menu_name}}</span>
+          </a>
+        </li>
+      </ng-container>
+    </ng-container>
+  </ul>
 
-                        </ul>
-                      </li>
-         </ng-container>
-         <ng-container *ngIf="!parent_menu['has_submenu']">
-                <li class="item">
-                        <a  [routerLink]="parent_menu.menu_link" class="nav_link" [ngClass]="{'active-route':activeRoute==parent_menu.menu_link}" (click)="activeRoute=parent_menu.menu_link">
+  <!-- Theme Toggle at Bottom -->
+  <div class="sidebar-footer">
+    <button class="theme-toggle-sidebar" (click)="toggleTheme()">
+      <span class="menu-icon">
+        <i class="fas" [ngClass]="isDarkMode ? 'fa-sun' : 'fa-moon'"></i>
+      </span>
+      <span class="menu-text">{{isDarkMode ? 'Light' : 'Dark'}}</span>
+    </button>
+  </div>
+</nav>
 
-                          <span class="navlink_icon">
-                                <!-- <i [class]="parent_menu.menu_image"></i> -->
-                        </span>
-                          <span class="navlink"   >{{parent_menu.menu_name}}</span>
-                        </a>
-                      </li>
-        </ng-container>
-            <!-- end -->
-
-
-  </ng-container>
-                </ng-container>
-          </ul>
-
-
-
-
-          <!-- Sidebar Open / Close -->
-          <div class="bottom_content">
-            <div class="bottom expand_sidebar">
-              <span> Expand</span>
-              <i class='fa fa-arrow-right'></i>
-
-            </div>
-            <div class="bottom collapse_sidebar">
-              <span> Collapse</span>
-              <i class="fa fa-arrow-left"></i>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-    <div class="layout-container layout-light layout-colorscheme-menu p-ripple-disabled layout-drawer layout-sidebar" [ngClass]="{'layout-sidebar-active':is_sidbar_maximize}">
-      <div class="layout-sidebar">
-
-        <div class="layout-menu-container">
-          <div class="row m-0">
-            <div [ngClass]="{'sibar-client-logo-active':is_sidbar_maximize}" class="sibar-client-logo col-8 w-75">
-               <img    class="client-sidebar-logo" [src]="imgUrl" alt="">
-               <!--<img   class="burger-menu"[src]="envImagePath+'/images/ic_baseline-menu.png'" alt="">-->
-            </div>
-            <div class="col-4 p-0 text-end w-25">
-             <img   class="burger-menu pointer"[src]="envImagePath+'/images/ic_baseline-menu.png'" alt="">
-            </div>
-          </div>
-            <!-- <span   [ngClass]="{'inactive':is_sidbar_maximize}">
-              <img  class="burger-menu"[src]="envImagePath+'/images/ic_baseline-menu.png'" alt="">
-            </span>  -->
-            <ul class="layout-menu" >
-
-              <li app-menuitem="" *ngFor="let module of modules;" class="ng-tns-c2000835034-2 layout-root-menuitem menu-li ng-star-inserted" >
-                <!-- <div  [ngClass]="{'inactive':!is_sidbar_maximize}" class="layout-menuitem-root-text ng-tns-c2000835034-2 ng-star-inserted"> <img   class="client-sidebar-logo" [src]="imgUrl" alt="">
-                  <img  class="burger-menu"[src]="envImagePath+'/images/ic_baseline-menu.png'" alt=""></div>
-                  <img [ngClass]="{'inactive':!is_sidbar_maximize}" class="burger-menu"[src]="envImagePath+'/images/ic_baseline-menu.png'" alt=""> -->
-                <a tabindex="0" pripple="" class="p-element p-ripple ng-tns-c2000835034-2 ng-star-inserted">
-                  <i class="layout-menuitem-icon ng-tns-c2000835034-2 pi pi-home"></i>
-                  <span class="layout-menuitem-text ng-tns-c2000835034-2"></span>
-                  <i class="pi pi-fw pi-angle-down layout-submenu-toggler ng-tns-c2000835034-2 ng-star-inserted"></i>
-                  <span class="p-ink ng-tns-c2000835034-2" aria-hidden="true" role="presentation"></span>
-                </a>
-
-                <ul class="ng-trigger ng-trigger-children ng-tns-c2000835034-5 ng-star-inserted">
-                  <li app-menuitem="" *ngFor="let parent_menu of module?.sub_parent" class="ng-tns-c2000835034-6 ng-tns-c2000835034-5 ng-star-inserted" [ngClass]="{'active-menuitem':clickedModule==parent_menu.menu_id}">
-
-                    <a style="text-decoration: none;"  tabindex="0" *ngIf="parent_menu['has_submenu']" (click)="clickedModule=parent_menu.menu_id!=clickedModule?parent_menu.menu_id:''" pripple="" class="p-element p-ripple bor ng-tns-c2000835034-6 ng-star-inserted">
-                      <!-- <i class=" " [class]=""></i> -->
-                      <!-- <i class="layout-menuitem-icon ng-tns-c2000835034-6  material-icons"></i> -->
-                      <!-- <i class="material-symbols-outlined">
-                        {{parent_menu.menu_image}}
-                      </i> -->
-                      <i class="fa-brands fa-edge"></i>
-                      <span class="layout-menuitem-text ng-tns-c2000835034-6">{{parent_menu.menu_name}}</span>
-                      <i class="pi pi-fw pi-angle-down layout-submenu-toggler ng-tns-c2000835034-6 ng-star-inserted"></i>
-                      <span class="p-ink ng-tns-c2000835034-6" aria-hidden="true" role="presentation"></span>
-                    </a>
-                    <a tabindex="0" *ngIf="!parent_menu['has_submenu']" (click)="setImage(parent_menu.menu_image)"  [routerLink]="parent_menu.menu_link" pripple="" class="p-element p-ripple ng-tns-c2000835034-6 ng-star-inserted">
-                      <!-- <i class="layout-menuitem-icon ng-tns-c2000835034-6  " [class]="parent_menu.menu_image"></i> -->
-                      <!-- <i class="material-symbols-outlined">
-                        {{parent_menu.menu_image}}
-                      </i> -->
-                      <span class="layout-menuitem-text ng-tns-c2000835034-6">{{parent_menu.menu_name}}</span>
-                      <i class="pi pi-fw pi-angle-down layout-submenu-toggler ng-tns-c2000835034-6 ng-star-inserted"></i>
-
-                      <span class="p-ink ng-tns-c2000835034-6" aria-hidden="true" role="presentation"></span>
-                    </a>
-                    <ul *ngIf="parent_menu['has_submenu']" class="ng-trigger ng-trigger-children ng-tns-c2000835034-6 ng-star-inserted" style="height: 0px;">
-                      <li app-menuitem="" *ngFor="let sub_menu of parent_menu?.sub_menu" class="ng-tns-c2000835034-13 ng-tns-c2000835034-6 ng-star-inserted" >
-  <!-- <i class="layout-menuitem-icon ng-tns-c2000835034-13 " [class]="sub_menu.menu_image"></i> -->
-                          <!-- <i class="material-symbols-outlined">
-                            {{sub_menu.menu_image}}
-                          </i> -->
-
-                        <a style="text-decoration: none;" routerlinkactive="active-route" tabindex="0" pripple="" class="p-element p-ripple ng-tns-c2000835034-13 ng-star-inserted"(click)="setImage(sub_menu.menu_image)"  [routerLink]="sub_menu.menu_link">
-                        
-                          <i class="fa fa-user-circle" aria-hidden="true"></i>
-                          <span class="layout-menuitem-text ng-tns-c2000835034-13">{{sub_menu.menu_name}}</span>
-                          <span class="p-ink ng-tns-c2000835034-13" aria-hidden="true" role="presentation"></span>
-                        </a>
-                      </li>
-
-                    </ul>
-                  </li>
-                  </ul>
-              </li>
-            </ul>
-          </div>
+<!-- Submenu Popup -->
+<div class="submenu-popup" [class.show]="showSubmenuPopup" [style.top.px]="popupPosition.top" [style.left.px]="popupPosition.left">
+  <div class="submenu-popup-header" *ngIf="selectedParentMenu">
+    <h4>{{selectedParentMenu.menu_name}}</h4>
+  </div>
+  <div class="submenu-grid">
+    <a class="submenu-app-item" 
+       [routerLink]="sub_menu.menu_link"
+       (click)="navigateToSubmenu(sub_menu)"
+       *ngFor="let sub_menu of selectedParentMenu?.sub_menu">
+      <div class="submenu-app-icon">
+        <i [class]="sub_menu.menu_image || 'fas fa-circle'"></i>
       </div>
-    </div>
-
-
+      <div class="submenu-app-name">{{sub_menu.menu_name}}</div>
+    </a>
+  </div>
+</div>
