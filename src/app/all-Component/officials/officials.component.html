@@ -364,22 +364,24 @@
             </div>
 
             
-                 <div class="col-md-6">
-                          <div class="image-upload-container text-center">
-                            <label for="profileImageInput" class="upload-label">
-                              <div class="image-preview-wrapper">
-                                <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
-                                <ng-template #placeholder>
-                                </ng-template>
-                              </div>
-                              <div class="upload-btn">Upload</div>
-                            </label>
-                            <input type="file" id="profileImageInput" accept="image/*"
-                              (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
-                          </div>
-                        </div>
+            <div class="col-md-6">
+              <div class="image-upload-container text-center">
+                <label for="profileImageInput" class="upload-label">
+                  <div class="image-preview-wrapper">
+                    <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" class="profile-img" />
+                    <ng-template #placeholder>
+                      <img [src]="envImagePath + '/images/avatar.png'" alt="Default" class="profile-img" />
+                    </ng-template>
+                  </div>
+                  <div class="upload-btn" type="file"(change)="fileEvent($event)">Upload</div>
+                </label>
+                <input type="file" id="profileImageInput" accept="image/*"
+                  (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
+              </div>
+            </div>
+            
 
-
+                      
           </div>
 
 

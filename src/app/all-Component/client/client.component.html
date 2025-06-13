@@ -29,7 +29,7 @@
 
                             <div class="card flex justify-center">
                                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                                    (click)="showAddForm()"> <i class="fas fa-plus"></i> Client</button>
+                                    (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
                             </div>
                         </div>
                     </div>
@@ -119,9 +119,14 @@
 
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="small-heading">
-                    {{ isEditMode ? 'Edit Client' : 'Add Client ' }}
-                </h3>
+                <div class="small-heading">
+                    <div
+                        *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null">
+                        Add Client </div>
+                    <div
+                        *ngIf="addClientForm.get('client_id')?.value != null && addClientForm.get('client_id')?.value != ''">
+                        Edit Client</div>
+                </div>
             </div>
 
 
@@ -131,7 +136,7 @@
                         <label>Client Name
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Name"
+                        <input class="form-control" maxlength="50" type="text"
                             formControlName="client_name" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('client_name', $event)">
                         <small
@@ -145,7 +150,7 @@
                         <label>Client Code
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Client Code"
+                        <input class="form-control" maxlength="50" type="text"
                             formControlName="client_code" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('client_code', $event)">
                         <small
@@ -161,6 +166,7 @@
                         <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_id"
                             (ngModelChange)="getStates(addClientForm.get('country_id')?.value)" optionValue="country_id"
                             optionLabel="country_name" placeholder="Select Country" appendTo="self"
+                            [filter]="true" filterBy="country_name" [showClear]="false"
                             [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-country pTemplate="item">
                                 <div class="flex align-items-center gap-2">
@@ -180,9 +186,12 @@
                         <label>State
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
-                            (ngModelChange)="getCities(addClientForm.get('state_id')?.value)" optionValue="state_id"
-                            optionLabel="state_name" placeholder="Select State">
+                            <p-dropdown [options]="statesList" class="drop-error "
+                             formControlName="state_id"    optionValue="state_id" 
+                             (ngModelChange)="getCities(addClientForm.get('state_id')?.value)" 
+                            optionLabel="state_name" [filter]="true"filterBy="state_name"
+                             [showClear]="false" placeholder="Select State"
+                            [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-state pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ state.state_name }}
@@ -200,8 +209,11 @@
                         <label>City
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown [options]="citiesList" class="drop-error " formControlName="city_id"
-                            optionValue="city_id" optionLabel="city_name" placeholder="Select City">
+                            <p-dropdown [options]="citiesList" class="drop-error "
+                            formControlName="city_id"  optionValue="city_id" 
+                           optionLabel="city_name" [filter]="true"filterBy="city_name"
+                            [showClear]="false" placeholder="Select City"
+                           [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-city pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ city.city_name }}
@@ -220,7 +232,7 @@
                         <label>Address 1
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="200" type="text" placeholder="Enter Address 1"
+                        <input class="form-control" maxlength="200" type="text" 
                             formControlName="address_1" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('address_1', $event)">
                         <small
@@ -232,7 +244,7 @@
                     <div class="col-md-6">
                         <label>address_2
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Address 2"
+                        <input class="form-control" maxlength="50" type="text" 
                             formControlName="address_2" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('address_2', $event)">
 
@@ -241,7 +253,7 @@
                         <label>Post Code
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Post Code"
+                        <input class="form-control" maxlength="50" type="text" 
                             formControlName="post_code" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('post_code', $event)">
                         <small
@@ -254,7 +266,7 @@
                         <label>Email Id
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="100" type="text" placeholder="Enter Email Id"
+                        <input class="form-control" maxlength="100" type="text" 
                             formControlName="email_id">
                         <div *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
                             <small
@@ -272,7 +284,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>Phone No <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" maxlength="10" placeholder="Enter Phone No"
+                        <input class="form-control" type="text" maxlength="10"
                             formControlName="mobile" (input)="onPhoneNumberInput($event)">
                         <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
                             <!-- Show when pattern is invalid -->
@@ -295,66 +307,34 @@
                     <div class="col-md-6">
                         <label>Website
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Website"
+                        <input class="form-control" maxlength="50" type="text" 
                             formControlName="website" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('website', $event)">
                     </div>
                     <div class="col-md-6">
                         <label>Description
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter description"
+                        <input class="form-control" maxlength="50" type="text" 
                             formControlName="description" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('description', $event)">
 
                     </div>
                     <!--Preview of profile image-->
                     <div class="col-md-6">
-                        <label class="form-label">Profile Image</label>
-                        <div class="profile-img-container">
-                          
-                          <!-- Image Preview -->
-                          <div class="image-wrappers">
-                            <!-- Default Avatar -->
-                            <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
-                                 [src]="envImagePath + '/images/avatar.png'"
-                                 class="profile-images"
-                                 alt="Default Avatar">
-                          
-                            <img *ngIf="filedata != null && filedata != ''"
-                                 [src]="url"
-                                 class="profile-images"
-                                 alt="Preview">
-                          
-                            <img *ngIf="profileImages != null && profileImages != ''"
-                                 [src]="profileImages"
-                                 class="profile-images"
-                                 alt="Uploaded Image">
-                          
-                            <!-- Cancel Button -->
-                            <button type="button"
-                                    class="cancel-btn"
-                                    *ngIf="(filedata != null && filedata != '') || (profileImages != null && profileImages != '')"
-                                    (click)="cancel()">
-                              <i class="fa fa-times"></i>
-                            </button>
-                          </div>
-                          
-                      
-                          <!-- Upload Button -->
-                          <div class="upload-section">
-                            <label class="upload-label btn btn-primary Upload-color">
-                              Upload
-                              <input type="file" (change)="fileEvent($event)" hidden>
+                        <div class="image-upload-container text-center">
+                            <label for="profileImageInput" class="upload-label">
+                                <div class="image-preview-wrapper">
+                                    <img *ngIf="previewUrl"
+                                     [src]="previewUrl" alt="Profile Image" />
+                                    <!-- <ng-template #placeholder>
+                                    </ng-template> -->
+                                </div>
+                                <div class="upload-btn">Upload</div>
                             </label>
-                          </div>
-                          
-                      <!-- <div>
-                                <small class="text-danger" *ngIf="addClientForm.get('profile_img_url').errors">
-                                    * Only PNG, JPEG, or JPG files are allowed
-                                </small>
-                            </div> -->
+                            <input type="file" id="profileImageInput" accept="image/*"
+                                (change)="fileEvent($event)" hidden  />
                         </div>
-                      </div>
+                    </div>
                       
 
                 </div>

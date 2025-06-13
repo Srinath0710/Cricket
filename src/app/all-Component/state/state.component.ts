@@ -41,7 +41,6 @@ export class StateComponent implements OnInit {
   User_id: number = Number(localStorage.getItem('user_id'));
   Client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: boolean = false;
-  isEditMode: boolean = false;
   sidebarTitle: string = '';
   countriesData: Country[] = [];
   selected_country: number | null = null;
@@ -245,7 +244,6 @@ export class StateComponent implements OnInit {
 
   onAddState() {
     this.submitted = true;
-    this.isEditMode = false;
     if (this.addStateForm.invalid) {
       this.addStateForm.markAllAsTouched();
       return;
@@ -281,7 +279,6 @@ export class StateComponent implements OnInit {
 
 
   editState(editRecord: any) {
-    this.isEditMode = true;
     this.addStateForm.setValue({
       state_id: editRecord.state_id,
       country_id: editRecord.country_id,

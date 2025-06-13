@@ -26,6 +26,8 @@ import { OnInit } from '@angular/core';
 import { Drawer } from 'primeng/drawer';
 import { PaginatorModule } from 'primeng/paginator';
 import { ToastModule } from 'primeng/toast';
+import { environment } from '../../environments/environment';
+import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 
 interface official {
   config_id: string;
@@ -82,8 +84,8 @@ export class OfficialsComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10;
   totalData: any = 0;
- filedata: any;
- previewUrl: string | ArrayBuffer | null = null;
+  filedata: any;
+  previewUrl: string | ArrayBuffer | null = null;
   backScreen: any;
   selectedOfficial: any = null;
   visibleDialog: boolean = false;
@@ -116,6 +118,12 @@ export class OfficialsComponent implements OnInit {
   FormValue: boolean = false;
   country_id: any;
   citiesList = [];
+  profileImages: any;
+  url: any;
+  clientID: any;
+  envImagePath = environment.imagePath;
+  default_flag_img = this.envImagePath+'/images/Default Flag.png';
+  default_img = CricketKeyConstant.default_image_url.officials;
 
   accreditationList: any[] = [];
   childAccreditationList: any[] = [];
@@ -126,7 +134,6 @@ export class OfficialsComponent implements OnInit {
   mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   officialNamePattern = /^[^'"]+$/; //allstringonly allow value
   emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
-  default_img = CricketKeyConstant.default_image_url.officials;
   dropDownConstants = CricketKeyConstant.dropdown_keys;
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
@@ -137,7 +144,10 @@ export class OfficialsComponent implements OnInit {
 
   isPersonalDataIntialized: boolean = false;
   disableReadonly: boolean = true;
-  isClientShow: boolean=false;
+  isClientShow: boolean = false;
+  imageDefault: any;
+  ManageOfficialId :any;
+    ManageFullName :any;
 
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
@@ -145,7 +155,7 @@ export class OfficialsComponent implements OnInit {
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT,
-    private msgService: MessageService, private confirmationService: ConfirmationService
+    private msgService: MessageService, private confirmationService: ConfirmationService,private uploadImgService: UploadImgService,
   ) {
 
   }
@@ -182,7 +192,7 @@ export class OfficialsComponent implements OnInit {
       residence_country_id: ['', [Validators.required]],
       primary_email_id: ['', [Validators.required, Validators.pattern(this.emailRegex)]],
       secondary_email_id: [''],
-      primary_phone:['', [Validators.required, Validators.pattern(this.mobileRegex)]],
+      primary_phone: ['', [Validators.required, Validators.pattern(this.mobileRegex)]],
       secondary_phone: [''],
       blood_group_id: [''],
       father_name: [''],
@@ -218,7 +228,7 @@ export class OfficialsComponent implements OnInit {
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
-      this.isClientShow=this.clientData.length>1?true:false;
+      this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
       this.callBackClientChange();
 
@@ -319,10 +329,10 @@ export class OfficialsComponent implements OnInit {
 
     },
 
-    (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [], this.totalData = this.officialDataList.length);
+      (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [], this.totalData = this.officialDataList.length);
 
-    });
+      });
   }
 
   calculateFirst(): number {
@@ -395,9 +405,15 @@ export class OfficialsComponent implements OnInit {
 
 
     if (this.addOfficialForm.value.official_id) {
-      // params.action_flag='update';
+      params.action_flag='update';
       this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      
+              if (res.data !== null && this.filedata != null) {
+                 
+                  this.profileImgAppend(params.official_id);
+                  console.log("profuile",this.profileImgAppend)
+              }
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
@@ -422,17 +438,6 @@ export class OfficialsComponent implements OnInit {
   showAddForm() {
     this.ShowForm = true;
   }
-
-  // personalAddShowForm(official: any) {
-  //   this.isEditPersonal = false; 
-  //   this.isPersonalDataIntialized = false;
-  //   this.disableReadonly = false;
-  //   this.personal_official_id = official?.official_id ?? null;
-  //   this.personalShowForm = true;
-  //   this.addPersonalForm.reset(); 
-  // }
-
-
   cancelForm() {
     this.ShowForm = false;
     this.personalShowForm = false;
@@ -478,11 +483,11 @@ export class OfficialsComponent implements OnInit {
   }
 
   formSetValue() {
-    this.addOfficialForm.patchValue({
-      team_format: this.teamformat[0].config_id,
+    // this.addOfficialForm.patchValue({
+    //   team_format: this.teamformat[0].config_id,
 
 
-    })
+    // })
   }
 
   Editofficial(official: any) {
@@ -650,7 +655,7 @@ export class OfficialsComponent implements OnInit {
           this.isEditPersonal = false;
           this.isPersonalDataIntialized = false;
           // this.addPersonalForm.reset();
-            this.resetForm();
+          this.resetForm();
 
         }
       },
@@ -787,7 +792,14 @@ export class OfficialsComponent implements OnInit {
     });
   }
 
- onProfileImageSelected(event: Event) {
+                //PROFILE UPLOAD
+
+  closeSuccess() {
+    this.resetForm();
+    this.gridload();
+  }
+
+  onProfileImageSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       this.filedata = file;
@@ -802,6 +814,114 @@ export class OfficialsComponent implements OnInit {
 
 
   }
+  // fileEvent(event: any) {
+  //   // if (this.addOfficialForm.value.profile_img.value !== null && this.addOfficialForm.value.profile_img.value !== '') {
+  //   //   this.profileImages = null;
+  //   // }
+  //   // console.log(event);
+  //   if (event && event.target && event.target.files && event.target.files.length > 0) {
+  //     this.filedata = event.target.files[0];
+  //     var reader = new FileReader();
+  //     reader.readAsDataURL(event.target.files[0]);
+  //     reader.onload = (event) => {
+  //       var img = new Image;
+  //       // this.url = event.target.result;
+  //       // this.imageCropAlter=event.target.result
+  //       // this.imageDefault=event.target.result
+  //     }
+  //   } else {
+  //      this.filedata = null;
+  //     this.url =this.imageDefault
+  //     this.filedata=this.base64ToBinary(this.imageDefault);
+
+  //   }
+  // }
+  fileEvent(event: any) {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log('File selected:', file);
+      this.filedata = file;
+    } else {
+      this.filedata = null;
+    }
+  }
+  
+  /*profile image update */
+
+  profileImgUpdate(upload_profile_url: any, official_id: any) {
+
+    const params: any = {};
+    params.action_flag = 'update_profile_url';
+    params.profile_img = upload_profile_url.toString();
+    params.user_id = this.user_id.toString();
+    params.official_id = official_id.toString();
+    params.client_id = this.client_id.toString();
+
+    this.apiService.post(this.urlConstant.profileofficial, params).subscribe(
+      (res) => {
+        if (res.status_code == this.statusConstants.success && res.status ) {
+          // this.filedata = null;
+          this.successToast(res);
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        if (err.status_code ===  this.statusConstants.refresh && err.error.message=== this.statusConstants.refresh_msg ) {
+          this.apiService.RefreshToken();
+
+        } else {
+          this.failedToast(err.error);
+        }
+      }
+    );
+  }
+  profileImgAppend(official_id:any) {
+    const myFormData = new FormData();
+    if (this.filedata != null && this.filedata != '') {
+        // myFormData.append('imageFile', this.filedata);
+        myFormData.append('imageFile', this.filedata); 
+        myFormData.append('client_id', this.client_id.toString());
+        myFormData.append('file_id', official_id);
+        myFormData.append('upload_type', 'officials');
+        myFormData.append('user_id', this.user_id?.toString());
+        this.uploadImgService.post(this.urlConstant.uploadprofile,  myFormData).subscribe(
+            (res) => {
+                if (res.status_code == this.statusConstants.success ) {
+                    if (res.url != null && res.url != '') {
+                        this.profileImgUpdate(res.url, official_id);
+                    } else {
+                        this.failedToast(res);
+                    }
+                } else {
+                    this.failedToast(res);
+                }
+            },
+            (err: any) => {
+                if (err.status_code ===  this.statusConstants.refresh && err.error.message=== this.statusConstants.refresh_msg ) {
+                    this.apiService.RefreshToken();
+                   
+                } else {
+                    this.failedToast(err.error);
+                }
+            }
+        );
+    }
+}
+
+
+base64ToBinary(base64:any){
+  // Convert base64 to binary (Blob)
+  const byteCharacters = atob(base64.split(',')[1]); // Decode base64 string
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset++) {
+      byteArrays.push(byteCharacters.charCodeAt(offset));
+  }
+
+  const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' }); 
+  return blob;
+}
 
   viewShowDialog() {
     this.visibleDialog = true

@@ -89,7 +89,6 @@ export class TeamsComponent implements OnInit {
   totalData: any = 0;
   submitted: boolean = true;
   viewMode: boolean = false;
-  isEditMode: boolean = false;
   searchKeyword: string = '';
   selectedCity: string = '';
   defaultRows: number = 10;
@@ -115,16 +114,16 @@ export class TeamsComponent implements OnInit {
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
       team_name: ['', [Validators.required]],
-      team_short: [''],
+      team_short: ['', [Validators.required]],
       gender_id: ['', [Validators.required]],
       age_category_id: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
       team_profile: [''],
       primary_color: [''],
       secondary_color: [''],
-      club_id:['',[]],
-      reference_id:['',[]],
-      country_id:['' ],
+      club_id:['', [Validators.required]],
+      reference_id:['', [Validators.required]],
+      country_id:['', [Validators.required]],
     })
   }
 
@@ -386,7 +385,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
   EditTeam(team_id: number) {
-    this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();

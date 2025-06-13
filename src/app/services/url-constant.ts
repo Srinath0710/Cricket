@@ -1,5 +1,6 @@
 export class URLCONSTANT {
 
+      uploadprofile="Global/upload_profile"
 
       /*Country List*/
       getCountryDropdown = "Country/get_country_dropdown"
