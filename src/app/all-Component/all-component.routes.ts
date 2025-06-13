@@ -14,6 +14,7 @@ import { GroundsComponent } from "./grounds/grounds.component";
 import { ScoreEngineComponent } from "../score-engine/score-engine.component";
 import { ClientComponent } from "./client/client.component";
 import { ClubRegistrationComponent } from "./club-registration/club-registration.component";
+import { MenuComponent } from "./menu/menu.component";
 
 export const AllComponentRoutes: Route[] = [
     {
@@ -85,6 +86,10 @@ export const AllComponentRoutes: Route[] = [
                 path: 'clubs',
                 component: ClubRegistrationComponent
             },
+            {
+            path: 'permissions',
+            component:MenuComponent
+            }
          
         ]
 
