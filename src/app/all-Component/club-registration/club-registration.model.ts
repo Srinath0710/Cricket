@@ -15,6 +15,7 @@ export class Club {
     website : string;
     profile_img : string;
     record_status : string;
+  gridData: any;
 
     constructor(item: Partial<Club> = {}){
         this.club_id = item.club_id || 0;

@@ -47,15 +47,19 @@ export class ClubRegistrationComponent implements OnInit {
   @ViewChild('dt') dt: any;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
+  selectedClientId: number = Number(localStorage.getItem('client_id'));
   public ShowForm: boolean = false;
   isEditMode: boolean = false;
-  isClientShow:boolean=false;
+  isClientShow: boolean = false;
   club_id: any;
   loading = false;
   clubsData: Club[] = [];
   countriesList: Country[] = [];
   stateList = [];
   citiesList = [];
+  allClubData: Club[] = [];
+  clubForm: any;
+  gridData: any = [];
   submitted: boolean = true;
   visible: boolean = false;
   default_img: any = 'assets/images/default-player.png';
@@ -72,16 +76,14 @@ export class ClubRegistrationComponent implements OnInit {
   ClubNamePattern = /^[^'"]+$/;
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
-  dropDownConstants=CricketKeyConstant.dropdown_keys;
-  clubForm: any;
-gridData:any=[];
+  dropDownConstants = CricketKeyConstant.dropdown_keys;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.gridload();
     this.getCountries();
     this.Clientdropdown();
@@ -102,10 +104,10 @@ gridData:any=[];
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
       mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      website: ['', [Validators.required, Validators.pattern(/^https:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/)]],
+      website: [''],
       contact: [''],
       remarks: [''],
-      profile_img: [this.uploadedImage ? this.uploadedImage.toString() : '']
+      profile_img: ['']
     })
   }
 
@@ -141,7 +143,7 @@ gridData:any=[];
           val.profile_image = `${val.profile_image}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh &&err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
 
       });
 
@@ -204,9 +206,9 @@ gridData:any=[];
   failedToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
-
   onAddClub() {
     this.submitted = true;
+    this.isEditMode = false;
 
     if (this.addClubForm.invalid) {
       this.addClubForm.markAllAsTouched();
@@ -239,28 +241,18 @@ gridData:any=[];
 
     const apiUrl = isEdit ? this.urlConstant.updateClub : this.urlConstant.addClub;
 
-    this.apiService.post(apiUrl, params).subscribe(
-      (res) => {
-        console.log('API Response:', res);
-        if (res.status_code === this.statusConstants.success && res.status) {
-          this.addCallBack(res);
-        } else {
-          this.failedToast(res);
-        }
-      },
-      (err: any) => {
-        console.error('API Error:', err);
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err.error || err);
-        }
-      }
-    );
+    this.apiService.post(apiUrl, params).subscribe((res) => {
+      res.status_code === this.statusConstants.success && res.status
+        ? this.addCallBack(res)
+        : this.failedToast(res);
+    }, (err: any) => {
+      err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
+        ? this.apiService.RefreshToken()
+        : this.failedToast(err.error);
+    });
   }
+
 
 
   addCallBack(res: any) {
@@ -270,17 +262,17 @@ gridData:any=[];
     this.gridload();
   }
 
-    getGlobalData() {
+  getGlobalData() {
     const params: any = {
       action_flag: 'dropdown',
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
-  
-    this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
+
+    this.apiService.post(this.urlConstant.Clubdropdown, params).subscribe(
       (res) => {
         const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
-        this.clubsData = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.age_category);
+        this.clubsData = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key);
       },
       (err: any) => {
         this.clubsData = [];
@@ -293,7 +285,7 @@ gridData:any=[];
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
-    params.club_id = club_id?.toString()
+    params.club_id = club_id?.toString();
     this.apiService.post(this.urlConstant.editClub, params).subscribe((res) => {
       if (res.status_code == 200) {
         const editRecord: EditClub = res.data.clubs[0] ?? {};
@@ -325,6 +317,7 @@ gridData:any=[];
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
+
   onImageUpload(event: any) {
     const file = event.files[0];
     const reader = new FileReader();
@@ -362,32 +355,32 @@ gridData:any=[];
     );
   }
 
- StatusConfirm(club_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-  const AlreadyClubsStatus =
-  (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-  (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'Inactive');
-  if (AlreadyClubsStatus) {
-    return;
-  }
-
-  this.confirmationService.confirm({
-    message: `Are you sure you want to ${actionObject.label} this club?`,
-    header: 'Confirmation',
-    icon: 'pi pi-question-circle',
-    acceptLabel: 'Yes',
-    rejectLabel: 'No',
-    accept: () => {
-      const url: string = this.conditionConstants.active_status.key === actionObject.key
-        ? this.urlConstant.activateClub
-        : this.urlConstant.deactivateClub;
-      this.status(club_id, url);
-      this.confirmationService.close();
-    },
-    reject: () => {
-      this.confirmationService.close();
+  StatusConfirm(club_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+    const AlreadyStatestatus =
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
+    if (AlreadyStatestatus) {
+      return;
     }
-  });
-}
+
+    this.confirmationService.confirm({
+      message: `Are you sure you want to ${actionObject.label} this club?`,
+      header: 'Confirmation',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url: string = this.conditionConstants.active_status.key === actionObject.key
+          ? this.urlConstant.activateClub
+          : this.urlConstant.deactivateClub;
+        this.status(club_id, url);
+        this.confirmationService.close();
+      },
+      reject: () => {
+        this.confirmationService.close();
+      }
+    });
+  }
 
 
   getCountries() {
@@ -443,7 +436,7 @@ gridData:any=[];
   }
 
   getStates() {
-    const country_id:number=this.addClubForm.get('country_id')?.value
+    const country_id: number = this.addClubForm.get('country_id')?.value
     const params: any = {};
     if (country_id == null) {
       return
@@ -492,20 +485,44 @@ gridData:any=[];
     this.gridload();
   }
 
-    Clientdropdown() {
+  Clientdropdown() {
     const params: any = {
       user_id: this.user_id?.toString()
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id = this.clientData[0].client_id;
-      this.isClientShow=this.clientData.length>1?true:false;
+      this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
       this.getGlobalData();
 
     }, (err) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
 
 }
+
+//  ClubDropdown() {
+//   const params: any = {
+//     action_flag: 'dropdown',
+//     user_id: this.user_id.toString(),
+//     client_id: this.client_id.toString()
+//   };
+
+//   this.apiService.post(this.urlConstant.Clubdropdown, params).subscribe(
+//     (res) => {
+//       this.configDataList = res.data?.clubs || [];
+//     },
+//     (err: any) => {
+//       if (
+//         err.status_code === this.statusConstants.refresh &&
+//         err.error?.message === this.statusConstants.refresh_msg
+//       ) {
+//         this.apiService.RefreshToken();
+//       } else {
+//         this.failedToast(err.error);
+//       }
+//     }
+//   );
+// }

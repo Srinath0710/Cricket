@@ -89,7 +89,7 @@ export class AllCitiesComponent implements OnInit {
   statusConstants = CricketKeyConstant.status_code;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService,
-    private urlConstant: URLCONSTANT, private msgService: MessageService,
+    private urlConstatnt: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant
   ) {
 
@@ -126,7 +126,7 @@ export class AllCitiesComponent implements OnInit {
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
 
-    this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
+    this.apiService.post(this.urlConstatnt.countryLookups, params).subscribe((res) => {
       this.countryData = res.data.countries ?? [];
       this.countryId = this.countryData[0].country_id;
       this.getStates();
@@ -154,7 +154,7 @@ export class AllCitiesComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = this.countryId.toString();
-    this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
+    this.apiService.post(this.urlConstatnt.getStatesByCountry, params).subscribe((res) => {
       this.statesList = res.data.states ?? [];
       this.stateId = this.FormValue ? this.stateId : this.statesList[1].state_id;
 
@@ -182,7 +182,7 @@ export class AllCitiesComponent implements OnInit {
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.country_id = country_id.toString();
-    this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
+    this.apiService.post(this.urlConstatnt.getStatesByCountry, params).subscribe((res) => {
       this.statesFormList = res.data.states ?? [];
     }, (err: any) => {
       if (
@@ -206,7 +206,7 @@ export class AllCitiesComponent implements OnInit {
     params.action_flag = "grid_load";
     params.state_id = this.stateId != null ? this.stateId.toString() : null;
 
-    this.apiService.post(this.urlConstant.getCityList, params).subscribe((res) => {
+    this.apiService.post(this.urlConstatnt.getCityList, params).subscribe((res) => {
       this.cityData = res.data.states ?? [];
             this.totalData = this.cityData.length !== 0 ? res.data.states[0].total_records : 0;
     }, (err: any) => {
@@ -294,14 +294,14 @@ export class AllCitiesComponent implements OnInit {
 
     if (this.addCityForm.value.city_id) {
       params.action_flag = 'update';
-      this.apiService.post(this.urlConstant.updateCity, params).subscribe((res) => {
+      this.apiService.post(this.urlConstatnt.updateCity, params).subscribe((res) => {
 
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
-      this.apiService.post(this.urlConstant.addCity, params).subscribe((res) => {
+      this.apiService.post(this.urlConstatnt.addCity, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
@@ -351,8 +351,8 @@ export class AllCitiesComponent implements OnInit {
       accept: () => {
 
         const url: string = this.conditionConstants.active_status.key === actionObject.key
-          ? this.urlConstant.activecity
-          : this.urlConstant.deactiveCity;
+          ? this.urlConstatnt.activecity
+          : this.urlConstatnt.deactiveCity;
         this.status(city_id, url);
         this.confirmationService.close();
       },

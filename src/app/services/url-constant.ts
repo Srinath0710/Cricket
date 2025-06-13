@@ -165,6 +165,5 @@ export class URLCONSTANT {
       editClub = 'Club/edit_club'
       activateClub = 'Club/activate_club'
       deactivateClub = 'Club/deactivate_club'
-     
 
 } 

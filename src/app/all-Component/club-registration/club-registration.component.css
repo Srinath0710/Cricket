@@ -333,6 +333,17 @@ body.modal-open {
   padding-right: 1rem; 
 }
 
+::ng-deep .p-dropdown {
+  border-radius: 0 !important; 
+}
+
+::ng-deep .p-dropdown-label {
+  border-radius: 0 !important; 
+}
+
+::ng-deep .p-dropdown-panel {
+  border-radius: 0 !important; 
+}
 
 
 

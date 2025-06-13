@@ -12,8 +12,8 @@
                         <div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex align-items-center gap-2 mb-2">
                             <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
                                 optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridload()"
-                                placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
-                 drop-error header-drop">
+                                placeholder="Client Id" [filter]="true" appendTo="body"
+                                class="w-100 drop-error header-drop">
                                 <ng-template let-Client pTemplate="item">
                                     <div class="country-item">
                                         <div>{{ Client.client_name }}</div>
@@ -21,9 +21,9 @@
                                 </ng-template>
                             </p-dropdown>
                         </div>
+
                         <div class="d-flex align-items-center">
-
-
+                            
                             <form class="d-flex align-items-center gap-2" (submit)="gridload()" #searchForm="ngForm">
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
@@ -85,18 +85,18 @@
                                 <td>
                                     <span class="icon-blue" (click)="EditClub(club.club_id)" pTooltip="Edit"
                                         tooltipPosition="top">
-                                        <i class="fas fa-user-pen" aria-hidden="true"></i>
+                                        <i class="fas fa-user-pen"></i>
                                     </span>
 
                                     <span class="icon-green"
                                         (click)="StatusConfirm(club.club_id,conditionConstants.active_status,club.record_status)"
-                                        pTooltip="Active" tooltipPosition="top">
-                                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                                        pTooltip="Activate" tooltipPosition="top">
+                                        <i class="fa-solid fa-circle-check"></i>
                                     </span>
 
                                     <span class="icon-red"
                                         (click)="StatusConfirm(club.club_id,conditionConstants.deactive_status,club.record_status)"
-                                        pTooltip="Deactive" tooltipPosition="top">
+                                        pTooltip="Deactivate" tooltipPosition="top">
                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
                                     </span>
                                 </td>
@@ -170,7 +170,7 @@
                         <p-dropdown formControlName="country_id" [options]="countriesList" optionLabel="country_name"
                             (onChange)="getStates()" optionValue="country_id" placeholder="Select Country"
                             [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" filterBy="country_name"
-                            [showClear]="false">
+                            [showClear]="false" appendTo="self">
 
 
                             <ng-template let-country pTemplate="item">
@@ -193,7 +193,7 @@
                         <p-dropdown [options]="stateList" class="drop-error " formControlName="state_id"
                             placeholder="Enter State Name"
                             (ngModelChange)="getCities(addClubForm.get('state_id')?.value)" optionValue="state_id"
-                            optionLabel="state_name" appendTo="self">
+                            optionLabel="state_name" appendTo="self" [filter]="true" filterBy="state_name">
                             <ng-template let-state pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ state.state_name }}
@@ -213,7 +213,8 @@
                             <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="citiesList" class="drop-error" formControlName="city_id"
-                            placeholder="Enter City Name" optionValue="city_id" optionLabel="city_name">
+                            placeholder="Enter City Name" optionValue="city_id" optionLabel="city_name" appendTo="self"
+                            [filter]="true" filterBy="city_name">
                             <ng-template let-city pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div> {{ city.city_name }}</div>
@@ -240,7 +241,7 @@
                     </div>
 
                     <div class="col-md-6"><label> Address 2
-                            <span class="text-danger">*</span>
+                            <span class="text-danger"></span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" formControlName="address_2"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_2',$event)">
@@ -309,39 +310,10 @@
                     <div class="col-md-6">
                         <label>Website <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" formControlName="website"
-                            pattern="^https:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/.*)?$"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('website', $event)">
 
-                        <small
-                            *ngIf="addClubForm.get('website')?.errors?.['required'] && (addClubForm.get('website')?.touched || submitted)"
-                            class="required-msg">
-                            Website URL is Required
-                        </small>
-
-                        <!-- <small
-                            *ngIf="addClubForm.get('website')?.errors?.['pattern'] && (addClubForm.get('website')?.touched || submitted)"
-                            class="required-msg">
-                            Please enter a valid Website URL (e.g., https://example.com)
-                        </small> -->
                     </div>
 
-                    <!-- <div class="col-md-6">
-                        <label>Contact <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" maxlength="10" formControlName="contact"
-                            pattern="^[0-9]{10}$" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('contact', $event)">
-
-                        <small
-                            *ngIf="addClubForm.get('contact')?.errors?.['required'] && (addClubForm.get('contact')?.touched || submitted)"
-                            class="required-msg">
-                            Contact Number is Required
-                        </small>
-                        <small
-                            *ngIf="addClubForm.get('contact')?.errors?.['pattern'] && (addClubForm.get('contact')?.touched || submitted)"
-                            class="required-msg">
-                            Please enter a valid 10-digit Contact Number
-                        </small>
-                    </div> -->
 
                     <div class="col-md-6">
                         <label>Remarks</label>
@@ -367,7 +339,7 @@
                                 <div class="upload-btn">Upload</div>
                             </label>
                             <input type="file" id="profileImageInput" accept="image/*"
-                                (change)="onProfileImageSelected($event)" hidden formControlName="team_profile" />
+                                (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
                         </div>
                     </div>
                 </div>
