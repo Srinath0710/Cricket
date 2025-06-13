@@ -21,7 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { offcialedit } from './officials.model';
 import { offcialpersonalupadate } from './officials.model';
 import { offcialpersonaledit } from './officials.model';
-
+import { TooltipModule } from 'primeng/tooltip';
 import { OnInit } from '@angular/core';
 import { Drawer } from 'primeng/drawer';
 import { PaginatorModule } from 'primeng/paginator';
@@ -54,7 +54,8 @@ interface official {
     ConfirmDialogModule,
     Drawer,
     PaginatorModule,
-    ToastModule
+    ToastModule,
+    TooltipModule
   ],
   providers: [
     { provide: URLCONSTANT },
@@ -170,7 +171,7 @@ export class OfficialsComponent implements OnInit {
     this.addOfficialForm = this.fb.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
-      sur_name: [''],
+      sur_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
       official_category_id: ['', [Validators.required]],
@@ -811,40 +812,39 @@ export class OfficialsComponent implements OnInit {
       reader.readAsDataURL(file);
 
     }
-
-
   }
-  // fileEvent(event: any) {
-  //   // if (this.addOfficialForm.value.profile_img.value !== null && this.addOfficialForm.value.profile_img.value !== '') {
-  //   //   this.profileImages = null;
-  //   // }
-  //   // console.log(event);
-  //   if (event && event.target && event.target.files && event.target.files.length > 0) {
-  //     this.filedata = event.target.files[0];
-  //     var reader = new FileReader();
-  //     reader.readAsDataURL(event.target.files[0]);
-  //     reader.onload = (event) => {
-  //       var img = new Image;
-  //       // this.url = event.target.result;
-  //       // this.imageCropAlter=event.target.result
-  //       // this.imageDefault=event.target.result
-  //     }
-  //   } else {
-  //      this.filedata = null;
-  //     this.url =this.imageDefault
-  //     this.filedata=this.base64ToBinary(this.imageDefault);
-
-  //   }
-  // }
+  
   fileEvent(event: any) {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log('File selected:', file);
-      this.filedata = file;
+    // if (this.addOfficialForm.value.profile_img.value !== null && this.addOfficialForm.value.profile_img.value !== '') {
+    //   this.profileImages = null;
+    // }
+    // console.log(event);
+    if (event && event.target && event.target.files && event.target.files.length > 0) {
+      this.filedata = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event) => {
+        var img = new Image;
+        // this.url = event.target.result;
+        // this.imageCropAlter=event.target.result
+        // this.imageDefault=event.target.result
+      }
     } else {
-      this.filedata = null;
+       this.filedata = null;
+      this.url =this.imageDefault
+      this.filedata=this.base64ToBinary(this.imageDefault);
+
     }
   }
+  // fileEvent(event: any) {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     console.log('File selected:', file);
+  //     this.filedata = file;
+  //   } else {
+  //     this.filedata = null;
+  //   }
+  // }
   
   /*profile image update */
 
@@ -975,7 +975,14 @@ base64ToBinary(base64:any){
   }
 
 
-  StatusConfirm(official_id: number, actionObject: { key: string, label: string }) {
+  StatusConfirm(official_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+    const AlreadyStatestatus =
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus ===this.conditionConstants.deactive_status.status);
+
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this official?`,
       header: 'Confirmation',
@@ -1009,7 +1016,11 @@ base64ToBinary(base64:any){
     this.dt.clear();
     this.gridload();
   }
-
+  cancelImage() {
+    this.previewUrl = null;
+    this.filedata = null;
+    this.addOfficialForm.get('profile_img')?.reset(); 
+  }
 
 
 }
