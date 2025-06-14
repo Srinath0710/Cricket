@@ -17,9 +17,10 @@ import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { TagModule } from 'primeng/tag';
 import { EditTeam, Teams, UpdateTeams } from './teams.model';
-// import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
+import { environment } from '../../environments/environment';
 
 interface Team {
   config_id: string;
@@ -44,7 +45,8 @@ interface Team {
     ConfirmDialogModule,
     ToastModule,
     TooltipModule,
-    Drawer
+    Drawer,
+    ImageCropperComponent
   ],
   templateUrl: './teams.component.html',
   styleUrls: ['./teams.component.css'],
@@ -66,7 +68,6 @@ export class TeamsComponent implements OnInit {
   public ShowForm: any = false;
   teamData: Teams[] = [];
   uploadedImage: string | ArrayBuffer | null = null;
-  default_img: string = 'assets/images/default-player.png';
   previewUrl: string | ArrayBuffer | null = null;
   configDataList: Team[] = [];
   ageGroupList: Team[] = [];
@@ -81,7 +82,7 @@ export class TeamsComponent implements OnInit {
   imageDefault: any;
   url: any;
   src: any;
-  profile_img: any
+  team_profile: any
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
@@ -103,6 +104,10 @@ export class TeamsComponent implements OnInit {
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
   dropDownConstants=CricketKeyConstant.dropdown_keys;
+  envImagePath = environment.imagePath;
+  default_flag_img = this.envImagePath + '/images/Default Flag.png';
+  default_img = CricketKeyConstant.default_image_url.officials;
+
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -124,6 +129,7 @@ export class TeamsComponent implements OnInit {
       club_id:['', [Validators.required]],
       reference_id:['', [Validators.required]],
       country_id:['', [Validators.required]],
+      
     })
   }
 
@@ -184,7 +190,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           this.totalData = 0;
         }
         this.teamData.forEach((val: any) => {
-          val.profile_img = `${val.profile_img}?${Math.random()}`;
+          val.team_profile = `${val.team_profile}?${Math.random()}`;
         });
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
@@ -469,4 +475,99 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     });
   }
 
+  fileEvent(event: any) {
+    if (this.addTeamForm.value.team_profile.value !== null && 
+      this.addTeamForm.value.team_profile.value !== '') {
+      this.profileImages = null;
+    }
+    if (event && event.target && event.target.files && event.target.files.length > 0) {
+      this.filedata = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: any) => {
+        var img = new Image;
+        this.url = event.target.result;
+        this.imageCropAlter = event.target.result
+        this.imageDefault = event.target.result
+      }
+    } else {
+      this.filedata = null;
+      this.url = this.imageDefault
+      this.filedata = this.base64ToBinary(this.imageDefault);
+
+    }
+  }
+  saveCroppedImage(): void {
+    this.profileImages = this.filedata;
+    this.imageCropAlter = this.filedata;
+    this.filedata=this.base64ToBinary(this.filedata);
+    this.showCropperModal = false;
+  }
+
+  cancelImg(): void {
+    this.showCropperModal = false;
+    this.url=this.imageCropAlter;
+    this.filedata=this.base64ToBinary(this.imageCropAlter);
+  }
+  loadImageFailed() {
+    console.error('Image loading failed');
+  }
+
+
+  imageCropped(event: ImageCroppedEvent) {
+    this.url = event.base64
+    this.filedata = event.base64
+     this.profileImages=null
+  }
+  imageLoaded() {
+    console.log('Image loaded');
+  }
+
+  cropperReady() {
+    console.log('Cropper ready');
+  }
+
+  base64ToBinary(base64:any){
+    const byteCharacters = atob(base64.split(',')[1]); 
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset++) {
+        byteArrays.push(byteCharacters.charCodeAt(offset));
+    }
+
+    const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' }); 
+    return blob;
+}
+convertUrlToBase64(imageUrl: string): void {
+    fetch(imageUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Image = reader.result as string; 
+          this.imageBase64 = base64Image; 
+          this.imageCropAlter=base64Image
+          this.imageDefault=base64Image
+        };
+        reader.readAsDataURL(blob); 
+      })
+      .catch((error) => {
+      });
+  }
+  cancel() {
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter=null;
+    this.imageBase64 = null;
+}
+  cropPopOpen() {
+    this.showCropperModal = true;
+    this.imageBase64=this.imageDefault;
+  }
 }

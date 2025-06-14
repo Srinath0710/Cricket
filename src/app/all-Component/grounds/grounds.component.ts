@@ -18,6 +18,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Drawer } from 'primeng/drawer';
+import { TooltipModule } from 'primeng/tooltip';
+
 interface Country {
   country_id: number;
   country_name: string;
@@ -28,7 +30,7 @@ interface Country {
   imports: [CommonModule, TableModule, BadgeModule, ButtonModule,
     DialogModule, ReactiveFormsModule, DropdownModule,
     FormsModule, FileUploadModule, InputTextModule, Drawer,
-    ConfirmDialogModule, ToastModule, TagModule, PaginatorModule],
+    ConfirmDialogModule, ToastModule, TagModule, PaginatorModule,TooltipModule],
   templateUrl: './grounds.component.html',
   styleUrls: ['./grounds.component.css'],
   providers: [

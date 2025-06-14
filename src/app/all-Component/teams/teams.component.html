@@ -67,9 +67,9 @@
               <tr>
                 <td>
                   <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="!teams.profile_img || !teams.player_profile" [src]="default_img">
+                    <img class="player-img" *ngIf="!teams.team_profile || !teams.player_profile" [src]="default_img">
 
-                    <img class="player-img" *ngIf="teams.profile_img && teams.player_profile" [src]="teams.profile_img"
+                    <img class="player-img" *ngIf="teams.team_profile && teams.player_profile" [src]="teams.team_profile"
                       (error)="handleImageError($event, default_img)">
                   </span>
                   <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)"> {{ teams.team_name
@@ -330,17 +330,49 @@
           </div>
 
           <div class="col-md-6">
+            <label>Profile Image</label>
+            <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">CropImage</a>
             <div class="image-upload-container text-center">
-              <label for="profileImageInput" class="upload-label">
-                <div class="image-preview-wrapper">
-                  <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
-                  <ng-template #placeholder>
-                  </ng-template>
-                </div>
-                <div class="upload-btn">Upload</div>
+              <div class="image-preview-wrapper">
+                <button *ngIf="filedata != null && filedata != ''"  type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="envImagePath + '/images/avatar.png'"  alt="Profile Image" class="profile-img">
+                <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
+                <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  alt="Profile Image" class="profile-img">
+
+              </div>
+
+              <label for="profileImageInput" class="upload-btn">
+                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden formControlName="team_profile" />
+                Upload
               </label>
-              <input type="file" id="profileImageInput" accept="image/*" (change)="onProfileImageSelected($event)"
-                hidden formControlName="team_profile" />
+              <div>
+                <small class="text-danger" *ngIf="addTeamForm.get('team_profile')?.errors">
+                  * Only PNG, JPEG, or JPG files are allowed
+                </small>
+              </div>
+            </div>
+              <!-- Cropper Modal -->
+              <div *ngIf="showCropperModal" class="modal img-croper-popup ">
+                <div class="modal-content crop-image">
+                    <div class="modal-header modal-header-img">
+                        <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                    </div>
+                    <div class="modal-body img-fix">
+                        <image-cropper
+                        [imageBase64]="imageBase64"
+                        [maintainAspectRatio]="true"
+                        [aspectRatio]="4 / 3"
+                        (imageCropped)="imageCropped($event)"
+                        (imageLoaded)="imageLoaded()"
+                        (cropperReady)="cropperReady()"
+                        (loadImageFailed)="loadImageFailed()"
+                      ></image-cropper>
+                    </div>
+                    <div class="modal-footer crop-footer">
+                        <button class="save-btn submit-btn margin-right" (click)="saveCroppedImage()">Save</button>
+                        <button class="clear-button submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                    </div>
+                </div>
             </div>
           </div>
 
@@ -356,9 +388,7 @@
               (click)="resetForm()"></button>
 
             <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>
-
           </div>
-
         </div>
         </div>
       </form>

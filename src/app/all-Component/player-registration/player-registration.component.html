@@ -234,7 +234,7 @@
 
                         <div class="col-md-6">
                           <label>Club ID</label>
-                          <span class="text-danger">*</span>
+                          <!-- <span class="text-danger">*</span> -->
                           <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id"
                             optionValue="club_id" optionLabel="club_name" placeholder="Select Club Id">
                             <ng-template let-club pTemplate="item">
@@ -244,10 +244,10 @@
                               </div>
                             </ng-template>
                           </p-dropdown>
-                          <small
+                          <!-- <small
                             *ngIf="playerRegistrationform?.get('club_id')?.invalid &&(playerRegistrationform?.get('club_id')?.touched) || (playerRegistrationform.get('club_id')?.invalid && submitted)"
                             class="required-msg"> Club ID is Required
-                          </small>
+                          </small> -->
                         </div>
 
                         <div class="col-md-6">
