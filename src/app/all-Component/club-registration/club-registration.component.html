@@ -9,7 +9,7 @@
                             Club Registrations
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex align-items-center gap-2 mb-2">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
                             <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
                                 optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridload()"
                                 placeholder="Client Id" [filter]="true" appendTo="body"
@@ -168,7 +168,7 @@
                             <span class="text-danger">*</span>
                         </label>
                         <p-dropdown formControlName="country_id" [options]="countriesList" optionLabel="country_name"
-                            (onChange)="getStates()" optionValue="country_id" placeholder="Select Country"
+                            (ngModelChange)="getStates()" optionValue="country_id" placeholder="Select Country"
                             [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" filterBy="country_name"
                             [showClear]="false" appendTo="self">
 

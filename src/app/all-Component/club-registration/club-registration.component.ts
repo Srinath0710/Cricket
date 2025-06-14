@@ -20,7 +20,7 @@ import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
 interface Country {
-  country_id: number;
+  country_id: any;
   country_name: string;
 }
 
@@ -59,6 +59,7 @@ export class ClubRegistrationComponent implements OnInit {
   citiesList = [];
   allClubData: Club[] = [];
   clubForm: any;
+  Client : any;
   gridData: any = [];
   submitted: boolean = true;
   visible: boolean = false;
@@ -494,7 +495,7 @@ export class ClubRegistrationComponent implements OnInit {
       this.client_id = this.clientData[0].client_id;
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
-      this.getGlobalData();
+      this.ClubDropdown();
 
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
@@ -503,26 +504,3 @@ export class ClubRegistrationComponent implements OnInit {
 
 }
 
-//  ClubDropdown() {
-//   const params: any = {
-//     action_flag: 'dropdown',
-//     user_id: this.user_id.toString(),
-//     client_id: this.client_id.toString()
-//   };
-
-//   this.apiService.post(this.urlConstant.Clubdropdown, params).subscribe(
-//     (res) => {
-//       this.configDataList = res.data?.clubs || [];
-//     },
-//     (err: any) => {
-//       if (
-//         err.status_code === this.statusConstants.refresh &&
-//         err.error?.message === this.statusConstants.refresh_msg
-//       ) {
-//         this.apiService.RefreshToken();
-//       } else {
-//         this.failedToast(err.error);
-//       }
-//     }
-//   );
-// }

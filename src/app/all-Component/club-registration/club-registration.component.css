@@ -345,7 +345,33 @@ body.modal-open {
   border-radius: 0 !important; 
 }
 
+.client-dropdown-wrapper {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
 
+.client-dropdown-container {
+  width: fit-content;
+  min-width: 200px;
+}
+
+.dropdown-label {
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.header-drop {
+  margin-left: -10px;
+  margin-top: 17px;
+  line-height: 18px !important;
+  font-size: 17px;
+}
 
 
 
