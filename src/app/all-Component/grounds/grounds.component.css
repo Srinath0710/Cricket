@@ -276,5 +276,11 @@ body.modal-open {
     width: 100%;
     margin-top: -10%;
   }
-  
+  .header-drop {
+  margin-left: -10px;
+  margin-top: 17px;
+  line-height: 18px !important;
+  font-size: 17px;
+}
+
 

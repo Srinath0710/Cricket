@@ -27,14 +27,16 @@
             <div class="d-flex align-items-center">
               <!-- Search Form -->
               <form class="d-flex align-items-center gap-2" (submit)="gridload()">
-                <div class="p-input-icon-right flex-grow-1">
-
+                 <div class="p-input-icon-right flex-grow-1">
+                  <!-- <i class="pi pi-search" ></i> -->
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('Search', $event)">
+                    placeholder="Search" (input)="filterGlobal()"
+                    (keydown.enter)="$event.preventDefault(); filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
 
-                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+                <button type="button" class="clear-button" (click)="searchKeyword = ''; filterGlobal();">
+                   Clear </button>
 
               </form>
 
@@ -216,7 +218,7 @@
 
           <div class="col-md-3">
             <label class="">Ground Name <span class="text-danger">*</span></label>
-            <input class="form-control" maxlength="50" type="text" placeholder="Enter Ground Name"
+            <input class="form-control" maxlength="50" type="text" 
               formControlName="ground_name" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('ground_name', $event)">
 
@@ -234,7 +236,7 @@
             <label class="">Dispaly Name
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" placeholder="Entre Dispaly Name"
+            <input class="form-control" maxlength="50" type="text" 
               formControlName="display_name" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('display_name', $event)">
   
@@ -254,7 +256,7 @@
             <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_id"
               (ngModelChange)="getStates(addGroundForm.get('country_id')?.value)" optionValue="country_id"
               optionLabel="country_name" placeholder="select Country" appendTo="self"
-              [panelStyleClass]="'custom-dropdown-panel'">
+              [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" filterBy="country_name" [showClear]="false">
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ country.country_name }}
@@ -281,6 +283,11 @@
                 </div>
               </ng-template>
             </p-dropdown>
+            <small
+              *ngIf="addGroundForm?.get('state_id')?.invalid &&(addGroundForm.get('state_id')?.touched) || (addGroundForm.get('state_id')?.invalid && submitted)"
+              class="required-msg">State
+              Is Required
+            </small>
 
           </div>
           <div class="col-md-3">
@@ -295,15 +302,19 @@
                 </div>
               </ng-template>
             </p-dropdown>
+            <small
+              *ngIf="addGroundForm?.get('city_id')?.invalid &&(addGroundForm.get('city_id')?.touched) || (addGroundForm.get('city_id')?.invalid && submitted)"
+              class="required-msg">City
+              Is Required
+            </small>
 
           </div>
 
 
           <div class="col-md-3">
             <label class="">Address Name 1
-              <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="200" type="text" placeholder="Entre Address 1"
+            <input class="form-control" maxlength="200" type="text" 
               formControlName="address_1" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('address_1', $event)">
 
@@ -315,9 +326,8 @@
 
           <div class="col-md-3">
             <label class="">Address Name 2
-              <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="200" type="text" placeholder="Entre Address 2"
+            <input class="form-control" maxlength="200" type="text" 
               formControlName="address_2" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('address_2', $event)">
    
@@ -334,7 +344,7 @@
             <label class="">Post Code
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="10" type="text" placeholder="Entre Post Code"
+            <input class="form-control" maxlength="10" type="text" 
               formControlName="post_code" (keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('post_code', $event)">
 
@@ -349,7 +359,7 @@
             <label class="">Northern End
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" placeholder="Entre Northern End"
+            <input class="form-control" maxlength="50" type="text" 
               formControlName="northern_end"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('northern_end', $event)">
          
@@ -365,7 +375,7 @@
             <label class="">Sourthern End
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" placeholder="Entre Sourthern End"
+            <input class="form-control" maxlength="50" type="text" 
               formControlName="sourthern_end"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('sourthern_end', $event)">
        
@@ -379,9 +389,8 @@
 
           <div class="col-md-3">
             <label class="">Latitude
-              <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" placeholder="Entre Latitude"
+            <input class="form-control" maxlength="50" type="text" 
               formControlName="latitude"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('latitude', $event)">
          
@@ -395,9 +404,8 @@
 
           <div class="col-md-3">
             <label class="">Longitude
-              <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" placeholder="Entre Longitude"
+            <input class="form-control" maxlength="50" type="text" 
               formControlName="longitude"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('longitude', $event)">
    
@@ -410,16 +418,19 @@
 
           <div class="col-md-3">
             <label>Reference Sourece ID </label>
-            <input class="form-control" type="text" maxlength="20" placeholder="Enter Reference Sourece ID    "
+            <input class="form-control" type="text" maxlength="20" 
               formControlName="reference_id"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('reference_id', $event)">
-    
+            <small
+              *ngIf="addGroundForm?.get('reference_id')?.invalid &&(addGroundForm?.get('reference_id')?.touched) || (addGroundForm.get('reference_id')?.invalid && submitted)"
+              class="required-msg">Reference ID is Required
+            </small>
           </div>
 
       
           <div class="col-md-3">
-            <label>Capacity No <span class="text-danger">*</span></label>
-            <input class="form-control" maxlength="50" type="text" placeholder="Enter Capacity No"
+            <label>Capacity No</label>
+            <input class="form-control" maxlength="50" type="text" 
               formControlName="capacity" (keypress)="allowNumberOnly($event)"
               (input)="sanitizeNumberInput('capacity', $event)">
 
@@ -488,7 +499,7 @@
 
                 <div class="col-md-3">
                   <label>North (in Metres) <span class="text-danger">*</span></label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Enter North"
+                  <input class="form-control" maxlength="50" type="text"
                     formControlName="north" (keypress)="allowDecimalOnly($event)"
                     (input)="sanitizeDecimalInput('north', $event)">
 
@@ -509,7 +520,7 @@
 
                 <div class="col-md-3">
                   <label>South (in Metres) <span class="text-danger">*</span></label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Enter South"
+                  <input class="form-control" maxlength="50" type="text" 
                     formControlName="south" (keypress)="allowDecimalOnly($event)"
                     (input)="sanitizeDecimalInput('south', $event)">
 
@@ -529,7 +540,7 @@
 
                 <div class="col-md-3">
                   <label>East (in Metres) <span class="text-danger">*</span></label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Enter East" formControlName="east"
+                  <input class="form-control" maxlength="50" type="text" formControlName="east"
                     (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('east', $event)">
 
                   <!-- Show when invalid decimal format -->
@@ -550,7 +561,7 @@
 
                 <div class="col-md-3">
                   <label>West (in Metres) <span class="text-danger">*</span></label>
-                  <input class="form-control" maxlength="50" type="text" placeholder="Enter West" formControlName="west"
+                  <input class="form-control" maxlength="50" type="text" formControlName="west"
                     (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('west', $event)">
 
                   <!-- Show when invalid decimal format -->
@@ -580,7 +591,7 @@
                 (click)="cancelForm()"></button>
 
               <button pButton type="button" label="Clear" class="p-button-secondary me-3"
-                *ngIf="addGroundForm.get('country_id')?.value == '' || addGroundForm.get('country_id')?.value == null"
+                *ngIf="addGroundForm.get('ground_id')?.value == '' || addGroundForm.get('ground_id')?.value == null"
                 (click)="resetForm()"></button>
 
               <button pButton type="button" label="Save" class="save-button" (click)="onAddGround()"></button>

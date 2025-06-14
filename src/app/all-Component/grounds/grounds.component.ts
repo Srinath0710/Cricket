@@ -99,8 +99,8 @@ isClientShow: boolean=false;
       ground_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
       country_id: ['', [Validators.required]],
-      state_id: [''],
-      city_id: [''],
+      state_id: ['', [Validators.required]],
+      city_id: ['', [Validators.required]],
       address_1: [''],
       address_2: [''],
       post_code: ['', [Validators.required]],
@@ -117,7 +117,7 @@ isClientShow: boolean=false;
       profile: ['', []],
       ground_photo: ['', []],
       ground_id: ['',[]],
-      reference_id: ['',[]]
+      reference_id: ['',[Validators.required]]
 
     })
 
@@ -563,10 +563,10 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     }
   }
 
+  
 
-  filterGlobal() {
-    this.first = 1;
-    this.gridload();
+filterGlobal() {
+    this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
   clear() {
     this.searchKeyword = '';
