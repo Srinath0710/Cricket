@@ -34,8 +34,8 @@
             </div>
 
 
-            <p-table #dt [value]="MenuData" [styleClass]="'custom-table'"
-              [globalFilterFields]="['menu_name', 'module_name','menu_link','record_status']">
+          <p-table #dt [value]="MenuData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"
+            [styleClass]="'custom-table'" [globalFilterFields]="['menu_name', 'module_name','menu_link','record_status']">
               <ng-template pTemplate="header">
                 <tr>
                   <th class="col-md-3" pSortableColumn="menu_name">Menu Name <p-sortIcon field="menu_name">
@@ -96,9 +96,7 @@
 
             </p-table>
 
-            <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-              [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
-            </p-paginator>
+           
 
           </div>
         </div>
@@ -136,10 +134,9 @@
 
         </div>
 
-        <p-table #dt [value]="selectedApiEndpoints" [styleClass]="'custom-table'">
-
-
-          <ng-template pTemplate="header">
+       <p-table #dt [value]="selectedApiEndpoints" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"
+            [styleClass]="'custom-table'" [globalFilterFields]="['menu_name', 'module_name','menu_link','record_status']">
+              <ng-template pTemplate="header">
 
             <tr>
               <th class="col-md-2" pSortableColumn="api_group">Group <p-sortIcon field="api_group">
@@ -148,7 +145,7 @@
               <th class="col-md-2" pSortableColumn="api_endpoint_url">Url <p-sortIcon field="api_endpoint_url">
                 </p-sortIcon>
               </th>
-              <th class="col-md-2" pSortableColumn="api_desc">desc <p-sortIcon field="api_desc">
+              <th class="col-md-2" pSortableColumn="api_desc">Desc <p-sortIcon field="api_desc">
                 </p-sortIcon>
               </th>
               <th class="col-md-2" pSortableColumn="api_method_type">Method type <p-sortIcon field="api_method_type">
@@ -204,9 +201,7 @@
             </tr>
           </ng-template>
         </p-table>
-        <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-          [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
-        </p-paginator>
+       
 
       </div>
 
@@ -265,13 +260,7 @@
               </small>
             </div>
 
-            <div class="col-md-6">
-              <label for="menu_image">Menu Image</label>
-             
-              <input class="form-control" maxlength="50" type="text" 
-                formControlName="menu_image" />
-
-            </div>
+          
             <div class="col-md-6">
               <label>Parent menu
                 <span class="text-danger">*</span></label>
@@ -319,6 +308,20 @@
                 class="required-msg"> module id Is Required
               </small>
             </div>
+                 <div class="col-md-6">
+            <div class="image-upload-container text-center">
+              <label for="profileImageInput" class="upload-label">
+                <div class="image-preview-wrapper">
+                  <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
+                  <ng-template #placeholder>
+                  </ng-template>
+                </div>
+                <div class="upload-btn">Upload</div>
+              </label>
+              <input type="file" id="profileImageInput" accept="image/*" (change)="onProfileImageSelected($event)"
+                hidden formControlName="menu_image" />
+            </div>
+          </div>
 
           </div>
 
@@ -416,6 +419,8 @@
                   class="required-msg"> Parent Menu Is Required
                 </small>
               </div>
+          
+
 
             </div>
 

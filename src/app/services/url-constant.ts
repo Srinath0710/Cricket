@@ -174,7 +174,7 @@ export class URLCONSTANT {
      editMenu='Menu/edit_menu'
      updateMenu='Menu/update_menu'
      activateMenu='Menu/activate_menu'
-     deactivateMenu='Menu/deactivate_men'
+     deactivateMenu='Menu/deactivate_menu'
      endpointMenulist='Menu/get_endpoint_list'
      addendpoint='Menu/add_endpoint'
      menunameDropdown='Menu/get_endpoint_dropdown'

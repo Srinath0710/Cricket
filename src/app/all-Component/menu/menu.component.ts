@@ -45,6 +45,18 @@ export class MenuComponent implements OnInit {
   Client_id: number = Number(localStorage.getItem('client_id'));
   public menuData: any[] = [];
   public menusList: any[] = [];
+  uploadedImage: string | ArrayBuffer | null = null;
+  previewUrl: string | ArrayBuffer | null = null;
+  imageBase64: any = null;
+  filedata: any;
+  profileImages: any;
+  imageCropAlter: any;
+  imageDefault: any;
+  url: any;
+  src: any;
+  profile_img: any
+
+  currentMenu: any;
 
   public ShowForm: boolean = false;
   public showEndpointForm: boolean = false;
@@ -217,7 +229,7 @@ export class MenuComponent implements OnInit {
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
+       res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.viewEndpoints(this.currentMenu)) : this.failedToast(res);
       },
       (err: any) => {
         error: (err: any) => {
@@ -395,7 +407,7 @@ export class MenuComponent implements OnInit {
       api_method_type: this.addEndpointForm.value.api_method_type,
       menu_id: String(this.addEndpointForm.value.menu_id),
       api_id: String(this.addEndpointForm.value.api_id),
-      
+
 
     };
 
@@ -407,7 +419,7 @@ export class MenuComponent implements OnInit {
           res.status_code === this.statusConstants.success && res.status
             ? this.addCallBack(res)
             : this.failedToast(res);
-             this.gridLoad();
+           this.viewEndpoints(this.currentMenu);
         },
         (err: any) => {
           err.status === this.statusConstants.refresh &&
@@ -424,6 +436,7 @@ export class MenuComponent implements OnInit {
           res.status_code === this.statusConstants.success && res.status
             ? this.addCallBack(res)
             : this.failedToast(res);
+             this.viewEndpoints(this.currentMenu);
         },
         (err: any) => {
           err.status === this.statusConstants.refresh &&
@@ -466,7 +479,8 @@ export class MenuComponent implements OnInit {
 
 
   viewEndpoints(menu: any) {
-    this.selectedMenuName = menu.menu_name;
+    this.currentMenu = menu;
+    this.selectedMenuName = this.currentMenu.menu_name;
     this.selectedApiEndpoints = [];
     this.showEndpointsGrid = true;
     console.log('Clicked icon with menu:', menu);
@@ -486,6 +500,31 @@ export class MenuComponent implements OnInit {
     });
 
 
+  }
+  onImageUpload(event: any) {
+    const file = event.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.uploadedImage = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  onProfileImageSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.filedata = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+
+      };
+      reader.readAsDataURL(file);
+
+    }
+  }
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
   }
   showAddEndpointForm() {
     this.isEditEndpoint = false;
