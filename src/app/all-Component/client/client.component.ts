@@ -52,6 +52,7 @@ export class ClientComponent implements OnInit{
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   default_img= CricketKeyConstant.default_image_url.officials;
+  // default_img=this.envImagePath+'/images/default_officals.png';
   previewUrl: string | ArrayBuffer | null = null;
 
   searchKeyword: string = '';
@@ -68,21 +69,17 @@ export class ClientComponent implements OnInit{
   statesList = [];
   loading = false;
   country_id: any;
-  isEditMode: boolean = false;
   submitted: boolean = true;
   seletedclient: any = [];
   viewDialogVisible: boolean = false;
-    mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
+  mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
   ClientNamePattern = /^[^'"]+$/; //allstringonly allow value
-
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
-
   envImagePath = environment.imagePath;
   showCropperModal = false;
   imageBase64: any = null;
-  profile_img: any
   length: any
   profileImages: any;
   imageCropAlter: any;
@@ -92,6 +89,7 @@ export class ClientComponent implements OnInit{
   src: any;
   oldPath: any;
   base64: any;
+
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
   private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -126,7 +124,7 @@ export class ClientComponent implements OnInit{
     //mobileno enter the only number alowed
   onPhoneNumberInput(event: Event) {
     const inputElement = event.target as HTMLInputElement;
-    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); 
     this.addClientForm.get('mobile')?.setValue(phoneNumber, { emitEvent: false });
   }
   //single quotes and doble quotes remove all label box 
@@ -139,7 +137,7 @@ blockQuotesOnly(event: KeyboardEvent) {
 
 sanitizeQuotesOnly(controlName: string, event: Event) {
   const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+  const cleaned = input.replace(/['"]/g, ''); 
   this.addClientForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
 }
   gridLoad() {
@@ -151,20 +149,21 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString(),
     this.apiService.post(this.urlConstant.getclientList, params).subscribe((res) => {
-      this.Clientdata = res.data?? [];
-        // this.totalData = this.Clientdata.length != 0 ? res.data[0].total_records : 0
-      this.totalData = this.Clientdata.length ?? res.data[0].total_records ;
-      this.Clientdata.forEach((val: any) => {
-        val.country_image = `${val.country_image}?${Math.random()}`;
-      });
+    this.Clientdata = res.data?? [];
+    this.totalData = this.Clientdata.length ?? res.data[0].total_records ;
+    this.Clientdata.forEach((val) => {
+      val.profile_img_url = `${val.profile_img_url}?${Math.random()}`;
+    });
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.Clientdata = [], this.totalData = this.Clientdata.length);
+      err.status_code === this.statusConstants.refresh &&
+      err.error.message === this.statusConstants.refresh_msg ?
+      this.apiService.RefreshToken() : (this.Clientdata = [],
+       this.totalData = this.Clientdata.length);
 
     });
-
   }
+
   onAddClient() {
-    this.isEditMode = false;
     this.submitted = true;
     if (this.addClientForm.invalid) {
       this.addClientForm.markAllAsTouched();
@@ -218,7 +217,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
   
   EditClient(client_id: number) {
-    this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = client_id?.toString();
@@ -424,33 +422,52 @@ handleImageError(event: Event, fallbackUrl: string): void {
   target.src = fallbackUrl;
 }
 
-/* profile image File onchange event */
+// fileEvent(event: any) {
+//   if (this.addClientForm.get('profile_img_url')?.value) {
+//     this.profileImages = null;
+//   }
+//   const file = (event.target as HTMLInputElement).files?.[0];
+//   if (file) {
+//     this.filedata = event.target.files[0];
+//     const reader = new FileReader();
+//     reader.onload = () => {
+//       this.previewUrl = reader.result as string;
+
+//     };
+//     reader.readAsDataURL(file);
+//     reader.readAsDataURL(this.filedata);
+
+// this.addClientForm.patchValue({
+//   profile_img_url: this.filedata
+// });
+//       } else {
+//         this.url = this.imageDefault;
+//         this.filedata = this.base64ToBinary(this.imageDefault);
+//       }
+//     }
 fileEvent(event: any) {
-      // Reset preview if new file
-      if (this.addClientForm.get('profile_img_url')?.value) {
-        this.profileImages = null;
-      }
-    
-      if (event?.target?.files?.length > 0) {
-        this.filedata = event.target.files[0];
-    
-        const reader = new FileReader();
-        reader.readAsDataURL(this.filedata);
-        reader.onload = (e: any) => {
-          this.url = e.target.result;
-          this.imageCropAlter = e.target.result;
-          this.imageDefault = e.target.result;
-    
-          this.addClientForm.patchValue({
-            profile_img_url: this.filedata
-          });
-        };
-      } else {
-        this.url = this.imageDefault;
-        this.filedata = this.base64ToBinary(this.imageDefault);
-      }
-    }
-    
+  const fileInput = event.target as HTMLInputElement;
+  const file = fileInput.files?.[0];
+  if (file) {
+    this.filedata = file;
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+      this.addClientForm.patchValue({
+        profile_img_url: this.previewUrl  
+      });
+      this.profileImages = null; 
+    };
+    reader.readAsDataURL(file); 
+  } else {
+    this.previewUrl = this.imageDefault;
+    this.filedata = this.base64ToBinary(this.imageDefault); 
+    this.addClientForm.patchValue({
+      profile_img_url: this.imageDefault  
+    });
+  }
+}
 
 cropPopOpen(){
   this.showCropperModal=true;

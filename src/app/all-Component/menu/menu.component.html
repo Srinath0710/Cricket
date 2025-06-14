@@ -1,0 +1,449 @@
+<p>menu works!</p>
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <main>
+      <div class="card margin-card">
+        <div class="card-body">
+
+          <div *ngIf="!showEndpointsGrid">
+            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+              <div class="main-page-title page-title playerbackground">
+                <i class="fas fa-bars"></i>
+                All Menus
+              </div>
+              <div class="d-flex align-items-center">
+
+                <!-- Search Form -->
+                <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                  <div class="p-input-icon-right flex-grow-1">
+                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                      placeholder="  Search" (input)="filterGlobal()" />
+                  </div>
+
+                  <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+
+                </form>
+
+                <div class="card flex justify-center">
+                  <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="onCreateClick()">
+                    <i class="fas fa-plus"></i> Create
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+
+          <p-table #dt [value]="MenuData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"
+            [styleClass]="'custom-table'" [globalFilterFields]="['menu_name', 'module_name','menu_link','record_status']">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="col-md-3" pSortableColumn="menu_name">Menu Name <p-sortIcon field="menu_name">
+                    </p-sortIcon>
+                  </th>
+                  <th class="col-md-2" pSortableColumn="module_name">Module name <p-sortIcon field="module_name">
+                    </p-sortIcon>
+                  </th>
+
+                  <th class="col-md-3" pSortableColumn="menu_link"> Menu link <p-sortIcon field="menu_link">
+                    </p-sortIcon>
+                  </th>
+
+                  <th class="col-md-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status">
+                    </p-sortIcon>
+                  </th>
+                  <th class="col-md-3" class="custom-header action-column-header">Actions</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-menu >
+                <tr>
+                  <td>{{ menu.menu_name }}</td>
+                  <td>{{ menu.module_name }}</td>
+                  <td>{{ menu.menu_link}}</td>
+                  <td>
+                    <span [ngClass]="{
+                        'bg-success': menu.record_status === 'Active',
+                        'bg-danger': menu.record_status === 'InActive'
+                      }">
+                      {{ menu.record_status }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="icon-rose" (click)="viewEndpoints(menu)" pTooltip="Permission" tooltipPosition="top">
+                      <i class="fas fa-flag-checkered"></i>
+                    </span>
+                    <span class="icon-blue" (click)="editMenu(menu.menu_id)" pTooltip="Edit" tooltipPosition="top">
+                      <i class="fa-solid fa-user-pen"></i>
+                    </span>
+
+                    <span class="icon-green"
+                      (click)="StatusConfirm(menu.menu_id,conditionConstants.active_status, menu.record_status)"
+                      pTooltip="Activate" tooltipPosition="top">
+                      <i class="fa-solid fa-circle-check"></i>
+                    </span>
+
+                    <span class="icon-red"
+                      (click)="StatusConfirm(menu.menu_id,conditionConstants.deactive_status, menu.record_status)"
+                      pTooltip="Deactivate" tooltipPosition="top">
+                      <i class="fa-solid fa-trash-can-arrow-up"></i>
+                    </span>
+                  </td>
+
+                </tr>
+              </ng-template>
+
+
+
+            </p-table>
+
+           
+
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showEndpointsGrid">
+        <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+          <div class="main-page-title page-title playerbackground">
+            <i class="fas fa-bars"></i>
+            Endpoints for {{ selectedMenuName }}
+
+
+            <button (click)="backToMenuGrid()" class="new-button p-button-text"> ← Back</button>
+          </div>
+
+          <div class="d-flex align-items-center">
+
+            <!-- Search Form -->
+            <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+              <div class="p-input-icon-right flex-grow-1">
+                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                  placeholder="  Search" (input)="filterGlobal()" />
+              </div>
+
+              <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+
+            </form>
+
+            <div class="card flex justify-center">
+              <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                (click)="showAddEndpointForm()"> <i class="fas fa-plus"></i> Create</button>
+            </div>
+
+          </div>
+
+        </div>
+
+       <p-table #dt [value]="selectedApiEndpoints" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"
+            [styleClass]="'custom-table'" [globalFilterFields]="['menu_name', 'module_name','menu_link','record_status']">
+              <ng-template pTemplate="header">
+
+            <tr>
+              <th class="col-md-2" pSortableColumn="api_group">Group <p-sortIcon field="api_group">
+                </p-sortIcon>
+              </th>
+              <th class="col-md-2" pSortableColumn="api_endpoint_url">Url <p-sortIcon field="api_endpoint_url">
+                </p-sortIcon>
+              </th>
+              <th class="col-md-2" pSortableColumn="api_desc">Desc <p-sortIcon field="api_desc">
+                </p-sortIcon>
+              </th>
+              <th class="col-md-2" pSortableColumn="api_method_type">Method type <p-sortIcon field="api_method_type">
+                </p-sortIcon>
+              </th>
+
+              <th class="col-md-2" pSortableColumn="menu_name"> Menu name <p-sortIcon field="menu_name">
+                </p-sortIcon>
+              </th>
+
+              <th class="col-md-3" pSortableColumn="record_status">Status <p-sortIcon field="record_status">
+                </p-sortIcon>
+              </th>
+              <th class="col-md-2" class="custom-header action-column-header">Actions</th>
+            </tr>
+          </ng-template>
+
+
+
+          <ng-template pTemplate="body" let-endpoint>
+            <tr>
+              <td>{{ endpoint.api_group }}</td>
+              <td>{{ endpoint.api_endpoint_url }}</td>
+              <td>{{ endpoint.api_desc }}</td>
+              <td>{{ endpoint.api_method_type }}</td>
+              <td>{{ endpoint.menu_name }}</td>
+              <td>
+               <span [ngClass]="{
+                        'bg-success': endpoint.record_status === 'Active',
+                        'bg-danger': endpoint.record_status === 'InActive'
+                      }">
+                  {{ endpoint.record_status }}
+                </span>
+              </td>
+              <td>
+                <span class="icon-blue" (click)="EditEndpoint(endpoint)" pTooltip="Edit" tooltipPosition="top">
+                  <i class="fa-solid fa-user-pen"></i>
+                </span>
+
+                <span class="icon-green"
+                  (click)="StatusConfirmendpoint(endpoint.api_id,conditionConstants.active_status, endpoint.record_status)"
+                  pTooltip="Activate" tooltipPosition="top">
+                  <i class="fa-solid fa-circle-check"></i>
+                </span>
+
+                <span class="icon-red"
+                  (click)="StatusConfirmendpoint(endpoint.api_id,conditionConstants.deactive_status, endpoint.record_status)"
+                  pTooltip="Deactivate" tooltipPosition="top">
+                  <i class="fa-solid fa-trash-can-arrow-up"></i>
+                </span>
+              </td>
+
+            </tr>
+          </ng-template>
+        </p-table>
+       
+
+      </div>
+
+
+      <p-confirmDialog [style]="{ width: '300px' , height: '200px' }" [baseZIndex]="10000" [draggable]="false"
+        [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+      </p-confirmDialog>
+
+
+      <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="small-heading">
+            {{ isEditMode ? 'Edit Menu' : 'Add Menu' }}
+          </h3>
+        </div>
+        <form [formGroup]="addMenuForm">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label class="state_Name">Menu Title</label>
+
+              <span class="text-danger">*
+              </span>
+              <input class="form-control" maxlength="50" type="text"
+                formControlName="menu_title" [ngModel]="addMenuForm.get('menu_title')?.value" />
+              <small
+                *ngIf="addMenuForm?.get('menu_title')?.invalid &&(addMenuForm?.get('menu_title')?.touched) || (addMenuForm.get('menu_title')?.invalid && submitted)"
+                class="required-msg">Menu Title
+                Name Is Required
+              </small>
+            </div>
+
+            <div class="col-md-6">
+              <label for="state_code">Menu Name</label>
+              <span class="text-danger">*
+              </span>
+              <input class="form-control" maxlength="50" type="text" 
+                formControlName="menu_name" />
+              <small
+                *ngIf="addMenuForm?.get('menu_name')?.invalid && (addMenuForm?.get('menu_name')?.touched) || (addMenuForm.get('menu_name')?.invalid && submitted)"
+                class="required-msg">Menu Name is Required
+              </small>
+            </div>
+
+
+
+
+            <div class="col-md-6">
+              <label for="menu_link">Menu link</label>
+              <span class="text-danger">*
+              </span>
+              <input class="form-control" maxlength="50" type="text"
+                formControlName="menu_link" />
+              <small
+                *ngIf="addMenuForm?.get('menu_link')?.invalid && (addMenuForm?.get('menu_link')?.touched) || (addMenuForm.get('menu_link')?.invalid && submitted)"
+                class="required-msg">Menu link is Required
+              </small>
+            </div>
+
+          
+            <div class="col-md-6">
+              <label>Parent menu
+                <span class="text-danger">*</span></label>
+              <p-dropdown [options]="menusData" class="drop-error" formControlName="parent_menu_id"
+                optionValue="menu_id" optionLabel="menu_name" [filter]="true" filterBy="parent_menu_id"
+                [showClear]="false" placeholder="Select Module" [panelStyleClass]="'custom-dropdown-panel'">
+                <ng-template let-menu pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ menu.menu_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+
+
+              <small
+                *ngIf="addMenuForm.get('menu_name')?.invalid &&(addMenuForm.get('menu_name')?.touched) || (addMenuForm.get('menu_name')?.invalid && submitted)"
+                class="required-msg"> Parent menu Is Required
+              </small>
+            </div>
+            <div class="col-md-6">
+              <label>Sort Order</label>
+              <span class="text-danger">*</span>
+              <input class="form-control" type="number" placeholder="Enter Sort Order" formControlName="sort_order" />
+              <small
+                *ngIf="addMenuForm?.get('sort_order')?.invalid && (addMenuForm?.get('sort_order')?.touched || submitted)"
+                class="required-msg">Sort Order is required</small>
+            </div>
+
+            <div class="col-md-6">
+              <label> Module id
+                <span class="text-danger">*</span></label>
+              <p-dropdown [options]="menusList" class="drop-error" formControlName="module_id" optionValue="module_id"
+                optionLabel="module_name" [filter]="true" filterBy="module_name" [showClear]="false"
+                placeholder="Select Module" [panelStyleClass]="'custom-dropdown-panel'">
+                <ng-template let-menu pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <div>{{ menu.module_name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+
+
+              <small
+                *ngIf="addMenuForm.get('module_id')?.invalid &&(addMenuForm.get('module_id')?.touched) || (addMenuForm.get('module_id')?.invalid && submitted)"
+                class="required-msg"> module id Is Required
+              </small>
+            </div>
+                 <div class="col-md-6">
+            <div class="image-upload-container text-center">
+              <label for="profileImageInput" class="upload-label">
+                <div class="image-preview-wrapper">
+                  <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
+                  <ng-template #placeholder>
+                  </ng-template>
+                </div>
+                <div class="upload-btn">Upload</div>
+              </label>
+              <input type="file" id="profileImageInput" accept="image/*" (change)="onProfileImageSelected($event)"
+                hidden formControlName="menu_image" />
+            </div>
+          </div>
+
+          </div>
+
+
+
+          <div class="row mt-4 sticky-footer-buttons">
+            <div class="col-12 text-end">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()">
+              </button>
+
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                *ngIf="addMenuForm.get('menu_id')?.value == '' || addMenuForm.get('menu_id')?.value == null"
+                (click)="resetForm()"></button>
+
+              <button pButton type="button" label="Save" class="save-button" (click)="addMenu()"></button>
+            </div>
+          </div>
+        </form>
+
+        <p-drawer [(visible)]="showEndpointForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="small-heading">
+              {{ isEditEndpoint ? 'Edit Endpoint' : 'Add Endpoint' }}
+            </h3>
+          </div>
+
+
+          <form [formGroup]="addEndpointForm">
+            <div class="row gy-3">
+              <div class="col-md-6">
+                <label class="api_group"> Api group</label>
+
+                <span class="text-danger">*
+                </span>
+                <input class="form-control" maxlength="50" type="text" 
+                  formControlName="api_group" [ngModel]="addMenuForm.get('api_group')?.value" />
+                <small
+                  *ngIf="addEndpointForm?.get('api_group')?.invalid &&(addEndpointForm?.get('api_group')?.touched) || (addEndpointForm.get('api_group')?.invalid && submitted)"
+                  class="required-msg">Api Group
+                  Is Required
+                </small>
+              </div>
+
+              <div class="col-md-6">
+                <label for="api_endpoint_url"> End point Url</label>
+                <span class="text-danger">*
+                </span>
+                <input class="form-control" maxlength="50" type="text" 
+                  formControlName="api_endpoint_url" />
+                <small
+                  *ngIf="addEndpointForm?.get('api_endpoint_url')?.invalid && (addEndpointForm?.get('api_endpoint_url')?.touched) || (addEndpointForm.get('api_endpoint_url')?.invalid && submitted)"
+                  class="required-msg">Endpoint url is Required
+                </small>
+              </div>
+
+
+             
+
+
+              <div class="col-md-6">
+                <label for="api_method_type">Api Method Type</label>
+                <span class="text-danger">*
+                </span>
+                <input class="form-control" maxlength="50" type="text"
+                  formControlName="api_method_type" />
+                <small
+                  *ngIf="addEndpointForm?.get('api_method_type')?.invalid && (addEndpointForm?.get('api_method_type')?.touched) || (addEndpointForm.get('api_method_type')?.invalid && submitted)"
+                  class="required-msg">Api method is Required
+                </small>
+              </div>
+              <div class="col-md-6">
+              <label for="Api desc">Api desc</label>
+             
+              <input class="form-control" maxlength="50" type="text" 
+                formControlName="api_desc" />
+
+            </div>
+
+              <div class="col-md-6">
+                <label>Parent menu
+                  <span class="text-danger">*</span></label>
+                <p-dropdown [options]="endpointMenus " class="drop-error" formControlName="menu_id"
+                  optionValue="menu_id" optionLabel="menu_name" [filter]="true" filterBy="menu_name"
+                  [showClear]="false" placeholder="Select  Menu" [panelStyleClass]="'custom-dropdown-panel'">
+                  <ng-template let-menu pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                      <div>{{ menu.menu_name }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+
+
+                <small
+                  *ngIf="addEndpointForm.get('menu_id')?.invalid &&(addEndpointForm.get('menu_id')?.touched) || (addEndpointForm.get('menu_id')?.invalid && submitted)"
+                  class="required-msg"> Parent Menu Is Required
+                </small>
+              </div>
+          
+
+
+            </div>
+
+
+
+            <div class="row mt-4 sticky-footer-buttons">
+              <div class="col-12 text-end">
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                  (click)="cancelEndpointForm()">
+                </button>
+
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                  *ngIf="addEndpointForm.get('api_id')?.value == '' || addEndpointForm.get('api_id')?.value == null"
+                  (click)="resetForm()"></button>
+
+                <button pButton type="button" label="Save" class="save-button"  (click)="addEndpoint()"></button>
+              </div>
+            </div>
+          </form>
+        </p-drawer>
+      </p-drawer>
+    </main>
+  </div>
+
+</div>
+<p-toast key="tc" position="top-right"></p-toast>

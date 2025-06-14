@@ -58,7 +58,6 @@ export class CountryComponent implements OnInit {
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   public ShowForm: any = false;
-  isEditMode: boolean = false;
   region_id: any;
   loading = false;
   regionsData = [];
@@ -164,6 +163,7 @@ export class CountryComponent implements OnInit {
 
   showAddForm() {
     this.ShowForm = true;
+
   }
 
   cancelForm() {
@@ -185,7 +185,6 @@ export class CountryComponent implements OnInit {
   }
   onAddCountry() {
     this.submitted = true;
-    this.isEditMode = false;
     if (this.addCountryForm.invalid) {
       this.addCountryForm.markAllAsTouched();
       return
@@ -227,7 +226,6 @@ export class CountryComponent implements OnInit {
     this.gridLoad();
   }
   EditCountry(country_id: number) {
-    this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();

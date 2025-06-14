@@ -124,13 +124,13 @@
 
 
                   <span class="icon-green"
-                    (click)="StatusConfirm(official.official_id,conditionConstants.active_status)" pTooltip="Activate"
+                    (click)="StatusConfirm(official.official_id,conditionConstants.active_status,official.record_status)" pTooltip="Activate"
                     tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
 
                   <span class="icon-red"
-                    (click)="StatusConfirm(official.official_id,conditionConstants.deactive_status)"
+                    (click)="StatusConfirm(official.official_id,conditionConstants.deactive_status,official.record_status)"
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
@@ -200,7 +200,7 @@
                 (input)="sanitizeQuotesOnly('sur_name', $event)">
               <small
                 *ngIf="addOfficialForm.get('sur_name')?.invalid &&(addOfficialForm.get('sur_name')?.touched) || (addOfficialForm.get('sur_name')?.invalid && submitted)"
-                class="text-danger">Sur name is Required
+                class="required-msg">Sur name is Required
               </small>
             </div>
 
@@ -364,22 +364,34 @@
             </div>
 
             
-                 <div class="col-md-6">
-                          <div class="image-upload-container text-center">
-                            <label for="profileImageInput" class="upload-label">
-                              <div class="image-preview-wrapper">
-                                <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
-                                <ng-template #placeholder>
-                                </ng-template>
-                              </div>
-                              <div class="upload-btn">Upload</div>
-                            </label>
-                            <input type="file" id="profileImageInput" accept="image/*"
-                              (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
-                          </div>
-                        </div>
+            <div class="col-md-6">
+              <div class="image-upload-container text-center">
+                <label for="profileImageInput" class="upload-label">
+                  <div class="image-preview-wrapper">
+                    <!-- Cancel Icon -->
+                    <button *ngIf="previewUrl" type="button" class="cancel-btn" (click)="cancelImage()">
+                      ✕
+                    </button>
+            
+                    <!-- Profile image or placeholder -->
+                    <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" class="profile-img" />
+                    <ng-template #placeholder>
+                      <img [src]="envImagePath + '/images/avatar.png'" alt="Default" class="profile-img" />
+                    </ng-template>
+                  </div>
+            
+                  <!-- Upload Button -->
+                  <div class="upload-btn">Upload</div>
+                </label>
+            
+                <input type="file" id="profileImageInput" accept="image/*"
+                  (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
+              </div>
+            </div>
+            
+            
 
-
+                      
           </div>
 
 

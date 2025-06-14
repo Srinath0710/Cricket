@@ -1,5 +1,6 @@
 export class URLCONSTANT {
 
+      uploadprofile="Global/upload_profile"
 
       /*Country List*/
       getCountryDropdown = "Country/get_country_dropdown"
@@ -165,5 +166,23 @@ export class URLCONSTANT {
       editClub = 'Club/edit_club'
       activateClub = 'Club/activate_club'
       deactivateClub = 'Club/deactivate_club'
+
+          /* Menu List*/
+     getMenuList ='Menu/get_menu_list'
+     getMenudropdown='Menu/get_menu_dropdown'
+     addMenus='Menu/add_menu'
+     editMenu='Menu/edit_menu'
+     updateMenu='Menu/update_menu'
+     activateMenu='Menu/activate_menu'
+     deactivateMenu='Menu/deactivate_menu'
+     endpointMenulist='Menu/get_endpoint_list'
+     addendpoint='Menu/add_endpoint'
+     menunameDropdown='Menu/get_endpoint_dropdown'
+     activateEndpoint='Menu/activate_endpoint'
+     deactivateEndpoint='Menu/deactivate_endpoint'
+     updateendpoint='Menu/update_endpoint'
+     endpointdropdown='Menu/get_endpoint_dropdown'
+     
+
 
 } 

@@ -34,20 +34,27 @@
               </p-dropdown>
 
             </div>
-
+    
             <div class="d-flex align-items-center">
-              <div class="d-flex align-items-center  gap-2">
+              
+              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
-                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="  Search" (keyup.enter)="gridLoad()" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('Search', $event)">
+                  <input
+                    pInputText
+                    type="text"
+                    [(ngModel)]="searchKeyword"
+                    name="searchKeyword"
+                    class="width-search"
+                    placeholder="  Search"
+                    (input)="filterGlobal()"
+                  (keypress)="blockQuotesOnly($event)"
+                  (input)="sanitizeQuotesOnly('team_name', $event)">
                 </div>
-
-                <button type="button" class="clear-button" (click)="searchKeyword = ''">
-                  Clear
-                </button>
-              </div>
-
+              
+                 <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
+    
+              </form>
+    
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                   (click)="showAddForm()">
@@ -119,9 +126,14 @@
     </main>
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="small-heading">
-          {{ isEditMode ? 'Edit City' : 'Add City' }}
-        </h3>
+        <div class="small-heading">
+          <div
+              *ngIf="addCityForm.get('city_id')?.value == '' || addCityForm.get('city_id')?.value == null">
+              Add City </div>
+          <div
+              *ngIf="addCityForm.get('city_id')?.value != null && addCityForm.get('city_id')?.value != ''">
+              Edit City</div>
+      </div>
       </div>
       <form [formGroup]="addCityForm">
         <div class="row gy-3">
