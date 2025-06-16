@@ -15,9 +15,9 @@ import { DialogModule } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
 import { DropdownModule } from 'primeng/dropdown';
 import { environment } from '../../environments/environment';
-import { ImageCropperComponent } from 'ngx-image-cropper';
-import type { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Client, EditClient, UpdateClient } from './client.model';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+
 interface Country {
   country_id: number;
   country_name: string;
@@ -39,6 +39,8 @@ interface Country {
     Drawer,
     ReactiveFormsModule,
     DropdownModule,
+    ImageCropperComponent
+
   ],
 
   providers: [
@@ -51,9 +53,9 @@ interface Country {
 export class ClientComponent implements OnInit{
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
-  default_img= CricketKeyConstant.default_image_url.officials;
-  // default_img=this.envImagePath+'/images/default_officals.png';
+  default_img= CricketKeyConstant.default_image_url.clientimg;
   previewUrl: string | ArrayBuffer | null = null;
+  envImagePath = environment.imagePath;
 
   searchKeyword: string = '';
   public addClientForm!: FormGroup<any>;
@@ -77,7 +79,6 @@ export class ClientComponent implements OnInit{
   ClientNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
-  envImagePath = environment.imagePath;
   showCropperModal = false;
   imageBase64: any = null;
   length: any
@@ -85,11 +86,10 @@ export class ClientComponent implements OnInit{
   imageCropAlter: any;
   imageDefault: any;
   filedata: any;
-  url: any;
   src: any;
   oldPath: any;
   base64: any;
-
+  url: any; 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
   private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
@@ -238,7 +238,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             mobile: editRecord.mobile,
             website: editRecord.website,
             description: editRecord.description,
-            profile_img_url: editRecord.profile_img_url,
+            profile_img_url: '',
             header_color: null,
             tbl_header_color: null,
             tbl_header_font_color: null,
@@ -246,7 +246,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             button_font_color: null,
             connection_id: editRecord.connection_id ?? null 
           });
-          
+          this.profileImages = editRecord.profile_img_url + '?' + Math.random();
+          this.convertUrlToBase64(editRecord.profile_img_url + '?' + Math.random());
           this.showAddForm();
         }
       } else {
@@ -417,7 +418,7 @@ viewClient(client_id: any) {
     }
   });
 }
-handleImageError(event: Event, fallbackUrl: string): void {
+handleImageError(event: Event, fallbackUrl: string) {
   const target = event.target as HTMLImageElement;
   target.src = fallbackUrl;
 }
@@ -445,27 +446,27 @@ handleImageError(event: Event, fallbackUrl: string): void {
 //         this.filedata = this.base64ToBinary(this.imageDefault);
 //       }
 //     }
+ 
 fileEvent(event: any) {
-  const fileInput = event.target as HTMLInputElement;
-  const file = fileInput.files?.[0];
-  if (file) {
-    this.filedata = file;
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.previewUrl = reader.result as string;
-      this.addClientForm.patchValue({
-        profile_img_url: this.previewUrl  
-      });
-      this.profileImages = null; 
-    };
-    reader.readAsDataURL(file); 
+  if (this.addClientForm.value.profile_img_url.value !== null && 
+    this.addClientForm.value.profile_img_url.value !== '') {
+    this.profileImages = null;
+  }
+  if (event && event.target && event.target.files && event.target.files.length > 0) {
+    this.filedata = event.target.files[0];
+    var reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (event: any) => {
+      var img = new Image;
+      this.url = event.target.result;
+      this.imageCropAlter = event.target.result
+      this.imageDefault = event.target.result
+    }
   } else {
-    this.previewUrl = this.imageDefault;
-    this.filedata = this.base64ToBinary(this.imageDefault); 
-    this.addClientForm.patchValue({
-      profile_img_url: this.imageDefault  
-    });
+    this.filedata = null;
+    this.url = this.imageDefault
+    this.filedata = this.base64ToBinary(this.imageDefault);
+
   }
 }
 
@@ -473,21 +474,49 @@ cropPopOpen(){
   this.showCropperModal=true;
   this.imageBase64=this.imageDefault
 }
-saveCroppedImage(): void {
+saveCroppedImage() {
   this.profileImages = this.filedata;
   this.imageCropAlter = this.filedata;
   this.filedata=this.base64ToBinary(this.filedata);
   this.showCropperModal = false;
 
 }
-cancelImg(): void {
+
+
+
+cancel() {
+  this.filedata = null;
+  this.url = null;
+  this.profileImages = null;
+  this.imageCropAlter=null;
+  this.imageBase64 = null;
+}
+
+cancelImg() {
   this.showCropperModal = false;
   this.url=this.imageCropAlter;
   this.filedata=this.base64ToBinary(this.imageCropAlter);
 }
+loadImageFailed() {
+  console.error('Image loading failed');
+}
+
+
+imageCropped(event: ImageCroppedEvent) {
+  this.url = event.base64
+  this.filedata = event.base64
+   this.profileImages=null
+}
+imageLoaded() {
+  console.log('Image loaded');
+}
+
+cropperReady() {
+  console.log('Cropper ready');
+}
+
 base64ToBinary(base64:any){
-  // Convert base64 to binary (Blob)
-  const byteCharacters = atob(base64.split(',')[1]); // Decode base64 string
+  const byteCharacters = atob(base64.split(',')[1]); 
   const byteArrays = [];
 
   for (let offset = 0; offset < byteCharacters.length; offset++) {
@@ -497,13 +526,13 @@ base64ToBinary(base64:any){
   const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' }); 
   return blob;
 }
-convertUrlToBase64(imageUrl: string): void {
+convertUrlToBase64(imageUrl: string) {
   fetch(imageUrl)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Failed to fetch image');
       }
-      return response.blob(); // Convert response to a Blob
+      return response.blob();
     })
     .then((blob) => {
       const reader = new FileReader();
@@ -518,19 +547,5 @@ convertUrlToBase64(imageUrl: string): void {
     .catch((error) => {
     });
 }
-cancel() {
-  this.filedata = null;
-  this.url = null;
-  this.profileImages = null;
-  this.imageCropAlter=null;
-  this.imageBase64 = null;
 }
-imageCropped(event: ImageCroppedEvent): void {
-  this.url = event.base64
-  this.filedata = event.base64
-   this.profileImages=null
-}
-loadImageFailed(): void {
-  console.error('Image loading failed');
-}
-}
+

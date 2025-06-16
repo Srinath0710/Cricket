@@ -28,6 +28,6 @@ export class CricketKeyConstant {
         officials: 'assets/images/default-player.png',
         players: 'assets/images/default-player.png',
         grounds: 'assets/images/default-player.png',
-        clientimg: 'assets/images/default-player.png',
+        clientimg: 'assets/images/umpire.png',
     }
 }
