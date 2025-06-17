@@ -25,9 +25,9 @@ export class CricketKeyConstant {
 
     }
     static default_image_url = {
-        officials: 'assets/images/default-player.png',
+        officials: 'assets/images/umpire.png',
         players: 'assets/images/default-player.png',
         grounds: 'assets/images/default-player.png',
-        clientimg: 'assets/images/umpire.png',
+        clientimg: 'assets/images/client.jpg',
     }
 }

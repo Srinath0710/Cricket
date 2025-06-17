@@ -112,6 +112,7 @@ export class ClientComponent implements OnInit{
       state_id: ['',[Validators.required]],
       city_id: ['',[Validators.required]],
       profile_img_url: this.filedata,
+      // profile_img_url: [''],
       client_id: [''],
       header_color: [''],
       tbl_header_color: [''],
@@ -201,7 +202,15 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       params.action_flag = 'update';
       params.client_id = String(this.addClientForm.value.client_id);
       this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            // this.profileImgAppend(params.client_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
@@ -474,12 +483,11 @@ cropPopOpen(){
   this.showCropperModal=true;
   this.imageBase64=this.imageDefault
 }
-saveCroppedImage() {
+saveCroppedImage(): void {
   this.profileImages = this.filedata;
   this.imageCropAlter = this.filedata;
-  this.filedata=this.base64ToBinary(this.filedata);
+  this.filedata = this.base64ToBinary(this.filedata);
   this.showCropperModal = false;
-
 }
 
 
@@ -501,11 +509,18 @@ loadImageFailed() {
   console.error('Image loading failed');
 }
 
-
 imageCropped(event: ImageCroppedEvent) {
-  this.url = event.base64
-  this.filedata = event.base64
-   this.profileImages=null
+  const blob = event.blob;
+
+  if (blob) {
+    this.convertBlobToBase64(blob).then((base64) => {
+      this.url = base64;
+      this.filedata = base64;
+      this.profileImages = null;
+    }).catch((error) => {
+      console.error('Failed to convert blob to base64:', error);
+    });
+  }
 }
 imageLoaded() {
   console.log('Image loaded');
@@ -547,5 +562,81 @@ convertUrlToBase64(imageUrl: string) {
     .catch((error) => {
     });
 }
+convertBlobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      resolve(reader.result as string);
+    };
+
+    reader.onerror = () => {
+      reject('Failed to convert Blob to base64');
+    };
+
+    reader.readAsDataURL(blob);
+  });
+}
+ /*profile image update */
+
+//  profileImgUpdate(upload_profile_url: any, official_id: any) {
+
+//   const params: any = {};
+//   params.action_flag = 'update_profile_url';
+//   params.profile_img = upload_profile_url.toString();
+//   params.user_id = this.user_id.toString();
+//   params.official_id = official_id.toString();
+//   params.client_id = this.client_id.toString();
+
+//   this.apiService.post(this.urlConstant.profileofficial, params).subscribe(
+//     (res) => {
+//       if (res.status_code == this.statusConstants.success && res.status) {
+//         // this.filedata = null;
+//         this.addCallBack(res)
+//       } else {
+//         this.failedToast(res);
+//       }
+//     },
+//     (err: any) => {
+//       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+//         this.apiService.RefreshToken();
+
+//       } else {
+//         this.failedToast(err.error);
+//       }
+//     }
+//   );
+// }
+// profileImgAppend(official_id: any) {
+//   const myFormData = new FormData();
+//   if (this.filedata != null && this.filedata != '') {
+//     myFormData.append('imageFile', this.filedata);
+//     myFormData.append('client_id', this.client_id.toString());
+//     myFormData.append('file_id', official_id);
+//     myFormData.append('upload_type', 'officials');
+//     myFormData.append('user_id', this.user_id?.toString());
+//     this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+//       (res) => {
+//         if (res.status_code == this.statusConstants.success) {
+//           if (res.url != null && res.url != '') {
+//             this.profileImgUpdate(res.url, official_id);
+//           } else {
+//             this.failedToast(res);
+//           }
+//         } else {
+//           this.failedToast(res);
+//         }
+//       },
+//       (err: any) => {
+//         if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+//           this.apiService.RefreshToken();
+
+//         } else {
+//           this.failedToast(err.error);
+//         }
+//       }
+//     );
+//   }
+// }
 }
 

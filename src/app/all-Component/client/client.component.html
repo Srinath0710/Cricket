@@ -60,12 +60,12 @@
                             <tr>
                                 <td>
                                     <span class="person-image-team-player">
-                                        <img class="player-img" *ngIf="!client.profile_img_url || !client.player_profile"
-                                            [src]="default_img">
-
-                                        <img class="player-img" *ngIf="client.profile_img_url && client.player_profile"
-                                            [src]="client.profile_img_url" (error)="handleImageError($event, default_img)">
-                                    </span>
+                                        <img class="player-img" *ngIf="client.profile_img_url==null || client.profile_img_url==''"
+                                          [src]="default_img">
+                    
+                                        <img class="player-img" *ngIf="client.profile_img_url!=null  && client.profile_img_url!=''"
+                                          [src]="client.profile_img_url" (error)="handleImageError($event, default_img)">
+                                      </span>
                                     <span class="groundnameover" (click)="viewClient(client.client_id)"> {{
                                         client.Client
                                         }}</span>
@@ -326,7 +326,7 @@
                         <div class="image-upload-container text-center">
                           <div class="image-preview-wrapper">
                             <button *ngIf="filedata != null && filedata != ''"  type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                            <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="envImagePath + '/images/avatar.png'"  alt="Profile Image" class="profile-img">
+                            <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="envImagePath + '/images/client.jpg'"  alt="Profile Image" class="profile-img">
                             <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
                             <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  alt="Profile Image" class="profile-img">
           

@@ -29,6 +29,7 @@ import { ToastModule } from 'primeng/toast';
 import { environment } from '../../environments/environment';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+
 import { faO } from '@fortawesome/free-solid-svg-icons';
 interface official {
   config_id: string;
@@ -387,32 +388,32 @@ export class OfficialsComponent implements OnInit {
     if (this.addOfficialForm.value.official_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
-if(res.status_code === this.statusConstants.success && res.status){
-  if (res.data !== null && this.filedata != null) {
-    this.profileImgAppend(params.official_id);
-  }else{
-    this.addCallBack(res) 
-  }
-}else{
-  this.failedToast(res)
-}  
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(params.official_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
 
       this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
-       if(res.status_code === this.statusConstants.success && res.status){
-          if (res.data !== null && this.filedata != null) {
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data == null && this.filedata == null) {
             this.profileImgAppend(params.official_id);
           }
-          else{
+          else {
             this.addCallBack(res)
           }
         }
-          else{
-            this.failedToast(res)
-          }
+        else {
+          this.failedToast(res)
+        }
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
@@ -481,9 +482,7 @@ if(res.status_code === this.statusConstants.success && res.status){
         const editRecord: offcialedit = res.data.officials[0] ?? {};
         if (editRecord != null) {
           this.onOfficialChange(editRecord.official_type_id);
-
           this.addOfficialForm.setValue({
-
             first_name: editRecord.first_name,
             middle_name: editRecord.middle_name,
             sur_name: editRecord.sur_name,
@@ -499,6 +498,8 @@ if(res.status_code === this.statusConstants.success && res.status){
             dob: editRecord.dob != null ? editRecord.dob.split('T')[0] : null,
             club_id: editRecord.club_id,
           });
+          this.profileImages = editRecord.profile_img + '?' + Math.random();
+          this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
           this.showAddForm();
         }
       } else {
@@ -777,10 +778,32 @@ if(res.status_code === this.statusConstants.success && res.status){
     this.gridload();
   }
 
- 
+
+  // fileEvent(event: any) {
+  //   if (this.addOfficialForm.value.profile_img.value !== null &&
+  //     this.addOfficialForm.value.profile_img.value !== '') {
+  //     this.profileImages = null;
+  //   }
+  //   if (event && event.target && event.target.files && event.target.files.length > 0) {
+  //     this.filedata = event.target.files[0];
+  //     var reader = new FileReader();
+  //     reader.readAsDataURL(event.target.files[0]);
+  //     reader.onload = (event: any) => {
+  //       var img = new Image;
+  //       this.url = event.target.result;
+  //       this.imageCropAlter = event.target.result
+  //       this.imageDefault = event.target.result
+  //     }
+  //   } else {
+  //     this.filedata = null;
+  //     this.url = this.imageDefault
+  //     this.filedata = this.base64ToBinary(this.imageDefault);
+
+  //   }
+  // }
   fileEvent(event: any) {
-    if (this.addOfficialForm.value.profile_img.value !== null && 
-      this.addOfficialForm.value.profile_img.value !== '') {
+    if (this.addOfficialForm.value.profile_img_url.value !== null && 
+      this.addOfficialForm.value.profile_img_url.value !== '') {
       this.profileImages = null;
     }
     if (event && event.target && event.target.files && event.target.files.length > 0) {
@@ -797,10 +820,9 @@ if(res.status_code === this.statusConstants.success && res.status){
       this.filedata = null;
       this.url = this.imageDefault
       this.filedata = this.base64ToBinary(this.imageDefault);
-
+  
     }
   }
-
   /*profile image update */
 
   profileImgUpdate(upload_profile_url: any, official_id: any) {
@@ -816,8 +838,8 @@ if(res.status_code === this.statusConstants.success && res.status){
       (res) => {
         if (res.status_code == this.statusConstants.success && res.status) {
           // this.filedata = null;
-          this.addCallBack(res) 
-                } else {
+          this.addCallBack(res)
+        } else {
           this.failedToast(res);
         }
       },
@@ -962,10 +984,7 @@ if(res.status_code === this.statusConstants.success && res.status){
     this.submitted = false;
     this.filedata = null;
     this.profileImages = null;
-    this.filedata = null;
-    this.filedata = null;
     this.url = null;
-    this.profileImages = null;
     this.imageBase64 = null;
     this.imageCropAlter = null;
     this.imageDefault = null;
@@ -974,46 +993,63 @@ if(res.status_code === this.statusConstants.success && res.status){
     this.filedata = null;
     this.url = null;
     this.profileImages = null;
-    this.imageCropAlter=null;
+    this.imageCropAlter = null;
     this.imageBase64 = null;
-}
+  }
   cropPopOpen() {
     this.showCropperModal = true;
-    this.imageBase64=this.imageDefault;
+    this.imageBase64 = this.imageDefault;
   }
   saveCroppedImage(): void {
     this.profileImages = this.filedata;
     this.imageCropAlter = this.filedata;
-    this.filedata=this.base64ToBinary(this.filedata);
+    this.filedata = this.base64ToBinary(this.filedata);
     this.showCropperModal = false;
   }
 
-  // saveCroppedImage(){
-  //   console.log('Cropped base64 string:', this.imageCropAlter);
-  //   const croppedBlob = this.base64ToBinary(this.imageCropAlter);
-  
-  //   if (croppedBlob) {
-  //     this.filedata = croppedBlob; 
-  //     this.profileImages = URL.createObjectURL(this.filedata);
-  //     this.showCropperModal = false;   
-  //   }
-  // }
-  
+  convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = () => {
+        reject('Failed to convert Blob to base64');
+      };
+
+      reader.readAsDataURL(blob);
+    });
+  }
+
   cancelImg(): void {
     this.showCropperModal = false;
-    this.url=this.imageCropAlter;
-    this.filedata=this.base64ToBinary(this.imageCropAlter);
+    this.url = this.imageCropAlter;
+    this.filedata = this.base64ToBinary(this.imageCropAlter);
   }
+
   loadImageFailed() {
     console.error('Image loading failed');
   }
-
-
   imageCropped(event: ImageCroppedEvent) {
-    this.url = event.base64
-    this.filedata = event.base64
-     this.profileImages=null
+    const blob = event.blob;
+
+    if (blob) {
+      this.convertBlobToBase64(blob).then((base64) => {
+        this.url = base64;
+        this.filedata = base64;
+        this.profileImages = null;
+      }).catch((error) => {
+        console.error('Failed to convert blob to base64:', error);
+      });
+    }
   }
+  // imageCropped(event: ImageCroppedEvent) {
+  //   this.url = event.base64
+  //   this.filedata = event.base64
+  //    this.profileImages=null
+  // }
   imageLoaded() {
     console.log('Image loaded');
   }
@@ -1022,18 +1058,28 @@ if(res.status_code === this.statusConstants.success && res.status){
     console.log('Cropper ready');
   }
 
-  base64ToBinary(base64:any){
-    const byteCharacters = atob(base64.split(',')[1]); 
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset++) {
-        byteArrays.push(byteCharacters.charCodeAt(offset));
+  base64ToBinary(base64: string): Blob | null {
+    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 input:', base64);
+      return null;
     }
 
-    const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' }); 
-    return blob;
-}
-convertUrlToBase64(imageUrl: string): void {
+    try {
+      const byteCharacters = atob(base64.split(',')[1]);
+      const byteArrays = new Uint8Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+      }
+
+      return new Blob([byteArrays], { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Error converting base64 to binary:', error);
+      return null;
+    }
+  }
+
+  convertUrlToBase64(imageUrl: string): void {
     fetch(imageUrl)
       .then((response) => {
         if (!response.ok) {
@@ -1044,12 +1090,12 @@ convertUrlToBase64(imageUrl: string): void {
       .then((blob) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const base64Image = reader.result as string; 
-          this.imageBase64 = base64Image; 
-          this.imageCropAlter=base64Image
-          this.imageDefault=base64Image
+          const base64Image = reader.result as string;
+          this.imageBase64 = base64Image;
+          this.imageCropAlter = base64Image
+          this.imageDefault = base64Image
         };
-        reader.readAsDataURL(blob); 
+        reader.readAsDataURL(blob);
       })
       .catch((error) => {
       });

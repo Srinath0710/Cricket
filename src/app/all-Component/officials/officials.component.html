@@ -93,10 +93,10 @@
               <tr>
                 <td>
                   <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="!official.profile_img || !official.player_profile"
+                    <img class="player-img" *ngIf="official.profile_img==null || official.profile_img==''"
                       [src]="default_img">
 
-                    <img class="player-img" *ngIf="official.profile_img && official.player_profile"
+                    <img class="player-img" *ngIf="official.profile_img!=null  && official.profile_img!=''"
                       [src]="official.profile_img" (error)="handleImageError($event, default_img)">
                   </span>
                   {{official.display_name}}
@@ -363,9 +363,9 @@
               <div class="image-upload-container text-center">
                 <div class="image-preview-wrapper">
                   <button *ngIf="filedata != null && filedata != ''"  type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                  <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="envImagePath + '/images/avatar.png'"  alt="Profile Image" class="profile-img">
+                  <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="default_img"  alt="Profile Image" class="profile-img">
                   <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
-                  <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  alt="Profile Image" class="profile-img">
+                  <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
 
                 </div>
 

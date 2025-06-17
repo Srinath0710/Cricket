@@ -421,12 +421,12 @@ label {
     right: 5px;
 }
 .player-img {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     top: 2px;
     left: 2px;
     gap: 0px;
-    border-radius: 30%;
+    border-radius: 16%;
     opacity: 0px;
     margin-right: 0px;
     object-fit: fill;
