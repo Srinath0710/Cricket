@@ -127,7 +127,7 @@ previewUrl: string | ArrayBuffer | null = null;
   emergencyTypeList: any[] = [];
   bloodgroup: any[] = [];
   mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
-  emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
+  email = (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
   playerNamePattern = /^[^'"]+$/; //allstringonly allow value
   // Filter options
   filterStatus: string = '';
@@ -162,12 +162,15 @@ previewUrl: string | ArrayBuffer | null = null;
     this.playerRegistrationform = this.formBuilder.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
-      sur_name: [''],
+      sur_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
       nationality_id: ['', [Validators.required]],
       player_dob: ['',],
       mobile_no: ['', [Validators.pattern(this.mobileRegex)]],
-      email: ['', [Validators.pattern(this.emailRegex)]],
+       email: ['', [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ]],
       gender_id: ['', [Validators.required]],
       player_role_id: ['', [Validators.required]],
       batting_style_id: ['', [Validators.required]],
@@ -188,7 +191,7 @@ previewUrl: string | ArrayBuffer | null = null;
       nationality_id: ['', [Validators.required]],
       country_of_birth: ['', [Validators.required]],
       residence_country_id: ['', [Validators.required]],
-     primary_email_id: ['', [Validators.required, Validators.pattern(this.emailRegex)]],
+     primary_email_id: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
       secondary_email_id: [''],
       primary_phone:['', [Validators.required, Validators.pattern(this.mobileRegex)]],
       secondary_phone: [''],
@@ -941,10 +944,12 @@ getStates(country_id:any) {
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-        error: (err: any) => {
-          console.error('Error loading Player list:', err);
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+          ? this.apiService.RefreshToken()
+          : this.failedToast(err.error);
         }
-      });
+      );
   }
   StatusConfirm(player_id: number, actionObject: { key: string, label: string }) {
     this.confirmationService.confirm({

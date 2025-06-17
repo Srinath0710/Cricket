@@ -59,7 +59,7 @@ export class ClubRegistrationComponent implements OnInit {
   citiesList = [];
   allClubData: Club[] = [];
   clubForm: any;
-  Client : any;
+  Client: any;
   gridData: any = [];
   submitted: boolean = true;
   visible: boolean = false;
@@ -85,10 +85,7 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.gridload();
-    this.getCountries();
-    this.Clientdropdown();
-    this.ClubDropdown();
+    
     this.addClubForm = this.formBuilder.group({
       club_id: [''],
       parent_club_id: ['', [Validators.required]],
@@ -109,7 +106,10 @@ export class ClubRegistrationComponent implements OnInit {
       contact: [''],
       remarks: [''],
       profile_img: ['']
-    })
+    });
+
+    this.Clientdropdown();
+    this.getCountries();
   }
 
   ClubDropdown() {
@@ -124,6 +124,8 @@ export class ClubRegistrationComponent implements OnInit {
       if (err.status_code === this.statusConstants.refresh &&
         err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
+      } else {
+        this.failedToast(err.error);
       }
     });
   }
@@ -135,19 +137,16 @@ export class ClubRegistrationComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
-    params.search_text = this.searchKeyword.toString(),
-      this.apiService.post(this.urlConstant.getClubList, params).subscribe((res) => {
-        this.gridData = res.data.clubs ?? [];
-        this.totalData = res.data.clubs[0].total_records ?? this.gridData.length
-        this.ClubDropdown();
-        this.gridData.forEach((val: any) => {
-          val.profile_image = `${val.profile_image}?${Math.random()}`;
-        });
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
-
+    params.search_text = this.searchKeyword.toString();
+    this.apiService.post(this.urlConstant.getClubList, params).subscribe((res) => {
+      this.gridData = res.data.clubs ?? [];
+      this.totalData = res.data.clubs[0]?.total_records ?? this.gridData.length;
+      this.gridData.forEach((val: any) => {
+        val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
-
+    }, (err: any) => {
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
+    });
   }
 
   blockQuotesOnly(event: KeyboardEvent) {
@@ -182,12 +181,16 @@ export class ClubRegistrationComponent implements OnInit {
     this.addClubForm.reset();
     this.submitted = false;
     this.previewUrl = null;
+    this.stateList = [];
+    this.citiesList = [];
   }
   clearForm() {
     if (!this.isEditMode) {
       this.addClubForm.reset();
       this.previewUrl = null;
       this.submitted = false;
+      this.stateList = [];
+      this.citiesList = [];
     }
   }
 
@@ -207,9 +210,10 @@ export class ClubRegistrationComponent implements OnInit {
   failedToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
+
   onAddClub() {
     this.submitted = true;
-    this.isEditMode = false;
+
 
     if (this.addClubForm.invalid) {
       this.addClubForm.markAllAsTouched();
@@ -220,7 +224,7 @@ export class ClubRegistrationComponent implements OnInit {
 
     const params: UpdateClub = {
       user_id: String(this.user_id),
-      club_id: String(this.addClubForm.value.club_id),
+      club_id: String(this.addClubForm.value.club_id || ''), 
       client_id: String(this.client_id),
       club_short: this.addClubForm.value.club_short,
       club_name: this.addClubForm.value.club_name,
@@ -261,6 +265,7 @@ export class ClubRegistrationComponent implements OnInit {
     this.cancelForm();
     this.successToast(res);
     this.gridload();
+    this.ClubDropdown(); 
   }
 
   getGlobalData() {
@@ -273,6 +278,7 @@ export class ClubRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.Clubdropdown, params).subscribe(
       (res) => {
         const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
+        // Assuming this is for a specific dropdown, otherwise directly use res.data.clubs
         this.clubsData = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key);
       },
       (err: any) => {
@@ -309,6 +315,7 @@ export class ClubRegistrationComponent implements OnInit {
             remarks: editRecord.remarks,
             profile_img: null
           });
+          this.getStates();
           this.showAddForm();
         }
       } else {
@@ -392,7 +399,7 @@ export class ClubRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
       this.countriesList = res.data.countries != undefined ? res.data.countries : [];
       this.loading = false;
-      // this.gridload();
+
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh &&
         err.error.message === this.statusConstants.refresh_msg) {
@@ -408,7 +415,7 @@ export class ClubRegistrationComponent implements OnInit {
     const params: any = {};
 
     if (state_id == null || state_id == '') {
-      return
+      return;
     }
     const isEdit = !!this.addClubForm.value.club_id;
 
@@ -437,10 +444,10 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   getStates() {
-    const country_id: number = this.addClubForm.get('country_id')?.value
+    const country_id: number = this.addClubForm.get('country_id')?.value;
     const params: any = {};
     if (country_id == null) {
-      return
+      return;
     }
     const isEdit = !!this.addClubForm.value.club_id;
 
@@ -457,7 +464,9 @@ export class ClubRegistrationComponent implements OnInit {
     params.country_id = country_id.toString();
     this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
       this.stateList = res.data.states != undefined ? res.data.states : [];
-      this.getCities(this.addClubForm.value.state_id);
+      if (this.addClubForm.value.state_id) {
+        this.getCities(this.addClubForm.value.state_id);
+      }
       this.loading = false;
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh &&
@@ -478,6 +487,8 @@ export class ClubRegistrationComponent implements OnInit {
     this.submitted = false;
     this.addClubForm.reset();
     this.previewUrl = null;
+    this.stateList = [];
+    this.citiesList = [];
   }
 
   clear() {

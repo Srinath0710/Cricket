@@ -12,9 +12,9 @@
               </div>
 
               <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
-                <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
-                  [(ngModel)]="client_id" (ngModelChange)="gridLoad()" placeholder="Client Id" [filter]="true"
-                  appendTo="body" class=" w-100 
+                <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name"
+                  optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridLoad()" placeholder="Client Id"
+                  [filter]="true" appendTo="body" class=" w-100 
                  drop-error header-drop">
                   <ng-template let-Client pTemplate="item">
                     <div class="country-item">
@@ -170,8 +170,12 @@
 
                         <div class="col-md-6">
                           <label>Sure Name</label>
+                          <span class="text-danger">*</span>
                           <input class="form-control" type="text" maxlength="50" formControlName="sur_name"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('sur_name', $event)">
+                          <small
+                            *ngIf="playerRegistrationform.get('sur_name')?.invalid && (playerRegistrationform.get('sur_name')?.touched || submitted)"
+                            class="required-msg">Sur name is Required</small>
                         </div>
 
                         <div class="col-md-6">
@@ -222,7 +226,8 @@
 
                         <div class="col-md-6">
                           <label>Email Id</label>
-                          <input class="form-control" type="email" maxlength="100" formControlName="email">
+                          <input type="email" formControlName="email" class="form-control" placeholder="Enter Email">
+
                           <div
                             *ngIf="playerRegistrationform.get('email')?.touched && playerRegistrationform.get('email')?.invalid">
                             <small *ngIf="playerRegistrationform.get('email')?.errors?.['pattern']"
@@ -539,7 +544,7 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label class="">Guardia</label>
+                          <label class="">Guardian</label>
                           <input class="form-control" maxlength="50" type="text" formControlName="guardian_name"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)"
                             [readonly]="disableReadonly&&isPersonalDataIntialized">
@@ -565,7 +570,7 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Primary Phone NO</label>
+                          <label>Primary Phone No</label>
                           <span class="text-danger">*</span>
                           <input class="form-control" type="text" maxlength="10" formControlName="primary_phone"
                             (input)="onPhoneNumberInput($event, 'primary_phone')"
@@ -795,7 +800,7 @@
                           </p-dropdown>
                         </div>
 
-                        <div class="col-md-6"> 
+                        <div class="col-md-6">
 
                           <label class="">Player Height</label>
                           <input class="form-control" maxlength="50" type="text" formControlName="player_height"

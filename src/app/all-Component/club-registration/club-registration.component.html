@@ -23,7 +23,7 @@
                         </div>
 
                         <div class="d-flex align-items-center">
-                            
+
                             <form class="d-flex align-items-center gap-2" (submit)="gridload()" #searchForm="ngForm">
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
@@ -45,7 +45,7 @@
                     </div>
                     <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"
                         [styleClass]="'custom-table'"
-                        [globalFilterFields]="['club_name','parent_club_name','country_name','state_name','record_status']">
+                        [globalFilterFields]="['club_name','parent_club_name','country','state','record_status']">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th class="col-2" pSortableColumn="club_name">Club Name <p-sortIcon
@@ -72,8 +72,8 @@
                             <tr>
                                 <td>{{ club.club_name }}</td>
                                 <td>{{ club.parent_club_name }}</td>
-                                <td>{{ club.country_name }}</td>
-                                <td>{{ club.state_name }}</td>
+                                <td>{{ club.country }}</td>
+                                <td>{{ club.state }}</td>
                                 <td>
                                     <span [ngClass]="{
                     ' bg-success': club.record_status === 'Active',
@@ -280,9 +280,7 @@
                             *ngIf="addClubForm.get('email_id')?.invalid && (addClubForm.get('email_id')?.touched || submitted)"
                             class="required-msg">
                             {{
-                            addClubForm.get('email_id')?.errors?.['required']
-                            ? 'Email ID is Required'
-                            : addClubForm.get('email_id')?.errors?.['pattern']
+                             addClubForm.get('email_id')?.errors?.['pattern']
                             ? 'Please enter a valid Email ID (e.g., example@domain.com)'
                             : ''
                             }}
