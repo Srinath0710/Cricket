@@ -1,3 +1,5 @@
+import { Nullable } from "primeng/ts-helpers";
+
 export class Documet{
     document_type_id:string;
   constructor(item:Partial<Documet>={}){
@@ -100,8 +102,8 @@ export class offcialupdate{
   official_type_id :string|number;
   official_category_id : string|number;
   country_id : string|number;
-  profile_img : string;
-  official_id : string|number;
+  profile_img? : string|Nullable;
+  official_id? : string|number;
   reference_id : string|number;
   action_flag: string;
    club_id: string|number;

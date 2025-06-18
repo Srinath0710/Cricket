@@ -29,5 +29,6 @@ export class CricketKeyConstant {
         players: 'assets/images/default-player.png',
         grounds: 'assets/images/default-player.png',
         clientimg: 'assets/images/client.jpg',
+        teamimage: 'assets/images/team.jpg',
     }
 }

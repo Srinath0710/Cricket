@@ -374,23 +374,20 @@ export class OfficialsComponent implements OnInit {
       official_type_id: String(this.addOfficialForm.value.official_type_id),
       official_category_id: String(this.addOfficialForm.value.official_category_id),
       country_id: String(this.addOfficialForm.value.country_id),
-      profile_img: String(this.addOfficialForm.value.profile_img),
-      official_id: String(this.addOfficialForm.value.official_id),
+      profile_img: this.profileImages !=null && this.profileImages !='' ?String(this.profileImages):null,
       reference_id: String(this.addOfficialForm.value.reference_id),
       club_id: String(this.addOfficialForm.value.club_id),
       gender_id: String(this.addOfficialForm.value.gender_id),
       dob: this.addOfficialForm.value.dob,
       action_flag: 'create'
-
     };
-
-
     if (this.addOfficialForm.value.official_id) {
       params.action_flag = 'update';
+      params.official_id=String(this.addOfficialForm.value.official_id),
       this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(params.official_id);
+            this.profileImgAppend( res.data.officials[0].official_id);
           } else {
             this.addCallBack(res)
           }
@@ -404,7 +401,7 @@ export class OfficialsComponent implements OnInit {
 
       this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
-          if (res.data == null && this.filedata == null) {
+          if (res.data !== null && this.filedata != null) {
             this.profileImgAppend(params.official_id);
           }
           else {
@@ -436,8 +433,6 @@ export class OfficialsComponent implements OnInit {
     this.personalShowForm = false;
     this.addPersonalForm.reset();
     this.disableReadonly = true;
-
-
   }
 
   onOfficialChange(selectedId: number) {
@@ -465,10 +460,7 @@ export class OfficialsComponent implements OnInit {
       this.childOptions = [];
       this.childLabel = '';
     }
-
   }
-
-
 
   Editofficial(official: any) {
     this.isEditMode = true;
@@ -779,31 +771,9 @@ export class OfficialsComponent implements OnInit {
   }
 
 
-  // fileEvent(event: any) {
-  //   if (this.addOfficialForm.value.profile_img.value !== null &&
-  //     this.addOfficialForm.value.profile_img.value !== '') {
-  //     this.profileImages = null;
-  //   }
-  //   if (event && event.target && event.target.files && event.target.files.length > 0) {
-  //     this.filedata = event.target.files[0];
-  //     var reader = new FileReader();
-  //     reader.readAsDataURL(event.target.files[0]);
-  //     reader.onload = (event: any) => {
-  //       var img = new Image;
-  //       this.url = event.target.result;
-  //       this.imageCropAlter = event.target.result
-  //       this.imageDefault = event.target.result
-  //     }
-  //   } else {
-  //     this.filedata = null;
-  //     this.url = this.imageDefault
-  //     this.filedata = this.base64ToBinary(this.imageDefault);
-
-  //   }
-  // }
   fileEvent(event: any) {
-    if (this.addOfficialForm.value.profile_img_url.value !== null && 
-      this.addOfficialForm.value.profile_img_url.value !== '') {
+    if (this.addOfficialForm.value.profile_img.value !== null &&
+      this.addOfficialForm.value.profile_img.value !== '') {
       this.profileImages = null;
     }
     if (event && event.target && event.target.files && event.target.files.length > 0) {
@@ -820,9 +790,10 @@ export class OfficialsComponent implements OnInit {
       this.filedata = null;
       this.url = this.imageDefault
       this.filedata = this.base64ToBinary(this.imageDefault);
-  
+
     }
   }
+
   /*profile image update */
 
   profileImgUpdate(upload_profile_url: any, official_id: any) {

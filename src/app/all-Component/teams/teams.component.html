@@ -64,19 +64,22 @@
             </ng-template>
 
             <ng-template pTemplate="body" let-teams>
+
+
               <tr>
-                <td>
-                  <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="!teams.team_profile || !teams.player_profile" [src]="default_img">
+                
+              <td>
+                <span class="person-image-team-player">
+                  <img class="player-img" *ngIf="teams.profile_img==null || teams.profile_img==''"
+                    [src]="default_img">
 
-                    <img class="player-img" *ngIf="teams.team_profile && teams.player_profile" [src]="teams.team_profile"
-                      (error)="handleImageError($event, default_img)">
-                  </span>
-                  <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)"> {{ teams.team_name
-                    }}</span>
-
-                </td>
-
+                  <img class="player-img" *ngIf="teams.profile_img!=null  && teams.profile_img!=''"
+                    [src]="teams.profile_img" (error)="handleImageError($event, default_img)">
+                </span>
+                <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)"> {{ teams.team_name
+                }}</span>
+              
+              </td>
                 <td>{{ teams.age_category }}</td>
                 <td>{{ teams.team_category }}</td>
                 <td>{{ teams.gender }}</td>
@@ -342,11 +345,11 @@
               </div>
 
               <label for="profileImageInput" class="upload-btn">
-                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden formControlName="team_profile" />
+                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden formControlName="profile_img" />
                 Upload
               </label>
               <div>
-                <small class="text-danger" *ngIf="addTeamForm.get('team_profile')?.errors">
+                <small class="text-danger" *ngIf="addTeamForm.get('profile_img')?.errors">
                   * Only PNG, JPEG, or JPG files are allowed
                 </small>
               </div>

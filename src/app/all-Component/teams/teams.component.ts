@@ -21,6 +21,7 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
 import { environment } from '../../environments/environment';
+import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 
 interface Team {
   config_id: string;
@@ -106,15 +107,15 @@ export class TeamsComponent implements OnInit {
   dropDownConstants=CricketKeyConstant.dropdown_keys;
   envImagePath = environment.imagePath;
   default_flag_img = this.envImagePath + '/images/Default Flag.png';
-  default_img = CricketKeyConstant.default_image_url.officials;
+  default_img = CricketKeyConstant.default_image_url.teamimage;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
+    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant,
+    private uploadImgService: UploadImgService,) {
 
   }
   ngOnInit(): void {
     this.Clientdropdown();
-    this.countryDropdown();
     
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
@@ -123,7 +124,7 @@ export class TeamsComponent implements OnInit {
       gender_id: ['', [Validators.required]],
       age_category_id: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
-      team_profile: [''],
+      profile_img: [''],
       primary_color: [''],
       secondary_color: [''],
       club_id:['', [Validators.required]],
@@ -133,31 +134,29 @@ export class TeamsComponent implements OnInit {
     })
   }
 
+  //  clubsdropdown() {
+  //   const params: any = {
+  //     action_flag: 'dropdown',
+  //     user_id: this.user_id.toString(),
+  //     client_id: this.client_id.toString()
+  //   };
 
-
-   clubsdropdown() {
-    const params: any = {
-      action_flag: 'dropdown',
-      user_id: this.user_id.toString(),
-      client_id: this.client_id.toString()
-    };
-
-    this.apiService.post(this.urlConstant.playerclubdropdown, params).subscribe(
-      (res) => {
-        this.configDataList = res.data?.clubs || [];
-      },
-      (err: any) => {
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error?.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err.error);
-        }
-      }
-    );
-  }
+  //   this.apiService.post(this.urlConstant.playerclubdropdown, params).subscribe(
+  //     (res) => {
+  //       this.configDataList = res.data?.clubs || [];
+  //     },
+  //     (err: any) => {
+  //       if (
+  //         err.status_code === this.statusConstants.refresh &&
+  //         err.error?.message === this.statusConstants.refresh_msg
+  //       ) {
+  //         this.apiService.RefreshToken();
+  //       } else {
+  //         this.failedToast(err.error);
+  //       }
+  //     }
+  //   );
+  // }
 //single quotes and doble quotes remove all label box 
 blockQuotesOnly(event: KeyboardEvent) {
   if (event.key === '"' || event.key === "'") {
@@ -184,7 +183,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         if (res.data?.teams) {
           this.teamData = res.data.teams;
           this.totalData = this.teamData.length !== 0 ? res.data.teams[0].total_records : 0;
-          this.clubsdropdown();
+          this.countryDropdown();
         } else {
           this.teamData = [];
           this.totalData = 0;
@@ -244,9 +243,14 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.ShowForm = false;
   }
   resetForm() {
-
     this.addTeamForm.reset();
     this.submitted = false;
+    this.filedata = null;
+    this.profileImages = null;
+    this.url = null;
+    this.imageBase64 = null;
+    this.imageCropAlter = null;
+    this.imageDefault = null;
   }
   successToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
@@ -319,6 +323,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         this.ageGroupList = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.age_category);
         this.genderList = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.gender);
         this.formatList = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key.team_format);
+        this.configDataList = res.data?.clubs || [];
       },
       (err: any) => {
         this.ageGroupList = [];
@@ -342,11 +347,9 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString()
     };
-    this.apiService.post(this.urlConstant.teamcountrydropdown, params).subscribe((res) => {
+    this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
       this.countriesData = res.data.countries ?? [];
       this.countryID = this.countriesData[0].country_id;
-      this.gridLoad();
-
     },
       (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
@@ -368,7 +371,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       gender_id: String(this.addTeamForm.value.gender_id),
       age_category_id: String(this.addTeamForm.value.age_category_id),
       format_id: String(this.addTeamForm.value.format_id),
-      team_id: String(this.addTeamForm.value.team_id),
       club_id: String(this.addTeamForm.value.club_id),
       reference_id: String(this.addTeamForm.value.reference_id),
       country_id:String(this.addTeamForm.value.country_id),
@@ -376,15 +378,32 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     };
     if (this.addTeamForm.value.team_id) {
       params.action_flag = 'update';
+      params.team_id = String(this.addTeamForm.value.team_id),
       this.apiService.post(this.urlConstant.updateTeam, params).subscribe((res) => {
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        if (res.status_code === this.statusConstants.success && res.status) {
+
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(params.team_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
       this.apiService.post(this.urlConstant.addTeam, params).subscribe((res) => {
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
-      }, (err: any) => {
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(res.data.teams[0].team_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }}, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
@@ -411,12 +430,14 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             club_id: editRecord.club_id,
             reference_id: editRecord.reference_id,
             country_id: editRecord.country_id,
-            team_profile: editRecord.team_profile
+            profile_img:'',
           });
+          this.showAddForm();
+          this.profileImages = editRecord.profile_img + '?' + Math.random();
+          this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
         }
       } 
     });
-    this.showAddForm();
 
   }
 
@@ -476,8 +497,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
   fileEvent(event: any) {
-    if (this.addTeamForm.value.team_profile.value !== null && 
-      this.addTeamForm.value.team_profile.value !== '') {
+    if (this.addTeamForm.value.profile_img.value !== null &&
+      this.addTeamForm.value.profile_img.value !== '') {
       this.profileImages = null;
     }
     if (event && event.target && event.target.files && event.target.files.length > 0) {
@@ -497,11 +518,72 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
     }
   }
-  saveCroppedImage(): void {
-    this.profileImages = this.filedata;
-    this.imageCropAlter = this.filedata;
-    this.filedata=this.base64ToBinary(this.filedata);
-    this.showCropperModal = false;
+    /*profile image update */
+
+    profileImgUpdate(upload_profile_url: any, team_id: any) {
+      const params: any = {
+        action_flag: 'update_profile_url',
+        profile_img: upload_profile_url.toString(),
+        user_id: this.user_id.toString(),
+        client_id: this.client_id.toString(),
+        team_id: team_id?.toString() 
+      };
+  
+      this.apiService.post(this.urlConstant.profileteam, params).subscribe(
+        (res) => {
+          if (res.status_code == this.statusConstants.success && res.status) {
+            this.filedata = null;
+            this.addCallBack(res)
+          } else {
+            this.failedToast(res);
+          }
+        },
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+  
+          } else {
+            this.failedToast(err.error);
+          }
+        }
+      );
+    }
+    profileImgAppend(team_id: any) {
+      const myFormData = new FormData();
+      if (this.filedata != null && this.filedata != '') {
+        myFormData.append('imageFile', this.filedata);
+        myFormData.append('client_id', this.client_id.toString());
+        myFormData.append('file_id', team_id);
+        myFormData.append('upload_type', 'officials');
+        myFormData.append('user_id', this.user_id?.toString());
+        this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+          (res) => {
+            if (res.status_code == this.statusConstants.success) {
+              if (res.url != null && res.url != '') {
+                this.profileImgUpdate(res.url, team_id);
+              } else {
+                this.failedToast(res);
+              }
+            } else {
+              this.failedToast(res);
+            }
+          },
+          (err: any) => {
+            if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+              this.apiService.RefreshToken();
+  
+            } else {
+              this.failedToast(err.error);
+            }
+          }
+        );
+      }
+    }
+ saveCroppedImage(): void {
+  this.profileImages = this.filedata;
+  this.imageCropAlter = this.filedata;
+  this.filedata = this.base64ToBinary(this.filedata);
+  this.showCropperModal = false;
   }
 
   cancelImg(): void {
@@ -515,9 +597,17 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
 
   imageCropped(event: ImageCroppedEvent) {
-    this.url = event.base64
-    this.filedata = event.base64
-     this.profileImages=null
+    const blob = event.blob;
+
+    if (blob) {
+      this.convertBlobToBase64(blob).then((base64) => {
+        this.url = base64;
+        this.filedata = base64;
+        this.profileImages = null;
+      }).catch((error) => {
+        console.error('Failed to convert blob to base64:', error);
+      });
+    }
   }
   imageLoaded() {
     console.log('Image loaded');
@@ -527,18 +617,26 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     console.log('Cropper ready');
   }
 
-  base64ToBinary(base64:any){
-    const byteCharacters = atob(base64.split(',')[1]); 
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset++) {
-        byteArrays.push(byteCharacters.charCodeAt(offset));
+  base64ToBinary(base64: string): Blob | null {
+    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 input:', base64);
+      return null;
     }
+    try {
+      const byteCharacters = atob(base64.split(',')[1]);
+      const byteArrays = new Uint8Array(byteCharacters.length);
 
-    const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' }); 
-    return blob;
-}
-convertUrlToBase64(imageUrl: string): void {
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+      }
+      return new Blob([byteArrays], { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Error converting base64 to binary:', error);
+      return null;
+    }
+  }
+
+  convertUrlToBase64(imageUrl: string): void {
     fetch(imageUrl)
       .then((response) => {
         if (!response.ok) {
@@ -549,12 +647,12 @@ convertUrlToBase64(imageUrl: string): void {
       .then((blob) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const base64Image = reader.result as string; 
-          this.imageBase64 = base64Image; 
-          this.imageCropAlter=base64Image
-          this.imageDefault=base64Image
+          const base64Image = reader.result as string;
+          this.imageBase64 = base64Image;
+          this.imageCropAlter = base64Image
+          this.imageDefault = base64Image
         };
-        reader.readAsDataURL(blob); 
+        reader.readAsDataURL(blob);
       })
       .catch((error) => {
       });
@@ -563,11 +661,28 @@ convertUrlToBase64(imageUrl: string): void {
     this.filedata = null;
     this.url = null;
     this.profileImages = null;
-    this.imageCropAlter=null;
+    this.imageCropAlter = null;
     this.imageBase64 = null;
-}
+  }
   cropPopOpen() {
     this.showCropperModal = true;
     this.imageBase64=this.imageDefault;
   }
+  
+  convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = () => {
+        reject('Failed to convert Blob to base64');
+      };
+
+      reader.readAsDataURL(blob);
+    });
+  }
+
 }

@@ -21,8 +21,9 @@ export class URLCONSTANT {
       updateTeam = "Teams/update_team"
       addTeam = "Teams/add_team"
       teamclubdropdown = "Teams/get_teams_dropdown"
-      teamcountrydropdown = "Global/get_countries"
+     //  teamcountrydropdown = "Global/get_countries"
       viewgroundTeams = "Teams/view_team"
+      profileteam="Teams/teams_profile_update"
 
 
 
