@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -64,6 +64,8 @@ export class MenuComponent implements OnInit {
   public showEndpointsGrid: boolean = false;
   public addMenuForm!: FormGroup<any>;
   public addEndpointForm!: FormGroup<any>;
+  default_img = CricketKeyConstant.default_image_url.officials;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   MenuData: Menu[] = [];
   totalData: any = 0;
   first: number = 1;
@@ -323,7 +325,9 @@ export class MenuComponent implements OnInit {
       menu_name: this.addMenuForm.value.menu_name,
       menu_description: this.addMenuForm.value.menu_description,
       menu_link: this.addMenuForm.value.menu_link,
-      menu_image: this.addMenuForm.value.menu_image,
+      // menu_image: this.addMenuForm.value.menu_image,
+    menu_image: this.profileImages !=null && this.profileImages !='' ?String(this.profileImages):null,
+
       module_id: String(this.addMenuForm.value.module_id),
       parent_menu_id: String(this.addMenuForm.value.parent_menu_id),
       sort_order: String(this.addMenuForm.value.sort_order),
@@ -372,11 +376,12 @@ export class MenuComponent implements OnInit {
             menu_name: editRecord.menu_name,
             menu_description: editRecord.menu_description,
             menu_link: editRecord.menu_link,
-            menu_image: editRecord.menu_image,
+            menu_image: '',
             module_id: Number(editRecord.module_id),
             sort_order: editRecord.sort_order,
 
           });
+              this.profileImages = editRecord.menu_image + '?' + Math.random();
           this.showAddForm();
         }
       } else {
@@ -519,6 +524,7 @@ export class MenuComponent implements OnInit {
 
       };
       reader.readAsDataURL(file);
+    
 
     }
   }
@@ -565,6 +571,17 @@ export class MenuComponent implements OnInit {
     this.searchKeyword = '';
     // this.dt.clear();          
     this.gridLoad();
+  }
+ cancelImage() {
+    this.previewUrl = null;
+    this.filedata = null;
+
+    if (this.fileInput?.nativeElement) {
+      this.fileInput.nativeElement.value = ''; 
+      
+    } else {
+      console.warn('fileInput not ready yet');
+    }
   }
 }
 
