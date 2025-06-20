@@ -800,11 +800,6 @@ label {
   .full-width-sidebar {
     width: 100vw !important;
   }
-.save-button{
-  background-color:#3f51b5 !important;
-  border: blue !important;
-}
-
 
 .p-drawer-right  {
   width: 27rem !important;
@@ -1461,4 +1456,32 @@ input.form-control:focus {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.modal-content{
+  width: 70% !important;
+}
+    /* Footer screen Matches  */
+    .footer-button{
+      height: 38px !important;
+    width: 80px !important;
+    font-size: 14px !important;
+    padding: 6px 12px !important;
+      }
 
+    /* Footer screen  */
+
+    .custom-cancel-btn {
+      background-color: #6c757d !important ;
+      border: none !important ;
+      color: white !important ;
+      border-radius: 0% !important;
+      height: 35px !important;
+      }
+      .save-button{
+        background-color:#3f51b5 !important;
+        border: blue !important;
+        color: white !important;
+        border-radius: 0% !important;
+        height: 35px !important;
+      }
+  
+  

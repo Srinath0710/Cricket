@@ -3,7 +3,7 @@
     <div class="content container-fluid">
       <main>
         <div class="card margin-card">
-          <div class="card-body">
+          <div class="card-body mb-5">
             <section [ngClass]="{'inactive': showTabs}">
               <div class="page-header main-page-header d-flex align-items-center justify-content-between">
                 <div class="main-page-title page-title playerbackground">
@@ -110,15 +110,19 @@
                             <input class="form-control" maxlength="50" type="text" formControlName="competition_name">
                             <small
                               *ngIf="addCompetitionForm?.get('competition_name')?.invalid &&(addCompetitionForm?.get('competition_name')?.touched) || (addCompetitionForm.get('competition_name')?.invalid && submitted)"
-                              class="required-msg">* Competition Name Is Required
+                              class="required-msg"> Competition Name Is Required
                             </small>
                           </div>
                           <div class="col-md-4">
-                            <label class="">Visual Name
-                              <!-- <span class="text-danger">*</span> -->
+                            <label class="">Display Name
+                              <span class="text-danger">*</span>
                             </label>
                             <input class="form-control" maxlength="50" type="text" 
                               formControlName="visual_name">
+                              <small
+                              *ngIf="addCompetitionForm?.get('visual_name')?.invalid &&(addCompetitionForm?.get('visual_name')?.touched) || (addCompetitionForm.get('visual_name')?.invalid && submitted)"
+                              class="required-msg"> Display Name Is Required
+                            </small>
                           </div>
                           <div class="col-md-4">
                             <label class="">Trophy Name
@@ -128,7 +132,7 @@
                               formControlName="trophy_name">
                             <small
                               *ngIf="addCompetitionForm?.get('trophy_name')?.invalid &&(addCompetitionForm?.get('trophy_name')?.touched) || (addCompetitionForm.get('trophy_name')?.invalid && submitted)"
-                              class="required-msg">*Trophy Name Is Required
+                              class="required-msg">Trophy Name Is Required
                             </small>
                           </div>
                           <div class="col-md-4">
@@ -145,7 +149,7 @@
                             <small *ngIf="
                             addCompetitionForm.get('season_id')?.invalid &&
                             (addCompetitionForm.get('season_id')?.touched || submitted)"  class="required-msg">
-                            * Season Name is required
+                             Season Name is required
                           </small>
                           </div>
 
@@ -163,11 +167,11 @@
                             <small *ngIf="
                             addCompetitionForm.get('competition_type_id')?.invalid &&
                             (addCompetitionForm.get('competition_type_id')?.touched || submitted)"  class="required-msg">
-                            * Match Type is required
+                             Match Type is required
                           </small>
 
                           </div>
-                          <div class="col-md-4">
+                          <!-- <div class="col-md-4">
                             <label>Competition Category</label>
                             <p-dropdown [options]="genderList" class="drop-error "
                               formControlName="competition_category_id" optionValue="config_id"
@@ -183,7 +187,7 @@
                                 </div>
                               </ng-template>
                             </p-dropdown>
-                          </div>
+                          </div> -->
                           <div class="col-md-4">
                             <label>Gender*</label>
                             <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id"
@@ -202,7 +206,7 @@
                             <small *ngIf="
                             addCompetitionForm.get('gender_id')?.invalid &&
                             (addCompetitionForm.get('gender_id')?.touched || submitted)"  class="required-msg">
-                            * Gender is required
+                             Gender is required
                           </small>
                           </div>
                           <div class="col-md-4">
@@ -223,7 +227,7 @@
                             <small *ngIf="
                             addCompetitionForm.get('age_category_id')?.invalid &&
                             (addCompetitionForm.get('age_category_id')?.touched || submitted)"  class="required-msg">
-                            * Age Group is required
+                             Age Group is required
                           </small>
                           </div>
                           <div class="col-md-4">
@@ -244,7 +248,7 @@
                             <small *ngIf="
                             addCompetitionForm.get('competition_level')?.invalid &&
                             (addCompetitionForm.get('competition_level')?.touched || submitted)"  class="required-msg">
-                            * Tour Level is required
+                             Tour Level is required
                           </small>
                           </div>
                           <div class="col-md-4">
@@ -265,7 +269,7 @@
                             <small *ngIf="
                             addCompetitionForm.get('competition_format_id')?.invalid &&
                             (addCompetitionForm.get('competition_format_id')?.touched || submitted)"  class="required-msg">
-                            * Competition Format is required
+                             Competition Format is required
                           </small>
                           </div>
                           <div class="col-md-4">
@@ -294,9 +298,9 @@
                             </div>
                             
                             <small *ngIf="
-                            addCompetitionForm.get('competition_format_id')?.invalid &&
-                            (addCompetitionForm.get('competition_format_id')?.touched || submitted)"  class="required-msg">
-                            * Competition Format is required
+                            addCompetitionForm.get('is_practice')?.invalid &&
+                            (addCompetitionForm.get('is_practice')?.touched || submitted)"  class="required-msg">
+                             Is Practice is required
                           </small>
                           </div>
                           
@@ -314,6 +318,11 @@
                               <span class="text-danger">*</span></label>
                             <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter Start Date"
                               formControlName="start_date">
+                              <small *ngIf="
+                              addCompetitionForm.get('start_date')?.invalid &&
+                              (addCompetitionForm.get('start_date')?.touched || submitted)"  class="required-msg">
+                               Start Date is required
+                            </small>
 
                           </div>
                           <div class="col-md-4">
@@ -321,6 +330,11 @@
                               <span class="text-danger">*</span></label>
                             <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter End Date"
                               formControlName="end_date">
+                              <small *ngIf="
+                              addCompetitionForm.get('end_date')?.invalid &&
+                              (addCompetitionForm.get('end_date')?.touched || submitted)"  class="required-msg">
+                               End Date is required
+                            </small>
                           </div>
 
 
@@ -329,7 +343,7 @@
                               <span class="text-danger">*</span>
                             </label>
                             <input class="form-control" maxlength="50" type="number"
-                   formControlName="overs_per_innings">
+                            formControlName="overs_per_innings">
                           </div>
 
                           <div class="col-md-4">
@@ -487,8 +501,8 @@
                             : { key: 'active', label: 'activate' })">
                         <i 
                           class="fa" 
-                          [ngClass]="competition.status === 'Active' ? 'fa-times text-danger' : 'fa-check-square text-success'" 
-                          [pTooltip]="competition.status === 'Active' ? 'Disable Active' : 'Enable Active'" 
+                          [ngClass]="competition.status === 'Active' ? 'fa-trash text-danger' : 'fa-check-square text-success'" 
+                          [pTooltip]="competition.status === 'Active' ? 'Disable Competition' : 'Enable Competition'" 
                           tooltipPosition="top">
                         </i>
                       </span>
@@ -514,9 +528,10 @@
             <section [ngClass]="{ 'inactive': !showTabs }">
               <div *ngIf="showTabs" class="container-fluid">
                 <div class="row">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
+                  
+                  <div class="d-flex justify-content-between align-items-center mb-2" [class.disabled]="isEditDisabled">
                     <h5 class="fw-bold mb-0" style="margin-left: 45%;">{{ manageData.name}}</h5>
-                    <button class="Comp-backbtn" (click)="goBack()">Back</button>
+                    <button class="Comp-backbtn" (click)="goBack()" [disabled]="isEditDisabled">Back</button>
                   </div>
 
                   <!-- Right Content Area -->

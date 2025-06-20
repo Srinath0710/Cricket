@@ -18,9 +18,13 @@
   </div>
     </div>
   
-    <!-- <div class="search_bar">
-      <input type="text" placeholder="Search" />
-    </div> -->
+
+    <!-- <button class="theme-toggle" 
+    (click)="toggleTheme()" 
+    [attr.title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+    [attr.aria-label]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+<i class="fas" [ngClass]="isDarkMode ? 'fa-sun' : 'fa-moon'"></i>
+</button> -->
   
     <div class="navbar_content">
       <span  *ngIf="itealTimeoutEnable==1"class="timmer-clock">{{remainingTime}}</span>

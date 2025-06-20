@@ -25,7 +25,20 @@
     font-size: 12px !important;
     padding: 6px 8px !important;
     margin: 8px;
+    background-color:#367039;
+    color:white;
+    border-color:#367039;
     }
-
-    /* Card screen */
-    
+.status-color{
+  background-color: #0084B1;
+   color:#fff
+}
+.background-edit{
+  background-color:#367039;
+  height: 31px;
+  width: 31px;
+}
+.background-delete{
+  height: 31px;
+  width: 31px;
+}

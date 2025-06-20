@@ -73,7 +73,7 @@
                   <img class="player-img" *ngIf="teams.profile_img==null || teams.profile_img==''"
                     [src]="default_img">
 
-                  <img class="player-img" *ngIf="teams.profile_img!=null  && teams.profile_img!=''"
+                  <img class="player-img" *ngIf="teams?.profile_img!=null  && teams?.profile_img!=''"
                     [src]="teams.profile_img" (error)="handleImageError($event, default_img)">
                 </span>
                 <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)"> {{ teams.team_name
@@ -383,10 +383,10 @@
         <div class="form-wrapper pb-5">
         <div class="row mt-4 sticky-footer-buttons" >
           <div class="col-12 text-end">
-            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+            <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
               (click)="cancelForm()"></button>
 
-            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+            <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
               *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
               (click)="resetForm()"></button>
 

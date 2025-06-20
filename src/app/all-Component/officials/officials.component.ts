@@ -30,10 +30,11 @@ import { environment } from '../../environments/environment';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
-import { faO } from '@fortawesome/free-solid-svg-icons';
 interface official {
   config_id: string;
   country_id: number;
+  profile_img: string;
+
 }
 
 @Component({
@@ -98,7 +99,7 @@ export class OfficialsComponent implements OnInit {
   ispersonalupadate: boolean = false;
   isEditPersonal: boolean = false;
   submitted: boolean = false;
-  officialDataList = [];
+  officialDataList:official[] = [];
   configDataList: official[] = [];
   countrydropdownData: any;
   countriesData: any;
@@ -306,9 +307,11 @@ export class OfficialsComponent implements OnInit {
         this.officialDataList = [];
         this.totalData = 0;
       }
-      this.officialDataList = res.data.officials ?? [];
-      this.totalData = this.officialDataList.length != 0 ? res.data.officials[0].total_records : 0
-
+      // this.officialDataList = res.data.officials ?? [];
+      // this.totalData = this.officialDataList.length != 0 ? res.data.officials[0].total_records : 0
+      this.officialDataList.forEach((val) => {
+        val.profile_img = `${val.profile_img}?${Math.random()}`;
+      });
     },
 
       (err: any) => {
@@ -374,7 +377,6 @@ export class OfficialsComponent implements OnInit {
       official_type_id: String(this.addOfficialForm.value.official_type_id),
       official_category_id: String(this.addOfficialForm.value.official_category_id),
       country_id: String(this.addOfficialForm.value.country_id),
-      profile_img: this.profileImages !=null && this.profileImages !='' ?String(this.profileImages):null,
       reference_id: String(this.addOfficialForm.value.reference_id),
       club_id: String(this.addOfficialForm.value.club_id),
       gender_id: String(this.addOfficialForm.value.gender_id),
@@ -387,7 +389,7 @@ export class OfficialsComponent implements OnInit {
       this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend( res.data.officials[0].official_id);
+            this.profileImgAppend(params.official_id);
           } else {
             this.addCallBack(res)
           }
@@ -402,7 +404,7 @@ export class OfficialsComponent implements OnInit {
       this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(params.official_id);
+            this.profileImgAppend(res.data.officials[0].official_id);
           }
           else {
             this.addCallBack(res)
@@ -483,16 +485,16 @@ export class OfficialsComponent implements OnInit {
             format_id: editRecord.format_id,
             official_category_id: editRecord.official_category_id,
             country_id: editRecord.country_id,
-            profile_img: null,
+            profile_img: '',
             official_id: editRecord.official_id,
             reference_id: editRecord.reference_id,
             gender_id: editRecord.gender_id,
             dob: editRecord.dob != null ? editRecord.dob.split('T')[0] : null,
             club_id: editRecord.club_id,
           });
+          this.showAddForm();
           this.profileImages = editRecord.profile_img + '?' + Math.random();
           this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
-          this.showAddForm();
         }
       } else {
         this.failedToast(res);

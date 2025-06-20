@@ -21,6 +21,7 @@
 
 main {
   width: 100% !important;
+  height: auto !important;
   padding-right: 0px !important;
 }
 
@@ -30,8 +31,11 @@ main {
   border-radius: 4px;
   width: auto !important;
   height: 100% !important;
+  
 }
-
+.card{
+  background-color: #f0ffef;
+}
 .card-body {
   padding: 0 !important;
   overflow: hidden !important;

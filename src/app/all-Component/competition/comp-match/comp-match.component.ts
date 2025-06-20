@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
@@ -9,6 +9,7 @@ import { CricketKeyConstant } from '../../../services/cricket-key-constant';
 import { URLCONSTANT } from '../../../services/url-constant';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 
 interface MetaInfo {
   config_key: string;
@@ -24,7 +25,8 @@ interface MetaInfo {
     SidebarModule,
     DropdownModule,
     FormsModule,
-    ToastModule
+    ToastModule,
+    TooltipModule
   ],
   templateUrl: './comp-match.component.html',
   styleUrl: './comp-match.component.css',
@@ -52,8 +54,12 @@ export class CompMatchComponent implements OnInit {
   MatchData: any = []
   viewMode: boolean = false;
   match_id: any;
+  away_team_list: any = []
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
+  default_img = CricketKeyConstant.default_image_url.teamimage;
+  
+  @Output() showFormChange = new EventEmitter<boolean>();
 
   constructor(
     private formbuilder: FormBuilder,
@@ -99,6 +105,7 @@ export class CompMatchComponent implements OnInit {
 
     })
   }
+
   gridload() {
     const params: any = {}
     params.user_id = this.user_id?.toString();
@@ -119,16 +126,35 @@ export class CompMatchComponent implements OnInit {
   }
   showDialog() {
     this.ShowForm = true;
+    this.showFormChange.emit(this.ShowForm); 
     this.resetForm();
   }
 
   cancelForm() {
     this.ShowForm = false;
   }
+
   resetForm() {
-    this.submitted = false;
     this.competitionFixturesForm.reset();
+    if(this.competitionFixturesForm.get('match_id')?.value ==''|| this.competitionFixturesForm.get('match_id')?.value ==null){
+
+    setTimeout(() => {
+        this.competitionFixturesForm.patchValue({
+          // day_type: this.daytype.filter((val: any) => val.config_key == 'D')?.[0].config_id ?? null,
+          sequence_no: this.competition?.[0]?.sequence_no ?? '',
+          time_zones: this.competition?.[0]?.time_zone_id ?? null,
+          match_start_date: this.competition?.[0]?.start_date.split('T')?.[0] ?? null,
+          match_end_date: this.competition?.[0]?.start_date.split('T')?.[0] ?? null,
+          match_overs: this.competition?.[0]?.overs ?? 20,
+          // home_team : this.competition[0]?.is_bilateral == 1 ?this.CompetitionEditRecord?.home_team_id : null,
+          // away_team : this.competition[0]?.is_bilateral == 1 ?this.CompetitionEditRecord?.away_team_id : null
+        })
+     
+    }, 10)
   }
+    this.submitted = false;
+  }
+
   getDropdown() {
     const params: any = {}
     params.action_flag = "drop_down"
@@ -202,12 +228,6 @@ export class CompMatchComponent implements OnInit {
       return
     }
   
-    // if (this.competitionFixturesForm.value.is_super_over == '1' || this.competitionFixturesForm.value.has_super_over == '0') {
-    //   this.competitionFixturesForm.patchValue({
-    //     has_super_over: "0",
-    //     super_over_match_id: ''
-    //   })
-    // }
     const params: any = {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
@@ -284,13 +304,7 @@ export class CompMatchComponent implements OnInit {
 
         })
     }
-    // else {
-    //   this.apiService.post(this.urlConstant.addfixture, params).subscribe((res) => {
-     
-    //   }, (err: any) => {
-    //     err.status === this.cricketKeyConstant.status_code.refresh && err.error.message === this.cricketKeyConstant.status_code.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
-    //   });
-    // }
+
     else {
       this.apiService.post(this.urlConstant.addfixture, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
@@ -348,96 +362,50 @@ editCardData(match_id: number){
 
 
   }
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
+  }
 
-// status(match_id: any, url: string) {
-//   const params: any = {
-//     user_id: this.user_id?.toString(),
-//     client_id: this.client_id?.toString(),
-//     match_id: String(this.match_id),
-//     };
-//   this.apiService.post(url, params).subscribe(
-//     (res: any) => {
-//       res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
-//     },
-//     (err: any) => {
-//       error: (err: any) => {
-//         console.error('Error loading Match list:', err);
-//       }
-//     });
-// }
-StatusConfirm(match_id: any): void {
-  // const compId = this.CompetitionData?.competition_id;
-  // if (!compId) {
-  //   console.error("Invalid competition_id");
-  //   return;
-  // }
-  console.log("CompetitionData:", this.CompetitionData);
-  console.log("Competition ID:", this.CompetitionData?.competition_id);
-  // const params: any = {
-  //   user_id: String(this.user_id),
-  //   client_id: String(this.client_id),
-  //   match_id: String(match_id),
-  //   competition_id: String(compId),
-  //   };
-
-  // console.log('Deactivation Params:', params);
-
-  // this.apiService.post(this.urlConstant.deactivefixture, params).subscribe(
-  //   (res: any) => {
-  //     console.log("Deactivation success", res);
-  //   }, 
-  //   (err: any) => {
-  //     if (err.status === 401 && err.error.message === "Expired") {
-  //       this.apiService.RefreshToken();
-  //     } else {
-  //       console.error("Deactivation error", err);
-  //     }
-  //   }
-  // );
-}
-
-
-  // status(state_id: number, url: string) {
-  //   const params: any = {
-  //     user_id: this.user_id?.toString(),
-  //     client_id: this.client_id?.toString(),
-  //     state_id: state_id?.toString(),
-  //   };
-  //   this.apiService.post(url, params).subscribe(
-  //     (res: any) => {
-  //       res.status_code === this.cricketKeyConstant.status_code.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
-  //     },
-  //     (err: any) => {
-  //       error: (err: any) => {
-  //         console.error('Error loading state list:', err);
-  //       }
-  //     });
-  // }
-
-  // StatusConfirm(state_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-  //   const AlreadyStatestatus =
-  //   (actionObject.key === this.cricketKeyConstant.condition_key.active_status.key && currentStatus === 'Active') ||
-  //   (actionObject.key === this.cricketKeyConstant.condition_key.deactive_status.key && currentStatus === 'InActive');
-
-  // if (AlreadyStatestatus) {
-  //   return; 
-  // }
-  //   this.confirmationService.confirm({
-  //     message: `Are you sure you want to ${actionObject.label} this state?`,
-  //     header: 'Confirmation',
-  //     icon: 'pi pi-question-circle',
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     accept: () => {
-  //       const url: string = this.cricketKeyConstant.condition_key.active_status.key === actionObject.key
-  //         ? this.urlConstant.activateState
-  //         : this.urlConstant.deactivateState;
-  //       this.status(state_id, url);
-  //       this.confirmationService.close();
-  //     },
-  //     reject: () => {
-  //       this.confirmationService.close();
-  //     }
-  //   });
-  // }
+  StatusConfirm(match_id: number) {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to delete this Match?`,
+      header: 'Confirmation',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url: string = this.urlConstant.deactivefixture;
+        this.status(match_id, url);
+        this.confirmationService.close();
+      },
+      reject: () => {
+        this.confirmationService.close();
+      }
+    });
+  }
+  
+  status(match_id: number, url: string) {
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      match_id: match_id?.toString(),
+      competition_id: String(this.CompetitionData?.competition_id)
+    };
+  
+    this.apiService.post(url, params).subscribe(
+      (res: any) => {
+        res.status_code === this.statusConstants.success && res.status
+          ? (this.successToast(res), this.gridload())
+          : this.failedToast(res);
+      },
+      (err: any) => {
+        err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
+          ? this.apiService.RefreshToken()
+          : this.failedToast(err.error);
+      }
+    );
+  }
+  
 }

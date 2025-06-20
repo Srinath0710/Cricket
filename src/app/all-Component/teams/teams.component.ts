@@ -637,6 +637,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
   convertUrlToBase64(imageUrl: string): void {
+    console.log(imageUrl)
     fetch(imageUrl)
       .then((response) => {
         if (!response.ok) {
@@ -645,12 +646,14 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         return response.blob();
       })
       .then((blob) => {
+        console.log(blob);
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Image = reader.result as string;
           this.imageBase64 = base64Image;
           this.imageCropAlter = base64Image
           this.imageDefault = base64Image
+          console.log(base64Image); 
         };
         reader.readAsDataURL(blob);
       })
