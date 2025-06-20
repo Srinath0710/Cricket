@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -13,12 +13,18 @@ import { URLCONSTANT } from '../../services/url-constant';
 import { PaginatorModule } from 'primeng/paginator';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
+import { OnInit } from '@angular/core';
+import { Drawer } from 'primeng/drawer';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { Club, UpdateClub, EditClub } from './club-registration.model';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
+import { environment } from '../../environments/environment';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
+
 interface Country {
   country_id: any;
   country_name: string;
@@ -28,9 +34,9 @@ interface Country {
   selector: 'app-club-registration',
   standalone: true,
   imports: [CommonModule, ButtonModule, BadgeModule,
-    DialogModule, DropdownModule, InputTextModule,
+    DialogModule, DropdownModule, InputTextModule, Drawer,
     PaginatorModule, DrawerModule, TableModule, FormsModule, ReactiveFormsModule,
-    ConfirmDialogModule, TooltipModule, FileUploadModule, ToastModule, TagModule
+    ConfirmDialogModule, TooltipModule, FileUploadModule, ToastModule, TagModule, ImageCropperComponent
   ],
   templateUrl: './club-registration.component.html',
   styleUrls: ['./club-registration.component.css'],
@@ -44,7 +50,7 @@ interface Country {
 
 export class ClubRegistrationComponent implements OnInit {
   public addClubForm!: FormGroup<any>;
-  @ViewChild('dt') dt: any;
+  @ViewChild('dt') dt!: Table;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   selectedClientId: number = Number(localStorage.getItem('client_id'));
@@ -60,10 +66,14 @@ export class ClubRegistrationComponent implements OnInit {
   allClubData: Club[] = [];
   clubForm: any;
   Client: any;
+  profileImages: any;
+  url: any;
   gridData: any = [];
   submitted: boolean = true;
   visible: boolean = false;
-  default_img: any = 'assets/images/default-player.png';
+  envImagePath = environment.imagePath;
+  default_flag_img = this.envImagePath + '/images/Default Flag.png';
+  default_img = CricketKeyConstant.default_image_url.officials;
   searchKeyword: string = '';
   first: number = 1;
   oldfirst: number = 1;
@@ -79,13 +89,19 @@ export class ClubRegistrationComponent implements OnInit {
   statusConstants = CricketKeyConstant.status_code;
   dropDownConstants = CricketKeyConstant.dropdown_keys;
 
+  imageBase64: any = null;
+  showCropperModal = false;
+  imageCropAlter: any;
+  imageDefault: any;
+  croppedImage: any;
+
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
+    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant, private uploadImgService: UploadImgService) {
 
   }
 
   ngOnInit(): void {
-    
+
     this.addClubForm = this.formBuilder.group({
       club_id: [''],
       parent_club_id: ['', [Validators.required]],
@@ -101,7 +117,7 @@ export class ClubRegistrationComponent implements OnInit {
         Validators.required,
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
-      mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      mobile: ['', [Validators.pattern('^[0-9]{10}$')]],
       website: [''],
       contact: [''],
       remarks: [''],
@@ -131,7 +147,6 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   gridload() {
-    this.gridData = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -139,11 +154,18 @@ export class ClubRegistrationComponent implements OnInit {
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString();
     this.apiService.post(this.urlConstant.getClubList, params).subscribe((res) => {
-      this.gridData = res.data.clubs ?? [];
+      if(res.data.clubs){
+           this.gridData = res.data.clubs ?? [];
       this.totalData = res.data.clubs[0]?.total_records ?? this.gridData.length;
+      }
+     else {
+          this.gridData = [];
+          this.totalData = 0;
+        }
       this.gridData.forEach((val: any) => {
         val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
+
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
     });
@@ -174,15 +196,22 @@ export class ClubRegistrationComponent implements OnInit {
   showAddForm() {
     this.ShowForm = true;
   }
-  cancelForm() {
-    this.ShowForm = false;
-  }
+ cancelForm() {
+  this.ShowForm = false;
+}
+
   resetForm() {
     this.addClubForm.reset();
     this.submitted = false;
     this.previewUrl = null;
     this.stateList = [];
     this.citiesList = [];
+    this.filedata = null;
+    this.profileImages = null;
+    this.url = null;
+    this.imageBase64 = null;
+    this.imageCropAlter = null;
+    this.imageDefault = null;
   }
   clearForm() {
     if (!this.isEditMode) {
@@ -202,6 +231,10 @@ export class ClubRegistrationComponent implements OnInit {
     this.dt.filterGlobal('', 'contains');
   }
 
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
+  }
 
   successToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
@@ -211,62 +244,72 @@ export class ClubRegistrationComponent implements OnInit {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
 
-  onAddClub() {
-    this.submitted = true;
+onAddClub() {
+  this.submitted = true;
 
-
-    if (this.addClubForm.invalid) {
-      this.addClubForm.markAllAsTouched();
-      return;
-    }
-
-    const isEdit = !!this.addClubForm.value.club_id;
-
-    const params: UpdateClub = {
-      user_id: String(this.user_id),
-      club_id: String(this.addClubForm.value.club_id || ''), 
-      client_id: String(this.client_id),
-      club_short: this.addClubForm.value.club_short,
-      club_name: this.addClubForm.value.club_name,
-      parent_club_id: this.addClubForm.value.parent_club_id != null ? String(this.addClubForm.value.parent_club_id) : null,
-      address_1: this.addClubForm.value.address_1,
-      address_2: this.addClubForm.value.address_2,
-      country_id: String(this.addClubForm.value.country_id),
-      state_id: String(this.addClubForm.value.state_id),
-      city_id: String(this.addClubForm.value.city_id),
-      post_code: this.addClubForm.value.post_code,
-      email_id: this.addClubForm.value.email_id,
-      mobile: this.addClubForm.value.mobile,
-      website: this.addClubForm.value.website || '',
-      contact: this.addClubForm.value.contact || '',
-      action_flag: isEdit ? 'update' : 'create',
-      remarks: this.addClubForm.value.remarks,
-      profile_img: ''
-    };
-
-    const apiUrl = isEdit ? this.urlConstant.updateClub : this.urlConstant.addClub;
-
-    this.apiService.post(apiUrl, params).subscribe((res) => {
-      res.status_code === this.statusConstants.success && res.status
-        ? this.addCallBack(res)
-        : this.failedToast(res);
-    }, (err: any) => {
-      err.status_code === this.statusConstants.refresh &&
-        err.error.message === this.statusConstants.refresh_msg
-        ? this.apiService.RefreshToken()
-        : this.failedToast(err.error);
-    });
+  if (this.addClubForm.invalid) {
+    this.addClubForm.markAllAsTouched();
+    return;
   }
 
+  const isEdit = !!this.addClubForm.value.club_id;
 
+  const params: UpdateClub = {
+    user_id: String(this.user_id),
+    club_id: String(this.addClubForm.value.club_id || ''),
+    client_id: String(this.client_id),
+    club_short: this.addClubForm.value.club_short,
+    club_name: this.addClubForm.value.club_name,
+    parent_club_id: this.addClubForm.value.parent_club_id ? String(this.addClubForm.value.parent_club_id) : null,
+    address_1: this.addClubForm.value.address_1,
+    address_2: this.addClubForm.value.address_2,
+    country_id: String(this.addClubForm.value.country_id),
+    state_id: String(this.addClubForm.value.state_id),
+    city_id: String(this.addClubForm.value.city_id),
+    post_code: this.addClubForm.value.post_code,
+    email_id: this.addClubForm.value.email_id,
+    mobile: this.addClubForm.value.mobile,
+    website: this.addClubForm.value.website || '',
+    contact: this.addClubForm.value.contact || '',
+    action_flag: isEdit ? 'update' : 'create',
+    remarks: this.addClubForm.value.remarks,
+    profile_img: this.filedata ? '' : this.profileImages
+  };
+
+  const apiUrl = isEdit ? this.urlConstant.updateClub : this.urlConstant.addClub;
+
+  this.apiService.post(apiUrl, params).subscribe(
+    (res) => {
+      if (res.status_code === this.statusConstants.success && res.status) {
+        const clubId = isEdit ? params.club_id : res.data?.clubs?.[0]?.club_id;
+        if (this.filedata && clubId) {
+          this.profileImgAppend(clubId, res);
+        } else {
+          this.addCallBack(res);
+        }
+      } else {
+        this.failedToast(res);
+      }
+    },
+    (err: any) => {
+      if (err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
+      } else {
+        this.failedToast(err.error);
+      }
+    }
+  );
+}
 
   addCallBack(res: any) {
-    this.resetForm();
-    this.cancelForm();
-    this.successToast(res);
-    this.gridload();
-    this.ClubDropdown(); 
-  }
+  this.resetForm();
+  this.cancelForm(); 
+  this.successToast(res);
+  this.gridload();
+  this.ClubDropdown();
+}
+
 
   getGlobalData() {
     const params: any = {
@@ -278,7 +321,7 @@ export class ClubRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.Clubdropdown, params).subscribe(
       (res) => {
         const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
-        // Assuming this is for a specific dropdown, otherwise directly use res.data.clubs
+
         this.clubsData = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key);
       },
       (err: any) => {
@@ -287,7 +330,7 @@ export class ClubRegistrationComponent implements OnInit {
     );
   }
 
-  EditClub(club_id: number) {
+  EditClub(club_id: any) {
     this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -313,10 +356,12 @@ export class ClubRegistrationComponent implements OnInit {
             website: editRecord.website,
             contact: editRecord.contact,
             remarks: editRecord.remarks,
-            profile_img: null
+            // profile_img: ''
           });
           this.getStates();
           this.showAddForm();
+          this.profileImages = editRecord.profile_img + '?' + Math.random();
+          this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
         }
       } else {
         this.failedToast(res);
@@ -334,18 +379,7 @@ export class ClubRegistrationComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
-  onProfileImageSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.filedata = file;
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
 
-      };
-      reader.readAsDataURL(file);
-    }
-  }
 
   status(club_id: number, url: string) {
     const params: any = {
@@ -512,6 +546,191 @@ export class ClubRegistrationComponent implements OnInit {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
+
+  cancel() {
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+  }
+
+  convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = () => {
+        reject('Failed to convert Blob to base64');
+      };
+
+      reader.readAsDataURL(blob);
+    });
+  }
+
+imageCropped(event: ImageCroppedEvent) {
+  const blob = event.blob;
+  if (blob) {
+    this.convertBlobToBase64(blob).then((base64) => {
+      this.url = base64;
+      this.filedata = base64;
+      this.profileImages = null;
+    }).catch((error) => {
+      console.error('Failed to convert blob to base64:', error);
+    });
+  }
+}
+
+  cropPopOpen() {
+    this.showCropperModal = true;
+    this.imageBase64 = this.imageDefault;
+  }
+saveCroppedImage(): void {
+  this.profileImages = this.croppedImage; // This seems to be a base64 string
+  this.imageCropAlter = this.filedata; // This `filedata` is already a base64 string from imageCropped
+  this.filedata = this.base64ToBinary(this.filedata); // <-- Problem: Trying to convert base64 (already stored in filedata) back to binary
+  this.showCropperModal = false;
+}
+
+  cancelImg(): void {
+    this.showCropperModal = false;
+    this.url = this.imageCropAlter;
+    this.filedata = this.base64ToBinary(this.imageCropAlter);
+  }
+
+  imageLoaded() {
+    console.log('Image loaded');
+  }
+
+  cropperReady() {
+    console.log('Cropper ready');
+  }
+
+  loadImageFailed() {
+    console.error('Image loading failed');
+  }
+
+  base64ToBinary(base64: string): Blob | null {
+    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 input:', base64);
+      return null;
+    }
+
+    try {
+      const byteCharacters = atob(base64.split(',')[1]);
+      const byteArrays = new Uint8Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+      }
+
+      return new Blob([byteArrays], { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Error converting base64 to binary:', error);
+      return null;
+    }
+  }
+
+  convertUrlToBase64(imageUrl: string): void {
+    fetch(imageUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Image = reader.result as string;
+          this.imageBase64 = base64Image;
+          this.imageCropAlter = base64Image
+          this.imageDefault = base64Image
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch((error) => {
+      });
+  }
+
+  fileEvent(event: any) {
+    if (this.addClubForm.value.profile_img.value !== null &&
+      this.addClubForm.value.profile_img.value !== '') {
+      this.profileImages = null;
+    }
+    if (event && event.target && event.target.files && event.target.files.length > 0) {
+      this.filedata = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: any) => {
+        var img = new Image;
+        this.url = event.target.result;
+        this.imageCropAlter = event.target.result
+        this.imageDefault = event.target.result
+      }
+    } else {
+      this.filedata = null;
+      this.url = this.imageDefault
+      this.filedata = this.base64ToBinary(this.imageDefault);
+
+    }
+  }
+profileImgUpdate(upload_profile_url: any, club_id: any, baseRes: any) {
+  const params: any = {
+    action_flag: 'update_profile_url',
+    profile_img: upload_profile_url.toString(),
+    user_id: this.user_id.toString(),
+    club_id: club_id.toString(),
+    client_id: this.client_id.toString()
+  };
+
+  this.apiService.post(this.urlConstant.profileclub, params).subscribe(
+    (res) => {
+      if (res.status_code == this.statusConstants.success && res.status) {
+        this.addCallBack(baseRes);
+      } else {
+        this.failedToast(res);
+        this.addCallBack(baseRes);
+      }
+    },
+    (err) => {
+      this.failedToast(err.error);
+      this.addCallBack(baseRes);
+    }
+  );
+}
+
+profileImgAppend(club_id: any, baseRes: any) {
+  const myFormData = new FormData();
+
+  if (this.filedata) {
+    myFormData.append('imageFile', this.filedata);
+    myFormData.append('client_id', this.client_id.toString());
+    myFormData.append('file_id', club_id);
+    myFormData.append('upload_type', 'officials');
+    myFormData.append('user_id', this.user_id.toString());
+
+    this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+      (res) => {
+        if (res.status_code == this.statusConstants.success && res.url) {
+          this.profileImgUpdate(res.url, club_id, baseRes);
+        } else {
+          this.failedToast(res);
+          this.addCallBack(baseRes);
+        }
+      },
+      (err) => {
+        this.failedToast(err.error);
+        this.addCallBack(baseRes);
+      }
+    );
+  } else {
+    this.addCallBack(baseRes);
+  }
+}
 
 }
 

@@ -1,5 +1,5 @@
 export class URLCONSTANT {
-
+  
       uploadprofile="Global/upload_profile"
 
       /*Country List*/
@@ -167,6 +167,7 @@ export class URLCONSTANT {
       editClub = 'Club/edit_club'
       activateClub = 'Club/activate_club'
       deactivateClub = 'Club/deactivate_club'
+      profileclub = "Club/club_profile_update"
 
           /* Menu List*/
      getMenuList ='Menu/get_menu_list'

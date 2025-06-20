@@ -43,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50,100]"
+                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows" [rowsPerPageOptions]="[10,25,50,100]"
                         [styleClass]="'custom-table'"
                         [globalFilterFields]="['club_name','parent_club_name','country','state','record_status']">
                         <ng-template pTemplate="header">
@@ -70,15 +70,24 @@
 
                         <ng-template pTemplate="body" let-club>
                             <tr>
-                                <td>{{ club.club_name }}</td>
+                                <td>
+                                    <span class="person-image-team-player">
+                                        <img class="player-img"
+                                            *ngIf="club.profile_img == null || club.profile_img == ''"
+                                            [src]="default_img" />
+                                        <img class="player-img"
+                                            *ngIf="club.profile_img != null && club.profile_img != ''"
+                                            [src]="club.profile_img" (error)="handleImageError($event, default_img)" />
+                                    </span>
+                                    <span>{{ club.club_name }}</span>
+                                </td>
                                 <td>{{ club.parent_club_name }}</td>
                                 <td>{{ club.country }}</td>
                                 <td>{{ club.state }}</td>
                                 <td>
-                                    <span [ngClass]="{
+                                    <span [ngClass]="{ 
                     ' bg-success': club.record_status === 'Active',
-                    ' bg-danger': club.record_status === 'InActive'
-                  }">
+                    ' bg-danger': club.record_status === 'InActive'}">
                                         {{ club.record_status }}
                                     </span>
                                 </td>
@@ -99,6 +108,7 @@
                                         pTooltip="Deactivate" tooltipPosition="top">
                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
                                     </span>
+                                    
                                 </td>
                             </tr>
                         </ng-template>
@@ -280,7 +290,7 @@
                             *ngIf="addClubForm.get('email_id')?.invalid && (addClubForm.get('email_id')?.touched || submitted)"
                             class="required-msg">
                             {{
-                             addClubForm.get('email_id')?.errors?.['pattern']
+                            addClubForm.get('email_id')?.errors?.['pattern']
                             ? 'Please enter a valid Email ID (e.g., example@domain.com)'
                             : ''
                             }}
@@ -327,20 +337,56 @@
                     </div>
 
                     <div class="col-md-6">
+                        <label>Profile Image</label>
+                        <a class=" clear-width table-counts profile-url" style="width: 84px;"
+                            (click)="cropPopOpen()">Crop Image</a>
                         <div class="image-upload-container text-center">
-                            <label for="profileImageInput" class="upload-label">
-                                <div class="image-preview-wrapper">
-                                    <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
-                                    <ng-template #placeholder>
-                                    </ng-template>
-                                </div>
-                                <div class="upload-btn">Upload</div>
+                            <div class="image-preview-wrapper">
+                                <button *ngIf="filedata != null && filedata != ''" type="button" class="cancel-btn"
+                                    (click)="cancel()">✕</button>
+                                <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                                    [src]="default_img" alt="Profile Image" class="profile-img">
+                                <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image"
+                                    class="profile-img">
+                                <img *ngIf="profileImages !=null && profileImages != ''" [src]="profileImages"
+                                    (error)="handleImageError($event, default_img)" alt="Profile Image"
+                                    class="profile-img">
+                            </div>
+                            <label for="profileImageInput" class="upload-btn">
+                                <input type="file" id="profileImageInput" accept="image/*"
+                                    (change)="fileEvent($event)" hidden formControlName="profile_img" />
+                                Upload
                             </label>
-                            <input type="file" id="profileImageInput" accept="image/*"
-                                (change)="onProfileImageSelected($event)" hidden formControlName="profile_img" />
+
+                        </div>
+                        <small class="text-danger" *ngIf="addClubForm.get('profile_img')?.errors">
+                            * Only PNG,JPEG, or JPG files are allowed
+                        </small>
+                        <!-- Cropper Model -->
+                        <div *ngIf="showCropperModal" class="modal img-croper-popup">
+                            <div class="modal-content crop-image">
+                                <div class="modal-header modal-header-img">
+                                    <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                                </div>
+                                <div class="modal-body img-fix">
+                                    <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true"
+                                        [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
+                                        (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                                        (loadImageFailed)="loadImageFailed()">
+                                    </image-cropper>
+                                </div>
+                                <div class="modal-footer crop-footer">
+                                    <button class="save-btn submit-btn margin-right"
+                                        (click)="saveCroppedImage()">Save</button>
+                                    <button class="clear-button submit-btn margin-right"
+                                        (click)="cancelImg()">Cancel</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
 
                 <div class="row mt-4 sticky-footer-buttons">
                     <div class="col-12 text-end">
