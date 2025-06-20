@@ -52,8 +52,7 @@ export class ClubRegistrationComponent implements OnInit {
   public addClubForm!: FormGroup<any>;
   @ViewChild('dt') dt!: Table;
   user_id: number = Number(localStorage.getItem('user_id'));
-  client_id: number = Number(localStorage.getItem('client_id'));
-  selectedClientId: number = Number(localStorage.getItem('client_id'));
+  client_id: number = 0;
   public ShowForm: boolean = false;
   isEditMode: boolean = false;
   isClientShow: boolean = false;
