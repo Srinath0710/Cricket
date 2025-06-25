@@ -67,19 +67,20 @@
 
 
               <tr>
-                
-              <td>
-                <span class="person-image-team-player">
-                  <img class="player-img" *ngIf="teams.profile_img==null || teams.profile_img==''"
-                    [src]="default_img">
 
-                  <img class="player-img" *ngIf="teams?.profile_img!=null  && teams?.profile_img!=''"
-                    [src]="teams.profile_img" (error)="handleImageError($event, default_img)">
-                </span>
-                <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)"> {{ teams.team_name
-                }}</span>
-              
-              </td>
+                <td>
+
+                  <span class="person-image-team-player">
+                    <img class="player-img" *ngIf="teams.profile_img==null || teams.profile_img==''"
+                      [src]="default_img">
+
+                    <img class="player-img" *ngIf="teams.profile_img!=null  && teams.profile_img!=''"
+                      [src]="teams.profile_img" (error)="handleImageError($event, default_img)">
+                  </span>
+                  <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)">
+                    {{ teams.team_name}}</span>
+
+                </td>
                 <td>{{ teams.age_category }}</td>
                 <td>{{ teams.team_category }}</td>
                 <td>{{ teams.gender }}</td>
@@ -161,17 +162,14 @@
       [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
 
-    <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right"
-     [showCloseIcon]="false">
+    <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="small-heading">
-          <div
-              *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null">
-              Add Team </div>
-          <div
-              *ngIf="addTeamForm.get('team_id')?.value != null && addTeamForm.get('team_id')?.value != ''">
-              Edit Team</div>
-      </div>
+          <div *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null">
+            Add Team </div>
+          <div *ngIf="addTeamForm.get('team_id')?.value != null && addTeamForm.get('team_id')?.value != ''">
+            Edit Team</div>
+        </div>
       </div>
       <form [formGroup]="addTeamForm">
         <div class="row gy-3">
@@ -179,10 +177,8 @@
             <label class="">Team Name
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="team_name" 
-              (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('team_name', $event)">
+            <input class="form-control" maxlength="50" type="text" formControlName="team_name"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('team_name', $event)">
             <small
               *ngIf="addTeamForm?.get('team_name')?.invalid &&(addTeamForm?.get('team_name')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
               class="required-msg">Team
@@ -194,10 +190,9 @@
             <label class="">Short Name
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="team_short" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('team_short', $event)">
-              <small
+            <input class="form-control" maxlength="50" type="text" formControlName="team_short"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('team_short', $event)">
+            <small
               *ngIf="addTeamForm?.get('team_short')?.invalid &&(addTeamForm?.get('team_short')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
               class="required-msg">Short
               Name Is Required
@@ -245,7 +240,6 @@
 
             </small>
           </div>
-
           <div class="col-md-6">
             <label>Age Group
               <span class="text-danger">*</span>
@@ -323,9 +317,8 @@
             <label class="">Reference Sourece ID
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="20" type="text" 
-              formControlName="reference_id" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('reference_id', $event)">
+            <input class="form-control" maxlength="20" type="text" formControlName="reference_id"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('reference_id', $event)">
             <small
               *ngIf="addTeamForm?.get('reference_id')?.invalid &&(addTeamForm?.get('reference_id')?.touched) || (addTeamForm.get('reference_id')?.invalid && submitted)"
               class="required-msg">Reference Sourece ID Required
@@ -334,65 +327,71 @@
 
           <div class="col-md-6">
             <label>Profile Image</label>
-            <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">CropImage</a>
+            <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">Crop Image</a>
             <div class="image-upload-container text-center">
+              <!-- <div class="image-preview-wrapper">
+                    <button  type="button" class="cancel-btn"
+                        (click)="cancel()">✕</button>
+                    <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                        [src]="default_img" alt="Profile Image" class="profile-img">
+                    <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image"
+                        class="profile-img">
+                    <img *ngIf="profileImages !=null && profileImages != ''" [src]="profileImages"
+                        (error)="handleImageError($event, default_img)" alt="Profile Image"
+                        class="profile-img">
+
+                </div> -->
+
               <div class="image-preview-wrapper">
-                <button *ngIf="filedata != null && filedata != ''"  type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="envImagePath + '/images/avatar.png'"  alt="Profile Image" class="profile-img">
-                <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
-                <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  alt="Profile Image" class="profile-img">
-
+                <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                <img [src]="filedata ? url : (profileImages ? profileImages : default_img)"
+                  (error)="handleImageError($event, default_img)" alt="Profile Image"
+                   class="profile-img">
               </div>
-
               <label for="profileImageInput" class="upload-btn">
-                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden formControlName="profile_img" />
+                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
+                  formControlName="profile_img" />
                 Upload
               </label>
-              <div>
-                <small class="text-danger" *ngIf="addTeamForm.get('profile_img')?.errors">
-                  * Only PNG, JPEG, or JPG files are allowed
-                </small>
-              </div>
+
             </div>
-              <!-- Cropper Modal -->
-              <div *ngIf="showCropperModal" class="modal img-croper-popup ">
-                <div class="modal-content crop-image">
-                    <div class="modal-header modal-header-img">
-                        <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
-                    </div>
-                    <div class="modal-body img-fix">
-                        <image-cropper
-                        [imageBase64]="imageBase64"
-                        [maintainAspectRatio]="true"
-                        [aspectRatio]="4 / 3"
-                        (imageCropped)="imageCropped($event)"
-                        (imageLoaded)="imageLoaded()"
-                        (cropperReady)="cropperReady()"
-                        (loadImageFailed)="loadImageFailed()"
-                      ></image-cropper>
-                    </div>
-                    <div class="modal-footer crop-footer">
-                        <button class="save-btn submit-btn margin-right" (click)="saveCroppedImage()">Save</button>
-                        <button class="clear-button submit-btn margin-right" (click)="cancelImg()">Cancel</button>
-                    </div>
+            <small class="text-danger" *ngIf="addTeamForm.get('profile_img')?.errors">
+              * Only PNG,JPEG, or JPG files are allowed
+            </small>
+            <!-- Cropper Model -->
+            <div *ngIf="showCropperModal" class="modal img-croper-popup">
+              <div class="modal-content crop-image">
+                <div class="modal-header modal-header-img">
+                  <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
                 </div>
+                <div class="modal-body img-fix">
+                  <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                    (loadImageFailed)="loadImageFailed()">
+                  </image-cropper>
+                </div>
+                <div class="modal-footer crop-footer">
+                  <button class="save-btn submit-btn margin-right" (click)="saveCroppedImage()">Save</button>
+                  <button class="clear-button submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                </div>
+              </div>
             </div>
           </div>
 
         </div>
         <div class="form-wrapper pb-5">
-        <div class="row mt-4 sticky-footer-buttons" >
-          <div class="col-12 text-end">
-            <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
-              (click)="cancelForm()"></button>
+          <div class="row mt-4 sticky-footer-buttons">
+            <div class="col-12 text-end">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
+                (click)="cancelForm()"></button>
 
-            <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
-              *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
-              (click)="resetForm()"></button>
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
+                *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
+                (click)="resetForm()"></button>
 
-            <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>
+              <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>
+            </div>
           </div>
-        </div>
         </div>
       </form>
     </p-drawer>

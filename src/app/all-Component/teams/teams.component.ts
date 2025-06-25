@@ -75,7 +75,7 @@ export class TeamsComponent implements OnInit {
   genderList: Team[] = [];
   formatList: Team[] = [];
   allTeamData: Teams[] = [];
-  showCropperModal = false;
+  showCropperModal :boolean= false;
   imageBase64: any = null;
   filedata: any;
   profileImages: any;
@@ -83,7 +83,6 @@ export class TeamsComponent implements OnInit {
   imageDefault: any;
   url: any;
   src: any;
-  team_profile: any
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
@@ -108,6 +107,7 @@ export class TeamsComponent implements OnInit {
   envImagePath = environment.imagePath;
   default_flag_img = this.envImagePath + '/images/Default Flag.png';
   default_img = CricketKeyConstant.default_image_url.teamimage;
+  croppedImage: any;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant,
@@ -189,8 +189,9 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           this.totalData = 0;
         }
         this.teamData.forEach((val: any) => {
-          val.team_profile = `${val.team_profile}?${Math.random()}`;
+          val.profile_image = `${val.profile_image}?${Math.random()}`;
         });
+
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
 
@@ -241,10 +242,19 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
   cancelForm() {
     this.ShowForm = false;
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage=null;
   }
+
   resetForm() {
     this.addTeamForm.reset();
     this.submitted = false;
+    this.previewUrl = null;
     this.filedata = null;
     this.profileImages = null;
     this.url = null;
@@ -375,13 +385,15 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       reference_id: String(this.addTeamForm.value.reference_id),
       country_id:String(this.addTeamForm.value.country_id),
       action_flag: 'create',
+      profile_img: this.filedata ? '' : this.profileImages
+
     };
     if (this.addTeamForm.value.team_id) {
       params.action_flag = 'update';
       params.team_id = String(this.addTeamForm.value.team_id),
       this.apiService.post(this.urlConstant.updateTeam, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
-
+      
           if (res.data !== null && this.filedata != null) {
             this.profileImgAppend(params.team_id);
           } else {
@@ -410,6 +422,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
   EditTeam(team_id: number) {
+    this.showCropperModal = false;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -418,7 +431,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       if (res.status_code == this.statusConstants.success && res.status) {
         const editRecord: EditTeam = res.data.teams[0] ?? {};
         if (editRecord != null) {
-          this.addTeamForm.setValue({
+          this.addTeamForm.patchValue({
             team_id: editRecord.team_id,
             team_short: editRecord.team_short,
             team_name: editRecord.team_name,
@@ -430,9 +443,10 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             club_id: editRecord.club_id,
             reference_id: editRecord.reference_id,
             country_id: editRecord.country_id,
-            profile_img:'',
+            // profile_img:'',
           });
           this.showAddForm();
+          this.filedata = null;
           this.profileImages = editRecord.profile_img + '?' + Math.random();
           this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
         }
@@ -449,19 +463,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     };
     reader.readAsDataURL(file);
   }
-  onProfileImageSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.filedata = file;
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
 
-      };
-      reader.readAsDataURL(file);
-
-    }
-  }
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
@@ -495,7 +497,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
-
   fileEvent(event: any) {
     if (this.addTeamForm.value.profile_img.value !== null &&
       this.addTeamForm.value.profile_img.value !== '') {
@@ -518,6 +519,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
     }
   }
+
     /*profile image update */
 
     profileImgUpdate(upload_profile_url: any, team_id: any) {
@@ -580,25 +582,26 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       }
     }
  saveCroppedImage(): void {
-  this.profileImages = this.filedata;
+  this.profileImages = this.croppedImage;
   this.imageCropAlter = this.filedata;
   this.filedata = this.base64ToBinary(this.filedata);
   this.showCropperModal = false;
   }
 
+
+
   cancelImg(): void {
     this.showCropperModal = false;
     this.url=this.imageCropAlter;
-    this.filedata=this.base64ToBinary(this.imageCropAlter);
+    this.filedata=this.base64ToBinary(this.filedata);
+    
   }
   loadImageFailed() {
     console.error('Image loading failed');
   }
 
-
   imageCropped(event: ImageCroppedEvent) {
     const blob = event.blob;
-
     if (blob) {
       this.convertBlobToBase64(blob).then((base64) => {
         this.url = base64;
@@ -609,6 +612,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       });
     }
   }
+
   imageLoaded() {
     console.log('Image loaded');
   }
@@ -622,6 +626,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       console.error('Invalid base64 input:', base64);
       return null;
     }
+
     try {
       const byteCharacters = atob(base64.split(',')[1]);
       const byteArrays = new Uint8Array(byteCharacters.length);
@@ -629,6 +634,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       for (let i = 0; i < byteCharacters.length; i++) {
         byteArrays[i] = byteCharacters.charCodeAt(i);
       }
+
       return new Blob([byteArrays], { type: 'image/jpeg' });
     } catch (error) {
       console.error('Error converting base64 to binary:', error);
@@ -637,7 +643,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
   convertUrlToBase64(imageUrl: string): void {
-    console.log(imageUrl)
     fetch(imageUrl)
       .then((response) => {
         if (!response.ok) {
@@ -646,14 +651,12 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         return response.blob();
       })
       .then((blob) => {
-        console.log(blob);
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Image = reader.result as string;
           this.imageBase64 = base64Image;
           this.imageCropAlter = base64Image
           this.imageDefault = base64Image
-          console.log(base64Image); 
         };
         reader.readAsDataURL(blob);
       })
@@ -663,15 +666,18 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   cancel() {
     this.filedata = null;
     this.url = null;
+    this.imageBase64 = null;
     this.profileImages = null;
     this.imageCropAlter = null;
-    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage=null;
   }
   cropPopOpen() {
     this.showCropperModal = true;
     this.imageBase64=this.imageDefault;
   }
   
+
   convertBlobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

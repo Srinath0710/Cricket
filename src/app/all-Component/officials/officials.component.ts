@@ -156,7 +156,7 @@ export class OfficialsComponent implements OnInit {
   imageCropAlter: any;
   imageDefault: any;
   imageChangedEvent: any = '';
-
+  croppedImage:any;
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
   }
@@ -435,6 +435,13 @@ export class OfficialsComponent implements OnInit {
     this.personalShowForm = false;
     this.addPersonalForm.reset();
     this.disableReadonly = true;
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage=null;
   }
 
   onOfficialChange(selectedId: number) {
@@ -466,6 +473,7 @@ export class OfficialsComponent implements OnInit {
 
   Editofficial(official: any) {
     this.isEditMode = true;
+
     this.officialId = official.official_id;
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -968,13 +976,15 @@ export class OfficialsComponent implements OnInit {
     this.profileImages = null;
     this.imageCropAlter = null;
     this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage=null;
   }
   cropPopOpen() {
     this.showCropperModal = true;
     this.imageBase64 = this.imageDefault;
   }
   saveCroppedImage(): void {
-    this.profileImages = this.filedata;
+    this.profileImages = this.croppedImage;
     this.imageCropAlter = this.filedata;
     this.filedata = this.base64ToBinary(this.filedata);
     this.showCropperModal = false;
@@ -1018,11 +1028,7 @@ export class OfficialsComponent implements OnInit {
       });
     }
   }
-  // imageCropped(event: ImageCroppedEvent) {
-  //   this.url = event.base64
-  //   this.filedata = event.base64
-  //    this.profileImages=null
-  // }
+ 
   imageLoaded() {
     console.log('Image loaded');
   }

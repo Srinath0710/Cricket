@@ -65,6 +65,7 @@ export class UpdateTeams {
      reference_id: string|number;
      country_id:string|number;
     action_flag: string;
+    profile_img : string;
 
   
     constructor(item: Partial<UpdateTeams> = {}) {
@@ -80,6 +81,7 @@ export class UpdateTeams {
       this.reference_id = item.reference_id || 0;
       this.country_id = item.country_id || '';
       this.action_flag = item.action_flag || '';
+      this.profile_img = item.profile_img || '';
 
     }
   }

@@ -96,7 +96,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
 
         setTimeout(() => {
             this.gridLoad();
-        }, 500)
+        },)
 
     }
 
@@ -442,7 +442,7 @@ confirmSelection(permissionform: NgForm) {
         this.ShowForm = false;
         setTimeout(() => {
             this.gridLoad();
-        }, 1000)
+        },)
 
 
     }
