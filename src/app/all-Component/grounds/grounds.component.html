@@ -74,10 +74,9 @@
               <tr>
                 <td>
                   <span class="person-image-team-player">
-                    <img class="ground-img" *ngIf="!ground.profile || !ground.profile_img" [src]="default_img">
-
-                    <img class="ground-img" *ngIf="ground.profile && ground.profile_img"
-                      [src]="ground.profile" (error)="handleImageError($event, default_img)">
+                    <img class="player-img" *ngIf="!ground.profile_img == null || ground.profile_img == ''" [src]="default_img" />
+                    <img class="player-img" *ngIf="ground.profile_img != null && ground.profile_img != ''"
+                      [src]="ground.profile" (error)="handleImageError($event, default_img)" />
                   </span>
                   <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)"> {{ ground.ground_name
                     }}</span>
@@ -486,17 +485,16 @@
         (click)="cropPopOpen()">Crop Image</a>
     <div class="image-upload-container text-center">
         <div class="image-preview-wrapper">
-            <!-- Show cancel button if a file (Blob) is currently selected for upload, or if there's a URL for preview -->
+
             <button *ngIf="filedata != null || previewUrl != null" type="button" class="cancel-btn"
                 (click)="cancel()">✕</button>
 
-            <!-- Display the default image if no image is currently selected or loaded for preview -->
+                
             <img *ngIf="!previewUrl" 
                 [src]="default_img" 
                 alt="Profile Image" 
                 class="profile-img">
-            
-            <!-- Display the current preview image (cropped or existing from edit) -->
+
             <img *ngIf="previewUrl" 
                 [src]="previewUrl" 
                 alt="Profile Image"
@@ -504,7 +502,6 @@
                 class="profile-img">
         </div>
         <label for="profileImageInput" class="upload-btn">
-            <!-- Note: formControlName="profile" should be on the input. This is correct here. -->
             <input type="file" id="profileImageInput" accept="image/jpeg,image/png,image/jpg" (change)="fileEvent($event)" hidden formControlName="profile" />
             Upload
         </label> 

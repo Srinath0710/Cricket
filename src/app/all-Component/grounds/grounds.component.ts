@@ -63,7 +63,7 @@ export class GroundsComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10;
   totalData: any = 0;
-  filedata: File | Blob | null = null; 
+  filedata: any;
   searchKeyword: string = '';
   submitted: boolean = true;
   ground_id: any;
@@ -93,12 +93,12 @@ export class GroundsComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
 
-  croppedImageBlob: Blob | null = null;
+
   imageBase64: any = null;
   showCropperModal: boolean = false;
   imageCropAlter: any;
   imageDefault: any;
-  croppedImage: string = '';
+  croppedImage: any;
 
   constructor(private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -316,7 +316,14 @@ export class GroundsComponent implements OnInit {
   }
 
   cancelForm() {
-    this.ShowForm = false;
+     this.ShowForm = false;
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage = null;
   }
 
   resetForm() {
@@ -327,8 +334,7 @@ export class GroundsComponent implements OnInit {
     this.profileImages = null;
     this.url = null;
     this.imageBase64 = null;
-    this.croppedImageBlob = null;
-    this.croppedImage = '';
+
     this.imageCropAlter = null;
     this.imageDefault = null;
   }
@@ -343,20 +349,80 @@ export class GroundsComponent implements OnInit {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
 
-  onAddGround() {
-    this.submitted = true;
-    this.isEditMode = false;
-    if (this.addGroundForm.invalid) {
+  // onAddGround() {
+  //   this.submitted = true;
+  //   this.isEditMode = false;
+  //   if (this.addGroundForm.invalid) {
 
-      this.addGroundForm.markAllAsTouched();
-      return;
-    }
+  //     this.addGroundForm.markAllAsTouched();
+  //     return;
+  //   }
 
-    const isEdit = !!this.addGroundForm.value.ground_id;
+  //   const isEdit = !!this.addGroundForm.value.ground_id;
 
-    const params: UpdateGround = {
+  //   const params: UpdateGround = {
 
-      user_id: String(this.user_id),
+  //     user_id: String(this.user_id),
+  //     client_id: String(this.ClientID),
+  //     ground_id: this.addGroundForm.value.ground_id != null ? String(this.addGroundForm.value.ground_id) : null,
+  //     ground_name: this.addGroundForm.value.ground_name,
+  //     display_name: this.addGroundForm.value.display_name,
+  //     country_id: String(this.addGroundForm.value.country_id),
+  //     state_id: String(this.addGroundForm.value.state_id),
+  //     city_id: String(this.addGroundForm.value.city_id),
+  //     address_1: this.addGroundForm.value.address_1,
+  //     address_2: this.addGroundForm.value.address_2,
+  //     post_code: this.addGroundForm.value.post_code,
+  //     northern_end: this.addGroundForm.value.northern_end,
+  //     sourthern_end: this.addGroundForm.value.sourthern_end,
+  //     north: this.addGroundForm.value.north,
+  //     south: this.addGroundForm.value.south,
+  //     east: this.addGroundForm.value.east,
+  //     west: this.addGroundForm.value.west,
+  //     club_id: String(this.addGroundForm.value.club_id),
+  //     latitude: this.addGroundForm.value.latitude,
+  //     longitude: this.addGroundForm.value.longitude,
+  //     capacity: String(this.addGroundForm.value.capacity),
+  //     profile: this.addGroundForm.value.profile,
+  //     action_flag: isEdit ? 'update' : 'create',
+  //     ground_photo: this.addGroundForm.value.ground_photo,
+  //     reference_id: this.addGroundForm.value.reference_id,
+  //   };
+
+  //   const apiUrl = isEdit ? this.urlConstant.updateGround : this.urlConstant.addGround;
+
+  //   this.apiService.post(apiUrl, params).subscribe(
+  //     (res) => {
+  //       if (res.status_code === this.statusConstants.success && res.status) {
+  //         const groundId = isEdit ? params.ground_id : res.data?.grounds?.[0]?.ground_id;
+  //         if (this.filedata instanceof Blob && groundId) {
+  //           this.profileImgAppend(groundId, res);
+  //         } else {
+  //           this.addCallBack(res);
+  //         }
+  //       } else {
+  //         this.failedToast(res);
+  //       }
+  //     },
+  //     (err: any) => {
+  //       if (err.status_code === this.statusConstants.refresh &&
+  //           err.error.message === this.statusConstants.refresh_msg) {
+  //         this.apiService.RefreshToken();
+  //       } else {
+  //         this.failedToast(err.error);
+  //       }
+  //     }
+  //   );
+  // }
+
+   onAddGround() {
+      this.submitted = true;
+      if (this.addGroundForm.invalid) {
+        this.addGroundForm.markAllAsTouched();
+        return
+      }
+      const params: UpdateGround = {
+         user_id: String(this.user_id),
       client_id: String(this.ClientID),
       ground_id: this.addGroundForm.value.ground_id != null ? String(this.addGroundForm.value.ground_id) : null,
       ground_name: this.addGroundForm.value.ground_name,
@@ -378,36 +444,43 @@ export class GroundsComponent implements OnInit {
       longitude: this.addGroundForm.value.longitude,
       capacity: String(this.addGroundForm.value.capacity),
       profile: this.addGroundForm.value.profile,
-      action_flag: isEdit ? 'update' : 'create',
+      action_flag: this.isEditMode ? 'update' : 'create',
       ground_photo: this.addGroundForm.value.ground_photo,
       reference_id: this.addGroundForm.value.reference_id,
-    };
-
-    const apiUrl = isEdit ? this.urlConstant.updateGround : this.urlConstant.addGround;
-
-    this.apiService.post(apiUrl, params).subscribe(
-      (res) => {
-        if (res.status_code === this.statusConstants.success && res.status) {
-          const groundId = isEdit ? params.ground_id : res.data?.grounds?.[0]?.ground_id;
-          if (this.filedata instanceof Blob && groundId) {
-            this.profileImgAppend(groundId, res);
+  
+      };
+      if (this.addGroundForm.value.ground_id) {
+        params.action_flag = 'update';
+        params.ground_id = String(this.addGroundForm.value.ground_id),
+        this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
+          if (res.status_code === this.statusConstants.success && res.status) {
+        
+            if (res.data !== null && this.filedata != null) {
+              this.profileImgAppend(params.ground_id);
+            } else {
+              this.addCallBack(res)
+            }
           } else {
-            this.addCallBack(res);
+            this.failedToast(res)
           }
-        } else {
-          this.failedToast(res);
-        }
-      },
-      (err: any) => {
-        if (err.status_code === this.statusConstants.refresh &&
-            err.error.message === this.statusConstants.refresh_msg) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err.error);
-        }
+        }, (err: any) => {
+          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        });
+      } else {
+        this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
+          if (res.status_code === this.statusConstants.success && res.status) {
+            if (res.data !== null && this.filedata != null) {
+              this.profileImgAppend(res.data.grounds[0].ground_id);
+            } else {
+              this.addCallBack(res)
+            }
+          } else {
+            this.failedToast(res)
+          }}, (err: any) => {
+          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        });
       }
-    );
-  }
+    }
 
   addCallBack(res: any) {
     this.resetForm();
@@ -599,7 +672,7 @@ export class GroundsComponent implements OnInit {
   formSetValue() {
     if (this.groundsData.length > 0 && this.groundsData[0].config_id) {
       this.addGroundForm.patchValue({
-        team_format: this.groundsData[0].config_id
+        ground_format: this.groundsData[0].config_id
       });
     } else {
       console.warn('No valid data in groundsData to set form value');
@@ -622,37 +695,33 @@ export class GroundsComponent implements OnInit {
     target.src = fallbackUrl;
   }
 
-  cropPopOpen(): void {
-    if (this.url || this.profileImages) {
-      this.imageBase64 = (this.url || this.profileImages) as string;
-      this.showCropperModal = true;
-    } else {
-      this.failedToast({ message: 'No image selected to crop.' });
-    }
+ cropPopOpen() {
+    this.showCropperModal = true;
+    this.imageBase64=this.imageDefault;
   }
 
-  saveCroppedImage(): void {
-    this.profileImages = this.croppedImage; 
-    this.previewUrl = this.croppedImage; 
-    this.filedata = this.croppedImageBlob; 
-    
-    this.showCropperModal = false;
+ saveCroppedImage(): void {
+  this.profileImages = this.croppedImage;
+  this.imageCropAlter = this.filedata;
+  this.filedata = this.base64ToBinary(this.filedata);
+  this.showCropperModal = false;
   }
 
-  cancel(): void {
+
+  cancel(){
     this.filedata = null;
     this.url = null;
     this.profileImages = null;
     this.previewUrl = null;
-    this.croppedImageBlob = null;
-    this.croppedImage = ''; 
-    this.addGroundForm.get('profile')?.setValue(null); 
+
+    this.croppedImage = null; 
   }
 
   cancelImg(): void {
     this.showCropperModal = false;
-    this.croppedImage = '';
-    this.imageBase64 = '';
+    this.url=this.imageCropAlter;
+    this.filedata=this.base64ToBinary(this.filedata);
+    
   }
 
   imageLoaded() {
@@ -669,98 +738,138 @@ export class GroundsComponent implements OnInit {
     this.cancelImg();
   }
 
-  fileEvent(event: any): void {
-    if (event.target.files && event.target.files[0]) {
-      const file: File = event.target.files[0];
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-
-      if (!allowedTypes.includes(file.type)) {
-        this.addGroundForm.get('profile')?.setErrors({ 'invalidFileType': true });
-        this.filedata = null;
-        this.url = null;
-        this.imageBase64 = null;
-        this.failedToast({ message: 'Invalid file type. Only JPEG, PNG, JPG are allowed.' });
-        return;
-      } else {
-        this.addGroundForm.get('profile')?.setErrors(null);
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.url = e.target.result;
-        this.imageBase64 = e.target.result;
-        this.showCropperModal = true;
-      };
-      reader.readAsDataURL(file);
-    } else {
-      this.url = null;
-      this.filedata = null;
+  fileEvent(event: any) {
+    if (this.addGroundForm.value.profile_img.value !== null &&
+      this.addGroundForm.value.profile_img.value !== '') {
       this.profileImages = null;
-      this.imageBase64 = null;
-      this.croppedImageBlob = null;
-      this.croppedImage = '';
-      this.previewUrl = null;
-      this.addGroundForm.get('profile')?.setValue(null);
+    }
+    if (event && event.target && event.target.files && event.target.files.length > 0) {
+      this.filedata = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: any) => {
+        var img = new Image;
+        this.url = event.target.result;
+        this.imageCropAlter = event.target.result
+        this.imageDefault = event.target.result
+      }
+    } else {
+      this.filedata = null;
+      this.url = this.imageDefault
+      this.filedata = this.base64ToBinary(this.imageDefault);
+
     }
   }
 
   imageCropped(event: ImageCroppedEvent) {
-    this.croppedImage = event.base64 as string; 
-    this.croppedImageBlob = event.blob || null; 
+    const blob = event.blob;
+    if (blob) {
+      this.convertBlobToBase64(blob).then((base64) => {
+        this.url = base64;
+        this.filedata = base64;
+        this.profileImages = null;
+      }).catch((error) => {
+        console.error('Failed to convert blob to base64:', error);
+      });
+    }
   }
 
-  profileImgUpdate(upload_profile_url: any, ground_id: any, baseRes: any) {
-    const params: any = {
-      action_flag: 'update_profile_url',
-      profile_img: upload_profile_url.toString(),
-      user_id: this.user_id.toString(),
-      ground_id: ground_id.toString(),
-      client_id: this.client_id.toString()
-    };
+  profileImgUpdate(upload_profile_url: any, ground_id: any) {
+      const params: any = {
+        action_flag: 'update_profile_url',
+        profile_img: upload_profile_url.toString(),
+        user_id: this.user_id.toString(),
+        client_id: this.client_id.toString(),
+        ground_id: ground_id?.toString()
+      };
 
-    this.apiService.post(this.urlConstant.profileGround, params).subscribe(
-      (res) => {
-        if (res.status_code == this.statusConstants.success && res.status) {
-          this.addCallBack(baseRes);
-        } else {
-          this.failedToast(res);
-          this.addCallBack(baseRes);
-        }
-      },
-      (err) => {
-        this.failedToast(err.error);
-        this.addCallBack(baseRes);
-      }
-    );
-  }
-
-  profileImgAppend(ground_id: any, baseRes: any) {
-    const myFormData = new FormData();
-    if (this.filedata instanceof Blob) {
-      myFormData.append('imageFile', this.filedata, `ground_${ground_id}_profile.jpg`); 
-      myFormData.append('client_id', this.client_id.toString());
-      myFormData.append('file_id', ground_id);
-      myFormData.append('upload_type', 'grounds'); 
-      myFormData.append('user_id', this.user_id.toString());
-
-      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+      this.apiService.post(this.urlConstant.profileGround, params).subscribe(
         (res) => {
-          if (res.status_code == this.statusConstants.success && res.url) {
-            this.profileImgUpdate(res.url, ground_id, baseRes);
+          if (res.status_code == this.statusConstants.success && res.status) {
+            this.filedata = null;
+            this.addCallBack(res)
           } else {
             this.failedToast(res);
-            this.addCallBack(baseRes);
           }
         },
-        (err) => {
-          this.failedToast(err.error);
-          this.addCallBack(baseRes);
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+  
+          } else {
+            this.failedToast(err.error);
+          }
         }
       );
-    } else {
-      console.warn('No image blob available for upload or filedata is not a Blob.');
-      this.addCallBack(baseRes);
     }
+
+  profileImgAppend(ground_id: any) {
+      const myFormData = new FormData();
+      if (this.filedata != null && this.filedata != '') {
+        myFormData.append('imageFile', this.filedata);
+        myFormData.append('client_id', this.client_id.toString());
+        myFormData.append('file_id', ground_id);
+        myFormData.append('upload_type', 'grounds');
+        myFormData.append('user_id', this.user_id?.toString());
+        this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+          (res) => {
+            if (res.status_code == this.statusConstants.success) {
+              if (res.url != null && res.url != '') {
+                this.profileImgUpdate(res.url, ground_id);
+              } else {
+                this.failedToast(res);
+              }
+            } else {
+              this.failedToast(res);
+            }
+          },
+          (err: any) => {
+            if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+              this.apiService.RefreshToken();
+  
+            } else {
+              this.failedToast(err.error);
+            }
+          }
+        );
+      }
+    }
+
+    base64ToBinary(base64: string): Blob | null {
+    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 input:', base64);
+      return null;
+    }
+
+    try {
+      const byteCharacters = atob(base64.split(',')[1]);
+      const byteArrays = new Uint8Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+      }
+
+      return new Blob([byteArrays], { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Error converting base64 to binary:', error);
+      return null;
+    }
+  }
+
+    convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = () => {
+        reject('Failed to convert Blob to base64');
+      };
+
+      reader.readAsDataURL(blob);
+    });
   }
 
 }
