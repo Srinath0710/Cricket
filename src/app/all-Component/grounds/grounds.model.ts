@@ -49,6 +49,7 @@ export class EditGround {
     longitude: string;
     capacity: string|number;
     reference_id: string;
+  ground_photo: string;
 
 
     constructor(item: Partial<EditGround> = {}) {
@@ -72,6 +73,7 @@ export class EditGround {
         this.longitude = item.longitude || '';
         this.capacity = item.capacity || 0;
         this.reference_id = item.reference_id || '';
+        this.ground_photo = item.ground_photo || '';
     }
 }
 

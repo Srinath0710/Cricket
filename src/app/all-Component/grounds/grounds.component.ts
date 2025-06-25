@@ -19,18 +19,22 @@ import { ToastModule } from 'primeng/toast';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Drawer } from 'primeng/drawer';
 import { TooltipModule } from 'primeng/tooltip';
+import { environment } from '../../environments/environment';
+import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
+import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 
 interface Country {
   country_id: number;
   country_name: string;
 }
+
 @Component({
   selector: 'app-grounds',
   standalone: true,
   imports: [CommonModule, TableModule, BadgeModule, ButtonModule,
     DialogModule, ReactiveFormsModule, DropdownModule,
     FormsModule, FileUploadModule, InputTextModule, Drawer,
-    ConfirmDialogModule, ToastModule, TagModule, PaginatorModule,TooltipModule],
+    ConfirmDialogModule, ToastModule, TagModule, PaginatorModule, TooltipModule, ImageCropperComponent],
   templateUrl: './grounds.component.html',
   styleUrls: ['./grounds.component.css'],
   providers: [
@@ -59,37 +63,50 @@ export class GroundsComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10;
   totalData: any = 0;
-  filedata: any;
+  filedata: File | Blob | null = null; 
   searchKeyword: string = '';
   submitted: boolean = true;
   ground_id: any;
   country_id: any;
+
+  profileImages: any;
+  url: string | ArrayBuffer | null = null;
+  envImagePath = environment.imagePath;
+  default_img = CricketKeyConstant.default_image_url.grounds;
+  default_image_url = 'assets/images/ground-logo.png';
   countriesList: Country[] = [];
   citiesList = [];
   statesList = [];
-  default_img: any = 'assets/images/default-player.png';
+
   viewDialogVisible: boolean = false;
   selectedGround: any = [];
   ClientID: any = [];
   groundsData: any;
   configDataList: any;
-    previewUrl: string | ArrayBuffer | null = null;
-    uploadedImage: string | ArrayBuffer | null = null;
- decimalPattern = /^\d*\.?\d+$/;
-decimalnoPattern = /^\d+$/; // Only digits
-GroundsNamePattern = /^[^'"]+$/; //allstringonly allow value
-isClientShow: boolean=false;
+  previewUrl: string | ArrayBuffer | null = null;
+  uploadedImage: string | ArrayBuffer | null = null;
+  decimalPattern = /^\d*\.?\d+$/;
+  decimalnoPattern = /^\d+$/; // Only digits
+  GroundsNamePattern = /^[^'"]+$/; //allstringonly allow value
+  isClientShow: boolean = false;
 
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
+
+  croppedImageBlob: Blob | null = null;
+  imageBase64: any = null;
+  showCropperModal: boolean = false;
+  imageCropAlter: any;
+  imageDefault: any;
+  croppedImage: string = '';
 
   constructor(private formBuilder: FormBuilder,
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private confirmationService: ConfirmationService,
-    public cricketKeyConstant: CricketKeyConstant) {
-
+    public cricketKeyConstant: CricketKeyConstant,
+    private uploadImgService: UploadImgService) {
   }
 
 
@@ -112,76 +129,69 @@ isClientShow: boolean=false;
       south: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
       east: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
       west: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
-      club_id: ['',[]],
+      club_id: ['', []],
       latitude: ['', []],
       longitude: ['', []],
-      capacity:  [''],
-      profile: ['', []],
-      ground_photo: ['', []],
-      ground_id: ['',[]],
-      reference_id: ['',[Validators.required]]
-
-    })
-
-
+      capacity: [''],
+      profile: ['', []], // This is the form control for the image (URL or data)
+      ground_photo: ['', []], // This seems redundant if 'profile' is the main image field
+      ground_id: ['', []],
+      reference_id: ['', [Validators.required]]
+    });
   }
 
 
   // Allow only numbers and one decimal point
-allowDecimalOnly(event: KeyboardEvent) {
-  const allowedKeys = ['0','1','2','3','4','5','6','7','8','9','.'];
-  const inputChar = event.key;
+  allowDecimalOnly(event: KeyboardEvent) {
+    const allowedKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+    const inputChar = event.key;
 
-  if (!allowedKeys.includes(inputChar)) {
-    event.preventDefault(); // block all except digits and "."
-    return;
+    if (!allowedKeys.includes(inputChar)) {
+      event.preventDefault(); // block all except digits and "."
+      return;
+    }
+
+    // Prevent multiple decimals
+    const inputElement = event.target as HTMLInputElement;
+    if (inputChar === '.' && inputElement.value.includes('.')) {
+      event.preventDefault();
+    }
   }
 
-  // Prevent multiple decimals
-  const inputElement = event.target as HTMLInputElement;
-  if (inputChar === '.' && inputElement.value.includes('.')) {
-    event.preventDefault();
+  // Clean unwanted characters if pasted
+  sanitizeDecimalInput(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'); // Only one "."
+    this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
-}
 
-// Clean unwanted characters if pasted
-sanitizeDecimalInput(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1'); // Only one "."
-  this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
-}
-
-
-
-// Allow only digits (0-9), block dot and others
-allowNumberOnly(event: KeyboardEvent) {
-  const inputChar = event.key;
-  const isNumber = /^[0-9]$/.test(inputChar);
-  if (!isNumber) {
-    event.preventDefault(); // Block non-numeric keys (including dot)
+  // Allow only digits (0-9), block dot and others
+  allowNumberOnly(event: KeyboardEvent) {
+    const inputChar = event.key;
+    const isNumber = /^[0-9]$/.test(inputChar);
+    if (!isNumber) {
+      event.preventDefault(); // Block non-numeric keys (including dot)
+    }
   }
-}
 
-sanitizeNumberInput(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/[^0-9]/g, ''); // Keep only digits
-  this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
-}
-
-//single quotes and doble quotes remove all label box 
-blockQuotesOnly(event: KeyboardEvent) {
-  if (event.key === '"' || event.key === "'") {
-    event.preventDefault();
+  sanitizeNumberInput(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/[^0-9]/g, ''); // Keep only digits
+    this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
-}
 
+  //single quotes and doble quotes remove all label box 
+  blockQuotesOnly(event: KeyboardEvent) {
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
+  }
 
-sanitizeQuotesOnly(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
-  this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
-}
-
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+    this.addGroundForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
 
   Clientdropdown() {
     const params: any = {
@@ -190,7 +200,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.ClientID = this.clientData[0].client_id;
-      this.isClientShow=this.clientData.length>1?true:false;
+      this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
@@ -212,15 +222,15 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
         if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
           this.failedToast(err.error);
-        } 
-        else {  
+        }
+        else {
           this.configDataList = [];
           console.error("Error fetching clubs dropdown:", err);
         }
       }
     );
   }
-  
+
 
   gridload() {
     const params: any = {
@@ -266,7 +276,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.viewGround, params).subscribe({
       next: (res) => {
         if (res.status && res.data) {
-          this.selectedGround = res.data.grounds; // or res.data.ground based on response shape
+          this.selectedGround = res.data.grounds;
           this.viewDialogVisible = true;
         }
       },
@@ -289,9 +299,11 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   getImageUrl(img: string) {
     return `your-image-base-path/${img}`;
   }
+
   calaculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
+
   onPageChange(event: any) {
     this.first = (event.page) + 1;
     this.pageData = event.first;
@@ -302,6 +314,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   showAddForm() {
     this.ShowForm = true;
   }
+
   cancelForm() {
     this.ShowForm = false;
   }
@@ -309,7 +322,17 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   resetForm() {
     this.addGroundForm.reset();
     this.submitted = false;
+    this.previewUrl = null;
+    this.filedata = null;
+    this.profileImages = null;
+    this.url = null;
+    this.imageBase64 = null;
+    this.croppedImageBlob = null;
+    this.croppedImage = '';
+    this.imageCropAlter = null;
+    this.imageDefault = null;
   }
+
   successToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
@@ -326,14 +349,16 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     if (this.addGroundForm.invalid) {
 
       this.addGroundForm.markAllAsTouched();
-      return
+      return;
     }
+
+    const isEdit = !!this.addGroundForm.value.ground_id;
 
     const params: UpdateGround = {
 
       user_id: String(this.user_id),
       client_id: String(this.ClientID),
-      ground_id: this.addGroundForm.value.ground_id!=null ?String(this.addGroundForm.value.ground_id): null,
+      ground_id: this.addGroundForm.value.ground_id != null ? String(this.addGroundForm.value.ground_id) : null,
       ground_name: this.addGroundForm.value.ground_name,
       display_name: this.addGroundForm.value.display_name,
       country_id: String(this.addGroundForm.value.country_id),
@@ -353,27 +378,35 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       longitude: this.addGroundForm.value.longitude,
       capacity: String(this.addGroundForm.value.capacity),
       profile: this.addGroundForm.value.profile,
+      action_flag: isEdit ? 'update' : 'create',
       ground_photo: this.addGroundForm.value.ground_photo,
       reference_id: this.addGroundForm.value.reference_id,
-
-      action_flag: 'create',
     };
 
-    if (this.addGroundForm.value.ground_id) {
-      params.action_flag = 'update';
-      this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      });
-    } else {
+    const apiUrl = isEdit ? this.urlConstant.updateGround : this.urlConstant.addGround;
 
-      this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      });
-    }
+    this.apiService.post(apiUrl, params).subscribe(
+      (res) => {
+        if (res.status_code === this.statusConstants.success && res.status) {
+          const groundId = isEdit ? params.ground_id : res.data?.grounds?.[0]?.ground_id;
+          if (this.filedata instanceof Blob && groundId) {
+            this.profileImgAppend(groundId, res);
+          } else {
+            this.addCallBack(res);
+          }
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        if (err.status_code === this.statusConstants.refresh &&
+            err.error.message === this.statusConstants.refresh_msg) {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err.error);
+        }
+      }
+    );
   }
 
   addCallBack(res: any) {
@@ -391,7 +424,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     params.ground_id = ground.ground_id?.toString();
 
     this.apiService.post(this.urlConstant.editGround, params).subscribe((res) => {
-      if (res.status_code == this.statusConstants.success && res.status)  {
+      if (res.status_code == this.statusConstants.success && res.status) {
         const editRecord: EditGround = res.data.grounds[0] ?? {};
 
         if (editRecord != null) {
@@ -417,8 +450,14 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             capacity: editRecord.capacity,
             reference_id: editRecord.reference_id,
             profile: null,
-            ground_photo: null
+            ground_photo: editRecord.ground_photo
           });
+          if (editRecord.ground_photo) {
+            this.previewUrl = this.envImagePath + editRecord.ground_photo;
+            this.url = this.previewUrl;
+            this.imageBase64 = this.previewUrl;
+          }
+
           this.showAddForm();
         }
       } else {
@@ -441,6 +480,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     };
     reader.readAsDataURL(file);
   }
+
   onProfileImageSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
@@ -489,7 +529,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       return;
     }
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this.ground?`,
+      message: `Are you sure you want to ${actionObject.label} this ground?`,
       header: 'Confirmation',
       icon: 'pi pi-question-circle',
       acceptLabel: 'Yes',
@@ -513,7 +553,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
       this.countriesList = res.data.countries != undefined ? res.data.countries : [];
       this.loading = false;
-      this.country_id = this.countriesList[0].country_id;
+      this.country_id = this.countriesList[0]?.country_id; // Added optional chaining
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
@@ -523,7 +563,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     const params: any = {};
 
     if (state_id == null || state_id == '') {
-      return
+      return;
     }
 
     params.action_flag = 'get_city_by_state';
@@ -541,7 +581,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   getStates(country_id: any) {
     const params: any = {};
     if (country_id == null || country_id == '') {
-      return
+      return;
     }
     params.action_flag = 'get_state_by_country';
     params.user_id = this.user_id.toString();
@@ -552,9 +592,10 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.loading = false;
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-
+      
     });
   }
+
   formSetValue() {
     if (this.groundsData.length > 0 && this.groundsData[0].config_id) {
       this.addGroundForm.patchValue({
@@ -565,24 +606,161 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     }
   }
 
-  
-
-filterGlobal() {
+  filterGlobal() {
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
+
   clear() {
     this.searchKeyword = '';
     this.dt.clear();
     this.gridload();
   }
-
+  
 
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
 
+  cropPopOpen(): void {
+    if (this.url || this.profileImages) {
+      this.imageBase64 = (this.url || this.profileImages) as string;
+      this.showCropperModal = true;
+    } else {
+      this.failedToast({ message: 'No image selected to crop.' });
+    }
+  }
+
+  saveCroppedImage(): void {
+    this.profileImages = this.croppedImage; 
+    this.previewUrl = this.croppedImage; 
+    this.filedata = this.croppedImageBlob; 
+    
+    this.showCropperModal = false;
+  }
+
+  cancel(): void {
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.previewUrl = null;
+    this.croppedImageBlob = null;
+    this.croppedImage = ''; 
+    this.addGroundForm.get('profile')?.setValue(null); 
+  }
+
+  cancelImg(): void {
+    this.showCropperModal = false;
+    this.croppedImage = '';
+    this.imageBase64 = '';
+  }
+
+  imageLoaded() {
+    console.log('Image loaded in cropper');
+  }
+
+  cropperReady() {
+    console.log('Cropper ready');
+  }
+
+  loadImageFailed() {
+    console.error('Image loading failed in cropper');
+    this.failedToast({ message: 'Failed to load image into cropper. Please try another image.' });
+    this.cancelImg();
+  }
+
+  fileEvent(event: any): void {
+    if (event.target.files && event.target.files[0]) {
+      const file: File = event.target.files[0];
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+      if (!allowedTypes.includes(file.type)) {
+        this.addGroundForm.get('profile')?.setErrors({ 'invalidFileType': true });
+        this.filedata = null;
+        this.url = null;
+        this.imageBase64 = null;
+        this.failedToast({ message: 'Invalid file type. Only JPEG, PNG, JPG are allowed.' });
+        return;
+      } else {
+        this.addGroundForm.get('profile')?.setErrors(null);
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.url = e.target.result;
+        this.imageBase64 = e.target.result;
+        this.showCropperModal = true;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.url = null;
+      this.filedata = null;
+      this.profileImages = null;
+      this.imageBase64 = null;
+      this.croppedImageBlob = null;
+      this.croppedImage = '';
+      this.previewUrl = null;
+      this.addGroundForm.get('profile')?.setValue(null);
+    }
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64 as string; 
+    this.croppedImageBlob = event.blob || null; 
+  }
+
+  profileImgUpdate(upload_profile_url: any, ground_id: any, baseRes: any) {
+    const params: any = {
+      action_flag: 'update_profile_url',
+      profile_img: upload_profile_url.toString(),
+      user_id: this.user_id.toString(),
+      ground_id: ground_id.toString(),
+      client_id: this.client_id.toString()
+    };
+
+    this.apiService.post(this.urlConstant.profileGround, params).subscribe(
+      (res) => {
+        if (res.status_code == this.statusConstants.success && res.status) {
+          this.addCallBack(baseRes);
+        } else {
+          this.failedToast(res);
+          this.addCallBack(baseRes);
+        }
+      },
+      (err) => {
+        this.failedToast(err.error);
+        this.addCallBack(baseRes);
+      }
+    );
+  }
+
+  profileImgAppend(ground_id: any, baseRes: any) {
+    const myFormData = new FormData();
+    if (this.filedata instanceof Blob) {
+      myFormData.append('imageFile', this.filedata, `ground_${ground_id}_profile.jpg`); 
+      myFormData.append('client_id', this.client_id.toString());
+      myFormData.append('file_id', ground_id);
+      myFormData.append('upload_type', 'grounds'); 
+      myFormData.append('user_id', this.user_id.toString());
+
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+        (res) => {
+          if (res.status_code == this.statusConstants.success && res.url) {
+            this.profileImgUpdate(res.url, ground_id, baseRes);
+          } else {
+            this.failedToast(res);
+            this.addCallBack(baseRes);
+          }
+        },
+        (err) => {
+          this.failedToast(err.error);
+          this.addCallBack(baseRes);
+        }
+      );
+    } else {
+      console.warn('No image blob available for upload or filedata is not a Blob.');
+      this.addCallBack(baseRes);
+    }
+  }
 
 }
-
-

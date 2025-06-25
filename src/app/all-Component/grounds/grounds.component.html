@@ -27,7 +27,7 @@
             <div class="d-flex align-items-center">
               <!-- Search Form -->
               <form class="d-flex align-items-center gap-2" (submit)="gridload()">
-                 <div class="p-input-icon-right flex-grow-1">
+                <div class="p-input-icon-right flex-grow-1">
                   <!-- <i class="pi pi-search" ></i> -->
                   <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
                     placeholder="Search" (input)="filterGlobal()"
@@ -36,7 +36,7 @@
                 </div>
 
                 <button type="button" class="clear-button" (click)="searchKeyword = ''; filterGlobal();">
-                   Clear </button>
+                  Clear </button>
 
               </form>
 
@@ -54,7 +54,7 @@
             <ng-template pTemplate="header">
               <tr>
 
-                <th class="col-3" pSortableColumn="ground_name">Ground Name <p-sortIcon field="ground_name">
+                <th class="col-2" pSortableColumn="ground_name">Ground Name <p-sortIcon field="ground_name">
                   </p-sortIcon>
                 </th>
                 <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon field="country_name">
@@ -64,7 +64,7 @@
                 </th>
                 <th class="col-2" pSortableColumn="city_name">City Name <p-sortIcon field="city_name"></p-sortIcon>
                 </th>
-                <th class="col-1" pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                <th class="col-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
                 </th>
                 <th class="col-2" class="custom-header action-column-header">Actions</th>
               </tr>
@@ -74,10 +74,10 @@
               <tr>
                 <td>
                   <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="!ground.profile_img || !ground.player_profile" [src]="default_img">
+                    <img class="ground-img" *ngIf="!ground.profile || !ground.profile_img" [src]="default_img">
 
-                    <img class="player-img" *ngIf="ground.profile_img && ground.player_profile"
-                      [src]="ground.profile_img" (error)="handleImageError($event, default_img)">
+                    <img class="ground-img" *ngIf="ground.profile && ground.profile_img"
+                      [src]="ground.profile" (error)="handleImageError($event, default_img)">
                   </span>
                   <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)"> {{ ground.ground_name
                     }}</span>
@@ -107,12 +107,12 @@
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
                   <span class="icon-red"
-                  (click)="StatusConfirm(ground.ground_id,conditionConstants.deactive_status,ground.record_status)"
+                    (click)="StatusConfirm(ground.ground_id,conditionConstants.deactive_status,ground.record_status)"
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
 
-                 
+
                 </td>
               </tr>
             </ng-template>
@@ -220,9 +220,8 @@
 
           <div class="col-md-3">
             <label class="">Ground Name <span class="text-danger">*</span></label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="ground_name" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('ground_name', $event)">
+            <input class="form-control" maxlength="50" type="text" formControlName="ground_name"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('ground_name', $event)">
 
 
             <!-- Show required error -->
@@ -238,10 +237,9 @@
             <label class="">Dispaly Name
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="display_name" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('display_name', $event)">
-  
+            <input class="form-control" maxlength="50" type="text" formControlName="display_name"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('display_name', $event)">
+
 
             <!-- Show required error -->
             <small
@@ -316,9 +314,8 @@
           <div class="col-md-3">
             <label class="">Address Name 1
             </label>
-            <input class="form-control" maxlength="200" type="text" 
-              formControlName="address_1" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('address_1', $event)">
+            <input class="form-control" maxlength="200" type="text" formControlName="address_1"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_1', $event)">
 
             <small
               *ngIf="addGroundForm?.get('address_1')?.invalid &&(addGroundForm?.get('address_1')?.touched) || (addGroundForm.get('address_1')?.invalid && submitted)"
@@ -329,10 +326,9 @@
           <div class="col-md-3">
             <label class="">Address Name 2
             </label>
-            <input class="form-control" maxlength="200" type="text" 
-              formControlName="address_2" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('address_2', $event)">
-   
+            <input class="form-control" maxlength="200" type="text" formControlName="address_2"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_2', $event)">
+
             <small
               *ngIf="addGroundForm?.get('address_2')?.invalid &&(addGroundForm?.get('address_2')?.touched) || (addGroundForm.get('address_2')?.invalid && submitted)"
               class="required-msg">Adress 2 is Required
@@ -346,9 +342,8 @@
             <label class="">Post Code
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="10" type="text" 
-              formControlName="post_code" (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('post_code', $event)">
+            <input class="form-control" maxlength="10" type="text" formControlName="post_code"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('post_code', $event)">
 
             <small
               *ngIf="addGroundForm?.get('post_code')?.invalid &&(addGroundForm?.get('post_code')?.touched) || (addGroundForm.get('post_code')?.invalid && submitted)"
@@ -361,10 +356,9 @@
             <label class="">Northern End
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="northern_end"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('northern_end', $event)">
-         
+            <input class="form-control" maxlength="50" type="text" formControlName="northern_end"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('northern_end', $event)">
+
             <small
               *ngIf="addGroundForm?.get('northern_end')?.invalid &&(addGroundForm?.get('northern_end')?.touched) || (addGroundForm.get('northern_end')?.invalid && submitted)"
               class="required-msg">Northern End is Required
@@ -377,10 +371,9 @@
             <label class="">Sourthern End
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="sourthern_end"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('sourthern_end', $event)">
-       
+            <input class="form-control" maxlength="50" type="text" formControlName="sourthern_end"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('sourthern_end', $event)">
+
             <small
               *ngIf="addGroundForm?.get('sourthern_end')?.invalid &&(addGroundForm?.get('sourthern_end')?.touched) || (addGroundForm.get('sourthern_end')?.invalid && submitted)"
               class="required-msg">Sourthern End is Required
@@ -392,10 +385,9 @@
           <div class="col-md-3">
             <label class="">Latitude
             </label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="latitude"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('latitude', $event)">
-         
+            <input class="form-control" maxlength="50" type="text" formControlName="latitude"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('latitude', $event)">
+
             <small
               *ngIf="addGroundForm?.get('latitude')?.invalid &&(addGroundForm?.get('latitude')?.touched) || (addGroundForm.get('latitude')?.invalid && submitted)"
               class="required-msg">Latitude is Required
@@ -407,10 +399,9 @@
           <div class="col-md-3">
             <label class="">Longitude
             </label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="longitude"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('longitude', $event)">
-   
+            <input class="form-control" maxlength="50" type="text" formControlName="longitude"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('longitude', $event)">
+
             <small
               *ngIf="addGroundForm?.get('longitude')?.invalid &&(addGroundForm?.get('longitude')?.touched) || (addGroundForm.get('longitude')?.invalid && submitted)"
               class="required-msg">Longitude is Required
@@ -420,21 +411,20 @@
 
           <div class="col-md-3">
             <label>Reference Sourece ID </label>
-            <input class="form-control" type="text" maxlength="20" 
-              formControlName="reference_id"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('reference_id', $event)">
+            <span class="text-danger">*</span>
+            <input class="form-control" type="text" maxlength="20" formControlName="reference_id"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('reference_id', $event)">
             <small
               *ngIf="addGroundForm?.get('reference_id')?.invalid &&(addGroundForm?.get('reference_id')?.touched) || (addGroundForm.get('reference_id')?.invalid && submitted)"
               class="required-msg">Reference ID is Required
             </small>
           </div>
 
-      
+
           <div class="col-md-3">
             <label>Capacity No</label>
-            <input class="form-control" maxlength="50" type="text" 
-              formControlName="capacity" (keypress)="allowNumberOnly($event)"
-              (input)="sanitizeNumberInput('capacity', $event)">
+            <input class="form-control" maxlength="50" type="text" formControlName="capacity"
+              (keypress)="allowNumberOnly($event)" (input)="sanitizeNumberInput('capacity', $event)">
 
 
             <!-- Required field error -->
@@ -463,15 +453,14 @@
               class="required-msg"> Club ID is Required
             </small>
           </div>
+          <!-- 
 
 
-              <div class="col-md-3">
-            <label>Ground Photo </label>
-            <input class="form-control" type="file" formControlName="ground_photo">
-          </div>
-
-    <!-- <div class="col-md-6">
+        <div class="col-md-6">
+          <label>Ground Photo</label>
+          <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">Crop Image</a>
               <div class="image-upload-container text-center">
+                <div class="image-upload-container text-center"></div>
                 <label for="profileImageInput" class="upload-label">
                   <div class="image-preview-wrapper">
                     <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
@@ -491,8 +480,60 @@
               </div>
             </div> -->
 
+      <div class="col-md-3">
+    <label>Ground Photo</label>
+    <a class="clear-width table-counts profile-url" style="width: 84px;"
+        (click)="cropPopOpen()">Crop Image</a>
+    <div class="image-upload-container text-center">
+        <div class="image-preview-wrapper">
+            <!-- Show cancel button if a file (Blob) is currently selected for upload, or if there's a URL for preview -->
+            <button *ngIf="filedata != null || previewUrl != null" type="button" class="cancel-btn"
+                (click)="cancel()">✕</button>
 
-      
+            <!-- Display the default image if no image is currently selected or loaded for preview -->
+            <img *ngIf="!previewUrl" 
+                [src]="default_img" 
+                alt="Profile Image" 
+                class="profile-img">
+            
+            <!-- Display the current preview image (cropped or existing from edit) -->
+            <img *ngIf="previewUrl" 
+                [src]="previewUrl" 
+                alt="Profile Image"
+                (error)="handleImageError($event, default_img)" 
+                class="profile-img">
+        </div>
+        <label for="profileImageInput" class="upload-btn">
+            <!-- Note: formControlName="profile" should be on the input. This is correct here. -->
+            <input type="file" id="profileImageInput" accept="image/jpeg,image/png,image/jpg" (change)="fileEvent($event)" hidden formControlName="profile" />
+            Upload
+        </label> 
+    </div>
+                        <small class="text-danger" *ngIf="addGroundForm.get('profile')?.errors">
+                            * Only PNG,JPEG, or JPG files are allowed
+                        </small>
+                        <!-- Cropper Model -->
+                        <div *ngIf="showCropperModal" class="modal img-croper-popup">
+                            <div class="modal-content crop-image">
+                                <div class="modal-header modal-header-img">
+                                    <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                                </div>
+                                <div class="modal-body img-fix">
+                                    <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true"
+                                        [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
+                                        (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                                        (loadImageFailed)="loadImageFailed()">
+                                    </image-cropper>
+                                </div>
+                                <div class="modal-footer crop-footer">
+                                    <button class="save-btn submit-btn margin-right"
+                                        (click)="saveCroppedImage()">Save</button>
+                                    <button class="clear-button submit-btn margin-right"
+                                        (click)="cancelImg()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
           <div class="col-md-12">
             <fieldset class="border p-3 rounded">
@@ -501,9 +542,8 @@
 
                 <div class="col-md-3">
                   <label>North (in Metres) <span class="text-danger">*</span></label>
-                  <input class="form-control" maxlength="50" type="text"
-                    formControlName="north" (keypress)="allowDecimalOnly($event)"
-                    (input)="sanitizeDecimalInput('north', $event)">
+                  <input class="form-control" maxlength="50" type="text" formControlName="north"
+                    (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('north', $event)">
 
                   <!-- Show when invalid decimal format -->
                   <small *ngIf="addGroundForm.get('north')?.touched && addGroundForm.get('north')?.errors?.['pattern']"
@@ -522,9 +562,8 @@
 
                 <div class="col-md-3">
                   <label>South (in Metres) <span class="text-danger">*</span></label>
-                  <input class="form-control" maxlength="50" type="text" 
-                    formControlName="south" (keypress)="allowDecimalOnly($event)"
-                    (input)="sanitizeDecimalInput('south', $event)">
+                  <input class="form-control" maxlength="50" type="text" formControlName="south"
+                    (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('south', $event)">
 
                   <!-- Show when invalid decimal format -->
                   <small *ngIf="addGroundForm.get('south')?.touched && addGroundForm.get('south')?.errors?.['pattern']"
@@ -589,10 +628,10 @@
         <div class="form-wrapper pb-5">
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                 (click)="cancelForm()"></button>
 
-              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                 *ngIf="addGroundForm.get('ground_id')?.value == '' || addGroundForm.get('ground_id')?.value == null"
                 (click)="resetForm()"></button>
 
