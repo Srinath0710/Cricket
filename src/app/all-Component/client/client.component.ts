@@ -17,6 +17,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { environment } from '../../environments/environment';
 import { Client, EditClient, UpdateClient } from './client.model';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 
 interface Country {
   country_id: number;
@@ -90,8 +91,11 @@ export class ClientComponent implements OnInit{
   oldPath: any;
   base64: any;
   url: any; 
+  croppedImage: any;
+
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-  private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
+  private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
+  public cricketKeyConstant: CricketKeyConstant) {
 
   }
 
@@ -112,7 +116,6 @@ export class ClientComponent implements OnInit{
       state_id: ['',[Validators.required]],
       city_id: ['',[Validators.required]],
       profile_img_url: this.filedata,
-      // profile_img_url: [''],
       client_id: [''],
       header_color: [''],
       tbl_header_color: [''],
@@ -273,6 +276,14 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
   cancelForm() {
     this.ShowForm = false;
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage=null;
+    
   }
    resetForm() {
     this.addClientForm.reset();
@@ -432,72 +443,50 @@ handleImageError(event: Event, fallbackUrl: string) {
   target.src = fallbackUrl;
 }
 
-// fileEvent(event: any) {
-//   if (this.addClientForm.get('profile_img_url')?.value) {
-//     this.profileImages = null;
-//   }
-//   const file = (event.target as HTMLInputElement).files?.[0];
-//   if (file) {
-//     this.filedata = event.target.files[0];
-//     const reader = new FileReader();
-//     reader.onload = () => {
-//       this.previewUrl = reader.result as string;
-
-//     };
-//     reader.readAsDataURL(file);
-//     reader.readAsDataURL(this.filedata);
-
-// this.addClientForm.patchValue({
-//   profile_img_url: this.filedata
-// });
-//       } else {
-//         this.url = this.imageDefault;
-//         this.filedata = this.base64ToBinary(this.imageDefault);
-//       }
-//     }
- 
-fileEvent(event: any) {
-  if (this.addClientForm.value.profile_img_url.value !== null && 
-    this.addClientForm.value.profile_img_url.value !== '') {
-    this.profileImages = null;
-  }
-  if (event && event.target && event.target.files && event.target.files.length > 0) {
-    this.filedata = event.target.files[0];
-    var reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    reader.onload = (event: any) => {
-      var img = new Image;
-      this.url = event.target.result;
-      this.imageCropAlter = event.target.result
-      this.imageDefault = event.target.result
+  fileEvent(event: any) {
+    if (this.addClientForm.value.profile_img_url.value !== null &&
+      this.addClientForm.value.profile_img_url.value !== '') {
+      this.profileImages = null;
     }
-  } else {
-    this.filedata = null;
-    this.url = this.imageDefault
-    this.filedata = this.base64ToBinary(this.imageDefault);
+    if (event && event.target && event.target.files && event.target.files.length > 0) {
+      this.filedata = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: any) => {
+        var img = new Image;
+        this.url = event.target.result;
+        this.imageCropAlter = event.target.result
+        this.imageDefault = event.target.result
+      }
+    } else {
+      this.filedata = null;
+      this.url = this.imageDefault
+      this.filedata = this.base64ToBinary(this.imageDefault);
 
+    }
   }
-}
 
 cropPopOpen(){
   this.showCropperModal=true;
   this.imageBase64=this.imageDefault
 }
-saveCroppedImage(): void {
-  this.profileImages = this.filedata;
-  this.imageCropAlter = this.filedata;
-  this.filedata = this.base64ToBinary(this.filedata);
-  this.showCropperModal = false;
-}
+  saveCroppedImage(): void {
+    this.profileImages = this.croppedImage;
+    this.imageCropAlter = this.filedata;
+    this.filedata = this.base64ToBinary(this.filedata);
+    this.showCropperModal = false;
+  }
 
 
 
 cancel() {
-  this.filedata = null;
-  this.url = null;
-  this.profileImages = null;
-  this.imageCropAlter=null;
-  this.imageBase64 = null;
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage = null;
 }
 
 cancelImg() {
@@ -529,114 +518,122 @@ imageLoaded() {
 cropperReady() {
   console.log('Cropper ready');
 }
+  base64ToBinary(base64: string): Blob | null {
+    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 input:', base64);
+      return null;
+    }
 
-base64ToBinary(base64:any){
-  const byteCharacters = atob(base64.split(',')[1]); 
-  const byteArrays = [];
+    try {
+      const byteCharacters = atob(base64.split(',')[1]);
+      const byteArrays = new Uint8Array(byteCharacters.length);
 
-  for (let offset = 0; offset < byteCharacters.length; offset++) {
-      byteArrays.push(byteCharacters.charCodeAt(offset));
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+      }
+
+      return new Blob([byteArrays], { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Error converting base64 to binary:', error);
+      return null;
+    }
   }
 
-  const blob = new Blob([new Uint8Array(byteArrays)], { type: 'image/jpeg' }); 
-  return blob;
-}
-convertUrlToBase64(imageUrl: string) {
-  fetch(imageUrl)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch image');
-      }
-      return response.blob();
-    })
-    .then((blob) => {
+  convertUrlToBase64(imageUrl: string): void {
+    fetch(imageUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Image = reader.result as string;
+          this.imageBase64 = base64Image;
+          this.imageCropAlter = base64Image
+          this.imageDefault = base64Image
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch((error) => {
+      });
+  }
+  convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
+
       reader.onloadend = () => {
-        const base64Image = reader.result as string; 
-        this.imageBase64 = base64Image; 
-        this.imageCropAlter=base64Image
-        this.imageDefault=base64Image
+        resolve(reader.result as string);
       };
-      reader.readAsDataURL(blob); 
-    })
-    .catch((error) => {
+
+      reader.onerror = () => {
+        reject('Failed to convert Blob to base64');
+      };
+
+      reader.readAsDataURL(blob);
     });
-}
-convertBlobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      resolve(reader.result as string);
-    };
-
-    reader.onerror = () => {
-      reject('Failed to convert Blob to base64');
-    };
-
-    reader.readAsDataURL(blob);
-  });
-}
+  }
  /*profile image update */
 
-//  profileImgUpdate(upload_profile_url: any, official_id: any) {
+  profileImgUpdate(upload_profile_url: any, client_id: any) {
 
-//   const params: any = {};
-//   params.action_flag = 'update_profile_url';
-//   params.profile_img = upload_profile_url.toString();
-//   params.user_id = this.user_id.toString();
-//   params.official_id = official_id.toString();
-//   params.client_id = this.client_id.toString();
+    const params: any = {};
+    params.action_flag = 'update_profile_url';
+    params.profile_img = upload_profile_url.toString();
+    params.user_id = this.user_id.toString();
+    params.client_id = this.client_id.toString();
 
-//   this.apiService.post(this.urlConstant.profileofficial, params).subscribe(
-//     (res) => {
-//       if (res.status_code == this.statusConstants.success && res.status) {
-//         // this.filedata = null;
-//         this.addCallBack(res)
-//       } else {
-//         this.failedToast(res);
-//       }
-//     },
-//     (err: any) => {
-//       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-//         this.apiService.RefreshToken();
+    this.apiService.post(this.urlConstant.profileclient, params).subscribe(
+      (res) => {
+        if (res.status_code == this.statusConstants.success && res.status) {
+          // this.filedata = null;
+          this.addCallBack(res)
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+          this.apiService.RefreshToken();
 
-//       } else {
-//         this.failedToast(err.error);
-//       }
-//     }
-//   );
-// }
-// profileImgAppend(official_id: any) {
-//   const myFormData = new FormData();
-//   if (this.filedata != null && this.filedata != '') {
-//     myFormData.append('imageFile', this.filedata);
-//     myFormData.append('client_id', this.client_id.toString());
-//     myFormData.append('file_id', official_id);
-//     myFormData.append('upload_type', 'officials');
-//     myFormData.append('user_id', this.user_id?.toString());
-//     this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
-//       (res) => {
-//         if (res.status_code == this.statusConstants.success) {
-//           if (res.url != null && res.url != '') {
-//             this.profileImgUpdate(res.url, official_id);
-//           } else {
-//             this.failedToast(res);
-//           }
-//         } else {
-//           this.failedToast(res);
-//         }
-//       },
-//       (err: any) => {
-//         if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-//           this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err.error);
+        }
+      }
+    );
+  }
+  profileImgAppend(client_id: any) {
+    const myFormData = new FormData();
+    if (this.filedata != null && this.filedata != '') {
+      myFormData.append('imageFile', this.filedata);
+      myFormData.append('client_id', this.client_id.toString());
+      myFormData.append('file_id', client_id);
+      myFormData.append('upload_type', 'officials');
+      myFormData.append('user_id', this.user_id?.toString());
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+        (res) => {
+          if (res.status_code == this.statusConstants.success) {
+            if (res.url != null && res.url != '') {
+              this.profileImgUpdate(res.url, client_id);
+            } else {
+              this.failedToast(res);
+            }
+          } else {
+            this.failedToast(res);
+          }
+        },
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
 
-//         } else {
-//           this.failedToast(err.error);
-//         }
-//       }
-//     );
-//   }
-// }
+          } else {
+            this.failedToast(err.error);
+          }
+        }
+      );
+    }
+  }
 }
 

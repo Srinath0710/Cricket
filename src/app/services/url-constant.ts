@@ -158,6 +158,7 @@ export class URLCONSTANT {
       getclientList = 'Client/get_client_list'
       viewclient = 'Client/view_client'
       lookupdropdown = 'Client/get_client_dropdown'
+      profileclient = "Client/update_client_profile"
 
       /* Club List */
       Clubdropdown = 'Club/get_club_dropdown'

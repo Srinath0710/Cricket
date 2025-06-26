@@ -381,6 +381,7 @@ export class OfficialsComponent implements OnInit {
       club_id: String(this.addOfficialForm.value.club_id),
       gender_id: String(this.addOfficialForm.value.gender_id),
       dob: this.addOfficialForm.value.dob,
+     profile_img: this.filedata ? '' : this.profileImages,
       action_flag: 'create'
     };
     if (this.addOfficialForm.value.official_id) {

@@ -173,7 +173,8 @@ main {
 }
 
 .card-header {
-  background: linear-gradient(to right, #84f5b9, #8fcff2); /* Indigo to Blue */
+  /* background: linear-gradient(to right, #84f5b9, #8fcff2); */
+  background: linear-gradient(to right,#60c3e4, #be87d9);
   color: white;
 }
 
@@ -200,7 +201,8 @@ main {
 
 .match-type {
   /* background-color: #4CAF50; */
-  background-color: #a850ce;
+  background-color: #d85858;
+  
   color: white;
   flex: 1;
   padding: 5px;

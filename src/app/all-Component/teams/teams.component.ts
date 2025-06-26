@@ -124,7 +124,7 @@ export class TeamsComponent implements OnInit {
       gender_id: ['', [Validators.required]],
       age_category_id: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
-      profile_img: [''],
+      team_profile: [''],
       primary_color: [''],
       secondary_color: [''],
       club_id:['', [Validators.required]],
@@ -133,30 +133,6 @@ export class TeamsComponent implements OnInit {
       
     })
   }
-
-  //  clubsdropdown() {
-  //   const params: any = {
-  //     action_flag: 'dropdown',
-  //     user_id: this.user_id.toString(),
-  //     client_id: this.client_id.toString()
-  //   };
-
-  //   this.apiService.post(this.urlConstant.playerclubdropdown, params).subscribe(
-  //     (res) => {
-  //       this.configDataList = res.data?.clubs || [];
-  //     },
-  //     (err: any) => {
-  //       if (
-  //         err.status_code === this.statusConstants.refresh &&
-  //         err.error?.message === this.statusConstants.refresh_msg
-  //       ) {
-  //         this.apiService.RefreshToken();
-  //       } else {
-  //         this.failedToast(err.error);
-  //       }
-  //     }
-  //   );
-  // }
 //single quotes and doble quotes remove all label box 
 blockQuotesOnly(event: KeyboardEvent) {
   if (event.key === '"' || event.key === "'") {
@@ -498,8 +474,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     });
   }
   fileEvent(event: any) {
-    if (this.addTeamForm.value.profile_img.value !== null &&
-      this.addTeamForm.value.profile_img.value !== '') {
+    if (this.addTeamForm.value.profile_img !== null &&
+      this.addTeamForm.value.profile_img !== '') {
       this.profileImages = null;
     }
     if (event && event.target && event.target.files && event.target.files.length > 0) {
