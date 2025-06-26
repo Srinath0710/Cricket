@@ -70,10 +70,10 @@ export class GroundsComponent implements OnInit {
   country_id: any;
 
   profileImages: any;
-  url: string | ArrayBuffer | null = null;
+  url: any;
   envImagePath = environment.imagePath;
   default_img = CricketKeyConstant.default_image_url.grounds;
-  default_image_url = 'assets/images/ground-logo.png';
+
   countriesList: Country[] = [];
   citiesList = [];
   statesList = [];
@@ -98,7 +98,10 @@ export class GroundsComponent implements OnInit {
   showCropperModal: boolean = false;
   imageCropAlter: any;
   imageDefault: any;
-  croppedImage: any;
+  croppedImage: any = null;
+  originalFile: File | null = null;
+croppedFile: File | null = null;
+  // croppedImageBlob: Blob | null = null;
 
   constructor(private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -117,25 +120,25 @@ export class GroundsComponent implements OnInit {
     this.addGroundForm = this.formBuilder.group({
       ground_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
-      country_id: ['', [Validators.required]],
-      state_id: ['', [Validators.required]],
-      city_id: ['', [Validators.required]],
+      country_id: [null, [Validators.required]],
+      state_id: [null, [Validators.required]],
+      city_id: [null, [Validators.required]],
       address_1: [''],
       address_2: [''],
       post_code: ['', [Validators.required]],
       northern_end: ['', [Validators.required]],
       sourthern_end: ['', [Validators.required]],
-      north: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
-      south: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
-      east: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
-      west: ['', [Validators.required, Validators.pattern(this.decimalPattern)]],
-      club_id: ['', []],
-      latitude: ['', []],
-      longitude: ['', []],
-      capacity: [''],
-      profile: ['', []], // This is the form control for the image (URL or data)
-      ground_photo: ['', []], // This seems redundant if 'profile' is the main image field
-      ground_id: ['', []],
+      north: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
+      south: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
+      east: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
+      west: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
+      club_id: [null, []],
+      latitude: [''],
+      longitude: [''],
+      capacity: [null],
+      profile: [''],
+      ground_photo: [''],
+      ground_id: [null],
       reference_id: ['', [Validators.required]]
     });
   }
@@ -316,7 +319,7 @@ export class GroundsComponent implements OnInit {
   }
 
   cancelForm() {
-     this.ShowForm = false;
+    this.ShowForm = false;
     this.filedata = null;
     this.url = null;
     this.profileImages = null;
@@ -402,6 +405,31 @@ export class GroundsComponent implements OnInit {
   //         }
   //       } else {
   //         this.failedToast(res);
+  // user_id: String(this.user_id),
+  //     client_id: String(this.ClientID),
+  //     ground_id: this.addGroundForm.value.ground_id != null ? String(this.addGroundForm.value.ground_id) : null,
+  //     ground_name: this.addGroundForm.value.ground_name,
+  //     display_name: this.addGroundForm.value.display_name,
+  //     country_id: String(this.addGroundForm.value.country_id),
+  //     state_id: String(this.addGroundForm.value.state_id),
+  //     city_id: String(this.addGroundForm.value.city_id),
+  //     address_1: this.addGroundForm.value.address_1,
+  //     address_2: this.addGroundForm.value.address_2,
+  //     post_code: this.addGroundForm.value.post_code,
+  //     northern_end: this.addGroundForm.value.northern_end,
+  //     sourthern_end: this.addGroundForm.value.sourthern_end,
+  //     north: this.addGroundForm.value.north,
+  //     south: this.addGroundForm.value.south,
+  //     east: this.addGroundForm.value.east,
+  //     west: this.addGroundForm.value.west,
+  //     club_id: String(this.addGroundForm.value.club_id),
+  //     latitude: this.addGroundForm.value.latitude,
+  //     longitude: this.addGroundForm.value.longitude,
+  //     capacity: String(this.addGroundForm.value.capacity),
+  //     profile: this.addGroundForm.value.profile,
+  //     action_flag: this.isEditMode ? 'update' : 'create',
+  //     ground_photo: this.addGroundForm.value.ground_photo,
+  //     reference_id: this.addGroundForm.value.reference_id,
   //       }
   //     },
   //     (err: any) => {
@@ -415,14 +443,14 @@ export class GroundsComponent implements OnInit {
   //   );
   // }
 
-   onAddGround() {
-      this.submitted = true;
-      if (this.addGroundForm.invalid) {
-        this.addGroundForm.markAllAsTouched();
-        return
-      }
-      const params: UpdateGround = {
-         user_id: String(this.user_id),
+  onAddGround() {
+    this.submitted = true;
+    if (this.addGroundForm.invalid) {
+      this.addGroundForm.markAllAsTouched();
+      return
+    }
+    const params: UpdateGround = {
+      user_id: String(this.user_id),
       client_id: String(this.ClientID),
       ground_id: this.addGroundForm.value.ground_id != null ? String(this.addGroundForm.value.ground_id) : null,
       ground_name: this.addGroundForm.value.ground_name,
@@ -445,16 +473,16 @@ export class GroundsComponent implements OnInit {
       capacity: String(this.addGroundForm.value.capacity),
       profile: this.addGroundForm.value.profile,
       action_flag: this.isEditMode ? 'update' : 'create',
-      ground_photo: this.addGroundForm.value.ground_photo,
+       ground_photo: this.filedata ? this.addGroundForm.value.ground_photo : '',
       reference_id: this.addGroundForm.value.reference_id,
-  
-      };
-      if (this.addGroundForm.value.ground_id) {
-        params.action_flag = 'update';
-        params.ground_id = String(this.addGroundForm.value.ground_id),
+
+    };
+    if (this.addGroundForm.value.ground_id) {
+      params.action_flag = 'update';
+      params.ground_id = String(this.addGroundForm.value.ground_id),
         this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
           if (res.status_code === this.statusConstants.success && res.status) {
-        
+
             if (res.data !== null && this.filedata != null) {
               this.profileImgAppend(params.ground_id);
             } else {
@@ -466,21 +494,22 @@ export class GroundsComponent implements OnInit {
         }, (err: any) => {
           err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
         });
-      } else {
-        this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
-          if (res.status_code === this.statusConstants.success && res.status) {
-            if (res.data !== null && this.filedata != null) {
-              this.profileImgAppend(res.data.grounds[0].ground_id);
-            } else {
-              this.addCallBack(res)
-            }
+    } else {
+      this.apiService.post(this.urlConstant.addGround, params).subscribe((res) => {
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(res.data.grounds[0].ground_id);
           } else {
-            this.failedToast(res)
-          }}, (err: any) => {
-          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-        });
-      }
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      });
     }
+  }
 
   addCallBack(res: any) {
     this.resetForm();
@@ -490,6 +519,7 @@ export class GroundsComponent implements OnInit {
   }
 
   EditGround(ground: any) {
+    this.showCropperModal = false;
     this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -532,6 +562,9 @@ export class GroundsComponent implements OnInit {
           }
 
           this.showAddForm();
+          this.filedata = null;
+          this.profileImages = editRecord.ground_photo + '?' + Math.random();
+          this.convertUrlToBase64(editRecord.ground_photo + '?' + Math.random());
         }
       } else {
         this.failedToast(res);
@@ -555,18 +588,21 @@ export class GroundsComponent implements OnInit {
   }
 
   onProfileImageSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
       this.filedata = file;
       const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
-
+      reader.onload = (e: any) => {
+        this.previewUrl = e.target.result;
+        this.imageDefault = e.target.result;
       };
       reader.readAsDataURL(file);
 
+      this.addGroundForm.patchValue({
+        ground_photo: file
+      });
     }
-
 
   }
 
@@ -626,7 +662,7 @@ export class GroundsComponent implements OnInit {
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
       this.countriesList = res.data.countries != undefined ? res.data.countries : [];
       this.loading = false;
-      this.country_id = this.countriesList[0]?.country_id; // Added optional chaining
+      this.country_id = this.countriesList[0]?.country_id;
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
@@ -665,7 +701,7 @@ export class GroundsComponent implements OnInit {
       this.loading = false;
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      
+
     });
   }
 
@@ -688,40 +724,53 @@ export class GroundsComponent implements OnInit {
     this.dt.clear();
     this.gridload();
   }
-  
+
 
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
 
- cropPopOpen() {
+  cropPopOpen() {
     this.showCropperModal = true;
-    this.imageBase64=this.imageDefault;
+    this.imageBase64 = this.imageDefault;
   }
 
- saveCroppedImage(): void {
-  this.profileImages = this.croppedImage;
-  this.imageCropAlter = this.filedata;
+saveCroppedImage(): void {
+  this.profileImages = this.croppedImage; 
+  this.imageCropAlter = this.filedata; 
   this.filedata = this.base64ToBinary(this.filedata);
   this.showCropperModal = false;
-  }
+}
 
+  // cancelCropping(): void {
+  //   this.showCropperModal = false;
+  // }
 
-  cancel(){
+  // clearImage(): void {
+  //   this.previewUrl = null;
+  //   this.filedata = null;
+  //   this.addGroundForm.patchValue({ ground_photo: null });
+  //   const fileInput = document.getElementById('groundPhotoInput') as HTMLInputElement;
+  //   if (fileInput) {
+  //     fileInput.value = '';
+  //   }
+  // }
+
+  cancel() {
     this.filedata = null;
     this.url = null;
     this.profileImages = null;
     this.previewUrl = null;
 
-    this.croppedImage = null; 
+    this.croppedImage = null;
   }
 
   cancelImg(): void {
     this.showCropperModal = false;
-    this.url=this.imageCropAlter;
-    this.filedata=this.base64ToBinary(this.filedata);
-    
+    this.url = this.imageCropAlter;
+    this.filedata = this.base64ToBinary(this.filedata);
+
   }
 
   imageLoaded() {
@@ -733,33 +782,31 @@ export class GroundsComponent implements OnInit {
   }
 
   loadImageFailed() {
-    console.error('Image loading failed in cropper');
-    this.failedToast({ message: 'Failed to load image into cropper. Please try another image.' });
-    this.cancelImg();
+    console.error('Image loading failed');
   }
 
-  fileEvent(event: any) {
-    if (this.addGroundForm.value.profile_img.value !== null &&
-      this.addGroundForm.value.profile_img.value !== '') {
-      this.profileImages = null;
-    }
-    if (event && event.target && event.target.files && event.target.files.length > 0) {
-      this.filedata = event.target.files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        var img = new Image;
-        this.url = event.target.result;
-        this.imageCropAlter = event.target.result
-        this.imageDefault = event.target.result
-      }
-    } else {
-      this.filedata = null;
-      this.url = this.imageDefault
-      this.filedata = this.base64ToBinary(this.imageDefault);
+  // fileEvent(event: any) {
+  //   if (this.addGroundForm.value.profile_img.value !== null &&
+  //     this.addGroundForm.value.profile_img.value !== '') {
+  //     this.profileImages = null;
+  //   }
+  //   if (event && event.target && event.target.files && event.target.files.length > 0) {
+  //     this.filedata = event.target.files[0];
+  //     var reader = new FileReader();
+  //     reader.readAsDataURL(event.target.files[0]);
+  //     reader.onload = (event: any) => {
+  //       var img = new Image;
+  //       this.url = event.target.result;
+  //       this.imageCropAlter = event.target.result
+  //       this.imageDefault = event.target.result
+  //     }
+  //   } else {
+  //     this.filedata = null;
+  //     this.url = this.imageDefault
+  //     this.filedata = this.base64ToBinary(this.imageDefault);
 
-    }
-  }
+  //   }
+  // }
 
   imageCropped(event: ImageCroppedEvent) {
     const blob = event.blob;
@@ -773,16 +820,15 @@ export class GroundsComponent implements OnInit {
       });
     }
   }
-
-  profileImgUpdate(upload_profile_url: any, ground_id: any) {
+   profileImgUpdate(upload_profile_url: any, ground_id: any) {
       const params: any = {
         action_flag: 'update_profile_url',
         profile_img: upload_profile_url.toString(),
         user_id: this.user_id.toString(),
         client_id: this.client_id.toString(),
-        ground_id: ground_id?.toString()
+        ground_id: ground_id?.toString() 
       };
-
+  
       this.apiService.post(this.urlConstant.profileGround, params).subscribe(
         (res) => {
           if (res.status_code == this.statusConstants.success && res.status) {
@@ -809,12 +855,13 @@ export class GroundsComponent implements OnInit {
         myFormData.append('imageFile', this.filedata);
         myFormData.append('client_id', this.client_id.toString());
         myFormData.append('file_id', ground_id);
-        myFormData.append('upload_type', 'grounds');
+        myFormData.append('upload_type', 'ground');
         myFormData.append('user_id', this.user_id?.toString());
         this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
           (res) => {
             if (res.status_code == this.statusConstants.success) {
               if (res.url != null && res.url != '') {
+                console.log('Image uploaded successfully:', res.url);
                 this.profileImgUpdate(res.url, ground_id);
               } else {
                 this.failedToast(res);
@@ -835,7 +882,9 @@ export class GroundsComponent implements OnInit {
       }
     }
 
-    base64ToBinary(base64: string): Blob | null {
+
+
+  base64ToBinary(base64: string): Blob | null {
     if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
       console.error('Invalid base64 input:', base64);
       return null;
@@ -856,7 +905,7 @@ export class GroundsComponent implements OnInit {
     }
   }
 
-    convertBlobToBase64(blob: Blob): Promise<string> {
+  convertBlobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -870,6 +919,117 @@ export class GroundsComponent implements OnInit {
 
       reader.readAsDataURL(blob);
     });
+  }
+
+onImageSelected(event: any): void {
+  const fileInput = event.target as HTMLInputElement;
+  if (!fileInput.files || fileInput.files.length === 0) {
+    return;
+  }
+
+  const file = fileInput.files[0];
+
+  const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  if (!validTypes.includes(file.type)) {
+    this.msgService.add({
+      severity: 'error', 
+      summary: 'Invalid File',
+      detail: 'Only JPG/PNG images are allowed'
+    });
+    fileInput.value = '';
+    return;
+  }
+
+  const maxSize = 2 * 1024 * 1024;
+  if (file.size > maxSize) {
+    this.msgService.add({
+      severity: 'error',
+      summary: 'File Too Large', 
+      detail: 'Maximum image size is 2MB'
+    });
+    fileInput.value = '';
+    return;
+  }
+
+  this.filedata = file;
+  this.originalFile = file;
+
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    this.previewUrl = e.target.result;
+    this.imageBase64 = e.target.result;
+    this.showCropperModal = true;
+  };
+  reader.readAsDataURL(file);
+}
+
+  cancelCropping(): void {
+    this.showCropperModal = false;
+  }
+
+  clearImage(): void {
+    this.previewUrl = null;
+    this.filedata = null;
+    this.addGroundForm.patchValue({ ground_photo: null });
+    const fileInput = document.getElementById('groundPhotoInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+  // private dataURItoBlob(dataURI: string): Blob {
+  //   const byteString = atob(dataURI.split(',')[1]);
+  //   const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  //   const ab = new ArrayBuffer(byteString.length);
+  //   const ia = new Uint8Array(ab);
+
+  //   for (let i = 0; i < byteString.length; i++) {
+  //     ia[i] = byteString.charCodeAt(i);
+  //   }
+
+  //   return new Blob([ab], { type: mimeString });
+  // }
+
+//   private handleUploadError(error: any): void {
+//   let errorMessage = 'Failed to upload image';
+  
+//   if (error.status === 400) {
+//     errorMessage = 'Invalid request format. Please check the image and try again.';
+//   } else if (error.status === 413) {
+//     errorMessage = 'File size too large. Maximum size is 2MB.';
+//   } else if (error.status === 415) {
+//     errorMessage = 'Unsupported media type. Only JPG/PNG images are allowed.';
+//   } else if (error.error?.message) {
+//     errorMessage = error.error.message;
+//   }
+
+//   this.msgService.add({
+//     severity: 'error',
+//     summary: 'Upload Failed',
+//     detail: errorMessage
+//   });
+// }
+
+  convertUrlToBase64(imageUrl: string): void {
+    fetch(imageUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Image = reader.result as string;
+          this.imageBase64 = base64Image;
+          this.imageCropAlter = base64Image
+          this.imageDefault = base64Image
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch((error) => {
+      });
   }
 
 }

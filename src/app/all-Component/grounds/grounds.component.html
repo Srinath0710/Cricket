@@ -74,12 +74,17 @@
               <tr>
                 <td>
                   <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="!ground.profile_img == null || ground.profile_img == ''" [src]="default_img" />
-                    <img class="player-img" *ngIf="ground.profile_img != null && ground.profile_img != ''"
-                      [src]="ground.profile" (error)="handleImageError($event, default_img)" />
+                    <!-- Replace the player image logic with ground image logic -->
+                    <img *ngIf="ground.ground_photo" [src]="envImagePath + '/' + ground.ground_photo"
+                      (error)="handleImageError($event, default_img)" class="ground-img">
+
+                    <!-- Fallback to default image if no ground photo exists -->
+                    <img *ngIf="!ground.ground_photo" [src]="default_img" class="ground-img">
                   </span>
-                  <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)"> {{ ground.ground_name
-                    }}</span>
+                  <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)">
+                    {{ ground.ground_name }}
+                  </span>
+                  
                 </td>
 
 
@@ -271,6 +276,7 @@
           </div>
           <div class="col-md-3">
             <label>State
+               <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
               (ngModelChange)="getCities(addGroundForm.get('state_id')?.value)" optionValue="state_id"
@@ -479,59 +485,43 @@
               </div>
             </div> -->
 
-      <div class="col-md-3">
-    <label>Ground Photo</label>
-    <a class="clear-width table-counts profile-url" style="width: 84px;"
-        (click)="cropPopOpen()">Crop Image</a>
-    <div class="image-upload-container text-center">
-        <div class="image-preview-wrapper">
+          <div class="col-md-3">
+            <label>Ground Photo</label>
+            <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">Crop Image</a>
+            <div class="image-upload-container text-center">
+              <div class="image-preview-wrapper">
+                <!-- Show cancel button only when there's an image -->
+                <button *ngIf="previewUrl" type="button" class="cancel-btn" (click)="clearImage()">✕</button>
+                <!-- Show either the preview or default image -->
+                <img [src]="previewUrl || default_img" (error)="handleImageError($event, default_img)"
+                  alt="Ground Image" class="profile-img">
+              </div>
+              <label for="groundPhotoInput" class="upload-btn">
+                <input type="file" id="groundPhotoInput" accept="image/*" (change)="onImageSelected($event)" hidden
+                  formControlName="ground_photo" />
+                Upload
+              </label>
+            </div>
 
-            <button *ngIf="filedata != null || previewUrl != null" type="button" class="cancel-btn"
-                (click)="cancel()">✕</button>
-
-                
-            <img *ngIf="!previewUrl" 
-                [src]="default_img" 
-                alt="Profile Image" 
-                class="profile-img">
-
-            <img *ngIf="previewUrl" 
-                [src]="previewUrl" 
-                alt="Profile Image"
-                (error)="handleImageError($event, default_img)" 
-                class="profile-img">
-        </div>
-        <label for="profileImageInput" class="upload-btn">
-            <input type="file" id="profileImageInput" accept="image/jpeg,image/png,image/jpg" (change)="fileEvent($event)" hidden formControlName="profile" />
-            Upload
-        </label> 
-    </div>
-                        <small class="text-danger" *ngIf="addGroundForm.get('profile')?.errors">
-                            * Only PNG,JPEG, or JPG files are allowed
-                        </small>
-                        <!-- Cropper Model -->
-                        <div *ngIf="showCropperModal" class="modal img-croper-popup">
-                            <div class="modal-content crop-image">
-                                <div class="modal-header modal-header-img">
-                                    <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
-                                </div>
-                                <div class="modal-body img-fix">
-                                    <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true"
-                                        [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
-                                        (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
-                                        (loadImageFailed)="loadImageFailed()">
-                                    </image-cropper>
-                                </div>
-                                <div class="modal-footer crop-footer">
-                                    <button class="save-btn submit-btn margin-right"
-                                        (click)="saveCroppedImage()">Save</button>
-                                    <button class="clear-button submit-btn margin-right"
-                                        (click)="cancelImg()">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+            <!-- Cropper Modal -->
+            <div *ngIf="showCropperModal" class="modal img-croper-popup">
+              <div class="modal-content crop-image">
+                <div class="modal-header modal-header-img">
+                  <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                </div>
+                <div class="modal-body img-fix">
+                  <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4/3"
+                    format="jpeg" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                    (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                  </image-cropper>
+                </div>
+                <div class="modal-footer crop-footer">
+                  <button class="save-btn submit-btn margin-right" (click)="saveCroppedImage()">Save</button>
+                  <button class="clear-button submit-btn margin-right" (click)="cancelCropping()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="col-md-12">
             <fieldset class="border p-3 rounded">
               <legend class="w-auto px-2">Boundaries (in Metres) <span class="text-danger">*</span></legend>

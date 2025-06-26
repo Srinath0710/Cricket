@@ -228,7 +228,7 @@ body.modal-open {
     border-radius: 2px;
     font-weight: 500;
     width: 41%;
-    margin-top: -4%;
+    margin-top: -1%;
 }
   .header-drop {
   margin-left: -10px;
@@ -291,9 +291,7 @@ body.modal-open {
 
 .cancel-btn {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  background: #dc3545;
+  background: #e20000;
   color: white;
   border: none;
   border-radius: 50%;
@@ -302,6 +300,15 @@ body.modal-open {
   font-size: 16px;
   cursor: pointer;
   z-index: 10;
+}
+
+.ground-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 

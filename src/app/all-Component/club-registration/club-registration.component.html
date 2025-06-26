@@ -43,8 +43,9 @@
                             </div>
                         </div>
                     </div>
-                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows" [rowsPerPageOptions]="[10,25,50,100]"
-                        [styleClass]="'custom-table'"
+                    
+                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
+                        [rowsPerPageOptions]="[10,25,50,100]" [styleClass]="'custom-table'"
                         [globalFilterFields]="['club_name','parent_club_name','country','state','record_status']">
                         <ng-template pTemplate="header">
                             <tr>
@@ -341,8 +342,8 @@
                         <a class=" clear-width table-counts profile-url" style="width: 84px;"
                             (click)="cropPopOpen()">Crop Image</a>
                         <div class="image-upload-container text-center">
-                            <div class="image-preview-wrapper">
-                                <button *ngIf="filedata != null && filedata != ''" type="button" class="cancel-btn"
+                            <!-- <div class="image-preview-wrapper">
+                                <button type="button" class="cancel-btn"
                                     (click)="cancel()">✕</button>
                                 <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
                                     [src]="default_img" alt="Profile Image" class="profile-img">
@@ -351,10 +352,16 @@
                                 <img *ngIf="profileImages !=null && profileImages != ''" [src]="profileImages"
                                     (error)="handleImageError($event, default_img)" alt="Profile Image"
                                     class="profile-img">
+                            </div> -->
+                            <div class="image-preview-wrapper">
+                                <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                                <img [src]="filedata ? url : (profileImages ? profileImages : default_img)"
+                                    (error)="handleImageError($event, default_img)" alt="Profile Image"
+                                    class="profile-img">
                             </div>
                             <label for="profileImageInput" class="upload-btn">
-                                <input type="file" id="profileImageInput" accept="image/*"
-                                    (change)="fileEvent($event)" hidden formControlName="profile_img" />
+                                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)"
+                                    hidden formControlName="profile_img" />
                                 Upload
                             </label>
 
@@ -390,18 +397,19 @@
                 <div class="form-wrapper pb-5">
                     <div class="row mt-4 sticky-footer-buttons">
                         <div class="col-12 text-end">
-                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
-                                (click)="cancelForm()">
+                            <button pButton type="button" label="Cancel"
+                                class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()">
                             </button>
 
                             <button pButton type="text" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                                 *ngIf="addClubForm.get('club_id')?.value == '' || addClubForm.get('club_id')?.value === null"
                                 (click)="clearForm()">
                             </button>
-                    
-                        <button pButton type="button" label="Save" class="save-button" (click)="onAddClub()"></button>
+
+                            <button pButton type="button" label="Save" class="save-button"
+                                (click)="onAddClub()"></button>
+                        </div>
                     </div>
-                      </div>
                 </div>
 
             </form>
