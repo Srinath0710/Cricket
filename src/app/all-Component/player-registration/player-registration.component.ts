@@ -23,6 +23,10 @@ import { Drawer } from 'primeng/drawer';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToastModule } from 'primeng/toast';
+import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { environment } from '../../environments/environment';
+
 
 interface player {
   parent_config_id: number;
@@ -63,6 +67,7 @@ interface DuplicatePlayer {
     RadioButtonModule,
     Drawer,
     ToastModule,
+    ImageCropperComponent
 
   ],
   providers: [
@@ -83,12 +88,24 @@ export class PlayerRegistrationComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10; // Default records shown is 10
   totalData: any = 0;
-previewUrl: string | ArrayBuffer | null = null;
+  previewUrl: string | ArrayBuffer | null = null;
   filedata: any;
+  uploadedImage: string | ArrayBuffer | null = null;
+  profileImages: any;
+  showCropperModal = false;
+  imageBase64: any = null;
+  url: any;
+  src: any;
+  imageCropAlter: any;
+  imageDefault: any;
+  croppedImage: any;
+  envImagePath = environment.imagePath;
+  default_flag_img = this.envImagePath + '/images/Default Flag.png';
+
   isEditMode: boolean = false;
   ispersonalupadate: boolean = false;
   isEditPersonal: boolean = false;
- officialId: any;
+  officialId: any;
   searchKeyword: string = '';
   visible: boolean = false;
   isEditing: boolean = false;
@@ -136,7 +153,7 @@ previewUrl: string | ArrayBuffer | null = null;
   personal_player_id: any;
   isPersonalDataIntialized: boolean = false;
   disableReadonly: boolean = true;
-  isClientShow: boolean=false;
+  isClientShow: boolean = false;
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
   }
@@ -150,7 +167,8 @@ previewUrl: string | ArrayBuffer | null = null;
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private uploadImgService: UploadImgService
   ) { }
 
   ngOnInit() {
@@ -167,7 +185,7 @@ previewUrl: string | ArrayBuffer | null = null;
       nationality_id: ['', [Validators.required]],
       player_dob: ['',],
       mobile_no: ['', [Validators.pattern(this.mobileRegex)]],
-       email: ['', [
+      email: ['', [
         Validators.required,
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
@@ -186,14 +204,15 @@ previewUrl: string | ArrayBuffer | null = null;
       club_id: ['', []],
       scorecard_name: ['', []],
       reference_id: ['', []],
+      profile_img: [''],
     })
     this.addplayerpersonalform = this.fb.group({
       nationality_id: ['', [Validators.required]],
       country_of_birth: ['', [Validators.required]],
       residence_country_id: ['', [Validators.required]],
-     primary_email_id: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+      primary_email_id: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
       secondary_email_id: [''],
-      primary_phone:['', [Validators.required, Validators.pattern(this.mobileRegex)]],
+      primary_phone: ['', [Validators.required, Validators.pattern(this.mobileRegex)]],
       secondary_phone: [''],
       blood_group_id: [''],
       father_name: [''],
@@ -240,7 +259,7 @@ previewUrl: string | ArrayBuffer | null = null;
         this.configDataList = res.data?.clubs || [];
       },
       (err: any) => {
-        if (err.status_code ===this.statusConstants.refresh && err.error.message ) {
+        if (err.status_code === this.statusConstants.refresh && err.error.message) {
           this.apiService.RefreshToken();
           this.failedToast(err.error)
         } else {
@@ -251,19 +270,19 @@ previewUrl: string | ArrayBuffer | null = null;
     );
   }
   //mobileno enter the only number alowed
-onPhoneNumberInput(event: Event, controlName: string) {
-  const inputElement = event.target as HTMLInputElement;
-  const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
+  onPhoneNumberInput(event: Event, controlName: string) {
+    const inputElement = event.target as HTMLInputElement;
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); // Allow only digits, max 10
 
-  // Check and update value in addplayerpersonalform
-  if (this.addplayerpersonalform?.get(controlName)) {
-    this.addplayerpersonalform.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
+    // Check and update value in addplayerpersonalform
+    if (this.addplayerpersonalform?.get(controlName)) {
+      this.addplayerpersonalform.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
+    }
+    // Check and update value in playerRegistrationform
+    else if (this.playerRegistrationform?.get(controlName)) {
+      this.playerRegistrationform.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
+    }
   }
-  // Check and update value in playerRegistrationform
-  else if (this.playerRegistrationform?.get(controlName)) {
-    this.playerRegistrationform.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
-  }
-}
   //single quotes and doble quotes remove all label box 
   blockQuotesOnly(event: KeyboardEvent) {
     if (event.key === '"' || event.key === "'") {
@@ -271,19 +290,19 @@ onPhoneNumberInput(event: Event, controlName: string) {
     }
   }
 
-sanitizeQuotesOnly(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); // remove both ' and "
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, ''); // remove both ' and "
 
-  // Set value in addplayerpersonalform if control exists
-  if (this.addplayerpersonalform?.get(controlName)) {
-    this.addplayerpersonalform.get(controlName)?.setValue(cleaned, { emitEvent: false });
+    // Set value in addplayerpersonalform if control exists
+    if (this.addplayerpersonalform?.get(controlName)) {
+      this.addplayerpersonalform.get(controlName)?.setValue(cleaned, { emitEvent: false });
+    }
+    // Else set value in playerRegistrationform if control exists
+    else if (this.playerRegistrationform?.get(controlName)) {
+      this.playerRegistrationform.get(controlName)?.setValue(cleaned, { emitEvent: false });
+    }
   }
-  // Else set value in playerRegistrationform if control exists
-  else if (this.playerRegistrationform?.get(controlName)) {
-    this.playerRegistrationform.get(controlName)?.setValue(cleaned, { emitEvent: false });
-  }
-}
 
   Clientdropdown() {
     const params: any = {
@@ -291,13 +310,13 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
-      this.isClientShow=this.clientData.length>1?true:false;
+      this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
       this.gridLoad();
 
       this.dropdownplayer();
       this.radiobutton();
-      
+
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
@@ -395,7 +414,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
       this.filteredSpecs = [];
       this.formSetValue();
-    }); 
+    });
   }
   onBowlingTypeChange(selectedBowlingTypeId: number) {
     this.filteredSpecs = this.bowlingspec.filter(
@@ -407,34 +426,34 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     }
   }
 
-formSetValue() {
-  // 🔁 Generic setter
-  const setDefaultValue = (list: any[], field: string, keyword: string) => {
-    const match = list.find(item => item.config_name?.toLowerCase().includes(keyword));
-    if (match) {
-      this.playerRegistrationform.patchValue({ [field]: match.config_id });
+  formSetValue() {
+    // 🔁 Generic setter
+    const setDefaultValue = (list: any[], field: string, keyword: string) => {
+      const match = list.find(item => item.config_name?.toLowerCase().includes(keyword));
+      if (match) {
+        this.playerRegistrationform.patchValue({ [field]: match.config_id });
+      }
+    };
+    // 🏏 Set defaults using helper
+    setDefaultValue(this.playerrole, 'player_role_id', 'batsman');
+    setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
+    setDefaultValue(this.bowlingstyle, 'bowling_style_id', 'right');
+
+    const fastBowler = this.bowlingtype.find(type => type.config_name?.toLowerCase().includes('fast'));
+    if (fastBowler) {
+      const fastBowlerId = fastBowler.config_id;
+      this.playerRegistrationform.patchValue({ bowling_type_id: fastBowlerId });
+      this.onBowlingTypeChange(fastBowlerId);
+
+      // 🕒 Set default spec after filter
+      // setTimeout(() => {
+      //   const defaultSpec = this.filteredSpecs[0];
+      //   if (defaultSpec) {
+      //     this.playerRegistrationform.patchValue({ bowling_spec_id: defaultSpec.config_id });
+      //   }
+      // }, 0);
     }
-  };
-  // 🏏 Set defaults using helper
-  setDefaultValue(this.playerrole, 'player_role_id', 'batsman');
-  setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
-  setDefaultValue(this.bowlingstyle, 'bowling_style_id', 'right');
-
-  const fastBowler = this.bowlingtype.find(type => type.config_name?.toLowerCase().includes('fast'));
-  if (fastBowler) {
-    const fastBowlerId = fastBowler.config_id;
-    this.playerRegistrationform.patchValue({ bowling_type_id: fastBowlerId });
-    this.onBowlingTypeChange(fastBowlerId);
-
-    // 🕒 Set default spec after filter
-    // setTimeout(() => {
-    //   const defaultSpec = this.filteredSpecs[0];
-    //   if (defaultSpec) {
-    //     this.playerRegistrationform.patchValue({ bowling_spec_id: defaultSpec.config_id });
-    //   }
-    // }, 0);
   }
-}
 
   duplicateChange() {
     this.submitted = true;
@@ -487,6 +506,65 @@ formSetValue() {
     this.isEditMode = false;
 
   }
+  profileImgUpdate(upload_profile_url: any, player_id: any) {
+    const params: any = {
+      action_flag: 'update_profile_url',
+      profile_image: upload_profile_url.toString(),
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString(),
+      player_id: player_id?.toString()
+    };
+
+    this.apiService.post(this.urlConstant.playersprofile, params).subscribe(
+      (res) => {
+        if (res.status_code == this.statusConstants.success && res.status) {
+          this.filedata = null;
+          this.addCallBack(res)
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+          this.apiService.RefreshToken();
+
+        } else {
+          this.failedToast(err.error);
+        }
+      }
+    );
+  }
+  profileImgAppend(player_id: any) {
+    const myFormData = new FormData();
+    if (this.filedata != null && this.filedata != '') {
+      myFormData.append('imageFile', this.filedata);
+      myFormData.append('client_id', this.client_id.toString());
+      myFormData.append('file_id', player_id);
+      myFormData.append('upload_type', 'officials');
+      myFormData.append('user_id', this.user_id?.toString());
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+        (res) => {
+          if (res.status_code == this.statusConstants.success) {
+            if (res.url != null && res.url != '') {
+              this.profileImgUpdate(res.url, player_id);
+            } else {
+              this.failedToast(res);
+            }
+          } else {
+            this.failedToast(res);
+          }
+        },
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+
+          } else {
+            this.failedToast(err.error);
+          }
+        }
+      );
+    }
+  }
   addplayerdata() {
     this.submitted = true;
     this.isEditMode = false;
@@ -525,23 +603,65 @@ formSetValue() {
     };
 
     if (this.playerRegistrationform.value.player_id) {
-      params.action_flag = 'update';
-      this.apiService.post(this.urlConstant.updateplayer, params).subscribe((res) => {
-        this.visible = false;
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      });
-    } else {
 
+
+      params.action_flag = 'update';
+      params.player_id = String(this.playerRegistrationform.value.player_id),
+        this.apiService.post(this.urlConstant.updateplayer, params).subscribe((res) => {
+          if (res.status_code === this.statusConstants.success && res.status) {
+
+            if (res.data !== null && this.filedata != null) {
+              this.profileImgAppend(params.player_id);
+            } else {
+              this.addCallBack(res)
+            }
+          } else {
+            this.failedToast(res)
+          }
+        }, (err: any) => {
+          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        });
+    } else {
       this.apiService.post(this.urlConstant.addplayer, params).subscribe((res) => {
-        this.visible = false;
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        console.log('Player ID:', 'hi');
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(res.data.players[0].player_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
+  }
+  onImageUpload(event: any) {
+    const file = event.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.uploadedImage = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  onProfileImageSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.filedata = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
 
+      };
+      reader.readAsDataURL(file);
+
+    }
+  }
+  handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
   }
 
   addCallBack(res: any) {
@@ -553,7 +673,7 @@ formSetValue() {
 
   resetForm() {
     this.playerRegistrationform.reset();
-       this.formSetValue();  // reload and set defaults
+    this.formSetValue();  // reload and set defaults
     this.addplayerpersonalform.reset();
     this.submitted = false;
   }
@@ -561,21 +681,21 @@ formSetValue() {
     this.ShowForm = true;
   }
 
-// personalAddShowForm(player: any) {
-//   this.resetForm();
+  // personalAddShowForm(player: any) {
+  //   this.resetForm();
 
-//   this.isEditPersonal = false;          
-//   this.isPersonalDataIntialized = false; 
-//   this.disableReadonly = false;        
-//   this.personalShowForm = true;
-//   this.personal_player_id = player?.player_id ?? null;
-// }
+  //   this.isEditPersonal = false;          
+  //   this.isPersonalDataIntialized = false; 
+  //   this.disableReadonly = false;        
+  //   this.personalShowForm = true;
+  //   this.personal_player_id = player?.player_id ?? null;
+  // }
 
   cancelForm() {
     this.ShowForm = false;
     this.personalShowForm = false;
     this.addplayerpersonalform.reset();
-     this.disableReadonly =true; 
+    this.disableReadonly = true;
 
   }
 
@@ -587,7 +707,7 @@ formSetValue() {
     params.client_id = this.client_id?.toString();
     params.player_id = player.player_id?.toString();
     this.apiService.post(this.urlConstant.editplayer, params).subscribe((res) => {
-      if (res.status_code ==this.statusConstants.success && res.status) {
+      if (res.status_code == this.statusConstants.success && res.status) {
         const editRecord: playeredit = res.data.players[0] ?? {};
         if (editRecord != null) {
           this.playerRegistrationform.setValue({
@@ -597,7 +717,7 @@ formSetValue() {
             sur_name: editRecord.sur_name,
             display_name: editRecord.display_name,
             nationality_id: editRecord.nationality_id,
-            player_dob: editRecord.player_dob!=null ?editRecord.player_dob.split('T')[0] :null,
+            player_dob: editRecord.player_dob != null ? editRecord.player_dob.split('T')[0] : null,
             mobile_no: editRecord.mobile_no,
             email: editRecord.email,
             gender_id: editRecord.gender_id,
@@ -615,8 +735,11 @@ formSetValue() {
             club_id: editRecord.club_id,
             scorecard_name: editRecord.scorecard_name,
             reference_id: editRecord.reference_id,
+            profile_img: '',
           });
           this.showAddForm();
+          this.profileImages = editRecord.profile_image + '?' + Math.random();
+          this.convertUrlToBase64(editRecord.profile_image + '?' + Math.random());
         }
       } else {
         this.failedToast(res);
@@ -625,6 +748,139 @@ formSetValue() {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
+
+  fileEvent(event: any) {
+    if (this.playerRegistrationform.value.profile_img.value !== null &&
+      this.playerRegistrationform.value.profile_img.value !== '') {
+      this.profileImages = null;
+    }
+    if (event && event.target && event.target.files && event.target.files.length > 0) {
+      this.filedata = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: any) => {
+        var img = new Image;
+        this.url = event.target.result;
+        this.imageCropAlter = event.target.result
+        this.imageDefault = event.target.result
+      }
+    } else {
+      this.filedata = null;
+      this.url = this.imageDefault
+      this.filedata = this.base64ToBinary(this.imageDefault);
+
+    }
+  }
+
+  saveCroppedImage(): void {
+    this.profileImages = this.croppedImage;
+    this.imageCropAlter = this.filedata;
+    this.filedata = this.base64ToBinary(this.filedata);
+    this.showCropperModal = false;
+  }
+
+  cancelImg(): void {
+    this.showCropperModal = false;
+    this.url = this.imageCropAlter;
+    this.filedata = this.base64ToBinary(this.imageCropAlter);
+  }
+  loadImageFailed() {
+    console.error('Image loading failed');
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    const blob = event.blob;
+
+    if (blob) {
+      this.convertBlobToBase64(blob).then((base64) => {
+        this.url = base64;
+        this.filedata = base64;
+        this.profileImages = null;
+      }).catch((error) => {
+        console.error('Failed to convert blob to base64:', error);
+      });
+    }
+  }
+
+  imageLoaded() {
+    console.log('Image loaded');
+  }
+
+  cropperReady() {
+    console.log('Cropper ready');
+  }
+
+  base64ToBinary(base64: string): Blob | null {
+    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 input:', base64);
+      return null;
+    }
+    try {
+      const byteCharacters = atob(base64.split(',')[1]);
+      const byteArrays = new Uint8Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+      }
+      return new Blob([byteArrays], { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Error converting base64 to binary:', error);
+      return null;
+    }
+  }
+  convertUrlToBase64(imageUrl: string): void {
+    fetch(imageUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Image = reader.result as string;
+          this.imageBase64 = base64Image;
+          this.imageCropAlter = base64Image
+          this.imageDefault = base64Image
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch((error) => {
+      });
+  }
+  cancel() {
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage = null
+
+
+
+  }
+  cropPopOpen() {
+    this.showCropperModal = true;
+    this.imageBase64 = this.imageDefault;
+  }
+  convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = () => {
+        reject('Failed to convert Blob to base64');
+      };
+
+      reader.readAsDataURL(blob);
+    });
+  }
+
 
   viewShowDialog() {
     this.visibleDialog = true;
@@ -700,11 +956,11 @@ formSetValue() {
       doctor_phone: String(this.addplayerpersonalform.value.doctor_phone),
       insurance_provider: String(this.addplayerpersonalform.value.insurance_provider),
       policy_number: String(this.addplayerpersonalform.value.policy_number),
-policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
+      policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
       additional_notes: String(this.addplayerpersonalform.value.additional_notes),
 
     };
- console.log(params);
+    console.log(params);
     this.apiService.post(this.urlConstant.playerpersonalupadate, params).subscribe(
       (res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
@@ -728,11 +984,11 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
   }
 
   EditpersonalPlayers(player: any) {
-     this.isEditPersonal = true;           
-  this.isPersonalDataIntialized = true; 
-  this.disableReadonly = true;         
-  this.personalShowForm = true;
-  this.personal_player_id = player.player_id;
+    this.isEditPersonal = true;
+    this.isPersonalDataIntialized = true;
+    this.disableReadonly = true;
+    this.personalShowForm = true;
+    this.personal_player_id = player.player_id;
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
@@ -741,7 +997,7 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
     this.apiService.post(this.urlConstant.playersPersonalEdit, params).subscribe(
       (res) => {
         if (res.data != null) {
-          const editpersonalRecord: playersPersonalEdit = res.data?.players[0] ?? {}; 
+          const editpersonalRecord: playersPersonalEdit = res.data?.players[0] ?? {};
           this.isPersonalDataIntialized = true;
           this.addplayerpersonalform.setValue({
             nationality_id: editpersonalRecord.nationality_id,
@@ -762,8 +1018,8 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
             city_id: editpersonalRecord.city_id,
             post_code: editpersonalRecord.post_code,
             emergency_contact: editpersonalRecord.emergency_contact,
-          emergency_type: Number(editpersonalRecord.emergency_type) || null,
-              emergency_number: editpersonalRecord.emergency_number,
+            emergency_type: Number(editpersonalRecord.emergency_type) || null,
+            emergency_number: editpersonalRecord.emergency_number,
             emergency_email: editpersonalRecord.emergency_email,
             twitter_handle: editpersonalRecord.twitter_handle,
             instagram_handle: editpersonalRecord.instagram_handle,
@@ -777,15 +1033,15 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
             doctor_phone: editpersonalRecord.doctor_phone,
             insurance_provider: editpersonalRecord.insurance_provider,
             policy_number: editpersonalRecord.policy_number,
-            policy_expiry_date: editpersonalRecord.policy_expiry_date!=null ?editpersonalRecord.policy_expiry_date.split('T')[0] :null,
+            policy_expiry_date: editpersonalRecord.policy_expiry_date != null ? editpersonalRecord.policy_expiry_date.split('T')[0] : null,
             additional_notes: editpersonalRecord.additional_notes
           });
 
         } else {
-            this.isEditPersonal = false;
-      this.isPersonalDataIntialized = false;
-      // this.addplayerpersonalform.reset();
-      this.resetForm();
+          this.isEditPersonal = false;
+          this.isPersonalDataIntialized = false;
+          // this.addplayerpersonalform.reset();
+          this.resetForm();
         }
       },
       (err: any) => {
@@ -819,58 +1075,58 @@ policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
-        this.countriesList = res.data.countries != undefined ? res.data.countries : [];
-        this.loading = false;
-        this.country_id = this.countriesList[0].country_id;
-        this.gridLoad();
+      this.countriesList = res.data.countries != undefined ? res.data.countries : [];
+      this.loading = false;
+      this.country_id = this.countriesList[0].country_id;
+      this.gridLoad();
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
-           
-        } else {
-            this.failedToast(err.error);
-        }
-    });
-}
 
-getCities(state_id:any) {
+      } else {
+        this.failedToast(err.error);
+      }
+    });
+  }
+
+  getCities(state_id: any) {
     const params: any = {};
     if (state_id == null || state_id == '') {
-        return
+      return
     }
     params.action_flag = 'get_city_by_state';
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
-        this.citiesList = res.data.cities != undefined ? res.data.cities : [];
+      this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
-        } else {
-            this.failedToast(err.error);
-        }
+      } else {
+        this.failedToast(err.error);
+      }
     });
-}
+  }
 
-getStates(country_id:any) {
+  getStates(country_id: any) {
     const params: any = {};
     if (country_id == null || country_id == '') {
-        return
+      return
     }
     params.action_flag = 'get_state_by_country';
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();
     this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
-        this.statesList = res.data.states != undefined ? res.data.states : [];
-        this.loading = false;
+      this.statesList = res.data.states != undefined ? res.data.states : [];
+      this.loading = false;
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
-        }
+      }
     });
-}
+  }
 
   getGlobalData() {
     const params: any = {
@@ -895,18 +1151,7 @@ getStates(country_id:any) {
       }
     });
   }
- onProfileImageSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.filedata = file;
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
 
-      };
-      reader.readAsDataURL(file);
-    }
-  }
 
   applyFilters() {
     this.first = 1;
@@ -944,12 +1189,12 @@ getStates(country_id:any) {
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
       },
       (err: any) => {
-          err.status_code === this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err.error);
-        }
-      );
+      }
+    );
   }
   StatusConfirm(player_id: number, actionObject: { key: string, label: string }) {
     this.confirmationService.confirm({
@@ -967,11 +1212,6 @@ getStates(country_id:any) {
         this.confirmationService.close();
       }
     });
-  }
-
-  handleImageError(event: Event, fallbackUrl: string): void {
-    const target = event.target as HTMLImageElement;
-    target.src = fallbackUrl;
   }
 
   filterGlobal() {
