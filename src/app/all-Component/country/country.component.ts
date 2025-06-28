@@ -109,7 +109,7 @@ export class CountryComponent implements OnInit {
       country_image: ['']
 
     })
-  }
+  }  
 
   timezoneDropdown() {
     const params: any = {};
