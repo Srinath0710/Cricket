@@ -204,7 +204,7 @@ export class PlayerRegistrationComponent implements OnInit {
       club_id: ['', []],
       scorecard_name: ['', []],
       reference_id: ['', []],
-      profile_img: [''],
+      
     })
     this.addplayerpersonalform = this.fb.group({
       nationality_id: ['', [Validators.required]],
@@ -506,47 +506,20 @@ export class PlayerRegistrationComponent implements OnInit {
     this.isEditMode = false;
 
   }
-  profileImgUpdate(upload_profile_url: any, player_id: any) {
-    const params: any = {
-      action_flag: 'update_profile_url',
-      profile_image: upload_profile_url.toString(),
-      user_id: this.user_id.toString(),
-      client_id: this.client_id.toString(),
-      player_id: player_id?.toString()
-    };
 
-    this.apiService.post(this.urlConstant.playersprofile, params).subscribe(
-      (res) => {
-        if (res.status_code == this.statusConstants.success && res.status) {
-          this.filedata = null;
-          this.addCallBack(res)
-        } else {
-          this.failedToast(res);
-        }
-      },
-      (err: any) => {
-        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-          this.apiService.RefreshToken();
-
-        } else {
-          this.failedToast(err.error);
-        }
-      }
-    );
-  }
   profileImgAppend(player_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);
       myFormData.append('client_id', this.client_id.toString());
       myFormData.append('file_id', player_id);
-      myFormData.append('upload_type', 'officials');
+      myFormData.append('upload_type', 'players');
       myFormData.append('user_id', this.user_id?.toString());
       this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
         (res) => {
           if (res.status_code == this.statusConstants.success) {
             if (res.url != null && res.url != '') {
-              this.profileImgUpdate(res.url, player_id);
+                this.addCallBack(res)
             } else {
               this.failedToast(res);
             }
@@ -681,15 +654,7 @@ export class PlayerRegistrationComponent implements OnInit {
     this.ShowForm = true;
   }
 
-  // personalAddShowForm(player: any) {
-  //   this.resetForm();
 
-  //   this.isEditPersonal = false;          
-  //   this.isPersonalDataIntialized = false; 
-  //   this.disableReadonly = false;        
-  //   this.personalShowForm = true;
-  //   this.personal_player_id = player?.player_id ?? null;
-  // }
 
   cancelForm() {
     this.ShowForm = false;
@@ -735,7 +700,7 @@ export class PlayerRegistrationComponent implements OnInit {
             club_id: editRecord.club_id,
             scorecard_name: editRecord.scorecard_name,
             reference_id: editRecord.reference_id,
-            profile_img: '',
+            
           });
           this.showAddForm();
           this.profileImages = editRecord.profile_image + '?' + Math.random();
@@ -749,9 +714,9 @@ export class PlayerRegistrationComponent implements OnInit {
     });
   }
 
-  fileEvent(event: any) {
-    if (this.playerRegistrationform.value.profile_img.value !== null &&
-      this.playerRegistrationform.value.profile_img.value !== '') {
+   fileEvent(event: any) {
+    if (this.playerRegistrationform.value.profile_image.value !== null &&
+      this.playerRegistrationform.value.profile_image.value !== '') {
       this.profileImages = null;
     }
     if (event && event.target && event.target.files && event.target.files.length > 0) {
@@ -771,6 +736,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
     }
   }
+
 
   saveCroppedImage(): void {
     this.profileImages = this.croppedImage;

@@ -339,7 +339,7 @@
                <div class="split-button-wrapper">
                   <label for="profileImageInput" class="split-button upload-half">
                     <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
-                      formControlName="team_profile" />
+                      hidden formControlName="profile_image" />
                     Upload
                   </label>
                   <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
@@ -348,9 +348,10 @@
                 </div>
 
             </div>
-            <small class="text-danger" *ngIf="playerRegistrationform.get('profile_img')?.errors">
-              * Only PNG,JPEG, or JPG files are allowed
-            </small>
+            <small class="text-danger" *ngIf="playerRegistrationform.get('profile_image')?.errors">
+                            * Only PNG,JPEG, or JPG files are allowed
+                          </small>
+
             <!-- Cropper Model -->
             <div *ngIf="showCropperModal" class="modal img-croper-popup">
               <div class="modal-content crop-image">
