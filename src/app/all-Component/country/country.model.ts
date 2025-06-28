@@ -27,11 +27,13 @@ export class Country {
     user_id: string|number;
     client_id: string|number;
     country_id:string|number;
+    country_image:string;
   
     constructor(item: Partial<CountryList> = {}) {
       this.user_id = item.user_id || 0;
       this.client_id = item.client_id || 0;
       this.country_id = item.country_id || 0;
+      this.country_image = item.country_image || '';
     }
 
   }
@@ -46,6 +48,7 @@ export class EditCountry {
     capital: string;
     time_zone_id: number;
     phonecode: number;
+     country_image:string;
   
     constructor(item: Partial<EditCountry> = {}) {
       this.country_id = item.country_id || 0;
@@ -57,6 +60,7 @@ export class EditCountry {
       this.sub_region = item.sub_region || '';
       this.capital = item.capital || '';
       this.time_zone_id = item.time_zone_id || 0;
+      this.country_image = item.country_image || '';
   
     }
   }
@@ -73,6 +77,7 @@ export class UpdateCountry {
     capital: string;
     time_zone_id: string|number;
     phonecode: string|number;
+    country_image:string;
   
     constructor(item: Partial<UpdateCountry> = {}) {
       this.user_id = item.user_id || 0;
@@ -87,6 +92,7 @@ export class UpdateCountry {
       this.sub_region = item.sub_region || '';
       this.capital = item.capital || '';
       this.time_zone_id = item.time_zone_id || 0;
+      this.country_image = item.country_image || '';
   
     }
   }
