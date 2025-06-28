@@ -87,6 +87,7 @@ export class ClubRegistrationComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   dropDownConstants = CricketKeyConstant.dropdown_keys;
+  Actionflag= CricketKeyConstant.action_flag;
 
   imageBase64: any = null;
   showCropperModal = false;
@@ -129,7 +130,7 @@ export class ClubRegistrationComponent implements OnInit {
 
   ClubDropdown() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString()
     };
@@ -270,7 +271,7 @@ export class ClubRegistrationComponent implements OnInit {
       mobile: this.addClubForm.value.mobile,
       website: this.addClubForm.value.website || '',
       contact: this.addClubForm.value.contact || '',
-      action_flag: isEdit ? 'update' : 'create',
+      action_flag: isEdit ? this.Actionflag.Update : this.Actionflag.Create,
       remarks: this.addClubForm.value.remarks,
       profile_img: this.filedata ? '' : this.profileImages
     };
@@ -312,7 +313,7 @@ export class ClubRegistrationComponent implements OnInit {
 
   getGlobalData() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
@@ -426,7 +427,7 @@ export class ClubRegistrationComponent implements OnInit {
 
   getCountries() {
     const params: any = {};
-    params.action_flag = 'get_countries';
+    params.action_flag = this.Actionflag.Country;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
@@ -459,7 +460,7 @@ export class ClubRegistrationComponent implements OnInit {
       });
     }
 
-    params.action_flag = 'get_city_by_state';
+    params.action_flag = this.Actionflag.City;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
@@ -491,7 +492,7 @@ export class ClubRegistrationComponent implements OnInit {
       });
     }
 
-    params.action_flag = 'get_state_by_country';
+    params.action_flag = this.Actionflag.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();
@@ -681,7 +682,7 @@ export class ClubRegistrationComponent implements OnInit {
   }
   profileImgUpdate(upload_profile_url: any, club_id: any, baseRes: any) {
     const params: any = {
-      action_flag: 'update_profile_url',
+      action_flag: this.Actionflag.Uploadprofile,
       profile_img: upload_profile_url.toString(),
       user_id: this.user_id.toString(),
       club_id: club_id.toString(),

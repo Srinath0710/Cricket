@@ -7,6 +7,8 @@
             <div class="main-page-title page-title playerbackground">
               <i class="fas fa-globe-americas" aria-hidden="true"></i>
               Grounds
+              <div class="totalrecord">: {{ totalData }}</div>
+
             </div>
 
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
@@ -84,7 +86,7 @@
                   <span class="groundnameover" (click)="onViewGroundDetails(ground.ground_id)">
                     {{ ground.ground_name }}
                   </span>
-                  
+
                 </td>
 
 
@@ -276,7 +278,7 @@
           </div>
           <div class="col-md-3">
             <label>State
-               <span class="text-danger">*</span>
+              <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
               (ngModelChange)="getCities(addGroundForm.get('state_id')?.value)" optionValue="state_id"

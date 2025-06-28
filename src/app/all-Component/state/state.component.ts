@@ -59,7 +59,7 @@ export class StateComponent implements OnInit {
   StateNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
-
+  Actionflag=CricketKeyConstant.action_flag
   constructor(
     private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -120,7 +120,7 @@ export class StateComponent implements OnInit {
       setTimeout(() => {
         const params: any = {
           user_id: this.User_id.toString(),
-          action_flag: 'grid_load',
+          action_flag: this.Actionflag.Gridload,
           country_id: this.countryID.toString(),
           client_id: this.Client_id.toString(),
           page_no: this.first.toString(),

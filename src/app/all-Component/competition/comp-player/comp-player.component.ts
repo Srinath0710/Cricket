@@ -33,7 +33,7 @@ import { ManageDataItem } from '../competition.component';
 export class CompPlayerComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
   client_id: number = Number(localStorage.getItem('client_id'));
-  default_img= CricketKeyConstant.default_image_url.teamimage;
+  default_img= CricketKeyConstant.default_image_url.players;
   sourcePlayer!: [];
   targetPlayer!: any[];
   teamsDropDown: any;
@@ -87,6 +87,7 @@ export class CompPlayerComponent implements OnInit {
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compplayerlist, params).subscribe((res: any) => {
       this.teamsDropDown = res.data.teams ?? [];
+      
       setTimeout(() => {
         //     if (this.teamsDropDown.length > 0) {
         //   this.team_id = this.teamsDropDown[0].team_id;

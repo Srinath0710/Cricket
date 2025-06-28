@@ -57,7 +57,7 @@ export class SeasonsComponent implements OnInit {
   isEditMode: boolean = false;
   viewMode: boolean = false;
   seasonsData: any[] = [];
-  isClientShow:boolean=false;
+  isClientShow: boolean = false;
   association_id: any;
   loading = false;
   showTime = false;
@@ -75,8 +75,8 @@ export class SeasonsComponent implements OnInit {
 
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
-  dropDownConstants=CricketKeyConstant.dropdown_keys;
-
+  dropDownConstants = CricketKeyConstant.dropdown_keys;
+  Actionflag = CricketKeyConstant.action_flag;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
@@ -183,8 +183,11 @@ export class SeasonsComponent implements OnInit {
       start_date: this.addSeasonsForm.value.start_date,
       end_date: this.addSeasonsForm.value.end_date,
       season_status: String(this.addSeasonsForm.value.season_status),
+      action_flag: this.Actionflag.Create,
+
     };
     if (this.addSeasonsForm.value.season_id) {
+      params.action_flag = this.Actionflag.Update;
       this.apiService.post(this.urlConstant.updateSeason, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
@@ -232,7 +235,7 @@ export class SeasonsComponent implements OnInit {
       }
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh &&
-            err.error.message === this.statusConstants.refresh_msg
+        err.error.message === this.statusConstants.refresh_msg
         ? this.apiService.RefreshToken()
         : this.failedToast(err.error);
     });
@@ -289,28 +292,28 @@ export class SeasonsComponent implements OnInit {
     this.gridload();
   }
 
-    Clientdropdown() {
+  Clientdropdown() {
     const params: any = {
       user_id: this.user_id?.toString()
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id = this.clientData[0].client_id;
-      this.isClientShow=this.clientData.length>1?true:false;
+      this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
       this.getGlobalData();
 
     }, (err) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
-     getGlobalData() {
+  getGlobalData() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
-  
+
     this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
       (res) => {
         const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];

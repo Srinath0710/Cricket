@@ -60,7 +60,7 @@ interface Team {
 })
 export class TeamsComponent implements OnInit {
 
-    showPopup: boolean = true;
+  showPopup: boolean = true;
   public addTeamForm!: FormGroup<any>;
   @ViewChild('dt') dt: Table | undefined;
 
@@ -75,7 +75,7 @@ export class TeamsComponent implements OnInit {
   genderList: Team[] = [];
   formatList: Team[] = [];
   allTeamData: Teams[] = [];
-  showCropperModal :boolean= false;
+  showCropperModal: boolean = false;
   imageBase64: any = null;
   filedata: any;
   profileImages: any;
@@ -94,19 +94,19 @@ export class TeamsComponent implements OnInit {
   selectedCity: string = '';
   defaultRows: number = 10;
   clientData: any[] = [];
-  isClientShow:boolean=false;
+  isClientShow: boolean = false;
   cities = [];
-  selectedTeams:any = [];
-    viewDialogVisible: boolean = false;
+  selectedTeams: any = [];
+  viewDialogVisible: boolean = false;
   countriesData: any;
   countryID: any;
   TeamsNamePattern = /^[^'"]+$/; //allstringonly allow value
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
-  dropDownConstants=CricketKeyConstant.dropdown_keys;
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
+  dropDownConstants = CricketKeyConstant.dropdown_keys;
   envImagePath = environment.imagePath;
-  default_flag_img = this.envImagePath + '/images/Default Flag.png';
   default_img = CricketKeyConstant.default_image_url.teamimage;
+  Actionflag = CricketKeyConstant.action_flag;
   croppedImage: any;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
@@ -116,7 +116,7 @@ export class TeamsComponent implements OnInit {
   }
   ngOnInit(): void {
     this.Clientdropdown();
-    
+
     this.addTeamForm = this.formBuilder.group({
       team_id: [''],
       team_name: ['', [Validators.required]],
@@ -127,25 +127,25 @@ export class TeamsComponent implements OnInit {
       team_profile: [''],
       primary_color: [''],
       secondary_color: [''],
-      club_id:['', [Validators.required]],
-      reference_id:['', [Validators.required]],
-      country_id:['', [Validators.required]],
-      
+      club_id: ['', [Validators.required]],
+      reference_id: ['', [Validators.required]],
+      country_id: ['', [Validators.required]],
+
     })
   }
-//single quotes and doble quotes remove all label box 
-blockQuotesOnly(event: KeyboardEvent) {
-  if (event.key === '"' || event.key === "'") {
-    event.preventDefault();
+  //single quotes and doble quotes remove all label box 
+  blockQuotesOnly(event: KeyboardEvent) {
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
   }
-}
 
 
-sanitizeQuotesOnly(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); // remove ' and "
-  this.addTeamForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
-}
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, ''); // remove ' and "
+    this.addTeamForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
 
 
   gridLoad() {
@@ -176,7 +176,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
 
 
-  onViewGroundDetails(teamsid: any) {
+  onViewGroundDetails(teamsid: number) {
     const params = {
       team_id: teamsid.toString(),
       client_id: this.client_id?.toString(),
@@ -186,7 +186,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.viewgroundTeams, params).subscribe({
       next: (res) => {
         if (res.status_code && res.data) {
-          this.selectedTeams = res.data.teams; 
+          this.selectedTeams = res.data.teams;
           this.viewDialogVisible = true;
         }
       },
@@ -224,7 +224,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.imageCropAlter = null;
     this.imageBase64 = null;
     this.imageDefault = null;
-    this.croppedImage=null;
+    this.croppedImage = null;
   }
 
   resetForm() {
@@ -298,11 +298,11 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
   getGlobalData() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
-  
+
     this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
       (res) => {
         const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
@@ -318,7 +318,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       }
     );
   }
-  
+
 
   formSetValue() {
     this.addTeamForm.patchValue({
@@ -339,8 +339,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     },
       (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      
-    });
+
+      });
   }
 
   onAddTeam() {
@@ -359,28 +359,28 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       format_id: String(this.addTeamForm.value.format_id),
       club_id: String(this.addTeamForm.value.club_id),
       reference_id: String(this.addTeamForm.value.reference_id),
-      country_id:String(this.addTeamForm.value.country_id),
-      action_flag: 'create',
+      country_id: String(this.addTeamForm.value.country_id),
+      action_flag: this.Actionflag.Create,
       profile_img: this.filedata ? '' : this.profileImages
 
     };
     if (this.addTeamForm.value.team_id) {
-      params.action_flag = 'update';
+      params.action_flag = this.Actionflag.Update;
       params.team_id = String(this.addTeamForm.value.team_id),
-      this.apiService.post(this.urlConstant.updateTeam, params).subscribe((res) => {
-        if (res.status_code === this.statusConstants.success && res.status) {
-      
-          if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(params.team_id);
+        this.apiService.post(this.urlConstant.updateTeam, params).subscribe((res) => {
+          if (res.status_code === this.statusConstants.success && res.status) {
+
+            if (res.data !== null && this.filedata != null) {
+              this.profileImgAppend(params.team_id);
+            } else {
+              this.addCallBack(res)
+            }
           } else {
-            this.addCallBack(res)
+            this.failedToast(res)
           }
-        } else {
-          this.failedToast(res)
-        }
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      });
+        }, (err: any) => {
+          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        });
     } else {
       this.apiService.post(this.urlConstant.addTeam, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
@@ -391,7 +391,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           }
         } else {
           this.failedToast(res)
-        }}, (err: any) => {
+        }
+      }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
@@ -426,7 +427,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           this.profileImages = editRecord.profile_img + '?' + Math.random();
           this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
         }
-      } 
+      }
     });
 
   }
@@ -465,12 +466,12 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.client_id = this.clientData[0].client_id;
-      this.isClientShow=this.clientData.length>1?true:false;
+      this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridLoad();
       this.getGlobalData();
 
     }, (err) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
   fileEvent(event: any) {
@@ -496,80 +497,80 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     }
   }
 
-    /*profile image update */
+  /*profile image update */
 
-    // profileImgUpdate(upload_profile_url: any, team_id: any) {
-    //   const params: any = {
-    //     action_flag: 'update_profile_url',
-    //     profile_img: upload_profile_url.toString(),
-    //     user_id: this.user_id.toString(),
-    //     client_id: this.client_id.toString(),
-    //     team_id: team_id?.toString() 
-    //   };
-  
-    //   this.apiService.post(this.urlConstant.profileteam, params).subscribe(
-    //     (res) => {
-    //       if (res.status_code == this.statusConstants.success && res.status) {
-    //         this.filedata = null;
-    //         this.addCallBack(res)
-    //       } else {
-    //         this.failedToast(res);
-    //       }
-    //     },
-    //     (err: any) => {
-    //       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-    //         this.apiService.RefreshToken();
-  
-    //       } else {
-    //         this.failedToast(err.error);
-    //       }
-    //     }
-    //   );
-    // }
-    profileImgAppend(team_id: any) {
-      const myFormData = new FormData();
-      if (this.filedata != null && this.filedata != '') {
-        myFormData.append('imageFile', this.filedata);
-        myFormData.append('client_id', this.client_id.toString());
-        myFormData.append('file_id', team_id);
-        myFormData.append('upload_type', 'teams');
-        myFormData.append('user_id', this.user_id?.toString());
-        this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
-          (res) => {
-            if (res.status_code == this.statusConstants.success) {
-              if (res.url != null && res.url != '') {
-            this.addCallBack(res)
-              } else {
-                this.failedToast(res);
-              }
+  // profileImgUpdate(upload_profile_url: any, team_id: any) {
+  //   const params: any = {
+  //     action_flag: 'update_profile_url',
+  //     profile_img: upload_profile_url.toString(),
+  //     user_id: this.user_id.toString(),
+  //     client_id: this.client_id.toString(),
+  //     team_id: team_id?.toString() 
+  //   };
+
+  //   this.apiService.post(this.urlConstant.profileteam, params).subscribe(
+  //     (res) => {
+  //       if (res.status_code == this.statusConstants.success && res.status) {
+  //         this.filedata = null;
+  //         this.addCallBack(res)
+  //       } else {
+  //         this.failedToast(res);
+  //       }
+  //     },
+  //     (err: any) => {
+  //       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+  //         this.apiService.RefreshToken();
+
+  //       } else {
+  //         this.failedToast(err.error);
+  //       }
+  //     }
+  //   );
+  // }
+  profileImgAppend(team_id: any) {
+    const myFormData = new FormData();
+    if (this.filedata != null && this.filedata != '') {
+      myFormData.append('imageFile', this.filedata);
+      myFormData.append('client_id', this.client_id.toString());
+      myFormData.append('file_id', team_id);
+      myFormData.append('upload_type', 'teams');
+      myFormData.append('user_id', this.user_id?.toString());
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+        (res) => {
+          if (res.status_code == this.statusConstants.success) {
+            if (res.url != null && res.url != '') {
+              this.addCallBack(res)
             } else {
               this.failedToast(res);
             }
-          },
-          (err: any) => {
-            if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-              this.apiService.RefreshToken();
-  
-            } else {
-              this.failedToast(err.error);
-            }
+          } else {
+            this.failedToast(res);
           }
-        );
-      }
+        },
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+
+          } else {
+            this.failedToast(err.error);
+          }
+        }
+      );
     }
- saveCroppedImage(): void {
-  this.profileImages = this.croppedImage;
-  this.imageCropAlter = this.filedata;
-  this.filedata = this.base64ToBinary(this.filedata);
-  this.showCropperModal = false;
+  }
+  saveCroppedImage(): void {
+    this.profileImages = this.croppedImage;
+    this.imageCropAlter = this.filedata;
+    this.filedata = this.base64ToBinary(this.filedata);
+    this.showCropperModal = false;
   }
 
 
 
   cancelImg(): void {
     this.showCropperModal = false;
-    this.url=this.imageCropAlter;
-    this.filedata=this.base64ToBinary(this.filedata);
+    this.url = this.imageCropAlter;
+    this.filedata = this.base64ToBinary(this.filedata);
   }
   loadImageFailed() {
     console.error('Image loading failed');
@@ -645,13 +646,13 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.profileImages = null;
     this.imageCropAlter = null;
     this.imageDefault = null;
-    this.croppedImage=null;
+    this.croppedImage = null;
   }
   cropPopOpen() {
     this.showCropperModal = true;
-    this.imageBase64=this.imageDefault;
+    this.imageBase64 = this.imageDefault;
   }
-  
+
 
   convertBlobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {

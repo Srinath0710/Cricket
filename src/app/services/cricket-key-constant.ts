@@ -26,10 +26,21 @@ export class CricketKeyConstant {
     }
     static default_image_url = {
         officials: 'assets/images/umpire.png',
-        players: 'assets/images/default-player.png',
+        players: 'assets/images/player.jpg',
         grounds: 'assets/images/ground.jpg',
         clientimg: 'assets/images/client.jpg',
         teamimage: 'assets/images/team.jpg',
         clubs: 'assets/images/Club.jpg',
+    }
+    static action_flag={
+        Create:'create',
+        Update:'update',
+        Country:'get_countries',
+        City:'get_city_by_state',
+        State:'get_state_by_country',
+        Uploadprofile:'update_profile_url',
+        Gridload:'grid_load',
+        Dropdown:'dropdown',
+
     }
 }

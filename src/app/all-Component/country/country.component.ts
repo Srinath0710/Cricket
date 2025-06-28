@@ -42,9 +42,7 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
     ToastModule,
     TooltipModule,
     DrawerModule,
-    ImageCropperComponent
-
-  ],
+],
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.css'],
   providers: [
@@ -88,6 +86,7 @@ export class CountryComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   default_img = CricketKeyConstant.default_image_url.teamimage;
+  Actionflag = CricketKeyConstant.action_flag
   croppedImage: any;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
@@ -197,13 +196,13 @@ export class CountryComponent implements OnInit {
   failedToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
-  profileImgAppend(player_id: any) {
+  profileImgAppend(country_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);
       myFormData.append('client_id', this.client_id.toString());
-      myFormData.append('file_id', player_id);
-      myFormData.append('upload_type', 'countries');
+      myFormData.append('file_id', country_id);
+      myFormData.append('upload_type', 'country');
       myFormData.append('user_id', this.user_id?.toString());
       this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
         (res) => {
@@ -244,14 +243,15 @@ export class CountryComponent implements OnInit {
       sub_region: this.addCountryForm.value.sub_region,
       time_zone_id: String(this.addCountryForm.value.time_zone_id),
       country_id: String(this.addCountryForm.value.country_id),
-      action_flag: 'create',
+      action_flag: this.Actionflag.Create,
       capital: '',
       phonecode: '0',
-      country_image: this.filedata ? '' : this.profileImages
+      country_image:'',
+      // country_image: this.filedata ? '' : this.profileImages
     };
-    if (this.addCountryForm.value.team_id) {
-      params.action_flag = 'update';
-      params.country_id = String(this.addCountryForm.value.team_id),
+    if (this.addCountryForm.value.country_id) {
+      params.action_flag = this.Actionflag.Update;
+      params.country_id = String(this.addCountryForm.value.country_id);
         this.apiService.post(this.urlConstant.updateCountry, params).subscribe((res) => {
           if (res.status_code === this.statusConstants.success && res.status) {
 
@@ -428,6 +428,7 @@ export class CountryComponent implements OnInit {
     this.gridLoad();
   }
   EditCountry(country_id: number) {
+    this.ShowForm = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -444,7 +445,7 @@ export class CountryComponent implements OnInit {
             region_id: editRecord.region_id,
             sub_region: editRecord.sub_region,
             time_zone_id: editRecord.time_zone_id,
-            country_image: null
+            // country_image: null
           });
           this.filedata = null;
           this.profileImages = editRecord.country_image + '?' + Math.random();

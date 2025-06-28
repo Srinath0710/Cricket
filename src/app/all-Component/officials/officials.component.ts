@@ -126,9 +126,8 @@ export class OfficialsComponent implements OnInit {
   url: any;
   clientID: any;
   envImagePath = environment.imagePath;
-  default_flag_img = this.envImagePath + '/images/Default Flag.png';
   default_img = CricketKeyConstant.default_image_url.officials;
-
+  Actionflag = CricketKeyConstant.action_flag;
   accreditationList: any[] = [];
   childAccreditationList: any[] = [];
   officialStatusList: any[] = [];
@@ -255,7 +254,7 @@ export class OfficialsComponent implements OnInit {
 
   dropdown() {
     const params: any = {};
-    params.action_flag = 'dropdown';
+    params.action_flag = this.Actionflag.Dropdown;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.dropdownofficial, params).subscribe((res) => {
@@ -382,10 +381,10 @@ export class OfficialsComponent implements OnInit {
       gender_id: String(this.addOfficialForm.value.gender_id),
       dob: this.addOfficialForm.value.dob,
       profile_img: this.filedata ? '' : this.profileImages,
-      action_flag: 'create'
+      action_flag: this.Actionflag.Create
     };
     if (this.addOfficialForm.value.official_id) {
-      params.action_flag = 'update';
+      params.action_flag = this.Actionflag.Update;
       params.official_id = String(this.addOfficialForm.value.official_id),
         this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
           if (res.status_code === this.statusConstants.success && res.status) {
@@ -442,7 +441,7 @@ export class OfficialsComponent implements OnInit {
     this.imageCropAlter = null;
     this.imageBase64 = null;
     this.imageDefault = null;
-    this.croppedImage=null;
+    this.croppedImage = null;
   }
 
   onOfficialChange(selectedId: number) {
@@ -683,7 +682,7 @@ export class OfficialsComponent implements OnInit {
 
   getCountries() {
     const params: any = {};
-    params.action_flag = 'get_countries';
+    params.action_flag = this.Actionflag.Country;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
@@ -708,7 +707,7 @@ export class OfficialsComponent implements OnInit {
       return
     }
 
-    params.action_flag = 'get_city_by_state';
+    params.action_flag = this.Actionflag.City;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
@@ -729,7 +728,7 @@ export class OfficialsComponent implements OnInit {
     if (country_id == null || country_id == '') {
       return
     }
-    params.action_flag = 'get_state_by_country';
+    params.action_flag = this.Actionflag.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();
@@ -748,7 +747,7 @@ export class OfficialsComponent implements OnInit {
 
   getGlobalData() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString(),
     };
@@ -979,7 +978,7 @@ export class OfficialsComponent implements OnInit {
     this.imageCropAlter = null;
     this.imageBase64 = null;
     this.imageDefault = null;
-    this.croppedImage=null;
+    this.croppedImage = null;
   }
   cropPopOpen() {
     this.showCropperModal = true;
@@ -1045,7 +1044,7 @@ export class OfficialsComponent implements OnInit {
       return null;
     }
 
-    
+
 
     try {
       const byteCharacters = atob(base64.split(',')[1]);

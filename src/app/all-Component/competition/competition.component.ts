@@ -100,7 +100,7 @@ export interface ManageDataItem {
 export class CompetitionComponent implements OnInit {
   public addCompetitionForm!: FormGroup<any>;
   user_id: number = Number(localStorage.getItem('user_id'));
-  client_id: number=0 ;
+  client_id: number = 0;
   searchKeyword: string = '';
   public ShowForm: any = false;
   position: string = 'right';
@@ -130,15 +130,15 @@ export class CompetitionComponent implements OnInit {
   clientData: any[] = [];
   isEditDisabled: boolean = false;
 
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
-
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
+  Actionflag = CricketKeyConstant.action_flag;
   // Filter properties
   showFilters: boolean = false;
   filterStatus: string = '';
   filterMatchType: string = '';
   filterCategory: string = '';
-  manageData:ManageDataItem  = { competition_id: 0,name:'',match_type:'',gender:'',age_category:'',start_date:'',end_date:'' };
+  manageData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
   competitionData: Competition = {
     competition_id: 0,
     client_id: '',
@@ -162,7 +162,7 @@ export class CompetitionComponent implements OnInit {
     status: '',
     imageUrl: ''
   };
-  isClientShow: boolean=false;
+  isClientShow: boolean = false;
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -203,14 +203,14 @@ export class CompetitionComponent implements OnInit {
       calculation: [''],
       competition_image: [null],
       distrib_id: [null],
-      is_practice: ['',Validators.required]
+      is_practice: ['', Validators.required]
     });
   }
 
   onShowFormChanged(status: boolean) {
     this.isEditDisabled = status;
   }
-  
+
   showDialog() {
     this.isEditMode = false;
     this.addCompetitionForm.patchValue({ status: 'Active' });
@@ -261,7 +261,7 @@ export class CompetitionComponent implements OnInit {
           }
 
         }
-        else{
+        else {
           console.log(res)
           this.compititionList = [];
           this.filteredCompititionList = [];
@@ -311,7 +311,7 @@ export class CompetitionComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.competition_id = comp.competition_id?.toString();
     this.apiService.post(this.urlConstant.editcompetition, params).subscribe((res) => {
-      if (res.status_code == this.statusConstants.success && res.status)  {
+      if (res.status_code == this.statusConstants.success && res.status) {
         const editRecord: EditCompitition = res.data.competitions[0] ?? {};
         if (editRecord != null) {
           this.addCompetitionForm.setValue({
@@ -326,8 +326,8 @@ export class CompetitionComponent implements OnInit {
             age_category_id: editRecord.age_category_id,
             competition_level: editRecord.competition_level,
             competition_format_id: editRecord.competition_format_id,
-            start_date: editRecord.start_date!=null ?editRecord.start_date.split('T')[0] :null,
-            end_date: editRecord.end_date!=null ?editRecord.end_date.split('T')[0] :null,
+            start_date: editRecord.start_date != null ? editRecord.start_date.split('T')[0] : null,
+            end_date: editRecord.end_date != null ? editRecord.end_date.split('T')[0] : null,
             video_path: editRecord.video_path,
             overs_per_innings: editRecord.overs_per_innings,
             overs_per_bowler: editRecord.overs_per_bowler,
@@ -388,11 +388,11 @@ export class CompetitionComponent implements OnInit {
     this.manageData = {
       competition_id: competition.competition_id,
       name: competition.competition_name,
-      age_category:competition.age_category,
-      match_type:competition.match_type,
-      gender:competition.gender,
-      start_date:competition.start_date,
-      end_date:competition.end_date
+      age_category: competition.age_category,
+      match_type: competition.match_type,
+      gender: competition.gender,
+      start_date: competition.start_date,
+      end_date: competition.end_date
     }
 
   }
@@ -461,22 +461,22 @@ export class CompetitionComponent implements OnInit {
       points_tie: String(this.addCompetitionForm.value.points_tie),
       calculation: String(this.addCompetitionForm.value.calculation),
       competition_id: String(this.addCompetitionForm.value.competition_id),
-      action_flag: 'create',
+      action_flag: this.Actionflag.Create,
     };
     if (this.addCompetitionForm.value.competition_id) {
-      params.action_flag = 'update';
+      params.action_flag = this.Actionflag.Update;
       this.apiService.post(this.urlConstant.updateCompetition, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ?
-         this.apiService.RefreshToken() : this.failedToast(err);
+          this.apiService.RefreshToken() : this.failedToast(err);
       });
     } else {
       this.apiService.post(this.urlConstant.createCompetition, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? 
-        this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ?
+          this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
 
@@ -484,12 +484,12 @@ export class CompetitionComponent implements OnInit {
   getGlobalData() {
 
     const params: any = {};
-    params.action_flag = 'drop_down';
+    params.action_flag = this.Actionflag.Dropdown;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.dropdownlookups, params).subscribe((res: any) => {
       this.seasonList = res.data?.seasons ?? [];
-      this.metaDataList=res.data?.metadata ?? [];
+      this.metaDataList = res.data?.metadata ?? [];
       // this.metaDataList = res.data["metadata"] != undefined ? res.data["metadata"] : [];
       this.tourtypeList = this.metaDataList.filter(temp => temp.config_key === 'comp_type');
       this.filterTourformatList = this.metaDataList.filter(temp => temp.config_key === 'team_format');
@@ -499,8 +499,8 @@ export class CompetitionComponent implements OnInit {
 
 
     }, (err: any) => {
-      if (err.status_code === this.statusConstants.refresh && err.error.message  ){
-      
+      if (err.status_code === this.statusConstants.refresh && err.error.message) {
+
         this.apiService.RefreshToken();
         this.failedToast(err.error.message)
 
@@ -518,12 +518,12 @@ export class CompetitionComponent implements OnInit {
     };
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
-      this.client_id= this.clientData[0].client_id;
-      this.isClientShow=this.clientData.length>1?true:false;
+      this.client_id = this.clientData[0].client_id;
+      this.isClientShow = this.clientData.length > 1 ? true : false;
       this.loadCompetitions();
 
     }, (err) => {
-      if (err.status_code === this.statusConstants.refresh && err.error.message  ){
+      if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.failedToast(err.error.message)
         this.apiService.RefreshToken();
 
@@ -532,7 +532,7 @@ export class CompetitionComponent implements OnInit {
   }
   StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this Competition?`, 
+      message: `Are you sure you want to ${actionObject.label} this Competition?`,
       header: 'Confirmation',
       icon: 'pi pi-question-circle',
       acceptLabel: 'Yes',
@@ -555,7 +555,7 @@ export class CompetitionComponent implements OnInit {
       client_id: this.client_id?.toString(),
       competition_id: competition_id?.toString()
     };
-  
+
     this.apiService.post(url, params).subscribe(
       (res: any) => {
         res.status_code === this.statusConstants.success && res.status
@@ -564,11 +564,11 @@ export class CompetitionComponent implements OnInit {
       },
       (err: any) => {
         err.status_code === this.statusConstants.refresh &&
-        err.error.message === this.statusConstants.refresh_msg
+          err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err);
       }
     );
   }
-  
+
 }

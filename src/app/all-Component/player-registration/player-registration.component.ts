@@ -158,9 +158,9 @@ export class PlayerRegistrationComponent implements OnInit {
     this.disableReadonly = !this.disableReadonly;
   }
   default_img = CricketKeyConstant.default_image_url.players;
-  // dropDownConstants= CricketKeyConstant.dropdown_keys;
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
+  Actionflag = CricketKeyConstant.action_flag;
   constructor(
     private fb: FormBuilder,
     private formBuilder: FormBuilder,
@@ -250,7 +250,7 @@ export class PlayerRegistrationComponent implements OnInit {
   }
   clubsdropdown() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
@@ -358,7 +358,7 @@ export class PlayerRegistrationComponent implements OnInit {
   Nationalitydropdown() {
 
     const params: any = {};
-    params.action_flag = 'dropdown';
+    params.action_flag = this.Actionflag.Dropdown;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.nationalityplayer, params).subscribe((res) => {
@@ -372,7 +372,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
   dropdownplayer() {
     const params: any = {};
-    params.action_flag = 'dropdown';
+    params.action_flag = this.Actionflag.Dropdown;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
@@ -389,7 +389,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
   radiobutton() {
     const params: any = {};
-    params.action_flag = 'dropdown';
+    params.action_flag = this.Actionflag.Dropdown;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
@@ -572,13 +572,13 @@ export class PlayerRegistrationComponent implements OnInit {
       club_id: this.playerRegistrationform.value.club_id != null ? this.playerRegistrationform.value.club_id.toString() : null,
       scorecard_name: this.playerRegistrationform.value.scorecard_name != null ? this.playerRegistrationform.value.scorecard_name.toString() : null,
       reference_id: this.playerRegistrationform.value.reference_id != null ? this.playerRegistrationform.value.reference_id.toString() : null,
-      action_flag: 'create'
+      action_flag: this.Actionflag.Create
     };
 
     if (this.playerRegistrationform.value.player_id) {
 
 
-      params.action_flag = 'update';
+      params.action_flag = this.Actionflag.Update;
       params.player_id = String(this.playerRegistrationform.value.player_id),
         this.apiService.post(this.urlConstant.updateplayer, params).subscribe((res) => {
           if (res.status_code === this.statusConstants.success && res.status) {
@@ -1037,7 +1037,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
   getCountries() {
     const params: any = {};
-    params.action_flag = 'get_countries';
+    params.action_flag = this.Actionflag.Country;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
@@ -1060,7 +1060,7 @@ export class PlayerRegistrationComponent implements OnInit {
     if (state_id == null || state_id == '') {
       return
     }
-    params.action_flag = 'get_city_by_state';
+    params.action_flag = this.Actionflag.City;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
@@ -1080,7 +1080,7 @@ export class PlayerRegistrationComponent implements OnInit {
     if (country_id == null || country_id == '') {
       return
     }
-    params.action_flag = 'get_state_by_country';
+    params.action_flag = this.Actionflag.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();
@@ -1096,7 +1096,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
   getGlobalData() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString(),
     };

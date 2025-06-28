@@ -1606,7 +1606,12 @@ input.form-control:focus {
   margin-top: 1px;
 
 }
-
+ .p-listbox-option:nth-child(odd) { 
+background-color: #e1edfb !important;
+}
+.p-listbox-option:nth-child(odd):hover { 
+background-color: #e1edfb !important;
+}
 
   /* background: linear-gradient(to right,#60c3e4, #be87d9);
   color: white; */

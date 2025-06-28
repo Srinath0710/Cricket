@@ -337,13 +337,7 @@
                   <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
                 </div>
 
-<!-- 
-              <div class="image-preview-wrapper">
-                <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                <img [src]="filedata ? url : (profileImages ? profileImages : default_img)"
-                  (error)="handleImageError($event, default_img)" alt="Profile Image"
-                   class="profile-img">
-              </div> -->
+
                <div class="split-button-wrapper">
                   <label for="profileImageInput" class="split-button upload-half">
                     <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden

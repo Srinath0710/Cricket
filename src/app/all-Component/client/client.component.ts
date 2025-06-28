@@ -61,10 +61,10 @@ export class ClientComponent implements OnInit{
   searchKeyword: string = '';
   public addClientForm!: FormGroup<any>;
   @ViewChild('dt') dt!: Table;
-  public ShowForm: any = false;
+  public ShowForm: boolean = false;
   Clientdata: Client[] = [];
   rows: number = 10;
-  totalData: any = 0;
+  totalData: number = 0;
   first: number = 1;
   pageData: number = 0;
   countriesList: Country[] = []; 
@@ -78,8 +78,6 @@ export class ClientComponent implements OnInit{
   mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$';
   ClientNamePattern = /^[^'"]+$/; //allstringonly allow value
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
   showCropperModal = false;
   imageBase64: any = null;
   length: any
@@ -92,6 +90,9 @@ export class ClientComponent implements OnInit{
   base64: any;
   url: any; 
   croppedImage: any;
+  conditionConstants= CricketKeyConstant.condition_key;
+  statusConstants= CricketKeyConstant.status_code;
+  actionflags= CricketKeyConstant.action_flag;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
   private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
@@ -188,8 +189,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       state_id: String(this.addClientForm.value.state_id),
       country_id: String(this.addClientForm.value.country_id),
       city_id: String(this.addClientForm.value.city_id),
-
-      action_flag: 'create',
+      action_flag: this.actionflags.Create,
       header_color: '',
       tbl_header_color: '',
       tbl_header_font_color: '',
@@ -202,7 +202,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
     if (this.addClientForm.value.client_id) {
 
-      params.action_flag = 'update';
+      params.action_flag = this.actionflags.Update;
       params.client_id = String(this.addClientForm.value.client_id);
       this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
@@ -358,7 +358,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
   }
   getCountries() {
     const params: any = {};
-    params.action_flag = 'get_countries';
+    params.action_flag = this.actionflags.Country;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
@@ -384,7 +384,7 @@ getCities(state_id:any) {
         return
     }
 
-    params.action_flag = 'get_city_by_state';
+    params.action_flag = this.actionflags.City;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
@@ -406,7 +406,7 @@ getStates(country_id:any) {
     if (country_id == null || country_id == '') {
         return
     }
-    params.action_flag = 'get_state_by_country';
+    params.action_flag = this.actionflags.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();
@@ -579,10 +579,10 @@ cropperReady() {
   }
  /*profile image update */
 
-  profileImgUpdate(upload_profile_url: any, client_id: any) {
+  profileImgUpdate(upload_profile_url: string) {
 
     const params: any = {};
-    params.action_flag = 'update_profile_url';
+    params.action_flag = this.actionflags.Uploadprofile;
     params.profile_img = upload_profile_url.toString();
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();

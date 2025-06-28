@@ -55,11 +55,6 @@ body.modal-open {
     max-width: 150px;
     margin-top: 6px;
   }
-
-  .zoom-icon {
-    padding: 4px 6px;
-    font-size: 14px;
-  }
 }
 .top-bar {
   display: flex;
@@ -188,18 +183,6 @@ body.modal-open {
   width: 100%;
   display: block;
 }
-.zoom-icon {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(0, 123, 255, 0.8);
-  color: white;
-  border-radius: 50%;
-  padding: 6px 10px;
-  font-size: 18px;
-  pointer-events: none;
-  user-select: none;
-} 
 
 
   /* Image Croper */

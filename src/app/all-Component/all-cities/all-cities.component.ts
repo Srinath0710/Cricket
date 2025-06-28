@@ -45,7 +45,7 @@ interface City {
     PaginatorModule,
     Drawer,
     ToastModule,
-TooltipModule
+    TooltipModule
   ],
   templateUrl: './all-cities.component.html',
   styleUrls: ['./all-cities.component.css'],
@@ -87,6 +87,7 @@ export class AllCitiesComponent implements OnInit {
 
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
+  Actionflag = CricketKeyConstant.action_flag;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService,
     private urlConstant: URLCONSTANT, private msgService: MessageService,
@@ -122,7 +123,7 @@ export class AllCitiesComponent implements OnInit {
 
   getCountries() {
     const params: any = {};
-    params.action_flag = 'get_countries';
+    params.action_flag = this.Actionflag.Country;
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
 
@@ -131,8 +132,8 @@ export class AllCitiesComponent implements OnInit {
       this.countryId = this.countryData[0].country_id;
       this.getStates();
     }, (err: any) => {
-        if (
-        err.status_code=== this.statusConstants.refresh &&
+      if (
+        err.status_code === this.statusConstants.refresh &&
         err.error?.message === this.statusConstants.refresh_msg
       ) {
         this.apiService.RefreshToken();
@@ -150,7 +151,7 @@ export class AllCitiesComponent implements OnInit {
       return;
     }
     const params: any = {};
-    params.action_flag = 'get_state_by_country';
+    params.action_flag = this.Actionflag.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = this.countryId.toString();
@@ -162,7 +163,7 @@ export class AllCitiesComponent implements OnInit {
 
     }, (err: any) => {
       if (
-        err.status_code=== this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
         err.error?.message === this.statusConstants.refresh_msg
       ) {
         this.apiService.RefreshToken();
@@ -178,7 +179,7 @@ export class AllCitiesComponent implements OnInit {
       return;
     }
     const params: any = {};
-    params.action_flag = 'get_state_by_country';
+    params.action_flag = this.Actionflag.State;
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.country_id = country_id.toString();
@@ -186,7 +187,7 @@ export class AllCitiesComponent implements OnInit {
       this.statesFormList = res.data.states ?? [];
     }, (err: any) => {
       if (
-        err.status_code=== this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
         err.error?.message === this.statusConstants.refresh_msg
       ) {
         this.apiService.RefreshToken();
@@ -203,14 +204,14 @@ export class AllCitiesComponent implements OnInit {
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
     params.user_id = this.user_id?.toString();
-    params.action_flag = "grid_load";
+    params.action_flag = this.Actionflag.Gridload;
     params.state_id = this.stateId != null ? this.stateId.toString() : null;
 
     this.apiService.post(this.urlConstant.getCityList, params).subscribe((res) => {
       this.cityData = res.data.states ?? [];
-            this.totalData = this.cityData.length !== 0 ? res.data.states[0].total_records : 0;
+      this.totalData = this.cityData.length !== 0 ? res.data.states[0].total_records : 0;
     }, (err: any) => {
-      err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.cityData = [], this.totalData = this.cityData.length);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.cityData = [], this.totalData = this.cityData.length);
 
     });
   }
@@ -264,7 +265,7 @@ export class AllCitiesComponent implements OnInit {
           : this.failedToast(res);
       },
       (err: any) => {
-        err.status_code=== this.statusConstants.refresh &&
+        err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err.error);
@@ -286,23 +287,23 @@ export class AllCitiesComponent implements OnInit {
       city_name: this.addCityForm.value.city_name,
       city_code: this.addCityForm.value.city_code,
       city_id: String(this.addCityForm.value.city_id),
-      action_flag: 'create',
+      action_flag: this.Actionflag.Create,
       capital: '',
     };
 
     if (this.addCityForm.value.city_id) {
-      params.action_flag = 'update';
+      params.action_flag = this.Actionflag.Update;
       this.apiService.post(this.urlConstant.updateCity, params).subscribe((res) => {
 
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     } else {
       this.apiService.post(this.urlConstant.addCity, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status_code=== this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
 
@@ -333,12 +334,12 @@ export class AllCitiesComponent implements OnInit {
 
   StatusConfirm(city_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
-    (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
 
-  if (AlreadyStatestatus) {
-    return;
-  }
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this city?`,
       header: 'Confirmation',

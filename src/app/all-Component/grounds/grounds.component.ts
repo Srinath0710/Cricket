@@ -73,7 +73,7 @@ export class GroundsComponent implements OnInit {
   url: any;
   envImagePath = environment.imagePath;
   default_img = CricketKeyConstant.default_image_url.grounds;
-
+  Actionflag = CricketKeyConstant.action_flag;
   countriesList: Country[] = [];
   citiesList = [];
   statesList = [];
@@ -212,7 +212,7 @@ export class GroundsComponent implements OnInit {
 
   clubsdropdown() {
     const params: any = {
-      action_flag: 'dropdown',
+      action_flag: this.Actionflag.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.ClientID.toString()
     };
@@ -472,13 +472,13 @@ export class GroundsComponent implements OnInit {
       longitude: this.addGroundForm.value.longitude,
       capacity: String(this.addGroundForm.value.capacity),
       profile: this.addGroundForm.value.profile,
-      action_flag: this.isEditMode ? 'update' : 'create',
+      action_flag: this.isEditMode ? this.Actionflag.Update : this.Actionflag.Create,
       ground_photo: this.filedata ? this.addGroundForm.value.ground_photo : '',
       reference_id: this.addGroundForm.value.reference_id,
 
     };
     if (this.addGroundForm.value.ground_id) {
-      params.action_flag = 'update';
+      params.action_flag = this.Actionflag.Update;
       params.ground_id = String(this.addGroundForm.value.ground_id),
         this.apiService.post(this.urlConstant.updateGround, params).subscribe((res) => {
           if (res.status_code === this.statusConstants.success && res.status) {
@@ -656,7 +656,7 @@ export class GroundsComponent implements OnInit {
 
   getCountries() {
     const params: any = {};
-    params.action_flag = 'get_countries';
+    params.action_flag = this.Actionflag.Country;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
@@ -675,7 +675,7 @@ export class GroundsComponent implements OnInit {
       return;
     }
 
-    params.action_flag = 'get_city_by_state';
+    params.action_flag = this.Actionflag.City;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
@@ -692,7 +692,7 @@ export class GroundsComponent implements OnInit {
     if (country_id == null || country_id == '') {
       return;
     }
-    params.action_flag = 'get_state_by_country';
+    params.action_flag = this.Actionflag.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();

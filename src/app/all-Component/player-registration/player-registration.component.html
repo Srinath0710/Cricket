@@ -6,9 +6,10 @@
         <div class="card margin-card">
           <div class="card-body">
             <div class="page-header main-page-header">
-              <div class="main-page-title playerbackground">
+              <div class="main-page-title playerbackground ">
                 <i class="fa fa-user-circle" aria-hidden="true"></i>
                 All Players
+                <div class="totalrecord">: {{ totalData }}</div>
               </div>
 
               <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
@@ -78,13 +79,13 @@
                   <th class="custom-header action-column-header">Actions</th>
                 </tr>
               </ng-template>
-                <ng-template pTemplate="body" let-player  let-even="even">
+              <ng-template pTemplate="body" let-player let-even="even">
                 <tr [ngClass]="{'even-row': even}">
                   <td>
                     <div class="player-name-cell">
                       <span class="person-image-team-player">
                         <img class="player-img" *ngIf="!player.profile_image || !player.profile_image"
-                          [src]="'assets/images/avatar.png'">
+                          [src]="default_img">
 
                         <img class="player-img" *ngIf="player.profile_image && player.profile_image"
                           [src]="player.profile_image">
@@ -132,11 +133,6 @@
             <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
               [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
             </p-paginator>
-
-            <!-- 
-        <p-sidebar [(visible)]="ShowForm" position="right" styleClass="full-width-sidebar" [modal]="true"
-      [baseZIndex]="10000" [closeOnEscape]="false" appendTo="body" [showCloseIcon]="false">
- <div class="sidebar-wrapper" (click)="$event.stopPropagation()"> -->
 
             <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
               <div class="d-flex justify-content-between align-items-center mb-4">
@@ -238,7 +234,6 @@
 
                         <div class="col-md-6">
                           <label>Club ID</label>
-                          <!-- <span class="text-danger">*</span> -->
                           <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id"
                             optionValue="club_id" optionLabel="club_name" placeholder="Select Club Id">
                             <ng-template let-club pTemplate="item">
@@ -248,10 +243,6 @@
                               </div>
                             </ng-template>
                           </p-dropdown>
-                          <!-- <small
-                            *ngIf="playerRegistrationform?.get('club_id')?.invalid &&(playerRegistrationform?.get('club_id')?.touched) || (playerRegistrationform.get('club_id')?.invalid && submitted)"
-                            class="required-msg"> Club ID is Required
-                          </small> -->
                         </div>
 
                         <div class="col-md-6">
@@ -295,82 +286,60 @@
                           <input class="form-control" type="text" maxlength="50" formControlName="remarks"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('remarks', $event)">
                         </div>
-
-                        <!-- <div class="col-md-6">
-                          <div class="image-upload-container text-center">
-                            <label for="profileImageInput" class="upload-label">
-                              <div class="image-preview-wrapper">
-                                <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image" />
-                                <ng-template #placeholder>
-                                </ng-template>
-                              </div>
-                              <div class="upload-btn">Upload</div>
-                            </label>
-                            <input type="file" id="profileImageInput" accept="image/*"
-                              (change)="onProfileImageSelected($event)" hidden formControlName="profile_image" />
-                          </div>
-                        </div> -->
-
-                        <!-- <div class="col-md-6">
-                          <label>Team Represent</label>
-                          <input class="form-control" type="text" maxlength="50" placeholder="Enter Team Represent"
-                            formControlName="team_represent"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('team_represent', $event)">
-                        </div> -->
-
-                        <!-- <div class="col-md-6">
+                        <div class="col-md-6">
                           <label>Profile Image</label>
-                          <input class="form-control" type="file" formControlName="profile_image">
-                        </div> -->
+                          <div class="image-upload-container text-center">
 
-           
-          <div class="col-md-6">
-            <label>Profile Image</label>
-            <div class="image-upload-container text-center">
-
-                <div class="image-preview-wrapper">
-                  <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                  <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="default_img"  alt="Profile Image" class="profile-img">
-                  <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
-                  <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
-                </div>
+                            <div class="image-preview-wrapper">
+                              <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                              <img
+                                *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                                [src]="default_img" alt="Profile Image" class="profile-img">
+                              <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image"
+                                class="profile-img">
+                              <img *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"
+                                (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
+                            </div>
 
 
-               <div class="split-button-wrapper">
-                  <label for="profileImageInput" class="split-button upload-half">
-                    <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
-                      hidden formControlName="profile_image" />
-                    Upload
-                  </label>
-                  <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
-                    Crop
-                  </button>
-                </div>
+                            <div class="split-button-wrapper">
+                              <label for="profileImageInput" class="split-button upload-half">
+                                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)"
+                                  hidden hidden formControlName="profile_image" />
+                                Upload
+                              </label>
+                              <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                                Crop
+                              </button>
+                            </div>
 
-            </div>
-            <small class="text-danger" *ngIf="playerRegistrationform.get('profile_image')?.errors">
+                          </div>
+                          <small class="text-danger" *ngIf="playerRegistrationform.get('profile_image')?.errors">
                             * Only PNG,JPEG, or JPG files are allowed
                           </small>
 
-            <!-- Cropper Model -->
-            <div *ngIf="showCropperModal" class="modal img-croper-popup">
-              <div class="modal-content crop-image">
-                <div class="modal-header modal-header-img">
-                  <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
-                </div>
-                <div class="modal-body img-fix">
-                  <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
-                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
-                    (loadImageFailed)="loadImageFailed()">
-                  </image-cropper>
-                </div>
-             <div class="modal-footer crop-footer">
-                    <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
-                    <button class=" custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
-                  </div>
-              </div>
-            </div>
-          </div>
+                          <!-- Cropper Model -->
+                          <div *ngIf="showCropperModal" class="modal img-croper-popup">
+                            <div class="modal-content crop-image">
+                              <div class="modal-header modal-header-img">
+                                <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                              </div>
+                              <div class="modal-body img-fix">
+                                <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true"
+                                  [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
+                                  (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                                  (loadImageFailed)="loadImageFailed()">
+                                </image-cropper>
+                              </div>
+                              <div class="modal-footer crop-footer">
+                                <button class="submit-btn margin-right save-button"
+                                  (click)="saveCroppedImage()">Save</button>
+                                <button class=" custom-cancel-btn submit-btn margin-right"
+                                  (click)="cancelImg()">Cancel</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -396,7 +365,8 @@
                             </div>
 
                             <small *ngIf="playerRegistrationform.get('player_role_id')?.invalid &&
-               (playerRegistrationform.get('player_role_id')?.touched || submitted)" class="playersrequired-msg">
+                                           (playerRegistrationform.get('player_role_id')?.touched || submitted)"
+                              class="playersrequired-msg">
                               Player Role is Required
                             </small>
                           </div>
