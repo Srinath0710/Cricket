@@ -1,3 +1,25 @@
-/* ::ng-deep .p-listbox-list-container{
-    max-height: 19rem;
-} */
+.highlight-target {
+    background-color: #cdc8ee !important;
+    width: 100%;
+  }
+  
+
+@keyframes fadeOut {
+  0% { background-color: #2e75d1; }
+  100% { background-color: transparent; }
+}
+
+.official-type{
+  position: absolute;
+  right: 12px;
+  color: rgb(24, 24, 218);
+  font-size: 14px;
+}
+
+
+.p-listbox-option
+
+ {
+    cursor: move;
+    background-color: #F8F1FF !important;
+}

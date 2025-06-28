@@ -60,12 +60,15 @@
                             <tr>
                                 <td>
                                     <span class="person-image-team-player">
-                                        <img class="player-img" *ngIf="client.profile_img_url==null || client.profile_img_url==''"
-                                          [src]="default_img">
-                    
-                                        <img class="player-img" *ngIf="client.profile_img_url!=null  && client.profile_img_url!=''"
-                                          [src]="client.profile_img_url" (error)="handleImageError($event, default_img)">
-                                      </span>
+                                        <img class="player-img"
+                                            *ngIf="client.profile_img_url==null || client.profile_img_url==''"
+                                            [src]="default_img">
+
+                                        <img class="player-img"
+                                            *ngIf="client.profile_img_url!=null  && client.profile_img_url!=''"
+                                            [src]="client.profile_img_url"
+                                            (error)="handleImageError($event, default_img)">
+                                    </span>
                                     <span class="groundnameover" (click)="viewClient(client.client_id)"> {{
                                         client.Client
                                         }}</span>
@@ -136,9 +139,8 @@
                         <label>Client Name
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text"
-                            formControlName="client_name" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('client_name', $event)">
+                        <input class="form-control" maxlength="50" type="text" formControlName="client_name"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('client_name', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_name')?.invalid &&(addClientForm?.get('client_name')?.touched) || (addClientForm.get('client_name')?.invalid && submitted)"
                             class="required-msg">Client
@@ -150,9 +152,8 @@
                         <label>Client Code
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text"
-                            formControlName="client_code" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('client_code', $event)">
+                        <input class="form-control" maxlength="50" type="text" formControlName="client_code"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('client_code', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_code')?.invalid &&(addClientForm?.get('client_code')?.touched) || (addClientForm.get('client_code')?.invalid && submitted)"
                             class="required-msg">Client
@@ -165,9 +166,8 @@
                         </label>
                         <p-dropdown [options]="countriesList" class="drop-error " formControlName="country_id"
                             (ngModelChange)="getStates(addClientForm.get('country_id')?.value)" optionValue="country_id"
-                            optionLabel="country_name" placeholder="Select Country" appendTo="self"
-                            [filter]="true" filterBy="country_name" [showClear]="false"
-                            [panelStyleClass]="'custom-dropdown-panel'">
+                            optionLabel="country_name" placeholder="Select Country" appendTo="self" [filter]="true"
+                            filterBy="country_name" [showClear]="false" [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-country pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ country.country_name }}
@@ -186,12 +186,10 @@
                         <label>State
                             <span class="text-danger">*</span>
                         </label>
-                            <p-dropdown [options]="statesList" class="drop-error "
-                             formControlName="state_id"    optionValue="state_id" 
-                             (ngModelChange)="getCities(addClientForm.get('state_id')?.value)" 
-                            optionLabel="state_name" [filter]="true"filterBy="state_name"
-                             [showClear]="false" placeholder="Select State"
-                            [panelStyleClass]="'custom-dropdown-panel'">
+                        <p-dropdown [options]="statesList" class="drop-error " formControlName="state_id"
+                            optionValue="state_id" (ngModelChange)="getCities(addClientForm.get('state_id')?.value)"
+                            optionLabel="state_name" [filter]="true" filterBy="state_name" [showClear]="false"
+                            placeholder="Select State" [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-state pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ state.state_name }}
@@ -209,11 +207,9 @@
                         <label>City
                             <span class="text-danger">*</span>
                         </label>
-                            <p-dropdown [options]="citiesList" class="drop-error "
-                            formControlName="city_id"  optionValue="city_id" 
-                           optionLabel="city_name" [filter]="true"filterBy="city_name"
-                            [showClear]="false" placeholder="Select City"
-                           [panelStyleClass]="'custom-dropdown-panel'">
+                        <p-dropdown [options]="citiesList" class="drop-error " formControlName="city_id"
+                            optionValue="city_id" optionLabel="city_name" [filter]="true" filterBy="city_name"
+                            [showClear]="false" placeholder="Select City" [panelStyleClass]="'custom-dropdown-panel'">
                             <ng-template let-city pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ city.city_name }}
@@ -232,9 +228,8 @@
                         <label>Address 1
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="200" type="text" 
-                            formControlName="address_1" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('address_1', $event)">
+                        <input class="form-control" maxlength="200" type="text" formControlName="address_1"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_1', $event)">
                         <small
                             *ngIf="addClientForm?.get('address_1')?.invalid &&(addClientForm?.get('address_1')?.touched) || (addClientForm.get('address_1')?.invalid && submitted)"
                             class="required-msg">Address 1 Is Required
@@ -244,18 +239,16 @@
                     <div class="col-md-6">
                         <label>address_2
                         </label>
-                        <input class="form-control" maxlength="50" type="text" 
-                            formControlName="address_2" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('address_2', $event)">
+                        <input class="form-control" maxlength="50" type="text" formControlName="address_2"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_2', $event)">
 
                     </div>
                     <div class="col-md-6">
                         <label>Post Code
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" 
-                            formControlName="post_code" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('post_code', $event)">
+                        <input class="form-control" maxlength="50" type="text" formControlName="post_code"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('post_code', $event)">
                         <small
                             *ngIf="addClientForm?.get('post_code')?.invalid &&(addClientForm?.get('post_code')?.touched) || (addClientForm.get('post_code')?.invalid && submitted)"
                             class="required-msg">Post Code Is Required
@@ -266,8 +259,7 @@
                         <label>Email Id
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="100" type="text" 
-                            formControlName="email_id">
+                        <input class="form-control" maxlength="100" type="text" formControlName="email_id">
                         <div *ngIf="addClientForm.get('email_id')?.touched && addClientForm.get('email_id')?.invalid">
                             <small
                                 *ngIf="addClientForm.get('email_id')?.hasError('required') && (addClientForm.get('email_id')?.touched || submitted)"
@@ -284,8 +276,8 @@
                     </div>
                     <div class="col-md-6">
                         <label>Phone No <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" maxlength="10"
-                            formControlName="mobile" (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" type="text" maxlength="10" formControlName="mobile"
+                            (input)="onPhoneNumberInput($event)">
                         <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
                             <!-- Show when pattern is invalid -->
                             <small
@@ -307,66 +299,70 @@
                     <div class="col-md-6">
                         <label>Website
                         </label>
-                        <input class="form-control" maxlength="50" type="text" 
-                            formControlName="website" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('website', $event)">
+                        <input class="form-control" maxlength="50" type="text" formControlName="website"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('website', $event)">
                     </div>
                     <div class="col-md-6">
                         <label>Description
                         </label>
-                        <input class="form-control" maxlength="50" type="text" 
-                            formControlName="description" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('description', $event)">
+                        <input class="form-control" maxlength="50" type="text" formControlName="description"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('description', $event)">
 
                     </div>
                     <!--Preview of profile image-->
                     <div class="col-md-6">
                         <label>Profile Image</label>
-                        <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">CropImage</a>
+
                         <div class="image-upload-container text-center">
-                          <div class="image-preview-wrapper">
-                            <button *ngIf="filedata != null && filedata != ''"  type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                            <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="envImagePath + '/images/client.jpg'"  alt="Profile Image" class="profile-img">
-                            <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
-                            <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  alt="Profile Image" class="profile-img">
-          
-                          </div>
-          
-                          <label for="profileImageInput" class="upload-btn">
-                            <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden formControlName="profile_img_url" />
-                            Upload
-                          </label>
-                          <div>
-                            <small class="text-danger" *ngIf="addClientForm.get('profile_img_url')?.errors">
-                              * Only PNG, JPEG, or JPG files are allowed
-                            </small>
-                          </div>
+                            <div class="image-preview-wrapper">
+                                <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                                <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                                    [src]="default_img" alt="Profile Image" class="profile-img">
+                                <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image"
+                                    class="profile-img">
+                                <img *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"
+                                    (error)="handleImageError($event, default_img)" alt="Profile Image"
+                                    class="profile-img">
+                            </div>
+
+                            <div class="split-button-wrapper">
+                                <label for="profileImageInput" class="split-button upload-half">
+                                    <input type="file" id="profileImageInput" accept="image/*"
+                                        (change)="fileEvent($event)" hidden formControlName="profile_img_url" />
+                                    Upload
+                                </label>
+                                <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                                    Crop
+                                </button>
+                            </div>
+                            <div>
+                                <small class="text-danger" *ngIf="addClientForm.get('profile_img_url')?.errors">
+                                    * Only PNG, JPEG, or JPG files are allowed
+                                </small>
+                            </div>
                         </div>
-                          <!-- Cropper Modal -->
-                          <div *ngIf="showCropperModal" class="modal img-croper-popup">
+                        <!-- Cropper Modal -->
+                        <div *ngIf="showCropperModal" class="modal img-croper-popup">
                             <div class="modal-content crop-image">
                                 <div class="modal-header modal-header-img">
                                     <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
                                 </div>
                                 <div class="modal-body img-fix">
-                                    <image-cropper
-                                    [imageBase64]="imageBase64"
-                                    [maintainAspectRatio]="true"
-                                    [aspectRatio]="4 / 3"
-                                    (imageCropped)="imageCropped($event)"
-                                    (imageLoaded)="imageLoaded()"
-                                    (cropperReady)="cropperReady()"
-                                    (loadImageFailed)="loadImageFailed()"
-                                  ></image-cropper>
+                                    <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true"
+                                        [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
+                                        (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                                        (loadImageFailed)="loadImageFailed()"></image-cropper>
                                 </div>
                                 <div class="modal-footer crop-footer">
-                                    <button class="save-btn submit-btn margin-right" (click)="saveCroppedImage()">Save</button>
-                                    <button class="clear-button submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                                    <button class="submit-btn margin-right save-button"
+                                        (click)="saveCroppedImage()">Save</button>
+                                    <button class="custom-cancel-btn submit-btn margin-right"
+                                        (click)="cancelImg()">Cancel</button>
                                 </div>
                             </div>
                         </div>
-                      </div>
-                      
+                    </div>
+
 
                 </div>
 

@@ -55,6 +55,10 @@ export class CompMatchComponent implements OnInit {
   viewMode: boolean = false;
   match_id: any;
   away_team_list: any = []
+  umpire_list: any = []
+  video_analyst_list: any = []
+  scorer_list: any = []
+  referee: any;
   conditionConstants= CricketKeyConstant.condition_key;
   statusConstants= CricketKeyConstant.status_code;
   default_img = CricketKeyConstant.default_image_url.teamimage;
@@ -81,8 +85,8 @@ export class CompMatchComponent implements OnInit {
       sequence_no: ['', [Validators.required]],
       match_name: ['', [Validators.required]],
       match_overs: ['', []],
-      match_start_date: ['', []],
-      match_end_date: ['', []],
+      match_start_date: ['',[Validators.required]],
+      match_end_date: ['',[Validators.required]],
       time_zone_id: ['', []],
       day_type: ['', []],
       is_neutral_venue: ['', []],
@@ -185,10 +189,10 @@ export class CompMatchComponent implements OnInit {
 
  
 
-        // this.umpire_list = response ? res.data.officials.filter(temp => temp.official_category === 'Umpire') : []
-        // this.video_analyst_list = response ? res.data.officials.filter(temp => temp.official_category === 'Video Analyst') : []
-        // this.scorer_list = response ? res.data.officials.filter(temp => temp.official_category === 'Scorer') : []
-        // this.referee = response ? res.data.officials.filter(temp => temp.official_category === 'Referee') : []
+        this.umpire_list = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Umpire') : []
+        this.video_analyst_list = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Analyst') : []
+        this.scorer_list = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Scorer') : []
+        this.referee = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Referee') : []
         this.resetForm();
 
 

@@ -360,7 +360,6 @@
                   <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image" class="profile-img">
                   <img *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"
                     (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
-
                 </div>
                 <div class="split-button-wrapper">
                   <label for="profileImageInput" class="split-button upload-half">

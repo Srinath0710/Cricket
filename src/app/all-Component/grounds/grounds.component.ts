@@ -100,7 +100,7 @@ export class GroundsComponent implements OnInit {
   imageDefault: any;
   croppedImage: any = null;
   originalFile: File | null = null;
-croppedFile: File | null = null;
+  croppedFile: File | null = null;
   // croppedImageBlob: Blob | null = null;
 
   constructor(private formBuilder: FormBuilder,
@@ -473,7 +473,7 @@ croppedFile: File | null = null;
       capacity: String(this.addGroundForm.value.capacity),
       profile: this.addGroundForm.value.profile,
       action_flag: this.isEditMode ? 'update' : 'create',
-       ground_photo: this.filedata ? this.addGroundForm.value.ground_photo : '',
+      ground_photo: this.filedata ? this.addGroundForm.value.ground_photo : '',
       reference_id: this.addGroundForm.value.reference_id,
 
     };
@@ -736,12 +736,12 @@ croppedFile: File | null = null;
     this.imageBase64 = this.imageDefault;
   }
 
-saveCroppedImage(): void {
-  this.profileImages = this.croppedImage; 
-  this.imageCropAlter = this.filedata; 
-  this.filedata = this.base64ToBinary(this.filedata);
-  this.showCropperModal = false;
-}
+  saveCroppedImage(): void {
+    this.profileImages = this.croppedImage;
+    this.imageCropAlter = this.filedata;
+    this.filedata = this.base64ToBinary(this.filedata);
+    this.showCropperModal = false;
+  }
 
   // cancelCropping(): void {
   //   this.showCropperModal = false;
@@ -820,20 +820,54 @@ saveCroppedImage(): void {
       });
     }
   }
-   profileImgUpdate(upload_profile_url: any, ground_id: any) {
-      const params: any = {
-        action_flag: 'update_profile_url',
-        profile_img: upload_profile_url.toString(),
-        user_id: this.user_id.toString(),
-        client_id: this.client_id.toString(),
-        ground_id: ground_id?.toString() 
-      };
-  
-      this.apiService.post(this.urlConstant.profileGround, params).subscribe(
+  //  profileImgUpdate(upload_profile_url: any, ground_id: any) {
+  //     const params: any = {
+  //       action_flag: 'update_profile_url',
+  //       ground_photo: upload_profile_url.toString(),
+  //       user_id: this.user_id.toString(),
+  //       client_id: this.client_id.toString(),
+  //       ground_id: ground_id?.toString() 
+  //     };
+
+  //     this.apiService.post(this.urlConstant.profileGround, params).subscribe(
+  //       (res) => {
+  //         if (res.status_code == this.statusConstants.success && res.status) {
+  //           this.filedata = null;
+  //           this.addCallBack(res)
+  //         } else {
+  //           this.failedToast(res);
+  //         }
+  //       },
+  //       (err: any) => {
+  //         if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+  //           this.apiService.RefreshToken();
+
+  //         } else {
+  //           this.failedToast(err.error);
+  //         }
+  //       }
+  //     );
+  //   }
+
+  profileImgAppend(ground_id: any) {
+    const myFormData = new FormData();
+    if (this.filedata != null && this.filedata != '') {
+      myFormData.append('imageFile', this.filedata);
+      myFormData.append('client_id', this.client_id.toString());
+      myFormData.append('file_id', ground_id);
+      myFormData.append('upload_type', 'ground');
+      myFormData.append('user_id', this.user_id?.toString());
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
         (res) => {
-          if (res.status_code == this.statusConstants.success && res.status) {
-            this.filedata = null;
-            this.addCallBack(res)
+          if (res.status_code == this.statusConstants.success) {
+            if (res.url != null && res.url != '') {
+              console.log('Image uploaded successfully:', res.url);
+
+              // this.filedata = null;
+              this.addCallBack(res)
+            } else {
+              this.failedToast(res);
+            }
           } else {
             this.failedToast(res);
           }
@@ -841,46 +875,14 @@ saveCroppedImage(): void {
         (err: any) => {
           if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
             this.apiService.RefreshToken();
-  
+
           } else {
             this.failedToast(err.error);
           }
         }
       );
     }
-
-  profileImgAppend(ground_id: any) {
-      const myFormData = new FormData();
-      if (this.filedata != null && this.filedata != '') {
-        myFormData.append('imageFile', this.filedata);
-        myFormData.append('client_id', this.client_id.toString());
-        myFormData.append('file_id', ground_id);
-        myFormData.append('upload_type', 'ground');
-        myFormData.append('user_id', this.user_id?.toString());
-        this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
-          (res) => {
-            if (res.status_code == this.statusConstants.success) {
-              if (res.url != null && res.url != '') {
-                console.log('Image uploaded successfully:', res.url);
-                this.profileImgUpdate(res.url, ground_id);
-              } else {
-                this.failedToast(res);
-              }
-            } else {
-              this.failedToast(res);
-            }
-          },
-          (err: any) => {
-            if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-              this.apiService.RefreshToken();
-  
-            } else {
-              this.failedToast(err.error);
-            }
-          }
-        );
-      }
-    }
+  }
 
 
 
@@ -921,47 +923,45 @@ saveCroppedImage(): void {
     });
   }
 
-onImageSelected(event: any): void {
-  const fileInput = event.target as HTMLInputElement;
-  if (!fileInput.files || fileInput.files.length === 0) {
-    return;
+  onImageSelected(event: any): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (!fileInput.files || fileInput.files.length === 0) {
+      return;
+    }
+    const file = fileInput.files[0];
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      this.msgService.add({
+        severity: 'error',
+        summary: 'Invalid File',
+        detail: 'Only JPG/PNG images are allowed'
+      });
+      fileInput.value = '';
+      return;
+    }
+
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      this.msgService.add({
+        severity: 'error',
+        summary: 'File Too Large',
+        detail: 'Maximum image size is 2MB'
+      });
+      fileInput.value = '';
+      return;
+    }
+
+    this.filedata = file;
+    this.originalFile = file;
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.previewUrl = e.target.result;
+      this.imageBase64 = e.target.result;
+      this.showCropperModal = true;
+    };
+    reader.readAsDataURL(file);
   }
-
-  const file = fileInput.files[0];
-
-  const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-  if (!validTypes.includes(file.type)) {
-    this.msgService.add({
-      severity: 'error', 
-      summary: 'Invalid File',
-      detail: 'Only JPG/PNG images are allowed'
-    });
-    fileInput.value = '';
-    return;
-  }
-
-  const maxSize = 2 * 1024 * 1024;
-  if (file.size > maxSize) {
-    this.msgService.add({
-      severity: 'error',
-      summary: 'File Too Large', 
-      detail: 'Maximum image size is 2MB'
-    });
-    fileInput.value = '';
-    return;
-  }
-
-  this.filedata = file;
-  this.originalFile = file;
-
-  const reader = new FileReader();
-  reader.onload = (e: any) => {
-    this.previewUrl = e.target.result;
-    this.imageBase64 = e.target.result;
-    this.showCropperModal = true;
-  };
-  reader.readAsDataURL(file);
-}
 
   cancelCropping(): void {
     this.showCropperModal = false;
@@ -990,25 +990,25 @@ onImageSelected(event: any): void {
   //   return new Blob([ab], { type: mimeString });
   // }
 
-//   private handleUploadError(error: any): void {
-//   let errorMessage = 'Failed to upload image';
-  
-//   if (error.status === 400) {
-//     errorMessage = 'Invalid request format. Please check the image and try again.';
-//   } else if (error.status === 413) {
-//     errorMessage = 'File size too large. Maximum size is 2MB.';
-//   } else if (error.status === 415) {
-//     errorMessage = 'Unsupported media type. Only JPG/PNG images are allowed.';
-//   } else if (error.error?.message) {
-//     errorMessage = error.error.message;
-//   }
+  //   private handleUploadError(error: any): void {
+  //   let errorMessage = 'Failed to upload image';
 
-//   this.msgService.add({
-//     severity: 'error',
-//     summary: 'Upload Failed',
-//     detail: errorMessage
-//   });
-// }
+  //   if (error.status === 400) {
+  //     errorMessage = 'Invalid request format. Please check the image and try again.';
+  //   } else if (error.status === 413) {
+  //     errorMessage = 'File size too large. Maximum size is 2MB.';
+  //   } else if (error.status === 415) {
+  //     errorMessage = 'Unsupported media type. Only JPG/PNG images are allowed.';
+  //   } else if (error.error?.message) {
+  //     errorMessage = error.error.message;
+  //   }
+
+  //   this.msgService.add({
+  //     severity: 'error',
+  //     summary: 'Upload Failed',
+  //     detail: errorMessage
+  //   });
+  // }
 
   convertUrlToBase64(imageUrl: string): void {
     fetch(imageUrl)

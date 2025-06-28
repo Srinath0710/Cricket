@@ -165,7 +165,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
           this.totalData = 0;
         }
         this.teamData.forEach((val: any) => {
-          val.profile_image = `${val.profile_image}?${Math.random()}`;
+          val.profile_img = `${val.profile_img}?${Math.random()}`;
         });
 
       }, (err: any) => {
@@ -498,47 +498,47 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
 
     /*profile image update */
 
-    profileImgUpdate(upload_profile_url: any, team_id: any) {
-      const params: any = {
-        action_flag: 'update_profile_url',
-        profile_img: upload_profile_url.toString(),
-        user_id: this.user_id.toString(),
-        client_id: this.client_id.toString(),
-        team_id: team_id?.toString() 
-      };
+    // profileImgUpdate(upload_profile_url: any, team_id: any) {
+    //   const params: any = {
+    //     action_flag: 'update_profile_url',
+    //     profile_img: upload_profile_url.toString(),
+    //     user_id: this.user_id.toString(),
+    //     client_id: this.client_id.toString(),
+    //     team_id: team_id?.toString() 
+    //   };
   
-      this.apiService.post(this.urlConstant.profileteam, params).subscribe(
-        (res) => {
-          if (res.status_code == this.statusConstants.success && res.status) {
-            this.filedata = null;
-            this.addCallBack(res)
-          } else {
-            this.failedToast(res);
-          }
-        },
-        (err: any) => {
-          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-            this.apiService.RefreshToken();
+    //   this.apiService.post(this.urlConstant.profileteam, params).subscribe(
+    //     (res) => {
+    //       if (res.status_code == this.statusConstants.success && res.status) {
+    //         this.filedata = null;
+    //         this.addCallBack(res)
+    //       } else {
+    //         this.failedToast(res);
+    //       }
+    //     },
+    //     (err: any) => {
+    //       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+    //         this.apiService.RefreshToken();
   
-          } else {
-            this.failedToast(err.error);
-          }
-        }
-      );
-    }
+    //       } else {
+    //         this.failedToast(err.error);
+    //       }
+    //     }
+    //   );
+    // }
     profileImgAppend(team_id: any) {
       const myFormData = new FormData();
       if (this.filedata != null && this.filedata != '') {
         myFormData.append('imageFile', this.filedata);
         myFormData.append('client_id', this.client_id.toString());
         myFormData.append('file_id', team_id);
-        myFormData.append('upload_type', 'officials');
+        myFormData.append('upload_type', 'teams');
         myFormData.append('user_id', this.user_id?.toString());
         this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
           (res) => {
             if (res.status_code == this.statusConstants.success) {
               if (res.url != null && res.url != '') {
-                this.profileImgUpdate(res.url, team_id);
+            this.addCallBack(res)
               } else {
                 this.failedToast(res);
               }
@@ -570,7 +570,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.showCropperModal = false;
     this.url=this.imageCropAlter;
     this.filedata=this.base64ToBinary(this.filedata);
-    
   }
   loadImageFailed() {
     console.error('Image loading failed');

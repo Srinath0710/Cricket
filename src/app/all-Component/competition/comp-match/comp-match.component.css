@@ -30,7 +30,7 @@
     border-color:#367039;
     }
 .status-color{
-  background-color: #0084B1;
+  background-color: #65398e;
    color:#fff
 }
 .background-edit{
@@ -41,4 +41,7 @@
 .background-delete{
   height: 31px;
   width: 31px;
+}
+.fixture-card{
+      background-color: rgb(177 206 236) !important;
 }

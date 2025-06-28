@@ -1436,7 +1436,8 @@ input.form-control:focus {
 
 .parent-container {
   display: flex;
-  justify-content: center;
+  justify-content: right  ;
+  margin-right: 60px;
 }
 
 .Comp-child-butn {
