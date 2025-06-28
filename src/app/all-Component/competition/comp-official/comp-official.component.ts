@@ -7,12 +7,14 @@ import { PickListModule } from 'primeng/picklist';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManageDataItem } from '../competition.component';
+import { ToastModule } from 'primeng/toast';
+
 @Component({
   selector: 'app-comp-official',
-  imports: [PickListModule, CommonModule, FormsModule, ReactiveFormsModule,
+  imports: [PickListModule, CommonModule, FormsModule, ReactiveFormsModule, ToastModule
   ],  templateUrl: './comp-official.component.html',
   styleUrl: './comp-official.component.css',
-  providers: [
+ providers: [
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
@@ -26,10 +28,12 @@ export class CompOfficialComponent implements OnInit {
   sourceOfficial!: [];
   targetOfficial!:[];
   user_id: number = Number(localStorage.getItem('user_id'));
+  statusConstants= CricketKeyConstant.status_code;
+
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
-    private messageService: MessageService,
+    private msgService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService
   ) { }
@@ -48,7 +52,6 @@ export class CompOfficialComponent implements OnInit {
       const mappedIds = res.data.selected_officials.map((value: any) => value.official_id);
       this.sourceOfficial = allItems.filter((item: any) => !mappedIds.includes(item.official_id));
       this.targetOfficial = res.data.selected_officials
-    console.log(this.sourceOfficial,this.targetOfficial,mappedIds)
     }, (err: any) => {
 
     })
@@ -59,13 +62,32 @@ export class CompOfficialComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.official_list = this.targetOfficial.map((p: any) => p.official_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-console.log("tar",this.targetOfficial);
-
     this.apiService.post(this.urlConstant.compOfficialupdate, params).subscribe((res: any) => {
       this.gridLoad();
     }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      });
+  }
+    /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
 
-    })
+
+  onMoveToTarget(event: any) {
+    event.items.forEach((item: any) => {
+      item.highlighted = true; 
+    });
+  }
+  
+  onMoveToSource(event: any) {
+    event.items.forEach((item: any) => {
+      item.highlighted = false; 
+    });
+  }
+    handleImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
   }
 }
 

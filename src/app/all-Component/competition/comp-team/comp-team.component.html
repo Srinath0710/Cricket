@@ -1,105 +1,95 @@
 <div class="parent-container">
-  <button class="new-button p-button-text Comp-child-butn" (click)="AddTeam()">Add Teams</button>
+  <button class="new-button p-button-text Comp-child-butn" (click)="AddTeam()">Update Teams</button>
 </div>
 
-<p-pickList 
-  [source]="sourceTeams"
-  [target]="targetTeams"
-  [dragdrop]="true"
-  [responsive]="true"
-  [showSourceFilter]="true"
-  [showTargetFilter]="true"
-  filterBy="team_name"
-  sourceFilterPlaceholder="Search Available..."
-  targetFilterPlaceholder="Search Target..."
-  [sourceStyle]="{ height: '20rem' }"
-  [targetStyle]="{ height: '20rem' }"
-  (onMoveToTarget)="onMoveToTarget($event)"
->
-  <!-- Source Header -->
+<p-pickList [source]="sourceTeams" [target]="targetTeams" [dragdrop]="true" [responsive]="true"
+  [showSourceFilter]="true" [showTargetFilter]="true" filterBy="team_name" sourceFilterPlaceholder="Search Available..."
+  targetFilterPlaceholder="Search Target..." [sourceStyle]="{ height: '20rem' }" [targetStyle]="{ height: '20rem' }"
+  (onMoveToTarget)="onMoveToTarget($event)" (onMoveToSource)="onMoveToSource($event)">
   <ng-template pTemplate="sourceHeader">
     <div class="p-d-flex p-ai-center">Available</div>
   </ng-template>
 
-  <!-- Target Header -->
   <ng-template pTemplate="targetHeader">
     <div class="p-d-flex p-ai-center">Selected Teams</div>
   </ng-template>
 
-  <!-- Target Items (Selected Teams) -->
   <ng-template pTemplate="targetItem" let-team let-i="index">
     <div class="flex flex-wrap p-2 align-items-center gap-3" [ngClass]="{ 'highlight-target': team.highlighted }">
       <div class="flex-1 flex flex-column gap-2">
         <span class="person-image-team-player">
-          <img class="player-img" *ngIf="!team.profile_img || !team.player_profile" [src]="default_img">
-          <img class="player-img" *ngIf="team.profile_img && team.player_profile" [src]="team.profile_img" (error)="handleImageError($event, default_img)">
+          <img class="player-img" *ngIf="!team.profile_img" [src]="default_img">
+          <img class="player-img" *ngIf="team.profile_img" [src]="team.profile_img"
+            (error)="handleImageError($event, default_img)">
         </span>
         <span class="font-bold">{{ team.team_name }}</span>
 
-        <!-- Edit Button -->
-        <span *ngIf="team.highlighted">
-          <button class="clear-width edit-button" (click)="showEditPopup(team)">Edit</button>
+        <span *ngIf="TeamInTarget(team)">
+          <button class="clear-width edit-button" (click)="showEditPopup(team)"> <i class="fas fa-edit"></i></button>
         </span>
       </div>
     </div>
   </ng-template>
 </p-pickList>
-    <!-- Edit Popup for Selected Team -->
-    <div *ngIf="isEditPopupVisible" class="popup-backdrop">
-      <div class="popup-wrapper">
 
-      <div class="popup">
-        
-        <form [formGroup]="ManageTeamsForm" class="p-4 border rounded shadow-sm bg-white">
-          <div class="mb-3">
-            <label for="scorecardName" class="form-label fw-semibold">
-              Scorecard Name <span class="text-danger">*</span>
-            </label>
-            <input
-              id="scorecardName"
-              type="text"
-              class="form-control"
-              formControlName="scorecard_name"
-              placeholder="Enter scorecard name"
-            />
-          </div>
-        
-          <div class="mb-3">
-            <label for="sponsorName" class="form-label fw-semibold">
-              Sponsor Name
-            </label>
-            <input
-              id="sponsorName"
-              type="text"
-              class="form-control"
-              formControlName="sponser_name"
-              placeholder="Enter sponsor name (optional)"
-            />
-          </div>
-        
-          <div class="text-end">
-            <button
-              type="submit"
-              class="btn btn-primary"
-              (click)="updateTeam()" >
-              Submit
-            </button>
-          
-            <button
-              type="submit"
-              class="btn btn-secondary ms-2"
-             
-              (click)="closeEditPopup()" >
-              Close
-            </button>
-          </div>
-          
-        </form>
-        
-    
-     
-      </div>
-      </div>
+
+<!-- Edit Popup for Selected Team -->
+<div *ngIf="isEditPopupVisible" class="popup-backdrop">
+  <div class="popup-wrapper">
+
+    <div class="popup">
+
+   <form [formGroup]="ManageTeamsForm" class="p-4 border rounded shadow-sm bg-white">
+  <div class="mb-3 d-flex align-items-center" style="background-color: #b1ceec;">
+    <div>
+      <span class="person-image-team-player">
+        <img class="player-img"
+             *ngIf="!selectedTeam?.profile_url"
+             [src]="default_img" style="    width: 52px;
+    height: 52px;">
+
+        <img class="player-img"
+             *ngIf="selectedTeam?.profile_url"
+             [src]="selectedTeam.profile_url"
+             (error)="handleImageError($event, default_img)"  style="    width: 52px;
+    height: 52px;">
+      </span>
     </div>
-    
+    <div class="ms-2 fw-bold fs-6">
+      {{ ManageTeamsForm.get('team_name')?.value | uppercase }}
+    </div>
+  </div>
 
+  <!-- Scorecard Name Input -->
+  <div class="mb-3 d-flex align-items-center" >
+    <label for="scorecardName" class="form-label fw-semibold me-2 mb-0" style="min-width: 105px;">
+      Scorecard Name :
+    </label>
+    <input id="scorecardName" type="text" class="form-control" formControlName="scorecard_name"
+           placeholder="Enter scorecard name" />
+  </div>
+
+  <!-- Sponsor Name Input -->
+  <div class="mb-3 d-flex align-items-center">
+    <label for="sponsorName" class="form-label fw-semibold me-2 mb-0" style="min-width: 105px;">
+      Sponsor Name :
+    </label>
+    <input id="sponsorName" type="text" class="form-control" formControlName="sponser_name"
+           placeholder="Enter sponsor name (optional)" />
+  </div>
+
+  <!-- Buttons -->
+  <div class="text-end">
+    <button type="submit" class="btn btn-primary save-button" (click)="updateTeam()">
+      Submit
+    </button>
+    <button type="button" class="btn btn-secondary ms-2 custom-cancel-btn" (click)="closeEditPopup()">
+      Close
+    </button>
+  </div>
+</form>
+
+    </div>
+  </div>
+</div>
+<p-toast key="tc" position="top-right"></p-toast>

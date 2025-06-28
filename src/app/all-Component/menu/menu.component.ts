@@ -19,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
 import { Menu, addMenu, getMenudropdown, editMenu, endpointMenulist } from './menu.model';
+import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 
 
 
@@ -97,7 +98,8 @@ export class MenuComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private confirmationService: ConfirmationService,
-    public cricketKeyConstant: CricketKeyConstant
+    public cricketKeyConstant: CricketKeyConstant,
+    private uploadImgService: UploadImgService,
   ) { }
 
   ngOnInit() {
@@ -337,12 +339,19 @@ export class MenuComponent implements OnInit {
 
     if (this.addMenuForm.value.menu_id) {
       this.apiService.post(this.urlConstant.updateMenu, params).subscribe((res) => {
-
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
-
-      }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
-      });
+          if (res.status_code === this.statusConstants.success && res.status) {
+   if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(params.menu_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
+      } (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+    }});
     } else {
 
       this.apiService.post(this.urlConstant.addMenus, params).subscribe((res) => {
@@ -514,6 +523,39 @@ export class MenuComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
+
+    profileImgAppend(menu_id: any) {
+    const myFormData = new FormData();
+    if (this.filedata != null && this.filedata != '') {
+      myFormData.append('imageFile', this.filedata);
+      myFormData.append('client_id', this.Client_id.toString());
+      myFormData.append('file_id', menu_id);
+      myFormData.append('upload_type', 'menus');
+      myFormData.append('user_id', this.User_id?.toString());
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+        (res) => {
+          if (res.status_code == this.statusConstants.success) {
+            if (res.url != null && res.url != '') {
+              // this.profileImgUpdate(res.url, menu_id);
+            } else {
+              this.failedToast(res);
+            }
+          } else {
+            this.failedToast(res);
+          }
+        },
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+
+          } else {
+            this.failedToast(err.error);
+          }
+        }
+      );
+    }
+  }
+
   onProfileImageSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {

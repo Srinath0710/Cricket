@@ -99,7 +99,7 @@ export class OfficialsComponent implements OnInit {
   ispersonalupadate: boolean = false;
   isEditPersonal: boolean = false;
   submitted: boolean = false;
-  officialDataList:official[] = [];
+  officialDataList: official[] = [];
   configDataList: official[] = [];
   countrydropdownData: any;
   countriesData: any;
@@ -156,7 +156,7 @@ export class OfficialsComponent implements OnInit {
   imageCropAlter: any;
   imageDefault: any;
   imageChangedEvent: any = '';
-  croppedImage:any;
+  croppedImage: any;
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
   }
@@ -381,25 +381,25 @@ export class OfficialsComponent implements OnInit {
       club_id: String(this.addOfficialForm.value.club_id),
       gender_id: String(this.addOfficialForm.value.gender_id),
       dob: this.addOfficialForm.value.dob,
-     profile_img: this.filedata ? '' : this.profileImages,
+      profile_img: this.filedata ? '' : this.profileImages,
       action_flag: 'create'
     };
     if (this.addOfficialForm.value.official_id) {
       params.action_flag = 'update';
-      params.official_id=String(this.addOfficialForm.value.official_id),
-      this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
-        if (res.status_code === this.statusConstants.success && res.status) {
-          if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(params.official_id);
+      params.official_id = String(this.addOfficialForm.value.official_id),
+        this.apiService.post(this.urlConstant.updateOfficial, params).subscribe((res) => {
+          if (res.status_code === this.statusConstants.success && res.status) {
+            if (res.data !== null && this.filedata != null) {
+              this.profileImgAppend(params.official_id);
+            } else {
+              this.addCallBack(res)
+            }
           } else {
-            this.addCallBack(res)
+            this.failedToast(res)
           }
-        } else {
-          this.failedToast(res)
-        }
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      });
+        }, (err: any) => {
+          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        });
     } else {
 
       this.apiService.post(this.urlConstant.addofficial, params).subscribe((res) => {
@@ -474,7 +474,7 @@ export class OfficialsComponent implements OnInit {
 
   Editofficial(official: any) {
     this.isEditMode = true;
-
+    this.showCropperModal = false;
     this.officialId = official.official_id;
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -807,34 +807,34 @@ export class OfficialsComponent implements OnInit {
 
   /*profile image update */
 
-  profileImgUpdate(upload_profile_url: any, official_id: any) {
+  // profileImgUpdate(upload_profile_url: any, official_id: any) {
 
-    const params: any = {};
-    params.action_flag = 'update_profile_url';
-    params.profile_img = upload_profile_url.toString();
-    params.user_id = this.user_id.toString();
-    params.official_id = official_id.toString();
-    params.client_id = this.client_id.toString();
+  //   const params: any = {};
+  //   params.action_flag = 'update_profile_url';
+  //   params.profile_img = upload_profile_url.toString();
+  //   params.user_id = this.user_id.toString();
+  //   params.official_id = official_id.toString();
+  //   params.client_id = this.client_id.toString();
 
-    this.apiService.post(this.urlConstant.profileofficial, params).subscribe(
-      (res) => {
-        if (res.status_code == this.statusConstants.success && res.status) {
-          // this.filedata = null;
-          this.addCallBack(res)
-        } else {
-          this.failedToast(res);
-        }
-      },
-      (err: any) => {
-        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-          this.apiService.RefreshToken();
+  //   this.apiService.post(this.urlConstant.profileofficial, params).subscribe(
+  //     (res) => {
+  //       if (res.status_code == this.statusConstants.success && res.status) {
+  //         // this.filedata = null;
+  //         this.addCallBack(res)
+  //       } else {
+  //         this.failedToast(res);
+  //       }
+  //     },
+  //     (err: any) => {
+  //       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+  //         this.apiService.RefreshToken();
 
-        } else {
-          this.failedToast(err.error);
-        }
-      }
-    );
-  }
+  //       } else {
+  //         this.failedToast(err.error);
+  //       }
+  //     }
+  //   );
+  // }
   profileImgAppend(official_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
@@ -847,7 +847,7 @@ export class OfficialsComponent implements OnInit {
         (res) => {
           if (res.status_code == this.statusConstants.success) {
             if (res.url != null && res.url != '') {
-              this.profileImgUpdate(res.url, official_id);
+              this.addCallBack(res)
             } else {
               this.failedToast(res);
             }
@@ -974,6 +974,7 @@ export class OfficialsComponent implements OnInit {
   cancel() {
     this.filedata = null;
     this.url = null;
+    this.imageBase64 = null;
     this.profileImages = null;
     this.imageCropAlter = null;
     this.imageBase64 = null;
@@ -1010,7 +1011,7 @@ export class OfficialsComponent implements OnInit {
   cancelImg(): void {
     this.showCropperModal = false;
     this.url = this.imageCropAlter;
-    this.filedata = this.base64ToBinary(this.imageCropAlter);
+    this.filedata = this.base64ToBinary(this.filedata);
   }
 
   loadImageFailed() {
@@ -1029,7 +1030,7 @@ export class OfficialsComponent implements OnInit {
       });
     }
   }
- 
+
   imageLoaded() {
     console.log('Image loaded');
   }
@@ -1043,6 +1044,8 @@ export class OfficialsComponent implements OnInit {
       console.error('Invalid base64 input:', base64);
       return null;
     }
+
+    
 
     try {
       const byteCharacters = atob(base64.split(',')[1]);

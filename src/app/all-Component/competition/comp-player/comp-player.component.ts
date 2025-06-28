@@ -33,7 +33,7 @@ import { ManageDataItem } from '../competition.component';
 export class CompPlayerComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
   client_id: number = Number(localStorage.getItem('client_id'));
-  default_img: any = 'assets/images/default-player.png';
+  default_img= CricketKeyConstant.default_image_url.teamimage;
   sourcePlayer!: [];
   targetPlayer!: any[];
   teamsDropDown: any;
@@ -54,7 +54,7 @@ export class CompPlayerComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
-    private formBuilder: FormBuilder, 
+    private formBuilder: FormBuilder,
     private messageService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService
@@ -63,14 +63,16 @@ export class CompPlayerComponent implements OnInit {
 
     this.gridLoad();
     this.ManagePlayerForm = this.formBuilder.group({
-      player_id: ['',[]],
-      client_id: ['',[]],
-      competition_id: ['',[]],
+      player_id: ['', []],
+      client_id: ['', []],
+      competition_id: ['', []],
       jersey_number: ['', [Validators.required]],
       scorecard_name: ['', [Validators.required]],
-      profile_url: ['',[]],
-      user_id: ['',[]],
-      team_id: ['',[]],
+      profile_url: ['', []],
+      user_id: ['', []],
+      team_id: ['', []],
+      display_name: ['', []],
+      team_name: ['', []]
     });
   }
 
@@ -84,9 +86,11 @@ export class CompPlayerComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compplayerlist, params).subscribe((res: any) => {
-      console.log(res, this.team_id);
       this.teamsDropDown = res.data.teams ?? [];
       setTimeout(() => {
+        //     if (this.teamsDropDown.length > 0) {
+        //   this.team_id = this.teamsDropDown[0].team_id;
+        // }
         const allItems = res.data.all_players.filter((item: any) => item.team_id == this.team_id);
         const mappedIds = res.data.selected_players.filter((item: any) => item.team_id == this.team_id).map((value: any) => value.player_id);
         this.sourcePlayer = allItems.filter((item: any) => !mappedIds.includes(item.player_id));
@@ -122,17 +126,18 @@ export class CompPlayerComponent implements OnInit {
       console.error('No team selected for update!');
       return;
     }
-  
+
     const params: any = {
       client_id: this.client_id.toString(),
       user_id: this.user_id.toString(),
       team_id: this.team_id?.toString(),
       competition_id: this.CompetitionData.competition_id.toString(),
       player_id: this.selectedPlayer.player_id?.toString(),
-      scorecard: this.ManagePlayerForm.get('scorecard_name')?.value || ''
+      scorecard_name: this.ManagePlayerForm.get('scorecard_name')?.value || '',
+      jersey_number: this.ManagePlayerForm.get('jersey_number')?.value || '',
     };
-  
-    params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();  
+
+    params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
     this.apiService.post(this.urlConstant.compplayerupdate, params).subscribe(
       (res: any) => {
         this.gridLoad();
@@ -151,13 +156,13 @@ export class CompPlayerComponent implements OnInit {
   }
   onMoveToTarget(event: any) {
     event.items.forEach((item: any) => {
-      item.highlighted = true; 
+      item.highlighted = true;
     });
   }
-  
+
   onMoveAllToTarget(event: any) {
     const highlightedIds = new Set(event.items.map((squard: any) => squard.player_id));
-  
+
     this.targetPlayer = this.targetPlayer.map((player: any) => {
       if (highlightedIds.has(player.player_id)) {
         return { ...player, highlighted: true };
@@ -165,7 +170,7 @@ export class CompPlayerComponent implements OnInit {
       return player;
     });
   }
-  
+
   onMoveToSource(event: any) {
     event.items.forEach((item: any) => {
       item.highlighted = false; // Remove highlight
@@ -178,16 +183,24 @@ export class CompPlayerComponent implements OnInit {
   showEditPopup(player: any) {
     this.selectedPlayer = player;
     this.ManagePlayerForm.patchValue({
+      player_id: player.player_id || '',
+      team_id: player.team_id || '',
       scorecard_name: player.scorecard_name || '',
-      jersey_number: player.jersey_number || ''
+      jersey_number: player.jersey_number || '',
+      profile_url: player.profile_url || '',
+      team_name: player.team_name || '',
+      display_name: player.display_name || ''
+
     });
     this.isEditPopupVisible = true;
   }
-  
+
   closeEditPopup() {
     this.isEditPopupVisible = false;
     this.selectedPlayer = null;
   }
+  TeamInTarget(player: any): boolean {
+    return this.targetPlayer?.some((p: any) => p.player_id === player.player_id);
+  }
 
-  
 }

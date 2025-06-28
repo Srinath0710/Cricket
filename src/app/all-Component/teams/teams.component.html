@@ -366,14 +366,16 @@
                   <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
                 </div>
                 <div class="modal-body img-fix">
-                  <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
-                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                  <image-cropper [imageBase64]="imageBase64" 
+                    [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" 
+                    (cropperReady)="cropperReady()"
                     (loadImageFailed)="loadImageFailed()">
                   </image-cropper>
                 </div>
              <div class="modal-footer crop-footer">
                     <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
-                    <button class=" custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                    <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
                   </div>
               </div>
             </div>

@@ -1,37 +1,34 @@
 <div class="parent-container">
-<button class="new-button p-button-text Comp-child-butn"(click)="updateOfficial()">UpdateOfficial</button>
+  <button class="new-button p-button-text Comp-child-butn" (click)="updateOfficial()">UpdateOfficial</button>
 </div>
-<p-pickList  [source]="sourceOfficial" 
-[target]="targetOfficial"
-[dragdrop]="true"
-[responsive]="true"
-[showSourceFilter]="true"
-[showTargetFilter]="true"
-filterBy="official_name"  
-sourceFilterPlaceholder="Search Available..." 
-targetFilterPlaceholder="Search Target..."
-[dragdrop]="true" [responsive]="true" 
-[sourceStyle]="{ height: '30rem' }" 
-[targetStyle]="{ height: '30rem' }" 
-
->
-<ng-template pTemplate="sourceHeader">
-  <div class="p-d-flex p-ai-center">
-    Available
-  </div>
-</ng-template>
-
-<ng-template pTemplate="targetHeader">
-  <div class="p-d-flex p-ai-center">
-    Target 
-  </div>
-</ng-template>
-
-<ng-template pTemplate="item" let-product let-i="index">
-  <div class="flex flex-wrap p-2 align-items-center gap-3">
-    <div class="flex-1 flex flex-column gap-2">
-      <span class="font-bold">{{ product.official_name }}</span>
+<p-pickList [source]="sourceOfficial" [target]="targetOfficial" [dragdrop]="true" [responsive]="true"
+  [showSourceFilter]="true" [showTargetFilter]="true" filterBy="official_name"
+  sourceFilterPlaceholder="Search Available..." targetFilterPlaceholder="Search Target..." [dragdrop]="true"
+  [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" (onMoveToTarget)="onMoveToTarget($event)"
+  (onMoveToSource)="onMoveToSource($event)">
+  <ng-template pTemplate="sourceHeader">
+    <div class="p-d-flex p-ai-center">
+      Available Official
     </div>
-  </div>
-</ng-template>
+  </ng-template>
+
+  <ng-template pTemplate="targetHeader">
+    <div class="p-d-flex p-ai-center">
+      Selected Official
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="item" let-product let-i="index">
+    <div class="flex flex-wrap p-2 align-items-center gap-3" 
+    [ngClass]="{ 'highlight-target': product.highlighted }">
+      <div class="flex flex-wrap p-2 align-items-center gap-3">
+        <div class="flex-1 flex flex-column gap-2">
+          <span class="font-bold">{{ product.official_name }}</span>
+          <span class="official-type">{{ product.official_type }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </p-pickList>
+<p-toast key="tc" position="top-right"></p-toast>

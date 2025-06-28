@@ -207,7 +207,7 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            // this.profileImgAppend(params.client_id);
+            this.profileImgAppend(params.client_id);
           } else {
             this.addCallBack(res)
           }
@@ -492,7 +492,9 @@ cancel() {
 cancelImg() {
   this.showCropperModal = false;
   this.url=this.imageCropAlter;
-  this.filedata=this.base64ToBinary(this.imageCropAlter);
+  this.filedata=this.base64ToBinary(this.filedata);
+
+  
 }
 loadImageFailed() {
   console.error('Image loading failed');
@@ -610,13 +612,13 @@ cropperReady() {
       myFormData.append('imageFile', this.filedata);
       myFormData.append('client_id', this.client_id.toString());
       myFormData.append('file_id', client_id);
-      myFormData.append('upload_type', 'officials');
+      myFormData.append('upload_type', 'client');
       myFormData.append('user_id', this.user_id?.toString());
       this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
         (res) => {
           if (res.status_code == this.statusConstants.success) {
             if (res.url != null && res.url != '') {
-              this.profileImgUpdate(res.url, client_id);
+              this.addCallBack(res)
             } else {
               this.failedToast(res);
             }
