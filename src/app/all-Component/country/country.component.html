@@ -57,7 +57,18 @@
 
             <ng-template pTemplate="body" let-country>
               <tr>
-                <td>{{ country.country_name }}</td>
+               <td>
+                  <div class="player-name-cell">
+                  <span class="person-image-team-player">
+                    <img class="player-img" *ngIf="country.country_image==null || country.country_image==''"
+                      [src]="default_img">
+
+                    <img class="player-img" *ngIf="country.country_image!=null  && country.country_image!=''"
+                      [src]="country.country_image" (error)="handleImageError($event, default_img)">
+                  </span>
+                    {{ country.country_name }}
+                </div>
+               </td>
                 <td>{{ country.iso_code_3 }}</td>
                 <td>{{ country.region_name }}</td>
                 <td>{{ country.sub_region }}</td>
@@ -223,13 +234,62 @@
                 class="required-msg">Sub Region Is Required
               </small>
             </div>
+               <div class="col-md-6">
+            <label>Profile Image</label>
+            <div class="image-upload-container text-center">
+
+                <div class="image-preview-wrapper">
+                  <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                  <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="default_img"  alt="Profile Image" class="profile-img">
+                  <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
+                  <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
+                </div>
+
+
+               <div class="split-button-wrapper">
+                  <label for="profileImageInput" class="split-button upload-half">
+                    <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
+                      formControlName="country_image" />
+                    Upload
+                  </label>
+                  <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                    Crop
+                  </button>
+                </div>
+
+            </div>
+            <small class="text-danger" *ngIf="addCountryForm.get('country_image')?.errors">
+              * Only PNG,JPEG, or JPG files are allowed
+            </small>
+            <!-- Cropper Model -->
+            <div *ngIf="showCropperModal" class="modal img-croper-popup">
+              <div class="modal-content crop-image">
+                <div class="modal-header modal-header-img">
+                  <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                </div>
+                <div class="modal-body img-fix">
+                  <image-cropper [imageBase64]="imageBase64" 
+                    [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" 
+                    (cropperReady)="cropperReady()"
+                    (loadImageFailed)="loadImageFailed()">
+                  </image-cropper>
+                </div>
+             <div class="modal-footer crop-footer">
+                    <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
+                    <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+            
           </div>
           <div class="form-wrapper pb-5">
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                 (click)="cancelForm()"></button>
-                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                 *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null"
                 (click)="resetForm()"></button>
               <button pButton type="button" label="Save" class="save-button"

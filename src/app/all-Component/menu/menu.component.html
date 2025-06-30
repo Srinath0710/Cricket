@@ -260,13 +260,9 @@
 
             <div class="col-md-6">
               <label for="menu_link">Menu link</label>
-              <span class="text-danger">*
-              </span>
+             
               <input class="form-control" maxlength="50" type="text" formControlName="menu_link" />
-              <small
-                *ngIf="addMenuForm?.get('menu_link')?.invalid && (addMenuForm?.get('menu_link')?.touched) || (addMenuForm.get('menu_link')?.invalid && submitted)"
-                class="required-msg">Menu link is Required
-              </small>
+            
             </div>
             <div class="col-md-6">
               <label for="menu_description">Menu Description</label>
@@ -348,10 +344,10 @@
           <div class="form-wrapper pb-5">
             <div class="row mt-4 sticky-footer-buttons">
               <div class="col-12 text-end">
-                <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()">
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()">
                 </button>
 
-                <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                   *ngIf="addMenuForm.get('menu_id')?.value == '' || addMenuForm.get('menu_id')?.value == null"
                   (click)="resetForm()"></button>
 
@@ -448,11 +444,11 @@
 
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+              <button pButton type="button" label="Cancel"  class="p-button-secondary me-3 custom-cancel-btn"
                 (click)="cancelEndpointForm()">
               </button>
 
-              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+              <button pButton type="button" label="Clear"  class="p-button-secondary me-3 custom-cancel-btn"
                 *ngIf="addEndpointForm.get('api_id')?.value == '' || addEndpointForm.get('api_id')?.value == null"
                 (click)="resetForm()"></button>
 

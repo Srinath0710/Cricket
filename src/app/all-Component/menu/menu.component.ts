@@ -110,7 +110,7 @@ export class MenuComponent implements OnInit {
       parent_menu_id: ['', Validators.required],
       menu_title: ['', Validators.required],
       menu_name: ['', Validators.required],
-      menu_link: ['', Validators.required],
+      menu_link: [''],
       menu_image: [''],
       sort_order: ['', Validators.required],
       module_id: ['', Validators.required],
