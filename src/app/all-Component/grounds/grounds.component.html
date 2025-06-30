@@ -2,10 +2,10 @@
   <div class="content container-fluid">
     <main>
       <div class="card margin-card">
-        <div class="card-body">
+        <div class="card-body mb-5">
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
-              <i class="fas fa-globe-americas" aria-hidden="true"></i>
+              <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
               Grounds
               <div class="totalrecord">: {{ totalData }}</div>
 
@@ -489,20 +489,24 @@
 
           <div class="col-md-3">
             <label>Ground Photo</label>
-            <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">Crop Image</a>
+            <!-- <a class=" clear-width table-counts profile-url" style="width: 84px;" (click)="cropPopOpen()">Crop Image</a> -->
             <div class="image-upload-container text-center">
-              <div class="image-preview-wrapper">
-                <!-- Show cancel button only when there's an image -->
-                <button *ngIf="previewUrl" type="button" class="cancel-btn" (click)="clearImage()">✕</button>
-                <!-- Show either the preview or default image -->
-                <img [src]="previewUrl || default_img" (error)="handleImageError($event, default_img)"
-                  alt="Ground Image" class="profile-img">
+            <div class="image-preview-wrapper">
+                                <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                                <img [src]="filedata ? url : (profileImages ? profileImages : default_img)"
+                                    (error)="handleImageError($event, default_img)" alt="Profile Image"
+                                    class="profile-img">
+                            </div>
+              <div class="split-button-wrapper">
+                <label for="groundPhotoInput" class="split-button upload-half">
+                  <input type="file" id="groundPhotoInput" accept="image/*" (change)="onImageSelected($event)" hidden
+                    formControlName="ground_photo" />
+                  Upload
+                </label>
+                <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                  Crop
+                </button>
               </div>
-              <label for="groundPhotoInput" class="upload-btn">
-                <input type="file" id="groundPhotoInput" accept="image/*" (change)="onImageSelected($event)" hidden
-                  formControlName="ground_photo" />
-                Upload
-              </label>
             </div>
 
             <!-- Cropper Modal -->

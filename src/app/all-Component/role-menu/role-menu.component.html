@@ -6,7 +6,7 @@
                     <div class="card-body">
                         <div class="page-header main-page-header d-flex align-items-center justify-content-between">
                             <div class="main-page-title page-title playerbackground">
-                                <i class="fa fa-universal-access" aria-hidden="true"></i>
+                                <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
                                 All roles
                             </div>
                             <!-- Search Form -->
@@ -190,11 +190,11 @@
                                             <div class="row mt-4 sticky-footer-buttons">
                                                 <div class="col-12 text-end">
                                                     <button pButton type="button" label="Cancel"
-                                                        class="p-button-secondary me-3" (click)="cancelForm()"></button>
+                                                        class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()"></button>
 
                                                     <!-- (click)="addAnother=false" -->
 
-                                                    <button pButton type="button" class="p-button-secondary me-3"
+                                                    <button pButton type="button" class="p-button-secondary me-3 custom-cancel-btn"
                                                         *ngIf="roleMenuForm?.get('role_id')?.value == '' || roleMenuForm?.get('role_id')?.value == null"
                                                         (click)="resetForm()">
                                                         Clear

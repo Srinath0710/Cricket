@@ -1162,7 +1162,14 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     );
   }
-  StatusConfirm(player_id: number, actionObject: { key: string, label: string }) {
+  StatusConfirm(player_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+       const AlreadyStatestatus =
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
+
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this Player?`,
       header: 'Confirmation',

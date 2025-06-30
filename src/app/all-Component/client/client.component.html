@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <div class="page-header main-page-header d-flex align-items-center justify-content-between">
                         <div class="main-page-title page-title playerbackground">
-                            <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                            <i class="fa fa-user-circle" aria-hidden="true"></i>
                             All Client
                         </div>
                         <div class="d-flex align-items-center">
@@ -369,10 +369,10 @@
                 <div class="form-wrapper pb-5">
                     <div class="row mt-4 sticky-footer-buttons">
                         <div class="col-12 text-end">
-                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                                 (click)="cancelForm()"></button>
 
-                            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                            <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                                 *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
                                 (click)="resetForm()"></button>
 

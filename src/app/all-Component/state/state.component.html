@@ -5,7 +5,7 @@
         <div class="card-body">
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
-              <i class="fa fa-user-circle" aria-hidden="true"></i>
+              <i class="fa-solid fa-city" aria-hidden="true"></i>
               All States
               <div class="totalrecord">: {{ totalData }}</div>
             </div>
@@ -180,10 +180,10 @@
 
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-3" (click)="cancelForm()">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()">
               </button>
 
-              <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                 *ngIf="addStateForm.get('state_id')?.value == '' || addStateForm.get('state_id')?.value == null"
                 (click)="resetForm()"></button>
 

@@ -190,10 +190,10 @@
                     </div>
                     <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
                         <div class="col-12 text-end">
-                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                                 (click)="cancelForm()"></button>
 
-                            <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                            <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                                 *ngIf="addSeasonsForm.get('season_id')?.value == '' || addSeasonsForm.get('season_id')?.value == null"
                                 (click)="resetForm()"></button>
 

@@ -5,9 +5,9 @@
       <main>
         <div class="card margin-card">
           <div class="card-body">
-            <div class="page-header main-page-header">
+            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
               <div class="main-page-title playerbackground ">
-                <i class="fa fa-user-circle" aria-hidden="true"></i>
+                <i class="fa-solid fa-person-running" aria-hidden="true"></i>
                 All Players
                 <div class="totalrecord">: {{ totalData }}</div>
               </div>
@@ -81,16 +81,15 @@
               </ng-template>
               <ng-template pTemplate="body" let-player let-even="even">
                 <tr [ngClass]="{'even-row': even}">
-                  <td>
+          <td>
                     <div class="player-name-cell">
-                      <span class="person-image-team-player">
-                        <img class="player-img" *ngIf="!player.profile_image || !player.profile_image"
-                          [src]="default_img">
-
-                        <img class="player-img" *ngIf="player.profile_image && player.profile_image"
-                          [src]="player.profile_image">
-                      </span>
-                      <!-- <img src="assets/images/avatar.png" alt="Player" class="player-avatar"> -->
+                           <span class="person-image-team-player">
+                    <img class="player-img" *ngIf="player.profile_image==null || player.profile_image==''"
+                      [src]="default_img">
+ 
+                    <img class="player-img" *ngIf="player.profile_image!=null  && player.profile_image!=''"
+                      [src]="player.profile_image" (error)="handleImageError($event, default_img)">
+                  </span>
                       {{ player.display_name }}
                     </div>
                   </td>
@@ -111,12 +110,12 @@
                       <i class="fa-solid fa-user-pen"></i>
                     </span>
 
-                    <span class="icon-green" (click)="StatusConfirm(player.player_id,conditionConstants.active_status)"
+                    <span class="icon-green" (click)="StatusConfirm(player.player_id,conditionConstants.active_status,player.record_status)"
                       pTooltip="Activate" tooltipPosition="top">
                       <i class="fa-solid fa-circle-check"></i>
                     </span>
 
-                    <span class="icon-red" (click)="StatusConfirm(player.player_id,conditionConstants.deactive_status)"
+                    <span class="icon-red" (click)="StatusConfirm(player.player_id,conditionConstants.deactive_status,player.record_status)"
                       pTooltip="Deactivate" tooltipPosition="top">
                       <i class="fa-solid fa-trash-can-arrow-up"></i>
                     </span>
@@ -460,10 +459,10 @@
                 <div class="form-wrapper pb-5">
                   <div class="row mt-4 sticky-footer-buttons">
                     <div class="col-12 text-end">
-                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                         (click)="cancelForm()"></button>
 
-                      <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                      <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                         *ngIf="playerRegistrationform.get('player_id')?.value == '' || playerRegistrationform.get('player_id')?.value == null"
                         (click)="resetForm()"></button>
 
@@ -931,11 +930,11 @@
                     <div class="row mt-4 sticky-footer-buttons">
                       <div class="col-12 text-end">
 
-                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                           (click)="cancelForm()"></button>
 
                         <button *ngIf="!isEditPersonal" pButton type="button" label="Clear"
-                          class="p-button-secondary me-3" (click)="resetForm()">
+                          class="p-button-secondary me-3 custom-cancel-btn" (click)="resetForm()">
                         </button>
 
                         <button pButton type="button" label="Save" class="save-button"
