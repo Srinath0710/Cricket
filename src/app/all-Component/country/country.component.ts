@@ -19,8 +19,6 @@ import { Country, EditCountry, UpdateCountry } from './country.model';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
-import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
-import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-country',
@@ -41,8 +39,9 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
     ConfirmDialogModule,
     ToastModule,
     TooltipModule,
-    DrawerModule,
-],
+    DrawerModule
+
+  ],
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.css'],
   providers: [
@@ -69,15 +68,7 @@ export class CountryComponent implements OnInit {
   pageData: number = 0;
   rows: number = 10;
   totalData: any = 0;
-  uploadedImage: string | ArrayBuffer | null = null;
   filedata: any;
-  profileImages: any;
-  url: any;
-  src: any;
-  imageCropAlter: any;
-  imageDefault: any;
-  showCropperModal: boolean = false;
-  imageBase64: any = null;
   searchKeyword: string = '';
   visible2: boolean = false;
   submitted: boolean = true;
@@ -85,13 +76,9 @@ export class CountryComponent implements OnInit {
   CountryNamePattern = /^[^'"]+$/;
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
-  default_img = CricketKeyConstant.default_image_url.teamimage;
-  Actionflag = CricketKeyConstant.action_flag
-  croppedImage: any;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant,
-    private uploadImgService: UploadImgService,) {
+    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
 
   }
   ngOnInit() {
@@ -108,7 +95,7 @@ export class CountryComponent implements OnInit {
       country_image: ['']
 
     })
-  }  
+  }
 
   timezoneDropdown() {
     const params: any = {};
@@ -118,20 +105,20 @@ export class CountryComponent implements OnInit {
       this.timezoneData = res.data.timezone ?? [];
       this.regionsData = res.data.region ?? [];
 
-    },
-      (err: any) => {
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error?.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err.error);
-        }
+    }, 
+    (err: any) => {
+      if (
+        err.status_code === this.statusConstants.refresh &&
+        err.error?.message === this.statusConstants.refresh_msg
+      ) {
+        this.apiService.RefreshToken();
+      } else {
+        this.failedToast(err.error);
       }
-    );
-  }
-  gridLoad() {
+    }
+  );
+}
+ gridLoad() {
     this.countriesData = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -196,37 +183,6 @@ export class CountryComponent implements OnInit {
   failedToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
   }
-  profileImgAppend(country_id: any) {
-    const myFormData = new FormData();
-    if (this.filedata != null && this.filedata != '') {
-      myFormData.append('imageFile', this.filedata);
-      myFormData.append('client_id', this.client_id.toString());
-      myFormData.append('file_id', country_id);
-      myFormData.append('upload_type', 'country');
-      myFormData.append('user_id', this.user_id?.toString());
-      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
-        (res) => {
-          if (res.status_code == this.statusConstants.success) {
-            if (res.url != null && res.url != '') {
-              this.addCallBack(res)
-            } else {
-              this.failedToast(res);
-            }
-          } else {
-            this.failedToast(res);
-          }
-        },
-        (err: any) => {
-          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-            this.apiService.RefreshToken();
-
-          } else {
-            this.failedToast(err.error);
-          }
-        }
-      );
-    }
-  }
   onAddCountry() {
     this.submitted = true;
     if (this.addCountryForm.invalid) {
@@ -243,183 +199,25 @@ export class CountryComponent implements OnInit {
       sub_region: this.addCountryForm.value.sub_region,
       time_zone_id: String(this.addCountryForm.value.time_zone_id),
       country_id: String(this.addCountryForm.value.country_id),
-      action_flag: this.Actionflag.Create,
+      action_flag: 'create',
       capital: '',
-      phonecode: '0',
-      country_image:'',
-      // country_image: this.filedata ? '' : this.profileImages
+      phonecode: '0'
     };
     if (this.addCountryForm.value.country_id) {
-      params.action_flag = this.Actionflag.Update;
-      params.country_id = String(this.addCountryForm.value.country_id);
-        this.apiService.post(this.urlConstant.updateCountry, params).subscribe((res) => {
-          if (res.status_code === this.statusConstants.success && res.status) {
-
-            if (res.data !== null && this.filedata != null) {
-              this.profileImgAppend(params.country_id);
-            } else {
-              this.addCallBack(res)
-            }
-          } else {
-            this.failedToast(res)
-          }
-        }, (err: any) => {
-          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-        });
+      params.action_flag = 'update';
+      this.apiService.post(this.urlConstant.updateCountry, params).subscribe((res) => {
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      });
     } else {
       this.apiService.post(this.urlConstant.addCountry, params).subscribe((res) => {
-        if (res.status_code === this.statusConstants.success && res.status) {
-          if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(res.data.countries[0].country_id);
-          } else {
-            this.addCallBack(res)
-          }
-        } else {
-          this.failedToast(res)
-        }
+        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
-  }
-  imageLoaded() {
-    console.log('Image loaded');
-  }
 
-  cropperReady() {
-    console.log('Cropper ready');
-  }
-  base64ToBinary(base64: string): Blob | null {
-    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
-      console.error('Invalid base64 input:', base64);
-      return null;
-    }
-
-    try {
-      const byteCharacters = atob(base64.split(',')[1]);
-      const byteArrays = new Uint8Array(byteCharacters.length);
-
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteArrays[i] = byteCharacters.charCodeAt(i);
-      }
-
-      return new Blob([byteArrays], { type: 'image/jpeg' });
-    } catch (error) {
-      console.error('Error converting base64 to binary:', error);
-      return null;
-    }
-  }
-  fileEvent(event: any) {
-    if (this.addCountryForm.value.profile_img !== null &&
-      this.addCountryForm.value.profile_img !== '') {
-      this.profileImages = null;
-    }
-    if (event && event.target && event.target.files && event.target.files.length > 0) {
-      this.filedata = event.target.files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        var img = new Image;
-        this.url = event.target.result;
-        this.imageCropAlter = event.target.result
-        this.imageDefault = event.target.result
-      }
-    } else {
-      this.filedata = null;
-      this.url = this.imageDefault
-      this.filedata = this.base64ToBinary(this.imageDefault);
-
-    }
-  }
-  onImageUpload(event: any) {
-    const file = event.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.uploadedImage = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  handleImageError(event: Event, fallbackUrl: string): void {
-    const target = event.target as HTMLImageElement;
-    target.src = fallbackUrl;
-  }
-  saveCroppedImage(): void {
-    this.profileImages = this.croppedImage;
-    this.imageCropAlter = this.filedata;
-    this.filedata = this.base64ToBinary(this.filedata);
-    this.showCropperModal = false;
-  }
-  cancelImg(): void {
-    this.showCropperModal = false;
-    this.url = this.imageCropAlter;
-    this.filedata = this.base64ToBinary(this.filedata);
-
-  }
-  loadImageFailed() {
-    console.error('Image loading failed');
-  }
-
-  imageCropped(event: ImageCroppedEvent) {
-    const blob = event.blob;
-    if (blob) {
-      this.convertBlobToBase64(blob).then((base64) => {
-        this.url = base64;
-        this.filedata = base64;
-        this.profileImages = null;
-      }).catch((error) => {
-        console.error('Failed to convert blob to base64:', error);
-      });
-    }
-  }
-  convertBlobToBase64(blob: Blob): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-
-      reader.onerror = () => {
-        reject('Failed to convert Blob to base64');
-      };
-
-      reader.readAsDataURL(blob);
-    });
-  }
-  cancel() {
-    this.filedata = null;
-    this.url = null;
-    this.imageBase64 = null;
-    this.profileImages = null;
-    this.imageCropAlter = null;
-    this.imageDefault = null;
-    this.croppedImage = null;
-  }
-  cropPopOpen() {
-    this.showCropperModal = true;
-    this.imageBase64 = this.imageDefault;
-  }
-  convertUrlToBase64(imageUrl: string): void {
-    fetch(imageUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch image');
-        }
-        return response.blob();
-      })
-      .then((blob) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Image = reader.result as string;
-          this.imageBase64 = base64Image;
-          this.imageCropAlter = base64Image
-          this.imageDefault = base64Image
-        };
-        reader.readAsDataURL(blob);
-      })
-      .catch((error) => {
-      });
   }
   addCallBack(res: any) {
     this.resetForm();
@@ -428,7 +226,6 @@ export class CountryComponent implements OnInit {
     this.gridLoad();
   }
   EditCountry(country_id: number) {
-    this.ShowForm = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -445,14 +242,13 @@ export class CountryComponent implements OnInit {
             region_id: editRecord.region_id,
             sub_region: editRecord.sub_region,
             time_zone_id: editRecord.time_zone_id,
-            // country_image: null
+            country_image: null
           });
-          this.filedata = null;
-          this.profileImages = editRecord.country_image + '?' + Math.random();
-          this.convertUrlToBase64(editRecord.country_image + '?' + Math.random());
+          this.showAddForm();
         }
-      } 
+      }
     });
+
 
   }
 
@@ -475,7 +271,7 @@ export class CountryComponent implements OnInit {
   StatusConfirm(country_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
       (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus ===this.conditionConstants.deactive_status.status);
 
     if (AlreadyStatestatus) {
       return;
