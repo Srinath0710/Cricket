@@ -1600,20 +1600,25 @@ input.form-control:focus {
   height: 35px !important;
 }
 
+
 .totalrecord {
-  color: #1100D1;
   font-size: 12px;
   margin-top: 1px;
 
 }
 
-.p-listbox-option:nth-child(odd) {
-  background-color: #e1edfb !important;
-}
+       /*  Competition Children Screens */
 
-.p-listbox-option:nth-child(odd):hover {
-  background-color: #e1edfb !important;
+ .p-listbox-option { 
+height: 40px !important;
 }
-
-/* background: linear-gradient(to right,#60c3e4, #be87d9);
-  color: white; */
+ .p-listbox-option:nth-child(odd) { 
+background-color: #d9d9d96b !important;
+}
+.p-listbox-option:nth-child(odd):hover { 
+background-color:#d9d9d96b!important;
+}
+.p-listbox-list-container {
+    overflow: auto;
+    max-height: 22rem !important;
+}

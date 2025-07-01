@@ -41,10 +41,15 @@
         </div>
         <strong>VS</strong>
         <div class="text-center">
-          <img class="player-img" *ngIf="Fixtures.team_a_image==null || Fixtures.team_a_image==''" [src]="default_img">
-
+          <span class="person-image-team-player">
+            <img class="player-img" *ngIf="Fixtures.team_a_image1==null || Fixtures.team_a_image1==''"
+              [src]="default_img">
+            <img class="player-img " *ngIf="Fixtures.team_a_image1 !=null && Fixtures.team_a_image1 !=''"
+              [src]="Fixtures.team_a_image1 " (error)="handleImageError($event,default_img)">
+          </span>
           <p class="mb-0">{{ Fixtures.team_a_full_name1 }}</p>
         </div>
+
       </div>
 
     </div>
@@ -68,7 +73,7 @@
           Match No <span class="text-danger">*</span>
         </label>
         <input id="sequence_no" type="number" class="form-control" formControlName="sequence_no"
-          placeholder="Enter Match No" />
+          />
         <small *ngIf="
           competitionFixturesForm.get('sequence_no')?.invalid &&
           (competitionFixturesForm.get('sequence_no')?.touched || submitted)" class="required-msg">
@@ -81,7 +86,7 @@
           Match Name <span class="text-danger">*</span>
         </label>
         <input id="match_name" type="text" class="form-control" formControlName="match_name"
-          placeholder="Enter Match Name" />
+          />
         <small *ngIf="
           competitionFixturesForm.get('match_name')?.invalid &&
           (competitionFixturesForm.get('match_name')?.touched || submitted)" class="required-msg">
@@ -94,7 +99,7 @@
           Match Overs <span class="text-danger">*</span>
         </label>
         <input id="match_overs" type="number" class="form-control" formControlName="match_overs"
-          placeholder="Enter Overs" />
+          />
       </div>
 
       <div class="col-md-3 ">
@@ -102,10 +107,10 @@
           Start Date <span class="text-danger">*</span>
         </label>
         <input id="match_start_date" type="date" class="form-control" formControlName="match_start_date" />
-          <small *ngIf="
+        <small *ngIf="
           competitionFixturesForm.get('match_start_date')?.invalid &&
           (competitionFixturesForm.get('match_start_date')?.touched || submitted)" class="required-msg">
-         Start Date is required
+          Start Date is required
         </small>
       </div>
 
@@ -117,14 +122,14 @@
         <small *ngIf="
           competitionFixturesForm.get('match_end_date')?.invalid &&
           (competitionFixturesForm.get('match_end_date')?.touched || submitted)" class="required-msg">
-         End Date is required
+          End Date is required
         </small>
       </div>
 
       <div class="col-md-3">
         <label>Timezone</label>
         <p-dropdown [options]="timezonetype" class="drop-error" formControlName="time_zone_id"
-          optionValue="time_zone_id" optionLabel="time_zone_name" placeholder="Select Category">
+          optionValue="time_zone_id" optionLabel="time_zone_name" placeholder="Select Timezone">
           <ng-template let-timezone pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ timezone.time_zone_name }}</div>
@@ -169,7 +174,7 @@
       <div class="col-md-3">
         <label>Ground</label>
         <p-dropdown [options]="groundlist" class="drop-error" formControlName="ground_id" optionValue="ground_id"
-          optionLabel="ground_name" placeholder="Select Category">
+          optionLabel="ground_name" placeholder="Select Ground">
           <ng-template let-ground pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ ground.ground_name }}</div>
@@ -180,7 +185,7 @@
       <div class="col-md-3">
         <label>Match Group</label>
         <p-dropdown [options]="matchgroup" class="drop-error" formControlName="match_group_id" optionValue="config_id"
-          optionLabel="config_name" placeholder="Select Category">
+          optionLabel="config_name" placeholder="Select Match Group">
           <ng-template let-matchgroup pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ matchgroup.config_name }}</div>
@@ -191,7 +196,7 @@
       <div class="col-md-3">
         <label>Match Phase</label>
         <p-dropdown [options]="matchstage" class="drop-error" formControlName="match_phase_id" optionValue="config_id"
-          optionLabel="config_name" placeholder="Select Category">
+          optionLabel="config_name" placeholder="Select Match Phase">
           <ng-template let-matchphase pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ matchphase.config_name }}</div>
@@ -201,18 +206,24 @@
       </div>
       <div class="col-md-3">
         <label>Umpire 1</label>
-        <p-dropdown [options]="umpire_list" class="drop-error" formControlName="umpire_1" optionValue="official_id"
-          optionLabel="official_name" [filter]="true" filterBy="official_name" placeholder="Select Umpire1">
+        <p-dropdown [options]="filteredUmpireList1" class="drop-error" formControlName="umpire_1" optionValue="official_id"
+          optionLabel="official_name" [filter]="true"
+          [ngModel]="competitionFixturesForm.get('umpire_1')?.value"
+          (ngModelChange)="updateFilteredLists()"
+          filterBy="official_name" placeholder="Select Umpire1">
           <ng-template let-ump1 pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ ump1.official_name }}</div>
             </div>
           </ng-template>
-        </p-dropdown>
+        </p-dropdown> 
       </div>
       <div class="col-md-3">
         <label>Umpire 2</label>
-        <p-dropdown [options]="umpire_list" class="drop-error" formControlName="umpire_2" optionValue="official_id"
+        <p-dropdown [options]="filteredUmpireList2" 
+         [ngModel]="competitionFixturesForm.get('umpire_2')?.value"
+          (ngModelChange)="updateFilteredLists()"
+        class="drop-error" formControlName="umpire_2" optionValue="official_id"
           optionLabel="official_name" [filter]="true" filterBy="official_name" placeholder="Select Umpire2">
           <ng-template let-ump2 pTemplate="item">
             <div class="flex align-items-center gap-2">
@@ -223,7 +234,10 @@
       </div>
       <div class="col-md-3">
         <label>Umpire 3</label>
-        <p-dropdown [options]="umpire_list" class="drop-error" formControlName="umpire_3" optionValue="official_id"
+        <p-dropdown [options]="filteredUmpireList3" 
+         [ngModel]="competitionFixturesForm.get('umpire_3')?.value"
+          (ngModelChange)="updateFilteredLists()"
+        class="drop-error" formControlName="umpire_3" optionValue="official_id"
           optionLabel="official_name" [filter]="true" filterBy="official_name" placeholder="Select Umpire3">
           <ng-template let-ump3 pTemplate="item">
             <div class="flex align-items-center gap-2">
@@ -234,7 +248,10 @@
       </div>
       <div class="col-md-3">
         <label>Umpire 4</label>
-        <p-dropdown [options]="umpire_list" class="drop-error" formControlName="umpire_4" optionValue="official_id"
+        <p-dropdown [options]="filteredUmpireList4" 
+         [ngModel]="competitionFixturesForm.get('umpire_4')?.value"
+          (ngModelChange)="updateFilteredLists()"
+        class="drop-error" formControlName="umpire_4" optionValue="official_id"
           optionLabel="official_name" [filter]="true" filterBy="official_name" placeholder="Select Umpire4">
           <ng-template let-ump4 pTemplate="item">
             <div class="flex align-items-center gap-2">
@@ -247,7 +264,7 @@
       <div class="col-md-3">
         <label>Sr.Video Analyst</label>
         <p-dropdown [options]="video_analyst_list" class="drop-error" formControlName="sr_video"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Category">
+          optionValue="official_id" optionLabel="official_name" placeholder="Select Sr Video Analyst">
           <ng-template let-videoAnalyst pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ videoAnalyst.official_name }}</div>
@@ -258,7 +275,7 @@
       <div class="col-md-3">
         <label>Jr Video Analyst</label>
         <p-dropdown [options]="video_analyst_list" class="drop-error" formControlName="jr_video"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Category">
+          optionValue="official_id" optionLabel="official_name" placeholder="Select Jr Video Analyst">
           <ng-template let-videoAnalyst pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ videoAnalyst.official_name}}</div>
@@ -269,7 +286,7 @@
       <div class="col-md-3">
         <label>Manual Scorer</label>
         <p-dropdown [options]="scorer_list" class="drop-error" formControlName="manual_scorer_id"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Category">
+          optionValue="official_id" optionLabel="official_name" placeholder="Select Manual Scorer">
           <ng-template let-scorer pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ scorer.official_name }}</div>
@@ -280,7 +297,7 @@
       <div class="col-md-3">
         <label>Digital Scorer</label>
         <p-dropdown [options]="scorer_list" class="drop-error" formControlName="digital_scorer_id"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Category">
+          optionValue="official_id" optionLabel="official_name" placeholder="Select Digital Scorer">
           <ng-template let-scorer pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ scorer.official_name }}</div>
@@ -291,7 +308,7 @@
       <div class="col-md-3">
         <label>Referee </label>
         <p-dropdown [options]="referee" class="drop-error" formControlName="referee_id" optionValue="official_id"
-          optionLabel="official_name" placeholder="Select Category">
+          optionLabel="official_name" placeholder="Select Referee">
           <ng-template let-referee pTemplate="item">
             <div class="flex align-items-center gap-2">
               <div>{{ referee.official_name }}</div>
@@ -304,7 +321,7 @@
           Local Video Path
         </label>
         <input id="match_name" type="text" class="form-control" formControlName="local_video_path"
-          placeholder="Enter Match Name" />
+           />
       </div>
 
       <div class="row">

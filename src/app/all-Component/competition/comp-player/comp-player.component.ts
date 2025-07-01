@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { ManageDataItem } from '../competition.component';
+import { ToastModule } from 'primeng/toast';
+
 
 @Component({
   selector: 'app-comp-player',
@@ -18,7 +20,8 @@ import { ManageDataItem } from '../competition.component';
     FormsModule,
     ReactiveFormsModule,
     DropdownModule,
-    TableModule
+    TableModule,
+    ToastModule
   ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
@@ -42,6 +45,7 @@ export class CompPlayerComponent implements OnInit {
   selectedTeamId: number | null = null;
   isEditPopupVisible = false;
   public ManagePlayerForm!: FormGroup<any>;
+  statusConstants= CricketKeyConstant.status_code;
 
   selectedPlayer: any = null;
 
@@ -55,7 +59,7 @@ export class CompPlayerComponent implements OnInit {
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
     private formBuilder: FormBuilder,
-    private messageService: MessageService,
+    private msgService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService
   ) { }
@@ -118,10 +122,18 @@ export class CompPlayerComponent implements OnInit {
         this.gridLoad();
       },
       (err: any) => {
+          err.status_code === this.statusConstants.refresh && err.error.message
+           === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
+            this.failedToast(err.error);
 
-      }
-    );
+      });
   }
+
+     /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
+
   updateplayer(): void {
     if (!this.selectedPlayer) {
       console.error('No team selected for update!');

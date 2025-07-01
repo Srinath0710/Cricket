@@ -2,6 +2,7 @@ export class CricketKeyConstant {
     static status_code = {
         success: '200',
         refresh: '401',
+        status_code:'400',
         refresh_msg: 'Expired',
         status_code_key: 'status_code'
     }

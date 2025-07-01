@@ -30,8 +30,8 @@ interface MetaInfo {
   ],
   templateUrl: './comp-match.component.html',
   styleUrl: './comp-match.component.css',
-  providers :[  
-  { provide: CricketKeyConstant },
+  providers: [
+    { provide: CricketKeyConstant },
   ]
 })
 export class CompMatchComponent implements OnInit {
@@ -58,11 +58,15 @@ export class CompMatchComponent implements OnInit {
   umpire_list: any = []
   video_analyst_list: any = []
   scorer_list: any = []
+  filteredUmpireList1: any = []
+  filteredUmpireList2: any = []
+  filteredUmpireList3: any = []
+  filteredUmpireList4: any = []
   referee: any;
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
   default_img = CricketKeyConstant.default_image_url.teamimage;
-  
+
   @Output() showFormChange = new EventEmitter<boolean>();
 
   constructor(
@@ -77,6 +81,8 @@ export class CompMatchComponent implements OnInit {
     this.initForm();
     this.gridload();
     this.getDropdown()
+    this.updateFilteredLists();
+
   }
 
   initForm() {
@@ -85,8 +91,8 @@ export class CompMatchComponent implements OnInit {
       sequence_no: ['', [Validators.required]],
       match_name: ['', [Validators.required]],
       match_overs: ['', []],
-      match_start_date: ['',[Validators.required]],
-      match_end_date: ['',[Validators.required]],
+      match_start_date: ['', [Validators.required]],
+      match_end_date: ['', [Validators.required]],
       time_zone_id: ['', []],
       day_type: ['', []],
       is_neutral_venue: ['', []],
@@ -105,7 +111,7 @@ export class CompMatchComponent implements OnInit {
       manual_scorer_id: ['', []],
       digital_scorer_id: ['', []],
       local_video_path: ['', []],
-      match_id:['']
+      match_id: ['']
 
     })
   }
@@ -114,23 +120,23 @@ export class CompMatchComponent implements OnInit {
     const params: any = {}
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
-    params.competition_id=String( this.CompetitionData?.competition_id),
+    params.competition_id = String(this.CompetitionData?.competition_id),
 
-    this.apiService.post(this.urlConstant.getfixture, params).subscribe((res) => {
+      this.apiService.post(this.urlConstant.getfixture, params).subscribe((res) => {
 
-      if (res.data && res.data.fixtures) {
-        this.MatchData = res.data.fixtures;
-      } else {
-        this.MatchData = [];
-      }
-    }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
+        if (res.data && res.data.fixtures) {
+          this.MatchData = res.data.fixtures;
+        } else {
+          this.MatchData = [];
+        }
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
 
-    });
+      });
   }
   showDialog() {
     this.ShowForm = true;
-    this.showFormChange.emit(this.ShowForm); 
+    this.showFormChange.emit(this.ShowForm);
     this.resetForm();
   }
 
@@ -140,9 +146,9 @@ export class CompMatchComponent implements OnInit {
 
   resetForm() {
     this.competitionFixturesForm.reset();
-    if(this.competitionFixturesForm.get('match_id')?.value ==''|| this.competitionFixturesForm.get('match_id')?.value ==null){
+    if (this.competitionFixturesForm.get('match_id')?.value == '' || this.competitionFixturesForm.get('match_id')?.value == null) {
 
-    setTimeout(() => {
+      setTimeout(() => {
         this.competitionFixturesForm.patchValue({
           // day_type: this.daytype.filter((val: any) => val.config_key == 'D')?.[0].config_id ?? null,
           sequence_no: this.competition?.[0]?.sequence_no ?? '',
@@ -153,9 +159,9 @@ export class CompMatchComponent implements OnInit {
           // home_team : this.competition[0]?.is_bilateral == 1 ?this.CompetitionEditRecord?.home_team_id : null,
           // away_team : this.competition[0]?.is_bilateral == 1 ?this.CompetitionEditRecord?.away_team_id : null
         })
-     
-    }, 10)
-  }
+
+      }, 10)
+    }
     this.submitted = false;
   }
 
@@ -179,20 +185,20 @@ export class CompMatchComponent implements OnInit {
           .filter((item: any) => item.config_key === 'match_stage')
           .map((item: any) => ({ ...item }));
 
-          this.daytype = res.data.metadata
+        this.daytype = res.data.metadata
           .filter((item: any) => item.config_key === 'day_type')
           .map((item: any) => ({ ...item }));
 
-         this.teamlist = response ? res.data.teams : []
+        this.teamlist = response ? res.data.teams : []
         this.groundlist = response ? res.data.grounds : []
         this.official = response ? res.data.officials : []
 
- 
 
-        this.umpire_list = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Umpire') : []
-        this.video_analyst_list = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Analyst') : []
-        this.scorer_list = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Scorer') : []
-        this.referee = response ? res.data.officials.filter((temp:any) => temp.official_type === 'Referee') : []
+
+        this.umpire_list = response ? res.data.officials.filter((temp: any) => temp.official_type === 'Umpire') : []
+        this.video_analyst_list = response ? res.data.officials.filter((temp: any) => temp.official_type === 'Analyst') : []
+        this.scorer_list = response ? res.data.officials.filter((temp: any) => temp.official_type === 'Scorer') : []
+        this.referee = response ? res.data.officials.filter((temp: any) => temp.official_type === 'Referee') : []
         this.resetForm();
 
 
@@ -208,22 +214,22 @@ export class CompMatchComponent implements OnInit {
 
     this.ShowForm = false
   }
-    /* Failed Toast */
-    failedToast(data: any) {
-      this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
-    }
-    successToast(data: any) {
-      this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
-  
-    }
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  }
+  successToast(data: any) {
+    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
-    addCallBack(res: any) {
-      this.resetForm();
-      this.cancelForm();
-      this.gridload();
-      this.successToast(res);
+  }
 
-    }
+  addCallBack(res: any) {
+    this.resetForm();
+    this.cancelForm();
+    this.gridload();
+    this.successToast(res);
+
+  }
 
   addFixtures() {
     this.submitted = true;
@@ -231,46 +237,46 @@ export class CompMatchComponent implements OnInit {
       this.competitionFixturesForm.markAllAsTouched();
       return
     }
-  
+
     const params: any = {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
       competition_id: this.CompetitionData?.competition_id != null ? String(this.CompetitionData.competition_id) : null,
       match_id: this.competitionFixturesForm.value.match_id != null ? String(this.competitionFixturesForm.value.match_id) : null,
-    
+
       match_name: this.competitionFixturesForm.value.match_name ?? null,
       match_overs: this.competitionFixturesForm.value.match_overs != null ? String(this.competitionFixturesForm.value.match_overs) : null,
       time_zone_id: this.competitionFixturesForm.value.time_zone_id != null ? String(this.competitionFixturesForm.value.time_zone_id) : null,
       day_type: String(this.competitionFixturesForm.value.day_type ?? null),
-     
+
       team_1_code: this.competitionFixturesForm.value.team_1_code != null ? String(this.competitionFixturesForm.value.team_1_code) : null,
       team_2_code: this.competitionFixturesForm.value.team_2_code != null ? String(this.competitionFixturesForm.value.team_2_code) : null,
       ground_id: this.competitionFixturesForm.value.ground_id != null ? String(this.competitionFixturesForm.value.ground_id) : null,
       match_group_id: this.competitionFixturesForm.value.match_group_id != null ? String(this.competitionFixturesForm.value.match_group_id) : null,
       match_phase_id: this.competitionFixturesForm.value.match_phase_id != null ? String(this.competitionFixturesForm.value.match_phase_id) : null,
-      
+
       umpire_1: this.competitionFixturesForm.value.umpire_1 != null ? String(this.competitionFixturesForm.value.umpire_1) : null,
       umpire_2: this.competitionFixturesForm.value.umpire_2 != null ? String(this.competitionFixturesForm.value.umpire_2) : null,
       umpire_3: this.competitionFixturesForm.value.umpire_3 != null ? String(this.competitionFixturesForm.value.umpire_3) : null,
       umpire_4: this.competitionFixturesForm.value.umpire_4 != null ? String(this.competitionFixturesForm.value.umpire_4) : null,
       referee_id: this.competitionFixturesForm.value.referee_id != null ? String(this.competitionFixturesForm.value.referee_id) : null,
-      
-      sr_video: this.competitionFixturesForm.value.sr_video ?? null,
-      jr_video: this.competitionFixturesForm.value.jr_video ?? null,
+
+      sr_video: this.competitionFixturesForm.value.sr_video ?? null ? String(this.competitionFixturesForm.value.sr_video) : null,
+      jr_video: this.competitionFixturesForm.value.jr_video ?? null ? String(this.competitionFixturesForm.value.jr_video) : null,
       manual_scorer_id: this.competitionFixturesForm.value.manual_scorer_id != null ? String(this.competitionFixturesForm.value.manual_scorer_id) : null,
       digital_scorer_id: this.competitionFixturesForm.value.digital_scorer_id != null ? String(this.competitionFixturesForm.value.digital_scorer_id) : null,
       local_video_path: this.competitionFixturesForm.value.local_video_path ?? null,
-      
+
       sequence_no: this.competitionFixturesForm.value.sequence_no != null ? String(this.competitionFixturesForm.value.sequence_no) : null,
-      
+
       match_start_date: this.competitionFixturesForm.value.match_start_date
-      ? String(this.competitionFixturesForm.value.match_start_date).replace("T", " ")
-      : null,
-    
-    match_end_date: this.competitionFixturesForm.value.match_end_date
-      ? String(this.competitionFixturesForm.value.match_end_date).replace("T", " ")
-      : null,
-    
+        ? String(this.competitionFixturesForm.value.match_start_date).replace("T", " ")
+        : null,
+
+      match_end_date: this.competitionFixturesForm.value.match_end_date
+        ? String(this.competitionFixturesForm.value.match_end_date).replace("T", " ")
+        : null,
+
       action_flag: 'create',
 
     }
@@ -280,8 +286,8 @@ export class CompMatchComponent implements OnInit {
     else {
       params.is_neutral_venue = "0"
     }
-   
-    if (this.competitionFixturesForm.value.match_id){
+
+    if (this.competitionFixturesForm.value.match_id) {
       params.action_flag = 'update';
       this.apiService.post(this.urlConstant.updatefixture, params).subscribe(
         (res) => {
@@ -290,10 +296,10 @@ export class CompMatchComponent implements OnInit {
               this.addoneAnother = ''
               this.getDropdown();
               this.addCallBack(res);
-              
+
 
             } else {
-              this.apiService.feedSummary(this.user_id, this.client_id, this.CompetitionData.competition_id)
+              // this.apiService.feedSummary(this.user_id, this.client_id, this.CompetitionData.competition_id)
 
               this.gridload()
               this.hideDialog()
@@ -301,7 +307,7 @@ export class CompMatchComponent implements OnInit {
           }
 
         }, (err: any) => {
-          if (err.status_code === 401 && err.error.message === "Expired") {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === "Expired") {
             this.apiService.RefreshToken();
 
           }
@@ -316,53 +322,53 @@ export class CompMatchComponent implements OnInit {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
       });
     }
-}
+  }
 
-editCardData(match_id: number){
+  editCardData(match_id: number) {
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-    params.match_id= match_id.toString(), 
-    this.apiService.post(this.urlConstant.editfixture, params).subscribe((res) => {
-      if (res.status_code == 200) {
-        const editRecord: any = res.data.fixtures[0] ?? {};
-        if (editRecord != null) {
-          this.competitionFixturesForm.setValue({
-            match_id: editRecord.match_id,
-            match_name: editRecord.match_name,
-            match_overs: editRecord.match_overs,
-            match_start_date: editRecord.match_start_date!=null ?editRecord.match_start_date.split('T')[0] :null,
-            match_end_date: editRecord.match_end_date!=null ?editRecord.match_end_date.split('T')[0] :null,
-            time_zone_id: editRecord.time_zone_id,
-            day_type: editRecord.day_type,
-            is_neutral_venue: editRecord.is_neutral_venue,
-            team_1_code: editRecord.team_1_code,
-            team_2_code: editRecord.team_2_code,
-            ground_id: editRecord.ground_id,
-            // description: editRecord.description ,
-            match_group_id: editRecord.match_group_id,
-            match_phase_id:  editRecord.match_phase_id,
-            umpire_1:  editRecord.umpire_1,
-            umpire_2:  editRecord.umpire_2,
-            umpire_3:  editRecord.umpire_3,
-            umpire_4:  editRecord.umpire_4,
-            referee_id:  editRecord.match_phase_id,
-            sr_video:  editRecord.sr_video,
-            jr_video:  editRecord.jr_video,
-            manual_scorer_id:  editRecord.manual_scorer_id,
-            digital_scorer_id:  editRecord.digital_scorer_id,
-            local_video_path:  editRecord.local_video_path,
-            sequence_no:  editRecord.sequence_no,
-          });
-          this.ShowForm = true;
-           }
-      } else {
-        this.failedToast(res);
-      }
-    }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
-    });
+    params.match_id = match_id.toString(),
+      this.apiService.post(this.urlConstant.editfixture, params).subscribe((res) => {
+        if (res.status_code == 200) {
+          const editRecord: any = res.data.fixtures[0] ?? {};
+          if (editRecord != null) {
+            this.competitionFixturesForm.setValue({
+              match_id: editRecord.match_id,
+              match_name: editRecord.match_name,
+              match_overs: editRecord.match_overs,
+              match_start_date: editRecord.match_start_date != null ? editRecord.match_start_date.split('T')[0] : null,
+              match_end_date: editRecord.match_end_date != null ? editRecord.match_end_date.split('T')[0] : null,
+              time_zone_id: editRecord.time_zone_id,
+              day_type: editRecord.day_type,
+              is_neutral_venue: editRecord.is_neutral_venue,
+              team_1_code: editRecord.team_1_code,
+              team_2_code: editRecord.team_2_code,
+              ground_id: editRecord.ground_id,
+              // description: editRecord.description ,
+              match_group_id: editRecord.match_group_id,
+              match_phase_id: editRecord.match_phase_id,
+              umpire_1: editRecord.umpire_1,
+              umpire_2: editRecord.umpire_2,
+              umpire_3: editRecord.umpire_3,
+              umpire_4: editRecord.umpire_4,
+              referee_id: editRecord.match_phase_id,
+              sr_video: editRecord.sr_video,
+              jr_video: editRecord.jr_video,
+              manual_scorer_id: editRecord.manual_scorer_id,
+              digital_scorer_id: editRecord.digital_scorer_id,
+              local_video_path: editRecord.local_video_path,
+              sequence_no: editRecord.sequence_no,
+            });
+            this.ShowForm = true;
+          }
+        } else {
+          this.failedToast(res);
+        }
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      });
 
 
   }
@@ -388,7 +394,7 @@ editCardData(match_id: number){
       }
     });
   }
-  
+
   status(match_id: number, url: string) {
     const params: any = {
       user_id: this.user_id?.toString(),
@@ -396,7 +402,7 @@ editCardData(match_id: number){
       match_id: match_id?.toString(),
       competition_id: String(this.CompetitionData?.competition_id)
     };
-  
+
     this.apiService.post(url, params).subscribe(
       (res: any) => {
         res.status_code === this.statusConstants.success && res.status
@@ -405,11 +411,23 @@ editCardData(match_id: number){
       },
       (err: any) => {
         err.status_code === this.statusConstants.refresh &&
-        err.error.message === this.statusConstants.refresh_msg
+          err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err.error);
       }
     );
   }
-  
+  getFilteredUmpireList(excludeIds: string[]) {
+    return this.umpire_list.filter((temp: { official_id: string; }) => !excludeIds.includes(temp.official_id));
+  }
+  updateFilteredLists() {
+    const umpire1 = this.competitionFixturesForm.value.umpire_1 || null;
+    const umpire2 = this.competitionFixturesForm.value.umpire_2 || null;
+    const umpire3 = this.competitionFixturesForm.value.umpire_3 || null;
+    const umpire4 = this.competitionFixturesForm.value.umpire_4 || null;
+    this.filteredUmpireList1 = [{ official_id: null, official_name: 'None' }, ...this.getFilteredUmpireList([].filter(Boolean))];
+    this.filteredUmpireList2 = [{ official_id: null, official_name: 'None' }, ...this.getFilteredUmpireList([umpire1, umpire3, umpire4].filter(Boolean))];
+    this.filteredUmpireList3 = [{ official_id: null, official_name: 'None' }, ...this.getFilteredUmpireList([umpire1, umpire2, umpire4].filter(Boolean))];
+    this.filteredUmpireList4 = [{ official_id: null, official_name: 'None' }, ...this.getFilteredUmpireList([umpire1, umpire2, umpire3].filter(Boolean))];
+  }
 }

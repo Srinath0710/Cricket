@@ -207,9 +207,7 @@ export class CompetitionComponent implements OnInit {
     });
   }
 
-  onShowFormChanged(status: boolean) {
-    this.isEditDisabled = status;
-  }
+ 
 
   showDialog() {
     this.isEditMode = false;
