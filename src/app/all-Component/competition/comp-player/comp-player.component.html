@@ -8,7 +8,7 @@
     style="display: flex; background-color: white; padding: 6px; border-radius: 3px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
     <!-- Left: Team List -->
     <div style="width: 200px;">
-      <div style="text-align:center; font-weight: bold; ">Select Team</div>
+      <div class ="select-team">Select Team</div>
 
       <div *ngFor="let team of teamsDropDown" class="team-card" [ngClass]="{ 'selected': team.team_id === team_id }"
         (click)="chooseTeam(team.team_id)">

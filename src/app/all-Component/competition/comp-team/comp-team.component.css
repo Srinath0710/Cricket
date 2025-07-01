@@ -61,12 +61,19 @@
   z-index: 999; 
 }
 
-.popup {
+/* .popup {
   padding: 10px;
   border-radius: 8px;
   width: 400px;
   background: #8fc5da;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   z-index: 1000;
+} */
+.popup {
+  padding: 10px;
+  border-radius: 8px;
+  width: 400px;
+  background: linear-gradient(to right,#60c3e4, #be87d9);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
 }
-

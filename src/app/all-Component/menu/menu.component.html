@@ -59,13 +59,13 @@
               <ng-template pTemplate="body" let-menu>
                 <tr>
                   <td>
-                     <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="menu.profile_img==null || menu.profile_img==''"
-                      [src]="default_img">
+                    <span class="person-image-team-player">
+                      <img class="player-img" *ngIf="menu.profile_img==null || menu.profile_img==''"
+                        [src]="default_img">
 
-                    <img class="player-img" *ngIf="menu.profile_img!=null  && menu.profile_img!=''"
-                      [src]="menu.menu_image" (error)="handleImageError($event, default_img)">
-                  </span>
+                      <img class="player-img" *ngIf="menu.profile_img!=null  && menu.profile_img!=''"
+                        [src]="menu.menu_image" (error)="handleImageError($event, default_img)">
+                    </span>
                     {{ menu.menu_name }}
                   </td>
 
@@ -260,13 +260,13 @@
 
             <div class="col-md-6">
               <label for="menu_link">Menu link</label>
-             
+
               <input class="form-control" maxlength="50" type="text" formControlName="menu_link" />
-            
+
             </div>
             <div class="col-md-6">
               <label for="menu_description">Menu Description</label>
-            
+
               <input class="form-control" maxlength="50" type="text" formControlName="menu_description" />
             </div>
 
@@ -320,21 +320,20 @@
             </div>
 
             <div class="col-md-6">
-              <div class="image-upload-container text-center">
-                <label for="profileImageInput" class="upload-label">
-                  <div class="image-preview-wrapper">
-                    <button *ngIf="previewUrl" type="button" class="cancel-btn" (click)="cancelImage()">
-                      ✕
-                    </button>
-                    <img *ngIf="previewUrl; else placeholder" [src]="previewUrl" alt="Profile Image"
-                      class="profile-img" />
-                    <ng-template #placeholder>
-                    </ng-template>
-                  </div>
-                  <div class="upload-btn">Upload</div>
+              <div class="form-group formItem">
+                <label class="formItemLabel">Menu Image
+                  <span class="text-danger">*</span>
                 </label>
-                <input #fileInput type="file" id="profileImageInput" accept="image/*"
-                  (change)="onProfileImageSelected($event)" hidden formControlName="menu_image" />
+                <input class="form-control" maxlength="100" type="text" placeholder="Enter Menu Image"
+                  formControlName="menu_image">
+                <small
+                  *ngIf="addMenuForm.get('menu_image')?.invalid &&
+                  (addMenuForm.get('menu_image')?.touched) || 
+                  (addMenuForm.get('menu_image')?.invalid && submitted)"
+                  class="text-danger">* Menu Image Is Required
+                </small>
+
+
               </div>
             </div>
 
@@ -344,7 +343,8 @@
           <div class="form-wrapper pb-5">
             <div class="row mt-4 sticky-footer-buttons">
               <div class="col-12 text-end">
-                <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()">
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
+                  (click)="cancelForm()">
                 </button>
 
                 <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
@@ -444,11 +444,11 @@
 
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel"  class="p-button-secondary me-3 custom-cancel-btn"
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                 (click)="cancelEndpointForm()">
               </button>
 
-              <button pButton type="button" label="Clear"  class="p-button-secondary me-3 custom-cancel-btn"
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                 *ngIf="addEndpointForm.get('api_id')?.value == '' || addEndpointForm.get('api_id')?.value == null"
                 (click)="resetForm()"></button>
 

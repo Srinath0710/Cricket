@@ -7,6 +7,7 @@ import { PickListModule } from 'primeng/picklist';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-comp-ground',
@@ -23,14 +24,15 @@ import { ToastModule } from 'primeng/toast';
 })
 export class CompGroundComponent implements OnInit {
   @Input() CompetitionData: any;
+  @Output() groundUpdated = new EventEmitter<void>();
   client_id: number = Number(localStorage.getItem('client_id'));
-  default_img: any ='assets/images/default-player.png';
   sourceGround!: [];
   targetGround!:[];
   movedToTarget: any[] = [];
   user_id: number = Number(localStorage.getItem('user_id'));
   movedToTargetIds = new Set<number>();
   statusConstants= CricketKeyConstant.status_code;
+  default_img = CricketKeyConstant.default_image_url.grounds;
 
   constructor(
     private apiService: ApiService,
@@ -70,7 +72,9 @@ export class CompGroundComponent implements OnInit {
     params.competition_id = this.CompetitionData.competition_id.toString();
 
     this.apiService.post(this.urlConstant.compgroundupdate, params).subscribe((res: any) => {
-      this.gridLoad();
+      // this.gridLoad();
+      console.log("Ground updated, emitting event");
+      this.groundUpdated.emit();
     }, (err: any) => {
       if (
         err.status_code === this.statusConstants.refresh &&

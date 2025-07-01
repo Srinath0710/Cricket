@@ -327,10 +327,8 @@ export class MenuComponent implements OnInit {
       menu_name: this.addMenuForm.value.menu_name,
       menu_description: this.addMenuForm.value.menu_description,
       menu_link: this.addMenuForm.value.menu_link,
-      // menu_image: this.addMenuForm.value.menu_image,
-    menu_image: this.profileImages !=null && this.profileImages !='' ?String(this.profileImages):null,
-
       module_id: String(this.addMenuForm.value.module_id),
+      menu_image: String(this.addMenuForm.value.menu_image),
       parent_menu_id: String(this.addMenuForm.value.parent_menu_id),
       sort_order: String(this.addMenuForm.value.sort_order),
       menu_id: String(this.addMenuForm.value.menu_id),
@@ -350,14 +348,19 @@ export class MenuComponent implements OnInit {
           this.failedToast(res)
         }
       } (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+        err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg ?
+         this.apiService.RefreshToken() : this.failedToast(err.error);
     }});
-    } else {
-
+    } 
+    
+    else {
       this.apiService.post(this.urlConstant.addMenus, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status === this.statusConstants.refresh && 
+        err.error.message === this.statusConstants.refresh_msg ? 
+        this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
 
@@ -385,19 +388,18 @@ export class MenuComponent implements OnInit {
             menu_name: editRecord.menu_name,
             menu_description: editRecord.menu_description,
             menu_link: editRecord.menu_link,
-            menu_image: '',
+            menu_image: editRecord.menu_image,
             module_id: Number(editRecord.module_id),
             sort_order: editRecord.sort_order,
 
           });
-              this.profileImages = editRecord.menu_image + '?' + Math.random();
           this.showAddForm();
         }
       } else {
         this.failedToast(res);
       }
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
 
 

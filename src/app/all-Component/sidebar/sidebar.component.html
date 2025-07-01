@@ -16,7 +16,8 @@
     <ng-container *ngFor="let module of modules">
       <ng-container *ngFor="let parent_menu of module?.sub_parent">
         <li class="menu-item">
-          <a *ngIf="parent_menu['has_submenu'] && parent_menu?.sub_menu && parent_menu.sub_menu.length > 0" 
+          <a *ngIf="parent_menu['has_submenu'] && parent_menu?.sub_menu &&
+            parent_menu.sub_menu.length > 0" 
              class="menu-link"
              [class.active]="activeRoute == parent_menu.menu_link"
              (click)="showSubmenuInPopup(parent_menu, $event)">
@@ -26,11 +27,13 @@
             <span class="menu-text">{{parent_menu.menu_name}}</span>
           </a>
 
-          <a *ngIf="!parent_menu['has_submenu'] || !parent_menu?.sub_menu || parent_menu.sub_menu.length === 0" 
+          <a *ngIf="!parent_menu['has_submenu'] || !parent_menu?.sub_menu ||
+            parent_menu.sub_menu.length === 0" 
              [routerLink]="parent_menu.menu_link"
              class="menu-link"
              [class.active]="activeRoute == parent_menu.menu_link"
-             (click)="activeRoute = parent_menu.menu_link; setImage(parent_menu.menu_image)">
+             (click)="activeRoute = parent_menu.menu_link;
+              setImage(parent_menu.menu_image)">
             <span class="menu-icon">
               <i [class]="parent_menu.menu_image || 'fas fa-file'"></i>
             </span>

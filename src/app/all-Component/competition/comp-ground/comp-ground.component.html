@@ -1,56 +1,40 @@
 <div class="parent-container">
-<button class="new-button p-button-text Comp-child-butn"(click)="updateGround()">UpdateGround</button>
+  <button class="new-button p-button-text Comp-child-butn" (click)="updateGround()">UpdateGround</button>
 </div>
-<p-pickList 
-  [source]="sourceGround" 
-  [target]="targetGround"
-  [dragdrop]="true"
-  [responsive]="true"
-  [showSourceFilter]="true"
-  [showTargetFilter]="true"
-  filterBy="ground_name"  
-  sourceFilterPlaceholder="Search Available..." 
-  targetFilterPlaceholder="Search Target..."
-  [sourceStyle]="{ height: '30rem' }" 
-  [targetStyle]="{ height: '30rem' }"
-  (onMoveToTarget)="onMoveToTarget($event)"
-  (onMoveToSource)="onMoveToSource($event)" 
-   >
+<p-pickList [source]="sourceGround" [target]="targetGround" [dragdrop]="true" [responsive]="true"
+  [showSourceFilter]="true" [showTargetFilter]="true" filterBy="ground_name"
+  sourceFilterPlaceholder="Search Available..." targetFilterPlaceholder="Search Target..."
+  [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" (onMoveToTarget)="onMoveToTarget($event)"
+  (onMoveToSource)="onMoveToSource($event)">
 
-<ng-template pTemplate="sourceHeader">
-  <div class="p-d-flex p-ai-center">
-    Available Ground 
-  </div>
-</ng-template>
-
-<ng-template pTemplate="targetHeader">
-  <div class="p-d-flex p-ai-center">
-   Selected Ground 
-  </div>
-</ng-template>
-
-<ng-template pTemplate="item" let-product let-i="index">
-  <div 
-    class="flex flex-wrap p-2 align-items-center gap-3" 
-    [ngClass]="{ 'highlight-target': product.highlighted }"
-  >
-    <div class="flex-1 flex flex-column gap-2">
-      <span class="person-image-team-player">
-        <img 
-          class="player-img" 
-          *ngIf="!product.profile_img || !product.player_profile" 
-          [src]="default_img">
-
-        <img 
-          class="player-img" 
-          *ngIf="product.profile_img && product.player_profile" 
-          [src]="product.profile_img" 
-          (error)="handleImageError($event, default_img)">
-      </span>
-      <span class="font-bold">{{ product.ground_name }}</span>
+  <ng-template pTemplate="sourceHeader">
+    <div class="p-d-flex p-ai-center">
+      Available Ground
     </div>
-  </div>
-</ng-template>
+  </ng-template>
+
+  <ng-template pTemplate="targetHeader">
+    <div class="p-d-flex p-ai-center">
+      Selected Ground
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="item" let-product let-i="index">
+    <div class="flex flex-wrap p-2 align-items-center gap-3" [ngClass]="{ 'highlight-target': product.highlighted }">
+
+      <div class="flex-1 flex flex-column gap-2">
+        <span class="person-image-team-player">
+          <img class="player-img" *ngIf="product.ground_image==null || 
+          product.ground_image==''" [src]="default_img">
+
+          <img class="player-img " *ngIf="product.ground_image !=null && 
+         product.ground_image !=''" [src]="product.ground_image " 
+         (error)="handleImageError($event,default_img)">
+        </span>
+        <span class="font-bold">{{ product.ground_name }}</span>
+      </div>
+    </div>
+  </ng-template>
 
 </p-pickList>
 <p-toast key="tc" position="top-right"></p-toast>

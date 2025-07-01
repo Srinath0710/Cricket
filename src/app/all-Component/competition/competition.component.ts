@@ -507,6 +507,8 @@ export class CompetitionComponent implements OnInit {
     })
   }
   goBack(): void {
+      console.log("goBack called from child");
+
     this.showTabs = false;
     this.loadCompetitions();
   }

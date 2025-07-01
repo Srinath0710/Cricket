@@ -70,3 +70,10 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   z-index: 1000;
 }
+
+.select-team{
+  text-align: center;
+    font-weight: bold;
+    padding: 7px;
+ background: linear-gradient(to right,#60c3e4, #be87d9);
+}
