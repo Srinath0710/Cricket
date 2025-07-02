@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../../services/api.service';
 import { CricketKeyConstant } from '../../../services/cricket-key-constant';
@@ -35,6 +35,7 @@ import { ToastModule } from 'primeng/toast';
 })
 export class CompPlayerComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
+  @Output() PlayerUpdated = new EventEmitter<void>();
   client_id: number = Number(localStorage.getItem('client_id'));
   default_img= CricketKeyConstant.default_image_url.players;
   sourcePlayer!: [];
@@ -153,7 +154,7 @@ export class CompPlayerComponent implements OnInit {
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
     this.apiService.post(this.urlConstant.compplayerupdate, params).subscribe(
       (res: any) => {
-        this.gridLoad();
+        this.PlayerUpdated.emit();
         this.closeEditPopup();
       },
       (err: any) => {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -42,9 +42,6 @@ interface Competition {
   record_status: string;
   profile_image: string;
   total_records: number;
-
-
-  // UI properties
   name: string;
   match_type: string;
   status: string;
@@ -59,7 +56,13 @@ interface season {
   season_name: string;
 }
 export interface ManageDataItem {
-  competition_id: number, name: string, match_type: string, gender: string, age_category: string, start_date: string, end_date: string
+  competition_id: number,
+  name: string,
+  match_type: string,
+  gender: string,
+  age_category: string,
+  start_date: string,
+  end_date: string
 }
 
 @Component({
@@ -98,6 +101,12 @@ export interface ManageDataItem {
   standalone: true
 })
 export class CompetitionComponent implements OnInit {
+
+  @ViewChild(CompGroundComponent) compGround!: CompGroundComponent;
+  @ViewChild(CompOfficialComponent) compOfficial!: CompOfficialComponent;
+  @ViewChild(CompPlayerComponent) compPlayer!: CompPlayerComponent;
+  @ViewChild(CompTeamComponent) compTeam!: CompTeamComponent;
+  @ViewChild(CompMatchComponent) CompMatch!: CompMatchComponent;
   public addCompetitionForm!: FormGroup<any>;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = 0;
@@ -133,6 +142,8 @@ export class CompetitionComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
+
+
   // Filter properties
   showFilters: boolean = false;
   filterStatus: string = '';
@@ -207,7 +218,7 @@ export class CompetitionComponent implements OnInit {
     });
   }
 
- 
+
 
   showDialog() {
     this.isEditMode = false;
@@ -396,7 +407,6 @@ export class CompetitionComponent implements OnInit {
   }
 
   onPageChange(event: any) {
-
     this.first = Math.floor(event.first / event.rows) + 1;
     this.rows = event.rows;
     this.loadCompetitions();
@@ -507,7 +517,7 @@ export class CompetitionComponent implements OnInit {
     })
   }
   goBack(): void {
-      console.log("goBack called from child");
+    console.log("goBack called from child");
 
     this.showTabs = false;
     this.loadCompetitions();
@@ -566,9 +576,25 @@ export class CompetitionComponent implements OnInit {
         err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
-          : this.failedToast(err);
+          : this.failedToast(err.error);
       }
     );
   }
+
+  /* Child Update Method*/
+
+  UpdateFromParent() {
+  if (this.activeTab === 'ground') {
+    this.compGround.updateGround(); // existing
+  } else if (this.activeTab === 'officials') {
+    this.compOfficial.updateOfficial();
+  } else if (this.activeTab === 'teams') {
+    this.compTeam.AddTeam();
+  } else if (this.activeTab === 'squads') {
+    this.compPlayer.updateplayer();
+  } else if (this.activeTab === 'matches') {
+    this.CompMatch.newmatch();
+  }
+}
 
 }

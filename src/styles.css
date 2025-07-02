@@ -1591,6 +1591,7 @@ input.form-control:focus {
   height: 35px !important;
 }
 
+
 .save-button {
   background-color: #3f51b5 !important;
   border: blue !important;
@@ -1619,5 +1620,32 @@ background-color:#d9d9d96b!important;
 }
 .p-listbox-list-container {
     overflow: auto;
-    max-height: 22rem !important;
+    max-height: 30rem !important;
+}
+
+/* popup Player & Teams */
+.popup {
+  padding: 10px;
+  border-radius: 8px;
+  width: 400px;
+  background: linear-gradient(to right, #60c3e4, #be87d9);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+/* Popup Text Width */
+.text-width {
+   min-width: 105px ;
+}
+/* Children image */
+.Child-image{
+   width: 52px;
+   height: 52px;
+}
+.update-child-btn {
+  background-color: #367039 !important;
+  border: none !important;
+  border-color: #367039 !important;
+  color: white !important;
+  border-radius: 0% !important;
+  height: 35px !important;
 }

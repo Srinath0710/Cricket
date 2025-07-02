@@ -453,8 +453,8 @@
                   </div>
                   <div class="card-body">
                     <div class="competition-name">
-                      {{ competition.name }}
-                      <div class="competition-location">Chennai</div>
+                      {{ competition.name | uppercase }}
+                      <div class="competition-location"> {{ competition.trophy_name }}</div>
                     </div>
                   </div>
                   <div class="card-footer">
@@ -513,10 +513,20 @@
             <section [ngClass]="{ 'inactive': !showTabs }">
               <div *ngIf="showTabs" class="container-fluid">
                 <div class="row">
+                  <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2"
+                    [class.disabled]="isEditDisabled">
+                    <span class="fw-bold text-uppercase flex-grow-1">{{ manageData.name }}</span>
 
-                  <div class="d-flex justify-content-between align-items-center mb-2" [class.disabled]="isEditDisabled">
-                    <h5 class="fw-bold mb-0" style="margin-left: 45%;">{{ manageData.name}}</h5>
-                    <button class="Comp-backbtn" (click)="goBack()" [disabled]="isEditDisabled">Back</button>
+                    <div class="d-flex flex-wrap gap-2">
+                      <button *ngIf="activeTab !== 'matches'" class="btn btn-primary update-child-btn"
+                        (click)="UpdateFromParent()">Update</button>
+                      <button *ngIf="activeTab === 'matches'" class="btn btn-primary btn-sm new-buttons  "
+                        (click)="UpdateFromParent()">
+                        + New Match
+                      </button>
+                      <button class="btn btn-secondary custom-cancel-btn" (click)="goBack()"
+                        [disabled]="isEditDisabled">Back</button>
+                    </div>
                   </div>
 
                   <!-- Right Content Area -->
@@ -526,13 +536,13 @@
                       </app-comp-ground>
                     </div>
                     <div *ngIf="activeTab === 'teams'">
-                      <app-comp-team [CompetitionData]="manageData"></app-comp-team>
+                      <app-comp-team [CompetitionData]="manageData" (TeamUpdate)="goBack()"></app-comp-team>
                     </div>
                     <div *ngIf="activeTab === 'officials'">
-                      <app-comp-official [CompetitionData]="manageData"></app-comp-official>
+                      <app-comp-official [CompetitionData]="manageData" (UpdateOfficial)="goBack()"></app-comp-official>
                     </div>
                     <div *ngIf="activeTab === 'squads'">
-                      <app-comp-player [CompetitionData]="manageData"></app-comp-player>
+                      <app-comp-player [CompetitionData]="manageData" (PlayerUpdated)="goBack()"></app-comp-player>
                     </div>
                     <div *ngIf="activeTab === 'matches'">
                       <app-comp-match [CompetitionData]="manageData"></app-comp-match>
@@ -548,9 +558,8 @@
   </div>
   <!-- Toast for notifications -->
   <p-toast key="tc" position="top-right"></p-toast>
-   <p-confirmDialog [style]="{ width: '300px' , height: '200px'}"
-    [baseZIndex]="10000" [draggable]="false" [closable]="false"
-    [styleClass]="'p-confirm-dialog-custom'">
+  <p-confirmDialog [style]="{ width: '300px' , height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+    [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
   </p-confirmDialog>
 
 </div>

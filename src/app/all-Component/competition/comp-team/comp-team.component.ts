@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../../services/api.service';
 import { CricketKeyConstant } from '../../../services/cricket-key-constant';
@@ -26,6 +26,7 @@ import { ToastModule } from 'primeng/toast';
 })
 export class CompTeamComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
+  @Output() TeamUpdate = new EventEmitter<void>();
   client_id: number = Number(localStorage.getItem('client_id'));
   sourceTeams!: [];
   targetTeams!: [];
@@ -95,7 +96,7 @@ export class CompTeamComponent implements OnInit {
 
 
     this.apiService.post(this.urlConstant.compTeamadd, params).subscribe((res: any) => {
-      this.gridLoad();
+       this.TeamUpdate.emit();
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });

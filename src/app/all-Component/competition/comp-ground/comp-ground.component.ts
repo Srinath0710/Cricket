@@ -72,8 +72,6 @@ export class CompGroundComponent implements OnInit {
     params.competition_id = this.CompetitionData.competition_id.toString();
 
     this.apiService.post(this.urlConstant.compgroundupdate, params).subscribe((res: any) => {
-      // this.gridLoad();
-      console.log("Ground updated, emitting event");
       this.groundUpdated.emit();
     }, (err: any) => {
       if (

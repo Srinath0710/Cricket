@@ -208,9 +208,8 @@ main {
 }
 
 .match-type {
-  background-color: #973c7d;
-  /* background-color: #43a4a2; */
-
+  /* background-color: #973c7d; */
+  background-color: #ca68ae;
   color: white;
   flex: 1;
   padding: 5px;
@@ -404,16 +403,6 @@ main {
   }
 }
 
-/* .p-drawer-right .p-drawer {
-  width: 96% !important;
-} */
-.Comp-backbtn {
-  background-color: #354e7d;
-  color: #fff;
-}
-
-.Comp-backbtn.link-item:hover {
-  background-color: #354e7d;
-  color: #fff;
-
+.child-comp-name{
+  margin-left: 45%;
 }

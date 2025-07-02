@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output} from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../../services/api.service';
 import { CricketKeyConstant } from '../../../services/cricket-key-constant';
@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
+import { EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'app-comp-official',
@@ -24,6 +25,7 @@ import { ToastModule } from 'primeng/toast';
 })
 export class CompOfficialComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem={ competition_id: 0,name:'',match_type:'',gender:'',age_category:'',start_date:'',end_date:'' };
+  @Output() UpdateOfficial = new EventEmitter<void>();
   client_id: number = Number(localStorage.getItem('client_id'));
   sourceOfficial!: [];
   targetOfficial!:[];
@@ -57,13 +59,13 @@ export class CompOfficialComponent implements OnInit {
     })
   }
   updateOfficial() {
-    const params: any = {}
+    const params: any = {}  
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
     params.official_list = this.targetOfficial.map((p: any) => p.official_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compOfficialupdate, params).subscribe((res: any) => {
-      this.gridLoad();
+    this.UpdateOfficial.emit();
     }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });

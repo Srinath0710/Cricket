@@ -36,7 +36,8 @@ interface MetaInfo {
 })
 export class CompMatchComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
-  public ShowForm: any = false;
+ @Output() Newmatch= new EventEmitter<void>();
+  public ShowForms: any = false;
   public competitionFixturesForm !: FormGroup<any>;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
@@ -134,14 +135,14 @@ export class CompMatchComponent implements OnInit {
 
       });
   }
-  showDialog() {
-    this.ShowForm = true;
-    this.showFormChange.emit(this.ShowForm);
+  newmatch() {
+    this.ShowForms = true;
+    this.Newmatch.emit();
     this.resetForm();
   }
 
   cancelForm() {
-    this.ShowForm = false;
+    this.ShowForms = false;
   }
 
   resetForm() {
@@ -212,7 +213,7 @@ export class CompMatchComponent implements OnInit {
 
   hideDialog() {
 
-    this.ShowForm = false
+    this.ShowForms = false
   }
   /* Failed Toast */
   failedToast(data: any) {
@@ -361,7 +362,7 @@ export class CompMatchComponent implements OnInit {
               local_video_path: editRecord.local_video_path,
               sequence_no: editRecord.sequence_no,
             });
-            this.ShowForm = true;
+            this.ShowForms = true;
           }
         } else {
           this.failedToast(res);
