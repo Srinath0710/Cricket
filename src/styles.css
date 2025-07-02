@@ -1620,7 +1620,7 @@ background-color:#d9d9d96b!important;
 }
 .p-listbox-list-container {
     overflow: auto;
-    max-height: 30rem !important;
+    max-height: 28rem !important;
 }
 
 /* popup Player & Teams */
