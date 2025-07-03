@@ -51,10 +51,10 @@ interface Country {
     { provide: ConfirmationService }
   ],
 })
-export class ClientComponent implements OnInit{
+export class ClientComponent implements OnInit {
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
-  default_img= CricketKeyConstant.default_image_url.clientimg;
+  default_img = CricketKeyConstant.default_image_url.clientimg;
   previewUrl: string | ArrayBuffer | null = null;
   envImagePath = environment.imagePath;
 
@@ -67,7 +67,7 @@ export class ClientComponent implements OnInit{
   totalData: number = 0;
   first: number = 1;
   pageData: number = 0;
-  countriesList: Country[] = []; 
+  countriesList: Country[] = [];
   citiesList = [];
   statesList = [];
   loading = false;
@@ -88,34 +88,34 @@ export class ClientComponent implements OnInit{
   src: any;
   oldPath: any;
   base64: any;
-  url: any; 
+  url: any;
   croppedImage: any;
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
-  actionflags= CricketKeyConstant.action_flag;
+  conditionConstants = CricketKeyConstant.condition_key;
+  statusConstants = CricketKeyConstant.status_code;
+  actionflags = CricketKeyConstant.action_flag;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-  private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
-  public cricketKeyConstant: CricketKeyConstant) {
+    private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
+    public cricketKeyConstant: CricketKeyConstant) {
 
   }
 
   ngOnInit() {
     this.getCountries();
     this.addClientForm = this.formBuilder.group({
-      client_name: ['',[Validators.required]],
-      client_code: ['',[Validators.required]],
-      address_1: ['',[Validators.required]],
+      client_name: ['', [Validators.required]],
+      client_code: ['', [Validators.required]],
+      address_1: ['', [Validators.required]],
       address_2: [''],
-      post_code:['',[Validators.required]],
+      post_code: ['', [Validators.required]],
       email_id: ['', [Validators.required, Validators.pattern(this.emailRegex)]],
-      mobile: ['', [Validators.required, Validators.pattern(this.mobileRegex)]],
+      mobile: ['', [Validators.pattern(this.mobileRegex)]],
       website: [''],
       description: [''],
       connection_id: [''],
-      country_id: ['',[Validators.required]],
-      state_id: ['',[Validators.required]],
-      city_id: ['',[Validators.required]],
+      country_id: ['', [Validators.required]],
+      state_id: ['', [Validators.required]],
+      city_id: ['', [Validators.required]],
       profile_img_url: this.filedata,
       client_id: [''],
       header_color: [''],
@@ -126,46 +126,45 @@ export class ClientComponent implements OnInit{
     })
   }
 
-    //mobileno enter the only number alowed
+  //mobileno enter the only number alowed
   onPhoneNumberInput(event: Event) {
     const inputElement = event.target as HTMLInputElement;
-    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10); 
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10);
     this.addClientForm.get('mobile')?.setValue(phoneNumber, { emitEvent: false });
   }
   //single quotes and doble quotes remove all label box 
-blockQuotesOnly(event: KeyboardEvent) {
-  if (event.key === '"' || event.key === "'") {
-    event.preventDefault();
+  blockQuotesOnly(event: KeyboardEvent) {
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
   }
-}
 
 
-sanitizeQuotesOnly(controlName: string, event: Event) {
-  const input = (event.target as HTMLInputElement).value;
-  const cleaned = input.replace(/['"]/g, ''); 
-  this.addClientForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
-}
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, '');
+    this.addClientForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
   gridLoad() {
     this.Clientdata = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString(),
-    this.apiService.post(this.urlConstant.getclientList, params).subscribe((res) => {
-    this.Clientdata = res.data?? [];
-    this.totalData = this.Clientdata.length ?? res.data[0].total_records ;
-    this.Clientdata.forEach((val) => {
-      val.profile_img_url = `${val.profile_img_url}?${Math.random()}`;
-    });
-    }, (err: any) => {
-      err.status_code === this.statusConstants.refresh &&
-      err.error.message === this.statusConstants.refresh_msg ?
-      this.apiService.RefreshToken() : (this.Clientdata = [],
-       this.totalData = this.Clientdata.length);
+      this.apiService.post(this.urlConstant.getclientList, params).subscribe((res) => {
+        this.Clientdata = res.data ?? [];
+        this.totalData = this.Clientdata.length ?? res.data[0].total_records;
+        this.Clientdata.forEach((val) => {
+          val.profile_img_url = `${val.profile_img_url}?${Math.random()}`;
+        });
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg ?
+          this.apiService.RefreshToken() : (this.Clientdata = [],
+            this.totalData = this.Clientdata.length);
 
-    });
+      });
   }
 
   onAddClient() {
@@ -176,7 +175,6 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     }
     const params: UpdateClient = {
       user_id: String(this.user_id),
-      client_id: String(this.client_id),
       client_name: this.addClientForm.value.client_name,
       address_1: this.addClientForm.value.address_1,
       address_2: this.addClientForm.value.address_2,
@@ -195,8 +193,8 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       tbl_header_font_color: '',
       button_color: '',
       button_font_color: '',
-      connection_id:'',
-      profile_img_url:this.addClientForm.value.profile_img_url
+      connection_id: '',
+      profile_img_url: this.filedata ? '' : this.profileImages
 
     };
 
@@ -220,14 +218,22 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     } else {
 
       this.apiService.post(this.urlConstant.createclient, params).subscribe((res) => {
-        res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(res.data.client_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
 
   }
-  
+
   EditClient(client_id: number) {
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -256,10 +262,12 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
             tbl_header_font_color: null,
             button_color: null,
             button_font_color: null,
-            connection_id: editRecord.connection_id ?? null 
+            connection_id: editRecord.connection_id ?? null
           });
           this.profileImages = editRecord.profile_img_url + '?' + Math.random();
           this.convertUrlToBase64(editRecord.profile_img_url + '?' + Math.random());
+          this.filedata = null;
+          this.showCropperModal = false;
           this.showAddForm();
         }
       } else {
@@ -282,10 +290,10 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.imageCropAlter = null;
     this.imageBase64 = null;
     this.imageDefault = null;
-    this.croppedImage=null;
-    
+    this.croppedImage = null;
+
   }
-   resetForm() {
+  resetForm() {
     this.addClientForm.reset();
     this.submitted = false;
   }
@@ -324,14 +332,14 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
       }
     );
   }
-  StatusConfirm(client_id: number, actionObject: { key: string, label: string },currentStatus:string) {
+  StatusConfirm(client_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
     const AlreadyStatestatus =
-    (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-    (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
 
-  if (AlreadyStatestatus) {
-    return; 
-  }
+    if (AlreadyStatestatus) {
+      return;
+    }
     this.confirmationService.confirm({
       message: `Are you sure you want to ${actionObject.label} this Client?`,
       header: 'Confirmation',
@@ -352,9 +360,9 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
   }
   clear() {
-    this.searchKeyword = '';   
-    this.dt.clear();          
-    this.gridLoad();          
+    this.searchKeyword = '';
+    this.dt.clear();
+    this.gridLoad();
   }
   getCountries() {
     const params: any = {};
@@ -362,26 +370,26 @@ sanitizeQuotesOnly(controlName: string, event: Event) {
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
-        this.countriesList = res.data.countries != undefined ? res.data.countries : [];
-        this.loading = false;
-        this.country_id = this.countriesList[0].country_id;
-        this.gridLoad();
+      this.countriesList = res.data.countries != undefined ? res.data.countries : [];
+      this.loading = false;
+      this.country_id = this.countriesList[0].country_id;
+      this.gridLoad();
     }, (err: any) => {
-        if ( err.status_code === this.statusConstants.refresh &&
-          err.error?.message === this.statusConstants.refresh_msg) {
-            this.apiService.RefreshToken();
-           
-        } else {
-            this.failedToast(err.error);
-        }
-    });
-}
+      if (err.status_code === this.statusConstants.refresh &&
+        err.error?.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
 
-getCities(state_id:any) {
+      } else {
+        this.failedToast(err.error);
+      }
+    });
+  }
+
+  getCities(state_id: any) {
     const params: any = {};
 
     if (state_id == null || state_id == '') {
-        return
+      return
     }
 
     params.action_flag = this.actionflags.City;
@@ -389,59 +397,59 @@ getCities(state_id:any) {
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
     this.apiService.post(this.urlConstant.getcitylookups, params).subscribe((res) => {
-        this.citiesList = res.data.cities != undefined ? res.data.cities : [];
+      this.citiesList = res.data.cities != undefined ? res.data.cities : [];
     }, (err: any) => {
-        if ( err.status_code === this.statusConstants.refresh &&
-          err.error?.message === this.statusConstants.refresh_msg) {
-            this.apiService.RefreshToken();
-           
-        } else {
-            this.failedToast(err.error);
-        }
-    });
-}
+      if (err.status_code === this.statusConstants.refresh &&
+        err.error?.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
 
-getStates(country_id:any) {
+      } else {
+        this.failedToast(err.error);
+      }
+    });
+  }
+
+  getStates(country_id: any) {
     const params: any = {};
     if (country_id == null || country_id == '') {
-        return
+      return
     }
     params.action_flag = this.actionflags.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();
     this.apiService.post(this.urlConstant.getStatesByCountry, params).subscribe((res) => {
-        this.statesList = res.data.states != undefined ? res.data.states : [];
-        this.loading = false;
+      this.statesList = res.data.states != undefined ? res.data.states : [];
+      this.loading = false;
     }, (err: any) => {
-        if ( err.status_code === this.statusConstants.refresh &&
-          err.error?.message === this.statusConstants.refresh_msg) {
-            this.apiService.RefreshToken();
-            
-        }
-    });
-}
-viewClient(client_id: any) {
-  const params = { 
-    client_id: client_id.toString() ,
-    user_id: String(this.user_id )
-  };
-  this.apiService.post(this.urlConstant.viewclient, params).subscribe({
-    next: (res) => {
-      if (res.status && res.data) {
-        this.seletedclient = res.data; 
-        this.viewDialogVisible = true;
+      if (err.status_code === this.statusConstants.refresh &&
+        err.error?.message === this.statusConstants.refresh_msg) {
+        this.apiService.RefreshToken();
+
       }
-    },
-    error: (err) => {
-      console.error('Failed to fetch Client details', err);
-    }
-  });
-}
-handleImageError(event: Event, fallbackUrl: string) {
-  const target = event.target as HTMLImageElement;
-  target.src = fallbackUrl;
-}
+    });
+  }
+  viewClient(client_id: any) {
+    const params = {
+      client_id: client_id.toString(),
+      user_id: String(this.user_id)
+    };
+    this.apiService.post(this.urlConstant.viewclient, params).subscribe({
+      next: (res) => {
+        if (res.status && res.data) {
+          this.seletedclient = res.data;
+          this.viewDialogVisible = true;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch Client details', err);
+      }
+    });
+  }
+  handleImageError(event: Event, fallbackUrl: string) {
+    const target = event.target as HTMLImageElement;
+    target.src = fallbackUrl;
+  }
 
   fileEvent(event: any) {
     if (this.addClientForm.value.profile_img_url.value !== null &&
@@ -462,14 +470,13 @@ handleImageError(event: Event, fallbackUrl: string) {
       this.filedata = null;
       this.url = this.imageDefault
       this.filedata = this.base64ToBinary(this.imageDefault);
-
     }
   }
 
-cropPopOpen(){
-  this.showCropperModal=true;
-  this.imageBase64=this.imageDefault
-}
+  cropPopOpen() {
+    this.showCropperModal = true;
+    this.imageBase64 = this.imageDefault
+  }
   saveCroppedImage(): void {
     this.profileImages = this.croppedImage;
     this.imageCropAlter = this.filedata;
@@ -479,7 +486,7 @@ cropPopOpen(){
 
 
 
-cancel() {
+  cancel() {
     this.filedata = null;
     this.url = null;
     this.profileImages = null;
@@ -487,39 +494,39 @@ cancel() {
     this.imageBase64 = null;
     this.imageDefault = null;
     this.croppedImage = null;
-}
-
-cancelImg() {
-  this.showCropperModal = false;
-  this.url=this.imageCropAlter;
-  this.filedata=this.base64ToBinary(this.filedata);
-
-  
-}
-loadImageFailed() {
-  console.error('Image loading failed');
-}
-
-imageCropped(event: ImageCroppedEvent) {
-  const blob = event.blob;
-
-  if (blob) {
-    this.convertBlobToBase64(blob).then((base64) => {
-      this.url = base64;
-      this.filedata = base64;
-      this.profileImages = null;
-    }).catch((error) => {
-      console.error('Failed to convert blob to base64:', error);
-    });
   }
-}
-imageLoaded() {
-  console.log('Image loaded');
-}
 
-cropperReady() {
-  console.log('Cropper ready');
-}
+  cancelImg() {
+    this.showCropperModal = false;
+    this.url = this.imageCropAlter;
+    this.filedata = this.base64ToBinary(this.filedata);
+
+
+  }
+  loadImageFailed() {
+    console.error('Image loading failed');
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    const blob = event.blob;
+
+    if (blob) {
+      this.convertBlobToBase64(blob).then((base64) => {
+        this.url = base64;
+        this.filedata = base64;
+        this.profileImages = null;
+      }).catch((error) => {
+        console.error('Failed to convert blob to base64:', error);
+      });
+    }
+  }
+  imageLoaded() {
+    console.log('Image loaded');
+  }
+
+  cropperReady() {
+    console.log('Cropper ready');
+  }
   base64ToBinary(base64: string): Blob | null {
     if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
       console.error('Invalid base64 input:', base64);
@@ -577,40 +584,40 @@ cropperReady() {
       reader.readAsDataURL(blob);
     });
   }
- /*profile image update */
+  /*profile image update */
 
-  profileImgUpdate(upload_profile_url: string) {
+  // profileImgUpdate(upload_profile_url: string) {
 
-    const params: any = {};
-    params.action_flag = this.actionflags.Uploadprofile;
-    params.profile_img = upload_profile_url.toString();
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
+  //   const params: any = {};
+  //   params.action_flag = this.actionflags.Uploadprofile;
+  //   params.profile_img = upload_profile_url.toString();
+  //   params.user_id = this.user_id.toString();
+  //   params.client_id = this.client_id.toString();
 
-    this.apiService.post(this.urlConstant.profileclient, params).subscribe(
-      (res) => {
-        if (res.status_code == this.statusConstants.success && res.status) {
-          // this.filedata = null;
-          this.addCallBack(res)
-        } else {
-          this.failedToast(res);
-        }
-      },
-      (err: any) => {
-        if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-          this.apiService.RefreshToken();
+  //   this.apiService.post(this.urlConstant.profileclient, params).subscribe(
+  //     (res) => {
+  //       if (res.status_code == this.statusConstants.success && res.status) {
+  //         // this.filedata = null;
+  //         this.addCallBack(res)
+  //       } else {
+  //         this.failedToast(res);
+  //       }
+  //     },
+  //     (err: any) => {
+  //       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+  //         this.apiService.RefreshToken();
 
-        } else {
-          this.failedToast(err.error);
-        }
-      }
-    );
-  }
+  //       } else {
+  //         this.failedToast(err.error);
+  //       }
+  //     }
+  //   );
+  // }
   profileImgAppend(client_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);
-      myFormData.append('client_id', this.client_id.toString());
+      myFormData.append('client_id', client_id);
       myFormData.append('file_id', client_id);
       myFormData.append('upload_type', 'client');
       myFormData.append('user_id', this.user_id?.toString());
@@ -622,8 +629,6 @@ cropperReady() {
             } else {
               this.failedToast(res);
             }
-          } else {
-            this.failedToast(res);
           }
         },
         (err: any) => {

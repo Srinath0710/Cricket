@@ -70,7 +70,7 @@ export class Client {
   }
   export class UpdateClient {
     user_id: string|number;
-    client_id: string|number;
+    client_id?: string|number;
     client_name: string;
     action_flag: string;
     address_1: string;

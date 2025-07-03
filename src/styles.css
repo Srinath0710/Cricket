@@ -1570,7 +1570,7 @@ input.form-control:focus {
 }
 
 .modal-content {
-  width: 100% !important;
+  width: 80% !important;
 }
 
 /* Footer screen Matches  */
@@ -1607,20 +1607,23 @@ input.form-control:focus {
 
 }
 
-       /*  Competition Children Screens */
+/*  Competition Children Screens */
 
- .p-listbox-option { 
-height: 40px !important;
+.p-listbox-option {
+  height: 40px !important;
 }
- .p-listbox-option:nth-child(odd) { 
-background-color: #d9d9d96b !important;
+
+.p-listbox-option:nth-child(odd) {
+  background-color: #d9d9d96b !important;
 }
-.p-listbox-option:nth-child(odd):hover { 
-background-color:#d9d9d96b!important;
+
+.p-listbox-option:nth-child(odd):hover {
+  background-color: #d9d9d96b !important;
 }
+
 .p-listbox-list-container {
-    overflow: auto;
-    max-height: 28rem !important;
+  overflow: auto;
+  max-height: 28rem !important;
 }
 
 /* popup Player & Teams */
@@ -1632,15 +1635,18 @@ background-color:#d9d9d96b!important;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   z-index: 1000;
 }
+
 /* Popup Text Width */
 .text-width {
-   min-width: 105px ;
+  min-width: 105px;
 }
+
 /* Children image */
-.Child-image{
-   width: 52px;
-   height: 52px;
+.Child-image {
+  width: 52px;
+  height: 52px;
 }
+
 .update-child-btn {
   background-color: #367039 !important;
   border: none !important;
@@ -1649,3 +1655,26 @@ background-color:#d9d9d96b!important;
   border-radius: 0% !important;
   height: 35px !important;
 }
+
+.search-text-box {
+  background-color: white;
+  color: #495057;
+  border: 1px solid #ced4da;
+  padding-left: 18px;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Dropdown Search Size */
+.p-inputtext {
+    font-size: 11px !important;
+}
+
+/* pagination overflow  */
+.card-body {
+  overflow: visible !important;
+}
+.card {
+  overflow: visible !important;
+}
+ 

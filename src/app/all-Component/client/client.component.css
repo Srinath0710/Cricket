@@ -4,7 +4,8 @@ popup-overlay {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.4); /* dark background */
+  background: rgba(0, 0, 0, 0.4);
+  /* dark background */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,38 +13,34 @@ popup-overlay {
 }
 
 
-body.modal-open { 
+body.modal-open {
   overflow: hidden;
 }
+
 .popup-container {
-    max-height: 90vh;
+  max-height: 90vh;
   max-width: 600px;
   margin: 8px auto;
   background: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 7px;
-  /* box-shadow: 0 10px 30px rgba(0,0,0,0.12); */
   position: relative;
-  padding: 12px 16px; 
-    border-top: 4px solid #007BFF;
-      /* border-bottom: 4px solid #007BFF; */
-  border-left: 4px solid #007BFF;
-  border-right: 4px solid #007BFF;
+  padding: 12px 16px;
+  /* border: 4px solid #007BFF; */
+  border-top: 1px solid #007BFF;
+  border-left: 1px solid #007BFF;
+  border-right: 1px solid #007BFF;
   color: #222;
-  max-height: calc(100vh - 40px); 
-  /* overflow-y: auto; */
-   /* overflow-x: hidden; */
-  /* box-sizing: border-box; */
+  max-height: calc(100vh - 40px);
+
 }
+
 @media screen and (max-height: 800px) {
   .popup-container {
     padding: 10px 12px !important;
     max-height: calc(100vh - -105px) !important;
   }
 
-  .popup-title {
-    font-size: 20px;
-  }
 
   .info-row {
     font-size: 14px;
@@ -66,25 +63,23 @@ body.modal-open {
   }
 }
 
-/* .p-dialog .p-dialog-content {
-  padding: 0 !important;
-  overflow: hidden !important;
-} */
 .top-bar {
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  align-items: center;     /* Center horizontally */
-  margin-bottom: 15px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 38px;
   position: relative;
-}
+  background: linear-gradient(to right, #60c3e4, #eabfff);
+  /* background: #60c3e4; */
 
- .profile-image-wrapper {
+} v 
+.profile-image-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
   margin-bottom: 10px;
-  position: relative; /* NOT absolute */
+  position: relative;
   z-index: 1;
 }
 
@@ -94,38 +89,36 @@ body.modal-open {
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .popup-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 6px 10px;
-  border: 2px solid black;
-  border-radius: 15%; /* round shape */
-  background-color: white;
-  font-size: 24px; /* unga original size */
-  color: red; /* unga original color */
-  cursor: pointer;
-  line-height: 1;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* subtle shadow */
-  transition: color 0.3s ease, transform 0.3s ease;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    padding: 2px 5px;
+    border: 1px solid black;
+    /* border-radius: 34%; */
+    background-color: white;
+    font-size: 20px;
+    color: red;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .popup-close:hover {
-  color: #007BFF; /* original hover color */
+  color: #007BFF;
   transform: rotate(90deg);
 }
 
 
 .popup-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #007BFF;
-  margin: 0 0 5px;
-  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  flex-grow: 2;
 }
+
 
 .popup-address {
   font-size: 15px;
@@ -137,8 +130,8 @@ body.modal-open {
 
 .popup-section {
   border-top: 1px solid #eeeeee;
-  padding-top: 15px;
-  margin-top: 15px;
+  padding-top: 5px;
+  margin-top: 0px;
   text-align: left;
 }
 
@@ -146,7 +139,7 @@ body.modal-open {
   font-size: 18px;
   font-weight: 700;
   color: black;
-  border-bottom: 2px solid #007BFF;
+  border-bottom: 1px solid #007BFF;
   padding-bottom: 4px;
   margin-bottom: 12px;
   display: flex;
@@ -163,8 +156,7 @@ body.modal-open {
 
 .info-label {
   min-width: 140px;
-  font-weight: 700;
-  color: #007BFF;
+  font-weight: 600;
 }
 
 .separator {
@@ -191,4 +183,9 @@ body.modal-open {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.viewimg {
+  width: 50px;
+  height: 40px;
 }

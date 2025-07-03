@@ -520,11 +520,12 @@
                     <div class="d-flex flex-wrap gap-2">
                       <button *ngIf="activeTab !== 'matches'" class="btn btn-primary update-child-btn"
                         (click)="UpdateFromParent()">Update</button>
-                      <button *ngIf="activeTab === 'matches'" class="btn btn-primary btn-sm new-buttons  "
+                      <button *ngIf="activeTab === 'matches' && !showNewMatchForm"
+                        class="btn btn-primary btn-sm new-buttons  "
                         (click)="UpdateFromParent()">
                         + New Match
                       </button>
-                      <button class="btn btn-secondary custom-cancel-btn" (click)="goBack()"
+                      <button class="btn btn-secondary custom-cancel-btn" *ngIf="!showNewMatchForm" (click)="goBack()"
                         [disabled]="isEditDisabled">Back</button>
                     </div>
                   </div>
@@ -545,7 +546,8 @@
                       <app-comp-player [CompetitionData]="manageData" (PlayerUpdated)="goBack()"></app-comp-player>
                     </div>
                     <div *ngIf="activeTab === 'matches'">
-                      <app-comp-match [CompetitionData]="manageData"></app-comp-match>
+                      <app-comp-match [CompetitionData]="manageData"  (showFormChange)="onShowFormChange($event)">
+                      </app-comp-match>
                     </div>
                   </div>
                 </div>

@@ -138,7 +138,7 @@ export class CompetitionComponent implements OnInit {
   teamdropList: MetaDataItem[] = [];
   clientData: any[] = [];
   isEditDisabled: boolean = false;
-
+ showNewMatchForm: boolean = false; // defaul
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
@@ -591,10 +591,14 @@ export class CompetitionComponent implements OnInit {
   } else if (this.activeTab === 'teams') {
     this.compTeam.AddTeam();
   } else if (this.activeTab === 'squads') {
-    this.compPlayer.updateplayer();
+    this.compPlayer.addplayer();
   } else if (this.activeTab === 'matches') {
     this.CompMatch.newmatch();
+      this.showNewMatchForm = true;  
+
   }
 }
-
+onShowFormChange(isShown: boolean) {
+  this.showNewMatchForm = isShown;
+}
 }

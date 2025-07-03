@@ -81,7 +81,7 @@ export class CountryComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
-  default_img = CricketKeyConstant.default_image_url.teamimage;
+  default_img = CricketKeyConstant.default_image_url.countryimg;
   profileImages: any;
   imageCropAlter: any;
   imageDefault: any;

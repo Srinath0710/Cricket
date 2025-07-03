@@ -6,7 +6,7 @@
                     <div class="page-header main-page-header d-flex align-items-center justify-content-between">
                         <div class="main-page-title page-title playerbackground">
                             <i class="fa fa-user-circle" aria-hidden="true"></i>
-                            All Client
+                            All Clients
                         </div>
                         <div class="d-flex align-items-center">
 
@@ -14,14 +14,9 @@
                             <form class="d-flex align-items-center gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
-                                        class="width-search" placeholder="Search" (input)="filterGlobal()"
-                                        (keypress)="blockQuotesOnly($event)"
-                                        (input)="sanitizeQuotesOnly('team_name', $event)" style="background-color: white; 
-                                                color: #495057; 
-                                                border: 1px solid #ced4da; 
-                                                padding-left: 18px; 
-                                                box-shadow: none; 
-                                                outline: none;" />
+                                        class="width-search search-text-box" placeholder="Search"
+                                        (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                                        (input)="sanitizeQuotesOnly('client_name', $event)">
                                 </div>
 
                                 <button type="button" class="clear-button" (click)="clear()">Clear</button>
@@ -152,7 +147,7 @@
                         <label>Client Code
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" formControlName="client_code"
+                        <input class="form-control" maxlength="10" type="text" formControlName="client_code"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('client_code', $event)">
                         <small
                             *ngIf="addClientForm?.get('client_code')?.invalid &&(addClientForm?.get('client_code')?.touched) || (addClientForm.get('client_code')?.invalid && submitted)"
@@ -237,7 +232,7 @@
 
                     </div>
                     <div class="col-md-6">
-                        <label>address_2
+                        <label>Address 2
                         </label>
                         <input class="form-control" maxlength="50" type="text" formControlName="address_2"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_2', $event)">
@@ -281,11 +276,6 @@
                         <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">
                             <!-- Show when pattern is invalid -->
                             <small
-                                *ngIf="addClientForm.get('mobile')?.hasError('required') && (addClientForm.get('mobile')?.touched || submitted)"
-                                class="required-msg">
-                                * Mobile number is required
-                            </small>
-                            <small
                                 *ngIf="addClientForm.get('mobile')?.hasError('pattern') && (addClientForm.get('mobile')?.touched || submitted)"
                                 class="required-msg">
                                 * Invalid mobile number
@@ -316,8 +306,8 @@
                         <div class="image-upload-container text-center">
                             <div class="image-preview-wrapper">
                                 <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                                <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
-                                    [src]="default_img" alt="Profile Image" class="profile-img">
+                                <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || 
+                                profileImages == '')" [src]="default_img" alt="Profile Image" class="profile-img">
                                 <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image"
                                     class="profile-img">
                                 <img *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"
@@ -369,10 +359,11 @@
                 <div class="form-wrapper pb-5">
                     <div class="row mt-4 sticky-footer-buttons">
                         <div class="col-12 text-end">
-                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
-                                (click)="cancelForm()"></button>
+                            <button pButton type="button" label="Cancel"
+                                class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()"></button>
 
-                            <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
+                            <button pButton type="button" label="Clear"
+                                class="p-button-secondary me-3 custom-cancel-btn"
                                 *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
                                 (click)="resetForm()"></button>
 
@@ -389,53 +380,50 @@
         </p-drawer>
         <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
             <div class="popup-container">
-
-                <!-- ✅ Top bar: Image on left, Cancel button on right -->
-                <div class="top-bar">
-                    <div class="profile-image-wrapper">
-                        <img [src]="seletedclient[0]?.profileImageUrl" alt="Profile Image" class="profile-image" />
-                    </div>
-                    <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
-                </div>
-
-
                 <div *ngFor="let client of seletedclient" class="popup-content">
+                    <div class="top-bar">
+                        <div class="profile-image-wrapper">
+                            <span class="person-image-team-player">
+                                <img class="player-img Viewimg"
+                                    *ngIf="client.profile_img_url==null || client.profile_img_url==''"
+                                    [src]="default_img">
 
-                    <header class="popup-header no-icon">
-                        <h1 class="popup-title">{{ client['client_name'] | uppercase }}</h1>
-                    </header>
+                                <img class="player-img viewimg"
+                                    *ngIf="client.profile_img_url!=null  && client.profile_img_url!=''"
+                                    [src]="client.profile_img_url" (error)="handleImageError($event, default_img)">
+                            </span>
+                        </div>
+                        <div class="popup-title">{{ client.client_name | uppercase }}</div>
+                        <button class="popup-close" (click)="viewDialogVisible = false"
+                            aria-label="Close popup">✖</button>
+                    </div>
 
-
-                    <!-- Client Details -->
                     <section class="popup-section">
-                        <h2 class="section-title">⛳Client Details</h2>
-                        <div class="info-row"><span class="info-label">👤Client Code</span><span
+                        <h2 class="section-title">Client Details</h2>
+                        <div class="info-row"><span class="info-label">Client Code</span><span
                                 class="separator">|</span><span class="info-value">{{ client.client_code }}</span></div>
-                        <div class="info-row"><span class="info-label">🏠Address 1</span><span
+                        <div class="info-row"><span class="info-label">Address 1</span><span
                                 class="separator">|</span><span class="info-value">{{ client.address_1 }}</span></div>
-                        <div class="info-row"><span class="info-label">🏘️Address 2</span><span
+                        <div class="info-row"><span class="info-label">Address 2</span><span
                                 class="separator">|</span><span class="info-value">{{ client.address_2 }}</span></div>
-                        <div class="info-row"><span class="info-label">🔢Post Code</span><span
+                        <div class="info-row"><span class="info-label">Post Code</span><span
                                 class="separator">|</span><span class="info-value">{{ client.post_code }}</span></div>
-                        <div class="info-row"><span class="info-label">📧Email</span><span
-                                class="separator">|</span><span class="info-value">{{ client.email_id }}</span></div>
-                        <div class="info-row"><span class="info-label">📱Mobile</span><span
+                        <div class="info-row"><span class="info-label">Email</span><span class="separator">|</span><span
+                                class="info-value">{{ client.email_id }}</span></div>
+                        <div class="info-row"><span class="info-label">Mobile</span><span
                                 class="separator">|</span><span class="info-value">{{ client.mobile }}</span></div>
-                        <div class="info-row"><span class="info-label">🌐Website</span><span
+                        <div class="info-row"><span class="info-label">Website</span><span
                                 class="separator">|</span><span class="info-value">{{ client.website }}</span></div>
                     </section>
 
-                    <!-- Location Details -->
-                    <section class="popup-section">
-                        <h2 class="section-title">🌐Location</h2>
-                        <div class="info-row"><span class="info-label">🌎Country</span><span
-                                class="separator">|</span><span class="info-value">{{ client.country_name }}</span>
-                        </div>
-                        <div class="info-row"><span class="info-label">🏴State</span><span
-                                class="separator">|</span><span class="info-value">{{ client.state_name }}</span></div>
-                        <div class="info-row"><span class="info-label">🏢City</span><span
-                                class="separator">|</span><span class="info-value">{{ client.city_name }}</span></div>
-                    </section>
+
+                    <div class="info-row"><span class="info-label">Country</span><span class="separator">|</span><span
+                            class="info-value">{{ client.country_name }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">State</span><span class="separator">|</span><span
+                            class="info-value">{{ client.state_name }}</span></div>
+                    <div class="info-row"><span class="info-label">City</span><span class="separator">|</span><span
+                            class="info-value">{{ client.city_name }}</span></div>
 
                 </div>
             </div>

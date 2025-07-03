@@ -120,7 +120,7 @@ export class CompPlayerComponent implements OnInit {
 
     this.apiService.post(this.urlConstant.compplayeradd, params).subscribe(
       (res: any) => {
-        this.gridLoad();
+        this.PlayerUpdated.emit();
       },
       (err: any) => {
           err.status_code === this.statusConstants.refresh && err.error.message
@@ -154,7 +154,7 @@ export class CompPlayerComponent implements OnInit {
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
     this.apiService.post(this.urlConstant.compplayerupdate, params).subscribe(
       (res: any) => {
-        this.PlayerUpdated.emit();
+        this.gridLoad();
         this.closeEditPopup();
       },
       (err: any) => {

@@ -28,10 +28,11 @@ export class CricketKeyConstant {
     static default_image_url = {
         officials: 'assets/images/umpire.png',
         players: 'assets/images/player.jpg',
-        grounds: 'assets/images/ground.jpg',
+        grounds: 'assets/images/ground2.jpg',
         clientimg: 'assets/images/client.jpg',
         teamimage: 'assets/images/team.jpg',
         clubs: 'assets/images/Club.jpg',
+        countryimg: 'assets/images/flag.jpg',
     }
     static action_flag={
         Create:'create',

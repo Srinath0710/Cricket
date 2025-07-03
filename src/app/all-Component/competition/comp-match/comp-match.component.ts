@@ -37,7 +37,7 @@ interface MetaInfo {
 export class CompMatchComponent implements OnInit {
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
  @Output() Newmatch= new EventEmitter<void>();
-  public ShowForms: any = false;
+  public ShowForm: any = false;
   public competitionFixturesForm !: FormGroup<any>;
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
@@ -136,13 +136,13 @@ export class CompMatchComponent implements OnInit {
       });
   }
   newmatch() {
-    this.ShowForms = true;
+    this.ShowForm = true;
     this.Newmatch.emit();
     this.resetForm();
   }
 
   cancelForm() {
-    this.ShowForms = false;
+    this.hideNewMatchForm();
   }
 
   resetForm() {
@@ -212,8 +212,7 @@ export class CompMatchComponent implements OnInit {
   }
 
   hideDialog() {
-
-    this.ShowForms = false
+this.hideNewMatchForm();
   }
   /* Failed Toast */
   failedToast(data: any) {
@@ -362,7 +361,7 @@ export class CompMatchComponent implements OnInit {
               local_video_path: editRecord.local_video_path,
               sequence_no: editRecord.sequence_no,
             });
-            this.ShowForms = true;
+            this.showNewMatchForm();
           }
         } else {
           this.failedToast(res);
@@ -430,5 +429,13 @@ export class CompMatchComponent implements OnInit {
     this.filteredUmpireList2 = [{ official_id: null, official_name: 'None' }, ...this.getFilteredUmpireList([umpire1, umpire3, umpire4].filter(Boolean))];
     this.filteredUmpireList3 = [{ official_id: null, official_name: 'None' }, ...this.getFilteredUmpireList([umpire1, umpire2, umpire4].filter(Boolean))];
     this.filteredUmpireList4 = [{ official_id: null, official_name: 'None' }, ...this.getFilteredUmpireList([umpire1, umpire2, umpire3].filter(Boolean))];
+  }
+  showNewMatchForm() {
+    this.ShowForm = true;
+    this.showFormChange.emit(true); 
+  }
+  hideNewMatchForm() {
+    this.ShowForm = false;
+    this.showFormChange.emit(false); 
   }
 }
