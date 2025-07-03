@@ -301,29 +301,29 @@ export class SeasonsComponent implements OnInit {
       this.client_id = this.clientData[0].client_id;
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
-      this.getGlobalData();
+      // this.getGlobalData();
 
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
-  getGlobalData() {
-    const params: any = {
-      action_flag: this.Actionflag.Dropdown,
-      user_id: this.user_id.toString(),
-      client_id: this.client_id.toString()
-    };
+  // getGlobalData() {
+  //   const params: any = {
+  //     action_flag: this.Actionflag.Dropdown,
+  //     user_id: this.user_id.toString(),
+  //     client_id: this.client_id.toString()
+  //   };
 
-    this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
-      (res) => {
-        const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
-        this.statusOptions = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key);
-      },
-      (err: any) => {
-        this.seasonsData = [];
-      }
-    );
-  }
+  //   this.apiService.post(this.urlConstant.dropdownTeam, params).subscribe(
+  //     (res) => {
+  //       const dropdowns = Array.isArray(res.data?.dropdowns) ? res.data.dropdowns : [];
+  //       this.statusOptions = dropdowns.filter((item: any) => item.config_key === this.dropDownConstants.config_key);
+  //     },
+  //     (err: any) => {
+  //       this.seasonsData = [];
+  //     }
+  //   );
+  // }
 
 }
 

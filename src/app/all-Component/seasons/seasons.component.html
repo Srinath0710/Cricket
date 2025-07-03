@@ -9,7 +9,7 @@
                             Seasons
                         </div>
 
-                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
                             <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
                                 optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridload()"
                                 placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
@@ -47,7 +47,11 @@
                     </div>
 
 
-                    <p-table [value]="seasonsData" [styleClass]="'custom-table'" [globalFilterFields]="['name']">
+                    <p-table #dt [value]="seasonsData" [paginator]="true" [rows]="rows" [(first)]="first"
+                        [totalRecords]="totalData" [rowsPerPageOptions]="[10, 25, 50, 100]"
+                        [styleClass]="'custom-table'" [globalFilterFields]="['season_name']"
+                        (onPageChange)="onPageChange($event)">
+
                         <ng-template pTemplate="header">
                             <tr>
                                 <th pSortableColumn="season_name">Season Name <p-sortIcon field="season_name">
@@ -102,9 +106,9 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first-1) * rows"
+                    <!-- <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first-1) * rows"
                         [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="onPageChange($event)">
-                    </p-paginator>
+                    </p-paginator> -->
                 </div>
             </div>
         </main>
@@ -129,9 +133,9 @@
                             optionValue="value" optionLabel="label" placeholder="Select Status" appendTo="body"
                             [panelStyleClass]="'custom-dropdown-panel'">
 
-                            <ng-template let-option pTemplate="item">
+                            <ng-template let-season pTemplate="item">
                                 <div class="flex align-items-center gap-2">
-                                    <div>{{ season.season_status }}</div>
+                                    <div>{{ season.label }}</div>
                                 </div>
                             </ng-template>
                         </p-dropdown>
@@ -190,10 +194,11 @@
                     </div>
                     <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
                         <div class="col-12 text-end">
-                            <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
-                                (click)="cancelForm()"></button>
+                            <button pButton type="button" label="Cancel"
+                                class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()"></button>
 
-                            <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
+                            <button pButton type="button" label="Clear"
+                                class="p-button-secondary me-3 custom-cancel-btn"
                                 *ngIf="addSeasonsForm.get('season_id')?.value == '' || addSeasonsForm.get('season_id')?.value == null"
                                 (click)="resetForm()"></button>
 
