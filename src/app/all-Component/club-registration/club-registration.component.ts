@@ -366,6 +366,8 @@ export class ClubRegistrationComponent implements OnInit {
           });
           this.getStates();
           this.showAddForm();
+          this.filedata = null;
+          this.showCropperModal = false;
           this.profileImages = editRecord.profile_img + '?' + Math.random();
           this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
         }
