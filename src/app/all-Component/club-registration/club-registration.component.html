@@ -137,7 +137,7 @@
                     <div class="col-md-6">
                         <label>Club Name<span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="20" type="text" formControlName="club_name">
+                        <input class="form-control" maxlength="100" type="text" formControlName="club_name">
 
                         <small
                             *ngIf="addClubForm.get('club_name')?.invalid && (addClubForm.get('club_name')?.touched || submitted)"
@@ -148,24 +148,23 @@
 
                     <div class="col-md-6">
                         <label>Parent Club Name
-                            <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="gridData" formControlName="parent_club_id" optionLabel="club_name"
                             placeholder="Parent Club Name" optionValue="club_id" class="drop-error"
                             [panelStyleClass]="'custom-dropdown-panel'">
                         </p-dropdown>
-                        <small
+                        <!-- <small
                             *ngIf="addClubForm.get('parent_club_id')?.invalid && (addClubForm.get('parent_club_id')?.touched || submitted)"
                             class="required-msg">
                             Parent Club Name is Required
-                        </small>
+                        </small> -->
                     </div>
 
                     <div class="col-md-6">
                         <label> Club Short
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="20" type="text" formControlName="club_short"
+                        <input class="form-control" maxlength="50" type="text" formControlName="club_short"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('club_short',$event)">
                         <small
                             *ngIf="addClubForm.get('club_short')?.invalid && (addClubForm.get('club_short')?.touched || submitted)"
@@ -264,11 +263,12 @@
                     </div>
 
                     <div class="col-md-6"><label> Post Code
-                            <span class="text-danger">*</span>
+                        
                         </label>
-                        <input class="form-control" maxlength="6" type="text" formControlName="post_code"
-                            pattern="^[1-9][0-9]{5}$" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('post_code',$event)">
+                        <input class="form-control" maxlength="10" type="text" formControlName="post_code"
+                            pattern="^[A-Za-z0-9]{1,10}$" (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('post_code', $event)">
+
                         <small
                             *ngIf="addClubForm.get('post_code')?.invalid && (addClubForm.get('post_code')?.touched || submitted)"
                             class="required-msg">
@@ -317,8 +317,8 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label>Website <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" formControlName="website"
+                        <label>Website</label>
+                        <input class="form-control" type="text" formControlName="website" maxlength="100"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('website', $event)">
 
                     </div>

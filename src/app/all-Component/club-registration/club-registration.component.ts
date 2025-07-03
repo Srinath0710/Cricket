@@ -87,7 +87,7 @@ export class ClubRegistrationComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   dropDownConstants = CricketKeyConstant.dropdown_keys;
-  Actionflag= CricketKeyConstant.action_flag;
+  Actionflag = CricketKeyConstant.action_flag;
 
   imageBase64: any = null;
   showCropperModal = false;
@@ -112,7 +112,7 @@ export class ClubRegistrationComponent implements OnInit {
       city_id: ['', Validators.required],
       address_1: [''],
       address_2: [''],
-      post_code: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$')]],
+      post_code: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9]{1,10}$')]],
       email_id: ['', [
         Validators.required,
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -216,8 +216,14 @@ export class ClubRegistrationComponent implements OnInit {
   clearForm() {
     if (!this.isEditMode) {
       this.addClubForm.reset();
-      this.previewUrl = null;
       this.submitted = false;
+
+      // Clear image-related data
+      this.filedata = null;
+      this.url = null;
+      this.profileImages = null;
+      this.imageBase64 = null;
+      this.showCropperModal = false;
       this.stateList = [];
       this.citiesList = [];
     }
