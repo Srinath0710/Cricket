@@ -68,6 +68,10 @@ export class GroundsComponent implements OnInit {
   submitted: boolean = true;
   ground_id: any;
   country_id: any;
+  uploadedImageFile: File | null = null;
+croppedImageResult: string | null = null;
+imagePreviewUrl: string | null = null;
+imageForCropper: string | null = null; 
 
   profileImages: any;
   url: any;
@@ -924,44 +928,46 @@ export class GroundsComponent implements OnInit {
   }
 
   onImageSelected(event: any): void {
-    const fileInput = event.target as HTMLInputElement;
-    if (!fileInput.files || fileInput.files.length === 0) {
-      return;
-    }
-    const file = fileInput.files[0];
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    if (!validTypes.includes(file.type)) {
-      this.msgService.add({
-        severity: 'error',
-        summary: 'Invalid File',
-        detail: 'Only JPG/PNG images are allowed'
-      });
-      fileInput.value = '';
-      return;
-    }
+  const fileInput = event.target as HTMLInputElement;
+  if (!fileInput.files || fileInput.files.length === 0) return;
 
-    const maxSize = 2 * 1024 * 1024;
-    if (file.size > maxSize) {
-      this.msgService.add({
-        severity: 'error',
-        summary: 'File Too Large',
-        detail: 'Maximum image size is 2MB'
-      });
-      fileInput.value = '';
-      return;
-    }
-
-    this.filedata = file;
-    this.originalFile = file;
-
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.previewUrl = e.target.result;
-      this.imageBase64 = e.target.result;
-      this.showCropperModal = true;
-    };
-    reader.readAsDataURL(file);
+  const file = fileInput.files[0];
+  
+  // Validation
+  const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  if (!validTypes.includes(file.type)) {
+    this.msgService.add({
+      severity: 'error',
+      summary: 'Invalid File',
+      detail: 'Only JPG/PNG images are allowed'
+    });
+    fileInput.value = '';
+    return;
   }
+
+  const maxSize = 2 * 1024 * 1024; // 2MB
+  if (file.size > maxSize) {
+    this.msgService.add({
+      severity: 'error',
+      summary: 'File Too Large',
+      detail: 'Maximum image size is 2MB'
+    });
+    fileInput.value = '';
+    return;
+  }
+
+  // Store the original file
+  this.uploadedImageFile = file;
+  
+  // Create preview
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    this.previewUrl = e.target.result;
+    this.imageBase64 = e.target.result; // For cropper
+    this.showCropperModal = true; // Open cropper immediately
+  };
+  reader.readAsDataURL(file);
+}
 
   cancelCropping(): void {
     this.showCropperModal = false;
