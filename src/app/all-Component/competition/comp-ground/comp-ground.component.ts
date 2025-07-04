@@ -73,6 +73,7 @@ export class CompGroundComponent implements OnInit {
 
     this.apiService.post(this.urlConstant.compgroundupdate, params).subscribe((res: any) => {
       this.groundUpdated.emit();
+      this.successToast(res);
     }, (err: any) => {
       if (
         err.status_code === this.statusConstants.refresh &&

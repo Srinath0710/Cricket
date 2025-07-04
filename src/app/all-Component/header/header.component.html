@@ -28,28 +28,33 @@
   
     <div class="navbar_content">
       <span  *ngIf="itealTimeoutEnable==1"class="timmer-clock">{{remainingTime}}</span>
-      <span class="user_name">{{userData.user_name}}</span>
+      <span class="user_name">{{userData.user_name | uppercase}}</span>
       <i class="pi pi-power-off"  id="darkLight" data-bs-toggle="modal" data-bs-target="#logout_pop_up"></i> 
       <!-- <i class='fa fa-bell'></i> -->
-      <img [src]="envImagePath+'/images/no-image-avathar.jpeg'" alt=""  class="profile" />
+      <img [src]="envImagePath+'/images/default-logo.png'" alt=""  class="profile" />
     </div>
   </nav>
 <div class="modal custom-modal fade" id="logout_pop_up" role="dialog">
     <div class="modal-dialog-centered modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-body ">
-           
-                <div class="login-name" >{{userData.user_name}}</div>
-                <div class="form-header">
+             <div class="modal-header" >
+                <div class="logout-icon" >
+                    <i class="fas fa-power-off" (click)="logOut()" data-bs-dismiss="modal"></i>
+                </div>
+            </div>
+                <div class="login-name" >{{userData.user_name | uppercase}}</div>
+                <div class="form-header ">
                     <h5>Confirm logout your account</h5>
+                    <span>You will be redirected to the login page</span>
                 </div>
                 <div class="modal-btn delete-action">
                     <div class="row">
                         <div class="col-6">
-                            <a (click)="logOut()" class="btn btn-primary continue-btn" data-bs-dismiss="modal">Log Out</a>
+                            <a  class="btn btn-primary continue-btn" (click)="logOut()" data-bs-dismiss="modal" >Log Out</a>
                         </div>
                         <div class="col-6">
-                            <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                            <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary ">Cancel</a>
                         </div>
                     </div>
                 </div>
@@ -57,34 +62,3 @@
         </div>
     </div>
   </div> 
-  <!-- <div class="modal" [class.show]="showModal" (click)="hideLogoutModal($event)">
-    <div class="modal-dialog" (click)="$event.stopPropagation()">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="logout-icon">
-                    <i class="fas fa-power-off"></i>
-                </div>
-            </div>
-            <div class="login-name">{{userData.user_name}}</div>
-            <div class="form-header">
-                <h5>Confirm logout your account</h5>
-                <p class="logout-description">You will be redirected to the login page.</p>
-            </div>
-            <div class="modal-btn">
-                <button class="btn btn-primary continue-btn" 
-                        (click)="logOut()"
-                        [disabled]="isLoggingOut">
-                    <span *ngIf="!isLoggingOut">Log Out</span>
-                    <span *ngIf="isLoggingOut">
-                        <i class="fas fa-spinner fa-spin"></i> Logging out...
-                    </span>
-                </button>
-                <button class="btn btn-primary cancel-btn" 
-                        (click)="hideLogoutModal()"
-                        [disabled]="isLoggingOut">
-                    Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-</div> -->

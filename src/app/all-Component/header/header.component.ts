@@ -20,7 +20,7 @@ import { ThemeService } from '../../services/theme.service';
     ButtonModule,
   ],
   templateUrl: './header.component.html',
-  styleUrls: ['../sidebar/sidebar.component.css'],
+  styleUrls: ['./header.component.css'],
   providers: [ConfirmationService, MessageService]
 
 })
