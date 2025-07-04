@@ -422,9 +422,12 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
     this.playerRegistrationform.get('bowling_spec_id')?.reset();
     return;
   }
+  console.log(this.filteredSpecs,'sdsds');
   this.filteredSpecs = [...this.bowlingspec.filter(
     spec => spec.parent_config_id === selectedBowlingTypeId
   )];
+    console.log(this.filteredSpecs,'selectedBowlingTypeId',selectedBowlingTypeId);
+
   this.playerRegistrationform.patchValue({
     bowling_spec_id: null
   });
@@ -685,11 +688,14 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
       this.playerRegistrationform.reset();
       
       // Manually filter specs based on the player's bowling type
-      if (editRecord.bowling_type_id) {
+     const bowlingId=editRecord.bowling_type_id??0;
+          //  console.log(this.bowlingspec,'bowlingspec',editRecord.bowling_type_id,bowlingId)
+
         this.filteredSpecs = this.bowlingspec.filter(
-          spec => spec.parent_config_id === Number(editRecord.bowling_type_id)
+          spec => spec.parent_config_id === Number(bowlingId)
         );
-      }
+      
+      // console.log(this.filteredSpecs,'filteredSpecs')
 
       // Then patch all values
       this.playerRegistrationform.patchValue({
