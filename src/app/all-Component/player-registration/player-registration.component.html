@@ -81,15 +81,15 @@
               </ng-template>
               <ng-template pTemplate="body" let-player let-even="even">
                 <tr [ngClass]="{'even-row': even}">
-          <td>
+                  <td>
                     <div class="player-name-cell">
-                           <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="player.profile_image==null || player.profile_image==''"
-                      [src]="default_img">
- 
-                    <img class="player-img" *ngIf="player.profile_image!=null  && player.profile_image!=''"
-                      [src]="player.profile_image" (error)="handleImageError($event, default_img)">
-                  </span>
+                      <span class="person-image-team-player">
+                        <img class="player-img" *ngIf="player.profile_image==null || player.profile_image==''"
+                          [src]="default_img">
+
+                        <img class="player-img" *ngIf="player.profile_image!=null  && player.profile_image!=''"
+                          [src]="player.profile_image" (error)="handleImageError($event, default_img)">
+                      </span>
                       {{ player.display_name }}
                     </div>
                   </td>
@@ -110,12 +110,14 @@
                       <i class="fa-solid fa-user-pen"></i>
                     </span>
 
-                    <span class="icon-green" (click)="StatusConfirm(player.player_id,conditionConstants.active_status,player.record_status)"
+                    <span class="icon-green"
+                      (click)="StatusConfirm(player.player_id,conditionConstants.active_status,player.record_status)"
                       pTooltip="Activate" tooltipPosition="top">
                       <i class="fa-solid fa-circle-check"></i>
                     </span>
 
-                    <span class="icon-red" (click)="StatusConfirm(player.player_id,conditionConstants.deactive_status,player.record_status)"
+                    <span class="icon-red"
+                      (click)="StatusConfirm(player.player_id,conditionConstants.deactive_status,player.record_status)"
                       pTooltip="Deactivate" tooltipPosition="top">
                       <i class="fa-solid fa-trash-can-arrow-up"></i>
                     </span>
@@ -282,8 +284,15 @@
 
                         <div class="col-md-6">
                           <label>Remarks</label>
-                          <input class="form-control" type="text" maxlength="50" formControlName="remarks"
-                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('remarks', $event)">
+                          <textarea class="form-control" formControlName="remarks" rows="4" maxlength="500"
+                            (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('remarks', $event)"></textarea>
+
+                          <small
+                            *ngIf="playerRegistrationform.get('remarks')?.errors?.['maxlength'] && (playerRegistrationform.get('remarks')?.touched || submitted)"
+                            class="required-msg">
+                            Remarks cannot exceed 500 characters.
+                          </small>
                         </div>
                         <div class="col-md-6">
                           <label>Profile Image</label>
@@ -516,7 +525,7 @@
                 <ng-template pTemplate="footer">
                   <div class="row mt-4 sticky-footer-buttons">
                     <div class="col-12 text-end">
-                      <button pButton type="button" label="Cancel" class="" (click)="hideDialog()"></button>
+                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn" (click)="hideDialog()"></button>
 
                       <button pButton type="button" label="Add" class="save-button" (click)="addplayerdata()"></button>
                     </div>
