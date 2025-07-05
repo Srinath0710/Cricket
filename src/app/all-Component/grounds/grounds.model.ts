@@ -95,10 +95,10 @@ export class UpdateGround {
     south: string;
     east: string;
     west: string;
-    club_id: string|number;
+    club_id: string|number |null;
     latitude: string;
     longitude: string;
-    capacity: string|number;
+    capacity: number;
     reference_id: string;
     profile: string;
     ground_photo: string;

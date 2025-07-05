@@ -5,7 +5,7 @@
         <div class="card-body">
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
-              		<i class="fa-solid fa-users" aria-hidden="true"></i>
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
               All Teams
               <div class="totalrecord">: {{ totalData }}</div>
             </div>
@@ -330,24 +330,26 @@
             <label>Profile Image</label>
             <div class="image-upload-container text-center">
 
-                <div class="image-preview-wrapper">
-                  <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                  <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="default_img"  alt="Profile Image" class="profile-img">
+              <div class="image-preview-wrapper">
+                <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                <img [src]="filedata ? url : (profileImages ? profileImages : default_img)"
+                  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
+                <!-- <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="default_img"  alt="Profile Image" class="profile-img">
                   <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
-                  <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
-                </div>
+                  <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img"> -->
+              </div>
 
 
-               <div class="split-button-wrapper">
-                  <label for="profileImageInput" class="split-button upload-half">
-                    <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
-                      formControlName="team_profile" />
-                    Upload
-                  </label>
-                  <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
-                    Crop
-                  </button>
-                </div>
+              <div class="split-button-wrapper">
+                <label for="profileImageInput" class="split-button upload-half">
+                  <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
+                    formControlName="team_profile" />
+                  Upload
+                </label>
+                <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                  Crop
+                </button>
+              </div>
 
             </div>
             <small class="text-danger" *ngIf="addTeamForm.get('profile_img')?.errors">
@@ -360,17 +362,15 @@
                   <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
                 </div>
                 <div class="modal-body img-fix">
-                  <image-cropper [imageBase64]="imageBase64" 
-                    [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
-                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" 
-                    (cropperReady)="cropperReady()"
+                  <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
                     (loadImageFailed)="loadImageFailed()">
                   </image-cropper>
                 </div>
-             <div class="modal-footer crop-footer">
-                    <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
-                    <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
-                  </div>
+                <div class="modal-footer crop-footer">
+                  <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
+                  <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                </div>
               </div>
             </div>
           </div>

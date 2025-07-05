@@ -272,7 +272,7 @@
                                                                               </div> -->
 
                                                                         </div>
-                                                                        <div class="form-scroller row">
+                                                                        <div class="form-scroller row" style="max-height: 60vh; overflow-y: auto;">
 
                                                                             <div class="formAccodianList"
                                                                                 *ngFor="let modulesList of modules">
@@ -345,11 +345,11 @@
                                                                             <div class="col-12 text-end">
                                                                                 <button pButton type="button"
                                                                                     label="Back"
-                                                                                    class="p-button-secondary me-3"
+                                                                                    class="p-button-secondary me-3 custom-cancel-btn"
                                                                                     (click)="hidePermisssionTab()"></button>
 
                                                                                 <button pButton type="submit"
-                                                                                    label="Submit" class="save-button"
+                                                                                    label="Submit" class="save-button custom-cancel-btn"
                                                                                     (click)="menuRolePermission(permissionform)"></button>
                                                                             </div>
                                                                         </div>

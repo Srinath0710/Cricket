@@ -347,7 +347,7 @@
 
           <div class="col-md-3">
             <label class="">Post Code
-              <span class="text-danger">*</span>
+              <!-- <span class="text-danger">*</span> -->
             </label>
             <input class="form-control" maxlength="10" type="text" formControlName="post_code"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('post_code', $event)">
@@ -361,30 +361,30 @@
 
           <div class="col-md-3">
             <label class="">Northern End
-              <span class="text-danger">*</span>
+              <!-- <span class="text-danger">*</span> -->
             </label>
             <input class="form-control" maxlength="50" type="text" formControlName="northern_end"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('northern_end', $event)">
-
+<!-- 
             <small
               *ngIf="addGroundForm?.get('northern_end')?.invalid &&(addGroundForm?.get('northern_end')?.touched) || (addGroundForm.get('northern_end')?.invalid && submitted)"
               class="required-msg">Northern End is Required
-            </small>
+            </small> -->
           </div>
 
 
 
           <div class="col-md-3">
             <label class="">Sourthern End
-              <span class="text-danger">*</span>
+              <!-- <span class="text-danger">*</span> -->
             </label>
             <input class="form-control" maxlength="50" type="text" formControlName="sourthern_end"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('sourthern_end', $event)">
-
+<!-- 
             <small
               *ngIf="addGroundForm?.get('sourthern_end')?.invalid &&(addGroundForm?.get('sourthern_end')?.touched) || (addGroundForm.get('sourthern_end')?.invalid && submitted)"
               class="required-msg">Sourthern End is Required
-            </small>
+            </small> -->
           </div>
 
 
@@ -394,11 +394,11 @@
             </label>
             <input class="form-control" maxlength="50" type="text" formControlName="latitude"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('latitude', $event)">
-
+<!-- 
             <small
               *ngIf="addGroundForm?.get('latitude')?.invalid &&(addGroundForm?.get('latitude')?.touched) || (addGroundForm.get('latitude')?.invalid && submitted)"
               class="required-msg">Latitude is Required
-            </small>
+            </small> -->
           </div>
 
 
@@ -408,23 +408,23 @@
             </label>
             <input class="form-control" maxlength="50" type="text" formControlName="longitude"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('longitude', $event)">
-
+<!-- 
             <small
               *ngIf="addGroundForm?.get('longitude')?.invalid &&(addGroundForm?.get('longitude')?.touched) || (addGroundForm.get('longitude')?.invalid && submitted)"
               class="required-msg">Longitude is Required
-            </small>
+            </small> -->
           </div>
 
 
           <div class="col-md-3">
             <label>Reference Sourece ID </label>
-            <span class="text-danger">*</span>
+            <!-- <span class="text-danger">*</span> -->
             <input class="form-control" type="text" maxlength="20" formControlName="reference_id"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('reference_id', $event)">
-            <small
+            <!-- <small
               *ngIf="addGroundForm?.get('reference_id')?.invalid &&(addGroundForm?.get('reference_id')?.touched) || (addGroundForm.get('reference_id')?.invalid && submitted)"
               class="required-msg">Reference ID is Required
-            </small>
+            </small> -->
           </div>
 
 
@@ -435,17 +435,17 @@
 
 
             <!-- Required field error -->
-            <small
+            <!-- <small
               *ngIf="(addGroundForm.get('capacity')?.touched || submitted) && addGroundForm.get('capacity')?.errors?.['required']"
               class="required-msg">
               Capacity is Required
-            </small>
+            </small> -->
           </div>
 
 
           <div class="col-md-3">
             <label>Club ID</label>
-            <span class="text-danger">*</span>
+            <!-- <span class="text-danger">*</span> -->
             <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id" optionValue="club_id"
               optionLabel="club_name" placeholder="Select Club Id">
               <ng-template let-club pTemplate="item">
@@ -455,10 +455,10 @@
                 </div>
               </ng-template>
             </p-dropdown>
-            <small
+            <!-- <small
               *ngIf="addGroundForm?.get('club_id')?.invalid &&(addGroundForm?.get('club_id')?.touched) || (addGroundForm.get('club_id')?.invalid && submitted)"
               class="required-msg"> Club ID is Required
-            </small>
+            </small> -->
           </div>
           <!-- 
 
@@ -499,7 +499,7 @@
                             </div>
               <div class="split-button-wrapper">
                 <label for="groundPhotoInput" class="split-button upload-half">
-                  <input type="file" id="groundPhotoInput" accept="image/*" (change)="onImageSelected($event)" hidden
+                  <input type="file" id="groundPhotoInput" accept="image/*" (change)="fileEvent($event)" hidden
                     formControlName="ground_photo" />
                   Upload
                 </label>
@@ -508,6 +508,9 @@
                 </button>
               </div>
             </div>
+            <small class="text-danger" *ngIf="addGroundForm.get('ground_photo')?.errors">
+              Only PNG,JPEG and JPG files are allowed.
+            </small>
 
             <!-- Cropper Modal -->
             <div *ngIf="showCropperModal" class="modal img-croper-popup">
@@ -530,19 +533,19 @@
           </div>
           <div class="col-md-12">
             <fieldset class="border p-3 rounded">
-              <legend class="w-auto px-2">Boundaries (in Metres) <span class="text-danger">*</span></legend>
+              <legend class="w-auto px-2">Boundaries (in Metres) </legend>
               <div class="row">
 
                 <div class="col-md-3">
-                  <label>North (in Metres) <span class="text-danger">*</span></label>
+                  <label>North (in Metres) </label>
                   <input class="form-control" maxlength="50" type="text" formControlName="north"
                     (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('north', $event)">
 
                   <!-- Show when invalid decimal format -->
-                  <small *ngIf="addGroundForm.get('north')?.touched && addGroundForm.get('north')?.errors?.['pattern']"
+                  <!-- <small *ngIf="addGroundForm.get('north')?.touched && addGroundForm.get('north')?.errors?.['pattern']"
                     class="required-msg">
                     * Invalid North (Only decimals allowed)
-                  </small>
+                  </small> -->
 
                   <!-- Show when field is empty -->
                   <small
@@ -554,62 +557,62 @@
 
 
                 <div class="col-md-3">
-                  <label>South (in Metres) <span class="text-danger">*</span></label>
+                  <label>South (in Metres)</label>
                   <input class="form-control" maxlength="50" type="text" formControlName="south"
                     (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('south', $event)">
 
                   <!-- Show when invalid decimal format -->
-                  <small *ngIf="addGroundForm.get('south')?.touched && addGroundForm.get('south')?.errors?.['pattern']"
+                  <!-- <small *ngIf="addGroundForm.get('south')?.touched && addGroundForm.get('south')?.errors?.['pattern']"
                     class="required-msg">
                     * Invalid South (Only decimals allowed)
-                  </small>
+                  </small> -->
 
                   <!-- Show when field is empty -->
-                  <small
+                  <!-- <small
                     *ngIf="(addGroundForm.get('south')?.touched || submitted) && addGroundForm.get('south')?.errors?.['required']"
                     class="required-msg">
                     South is Required
-                  </small>
+                  </small> -->
                 </div>
 
                 <div class="col-md-3">
-                  <label>East (in Metres) <span class="text-danger">*</span></label>
+                  <label>East (in Metres) </label>
                   <input class="form-control" maxlength="50" type="text" formControlName="east"
                     (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('east', $event)">
 
                   <!-- Show when invalid decimal format -->
-                  <small *ngIf="addGroundForm.get('east')?.touched && addGroundForm.get('east')?.errors?.['pattern']"
+                  <!-- <small *ngIf="addGroundForm.get('east')?.touched && addGroundForm.get('east')?.errors?.['pattern']"
                     class="required-msg">
                     * Invalid East (Only decimals allowed)
-                  </small>
+                  </small> -->
 
                   <!-- Show when field is empty -->
-                  <small
+                  <!-- <small
                     *ngIf="(addGroundForm.get('east')?.touched || submitted) && addGroundForm.get('east')?.errors?.['required']"
                     class="required-msg">
                     East is Required
-                  </small>
+                  </small> -->
                 </div>
 
 
 
                 <div class="col-md-3">
-                  <label>West (in Metres) <span class="text-danger">*</span></label>
+                  <label>West (in Metres) </label>
                   <input class="form-control" maxlength="50" type="text" formControlName="west"
                     (keypress)="allowDecimalOnly($event)" (input)="sanitizeDecimalInput('west', $event)">
 
                   <!-- Show when invalid decimal format -->
-                  <small *ngIf="addGroundForm.get('west')?.touched && addGroundForm.get('west')?.errors?.['pattern']"
+                  <!-- <small *ngIf="addGroundForm.get('west')?.touched && addGroundForm.get('west')?.errors?.['pattern']"
                     class="required-msg">
                     * Invalid West (Only decimals allowed)
-                  </small>
+                  </small> -->
 
                   <!-- Show when field is empty -->
-                  <small
+                  <!-- <small
                     *ngIf="(addGroundForm.get('west')?.touched || submitted) && addGroundForm.get('west')?.errors?.['required']"
                     class="required-msg">
                     West is Required
-                  </small>
+                  </small> -->
                 </div>
 
 

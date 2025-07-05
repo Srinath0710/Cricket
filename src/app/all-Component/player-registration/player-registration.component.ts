@@ -724,6 +724,7 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
       });
 
       this.showAddForm();
+      this.filedata = null;
       this.profileImages = editRecord.profile_image + '?' + Math.random();
       this.convertUrlToBase64(editRecord.profile_image + '?' + Math.random());
     }

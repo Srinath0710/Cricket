@@ -2,7 +2,7 @@
 
 .img-croper-popup .modal-content.crop-image {
   width: auto;
-  max-width: 500px;  
+  max-width: 360px;
   padding: 0;
   margin: auto;
 }

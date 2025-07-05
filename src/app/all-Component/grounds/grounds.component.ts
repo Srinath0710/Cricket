@@ -124,26 +124,26 @@ imageForCropper: string | null = null;
     this.addGroundForm = this.formBuilder.group({
       ground_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
-      country_id: [null, [Validators.required]],
-      state_id: [null, [Validators.required]],
-      city_id: [null, [Validators.required]],
+      country_id: ['', [Validators.required]],
+      state_id: ['', [Validators.required]],
+      city_id: ['', [Validators.required]],
       address_1: [''],
       address_2: [''],
-      post_code: ['', [Validators.required]],
-      northern_end: ['', [Validators.required]],
-      sourthern_end: ['', [Validators.required]],
-      north: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
-      south: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
-      east: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
-      west: [null, [Validators.required, Validators.pattern(this.decimalPattern)]],
-      club_id: [null, []],
+      post_code: [''],
+      northern_end: [''],
+      sourthern_end: [''],
+      north: [null, [Validators.pattern(this.decimalPattern)]],
+      south: [null, [Validators.pattern(this.decimalPattern)]],
+      east: [null, [Validators.pattern(this.decimalPattern)]],
+      west: [null, [Validators.pattern(this.decimalPattern)]],
+      club_id: ['', []],
       latitude: [''],
       longitude: [''],
-      capacity: [null],
+      capacity: [''],
       profile: [''],
       ground_photo: [''],
-      ground_id: [null],
-      reference_id: ['', [Validators.required]]
+      ground_id: [''],
+      reference_id: ['']
     });
   }
 
@@ -471,10 +471,10 @@ imageForCropper: string | null = null;
       south: this.addGroundForm.value.south,
       east: this.addGroundForm.value.east,
       west: this.addGroundForm.value.west,
-      club_id: String(this.addGroundForm.value.club_id),
+      club_id: this.addGroundForm.value.club_id ? String(this.addGroundForm.value.club_id) : null,
       latitude: this.addGroundForm.value.latitude,
       longitude: this.addGroundForm.value.longitude,
-      capacity: String(this.addGroundForm.value.capacity),
+      capacity: this.addGroundForm.value.capacity,
       profile: this.addGroundForm.value.profile,
       action_flag: this.isEditMode ? this.Actionflag.Update : this.Actionflag.Create,
       ground_photo: this.filedata ? this.addGroundForm.value.ground_photo : '',
@@ -927,47 +927,70 @@ imageForCropper: string | null = null;
     });
   }
 
-  onImageSelected(event: any): void {
-  const fileInput = event.target as HTMLInputElement;
-  if (!fileInput.files || fileInput.files.length === 0) return;
+//   onImageSelected(event: any): void {
+//   const fileInput = event.target as HTMLInputElement;
+//   if (!fileInput.files || fileInput.files.length === 0) return;
 
-  const file = fileInput.files[0];
+//   const file = fileInput.files[0];
   
-  // Validation
-  const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-  if (!validTypes.includes(file.type)) {
-    this.msgService.add({
-      severity: 'error',
-      summary: 'Invalid File',
-      detail: 'Only JPG/PNG images are allowed'
-    });
-    fileInput.value = '';
-    return;
-  }
+//   // Validation
+//   const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+//   if (!validTypes.includes(file.type)) {
+//     this.msgService.add({
+//       severity: 'error',
+//       summary: 'Invalid File',
+//       detail: 'Only JPG/PNG images are allowed'
+//     });
+//     fileInput.value = '';
+//     return;
+//   }
 
-  const maxSize = 2 * 1024 * 1024; // 2MB
-  if (file.size > maxSize) {
-    this.msgService.add({
-      severity: 'error',
-      summary: 'File Too Large',
-      detail: 'Maximum image size is 2MB'
-    });
-    fileInput.value = '';
-    return;
-  }
+//   const maxSize = 2 * 1024 * 1024; // 2MB
+//   if (file.size > maxSize) {
+//     this.msgService.add({
+//       severity: 'error',
+//       summary: 'File Too Large',
+//       detail: 'Maximum image size is 2MB'
+//     });
+//     fileInput.value = '';
+//     return;
+//   }
 
-  // Store the original file
-  this.uploadedImageFile = file;
+//   // Store the original file
+//   this.uploadedImageFile = file;
   
-  // Create preview
-  const reader = new FileReader();
-  reader.onload = (e: any) => {
-    this.previewUrl = e.target.result;
-    this.imageBase64 = e.target.result; // For cropper
-    this.showCropperModal = true; // Open cropper immediately
-  };
-  reader.readAsDataURL(file);
-}
+//   // Create preview
+//   const reader = new FileReader();
+//   reader.onload = (e: any) => {
+//     this.previewUrl = e.target.result;
+//     this.imageBase64 = e.target.result; // For cropper
+//     this.showCropperModal = true; // Open cropper immediately
+//   };
+//   reader.readAsDataURL(file);
+// }
+
+  fileEvent(event: any) {
+    if (this.addGroundForm.value.profile_img !== null &&
+      this.addGroundForm.value.profile_img !== '') {
+      this.profileImages = null;
+    }
+    if (event && event.target && event.target.files && event.target.files.length > 0) {
+      this.filedata = event.target.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: any) => {
+        var img = new Image;
+        this.url = event.target.result;
+        this.imageCropAlter = event.target.result
+        this.imageDefault = event.target.result
+      }
+    } else {
+      this.filedata = null;
+      this.url = this.imageDefault
+      this.filedata = this.base64ToBinary(this.imageDefault);
+
+    }
+  }
 
   cancelCropping(): void {
     this.showCropperModal = false;

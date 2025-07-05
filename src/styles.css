@@ -1570,7 +1570,7 @@ input.form-control:focus {
 }
 
 .modal-content {
-  width: 80% !important;
+  width: 100% !important;
 }
 
 /* Footer screen Matches  */
