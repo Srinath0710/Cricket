@@ -69,9 +69,9 @@ export class GroundsComponent implements OnInit {
   ground_id: any;
   country_id: any;
   uploadedImageFile: File | null = null;
-croppedImageResult: string | null = null;
-imagePreviewUrl: string | null = null;
-imageForCropper: string | null = null; 
+  croppedImageResult: string | null = null;
+  imagePreviewUrl: string | null = null;
+  imageForCropper: string | null = null;
 
   profileImages: any;
   url: any;
@@ -243,7 +243,7 @@ imageForCropper: string | null = null;
 
 
   gridload() {
-     this.spinnerService.raiseDataEmitterEvent('on');
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.ClientID?.toString(),
@@ -256,7 +256,7 @@ imageForCropper: string | null = null;
         next: (res) => {
           this.groundsData = res.data?.grounds || [];
           this.totalData = this.groundsData.length != 0 ? res.data.grounds[0].total_records : 0
-         this.spinnerService.raiseDataEmitterEvent('off');
+          this.spinnerService.raiseDataEmitterEvent('off');
           this.clubsdropdown();
 
         },
@@ -290,6 +290,9 @@ imageForCropper: string | null = null;
       next: (res) => {
         if (res.status && res.data) {
           this.selectedGround = res.data.grounds;
+          this.selectedGround.forEach((grounds: any) => {
+            grounds.profile_img = grounds.profile_img + '?' + Math.random();
+          });
           this.viewDialogVisible = true;
         }
       },
@@ -933,47 +936,47 @@ imageForCropper: string | null = null;
     });
   }
 
-//   onImageSelected(event: any): void {
-//   const fileInput = event.target as HTMLInputElement;
-//   if (!fileInput.files || fileInput.files.length === 0) return;
+  //   onImageSelected(event: any): void {
+  //   const fileInput = event.target as HTMLInputElement;
+  //   if (!fileInput.files || fileInput.files.length === 0) return;
 
-//   const file = fileInput.files[0];
-  
-//   // Validation
-//   const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-//   if (!validTypes.includes(file.type)) {
-//     this.msgService.add({
-//       severity: 'error',
-//       summary: 'Invalid File',
-//       detail: 'Only JPG/PNG images are allowed'
-//     });
-//     fileInput.value = '';
-//     return;
-//   }
+  //   const file = fileInput.files[0];
 
-//   const maxSize = 2 * 1024 * 1024; // 2MB
-//   if (file.size > maxSize) {
-//     this.msgService.add({
-//       severity: 'error',
-//       summary: 'File Too Large',
-//       detail: 'Maximum image size is 2MB'
-//     });
-//     fileInput.value = '';
-//     return;
-//   }
+  //   // Validation
+  //   const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  //   if (!validTypes.includes(file.type)) {
+  //     this.msgService.add({
+  //       severity: 'error',
+  //       summary: 'Invalid File',
+  //       detail: 'Only JPG/PNG images are allowed'
+  //     });
+  //     fileInput.value = '';
+  //     return;
+  //   }
 
-//   // Store the original file
-//   this.uploadedImageFile = file;
-  
-//   // Create preview
-//   const reader = new FileReader();
-//   reader.onload = (e: any) => {
-//     this.previewUrl = e.target.result;
-//     this.imageBase64 = e.target.result; // For cropper
-//     this.showCropperModal = true; // Open cropper immediately
-//   };
-//   reader.readAsDataURL(file);
-// }
+  //   const maxSize = 2 * 1024 * 1024; // 2MB
+  //   if (file.size > maxSize) {
+  //     this.msgService.add({
+  //       severity: 'error',
+  //       summary: 'File Too Large',
+  //       detail: 'Maximum image size is 2MB'
+  //     });
+  //     fileInput.value = '';
+  //     return;
+  //   }
+
+  //   // Store the original file
+  //   this.uploadedImageFile = file;
+
+  //   // Create preview
+  //   const reader = new FileReader();
+  //   reader.onload = (e: any) => {
+  //     this.previewUrl = e.target.result;
+  //     this.imageBase64 = e.target.result; // For cropper
+  //     this.showCropperModal = true; // Open cropper immediately
+  //   };
+  //   reader.readAsDataURL(file);
+  // }
 
   fileEvent(event: any) {
     if (this.addGroundForm.value.profile_img !== null &&

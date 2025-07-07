@@ -78,7 +78,7 @@
                     <img class="player-img" *ngIf="teams.profile_img!=null  && teams.profile_img!=''"
                       [src]="teams.profile_img" (error)="handleImageError($event, default_img)">
                   </span>
-                  <span class="groundnameover" (click)="onViewGroundDetails(teams.team_id)">
+                  <span class="groundnameover" (click)="onViewteam(teams.team_id)">
                     {{ teams.team_name}}</span>
 
                 </td>
@@ -137,13 +137,13 @@
                 </div>
 
                 <section class="popup-section">
-                  <h2 class="section-title">⛳ Teams Details</h2>
-                  <div class="info-row"><span class="info-label">🚻Gender</span>
+                  <h2 class="section-title"> Teams Details</h2>
+                  <div class="info-row"><span class="info-label">Gender</span>
                     <span class="separator">|</span><span class="info-value">{{ teams['gender'] }}</span>
                   </div>
-                  <div class="info-row"><span class="info-label">📊 Age Group</span><span
+                  <div class="info-row"><span class="info-label">Age Group</span><span
                       class="separator">|</span><span class="info-value">{{ teams['age group'] }}</span></div>
-                  <div class="info-row"><span class="info-label">🔢 Team Category</span><span
+                  <div class="info-row"><span class="info-label">Team Category</span><span
                       class="separator">|</span><span class="info-value">{{ teams['team category'] }}</span></div>
 
                 </section>

@@ -96,7 +96,7 @@ export class ClientComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
-    public cricketKeyConstant: CricketKeyConstant,public spinnerService: SpinnerService) {
+    public cricketKeyConstant: CricketKeyConstant, public spinnerService: SpinnerService) {
 
   }
 
@@ -165,8 +165,8 @@ export class ClientComponent implements OnInit {
         err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg ?
           this.apiService.RefreshToken() : (this.Clientdata = [],
-          this.spinnerService.raiseDataEmitterEvent('off'),
-          this.totalData = this.Clientdata.length);
+            this.spinnerService.raiseDataEmitterEvent('off'),
+            this.totalData = this.Clientdata.length);
 
       });
   }
@@ -442,6 +442,10 @@ export class ClientComponent implements OnInit {
       next: (res) => {
         if (res.status && res.data) {
           this.seletedclient = res.data;
+          this.seletedclient.forEach((clients: any) => {
+            clients.profile_img_url = clients.profile_img_url + '?' + Math.random();
+          });
+          
           this.viewDialogVisible = true;
         }
       },

@@ -173,15 +173,15 @@ export class TeamsComponent implements OnInit {
         });
 
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (    this.SpinnerService.raiseDataEmitterEvent('off'),
-this.teamData = [], this.totalData = this.teamData.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.SpinnerService.raiseDataEmitterEvent('off'),
+          this.teamData = [], this.totalData = this.teamData.length);
 
       });
 
   }
 
 
-  onViewGroundDetails(teamsid: number) {
+  onViewteam(teamsid: number) {
     const params = {
       team_id: teamsid.toString(),
       client_id: this.client_id?.toString(),
@@ -192,7 +192,10 @@ this.teamData = [], this.totalData = this.teamData.length);
       next: (res) => {
         if (res.status_code && res.data) {
           this.selectedTeams = res.data.teams;
-          this.viewDialogVisible = true;
+          this.selectedTeams.forEach((teams: any) => {
+            teams.profile_img = teams.profile_img + '?' + Math.random();
+          });
+           this.viewDialogVisible = true;
         }
       },
       error: (err) => {
@@ -201,12 +204,12 @@ this.teamData = [], this.totalData = this.teamData.length);
     });
   }
   getTeamNameParts(fullName: string): { name: string, category: string } {
-  const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
-  return {
-    name: match?.[1]?.trim() || '',
-    category: match?.[2] || ''
-  };
-}
+    const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
+    return {
+      name: match?.[1]?.trim() || '',
+      category: match?.[2] || ''
+    };
+  }
 
 
   closePopup() {

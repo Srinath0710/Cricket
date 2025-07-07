@@ -1735,7 +1735,6 @@ body.modal-open {
 .top-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 5px 40px;
   position: relative;
   background: linear-gradient(to right, #60c3e4, #eabfff);
