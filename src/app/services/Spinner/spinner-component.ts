@@ -22,14 +22,6 @@ export class SpinnerComponent implements OnInit {
 
   }
 
-//   ngOnInit() {
-//   this.spinnerService.getSpinnerObserver().subscribe((status: string) => {
-//     this.datas = status === 'start' ? 'on' : 'off';
-//     this.cdRef.detectChanges(); // trigger change detection
-//   });
-// }
-
-    // this.init();
 ngOnInit(){
   this.init();
 }
