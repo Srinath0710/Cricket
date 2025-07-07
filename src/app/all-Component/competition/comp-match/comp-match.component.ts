@@ -10,6 +10,7 @@ import { URLCONSTANT } from '../../../services/url-constant';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { SpinnerService } from '../../../services/Spinner/spinner.service';
 
 interface MetaInfo {
   config_key: string;
@@ -77,8 +78,10 @@ export class CompMatchComponent implements OnInit {
     private msgService: MessageService,
     public cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
+    private spinnerService: SpinnerService,
   ) { }
   ngOnInit(): void {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.initForm();
     this.gridload();
     this.getDropdown()
@@ -87,6 +90,7 @@ export class CompMatchComponent implements OnInit {
   }
 
   initForm() {
+    
     this.competitionFixturesForm = this.formbuilder.group({
 
       sequence_no: ['', [Validators.required]],
@@ -118,6 +122,7 @@ export class CompMatchComponent implements OnInit {
   }
 
   gridload() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {}
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -127,11 +132,12 @@ export class CompMatchComponent implements OnInit {
 
         if (res.data && res.data.fixtures) {
           this.MatchData = res.data.fixtures;
+          this.spinnerService.raiseDataEmitterEvent('off');
         } else {
           this.MatchData = [];
         }
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.MatchData = []);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'),this.MatchData = []);
 
       });
   }

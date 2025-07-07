@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
 import { EventEmitter} from '@angular/core';
+import { SpinnerService } from '../../../services/Spinner/spinner.service';
 
 @Component({
   selector: 'app-comp-official',
@@ -37,13 +38,16 @@ export class CompOfficialComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private spinnerService: SpinnerService,
   ) { }
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.gridLoad();
   }
 
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {}
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
@@ -54,6 +58,7 @@ export class CompOfficialComponent implements OnInit {
       const mappedIds = res.data.selected_officials.map((value: any) => value.official_id);
       this.sourceOfficial = allItems.filter((item: any) => !mappedIds.includes(item.official_id));
       this.targetOfficial = res.data.selected_officials
+      this.spinnerService.raiseDataEmitterEvent('off');
     }, (err: any) => {
 
     })

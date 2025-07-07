@@ -553,7 +553,10 @@
   cursor: pointer;
 
 }
-
+.logout-icon:hover:not(:disabled)  {
+  background: rgb(255 190 195);
+  transform: translateY(-1px);
+}
 .login-name {
   font-size: 20px;
   font-weight: 600;
@@ -612,10 +615,11 @@
   background-color: rgba(220, 53, 69, 0.1);
 }
 
-.btn-primary.continue-btn:hover:not(:disabled) {
+.btn-primary.continue-btn:hover:not(:disabled)  {
   background: rgb(255 190 195);
   transform: translateY(-1px);
 }
+
 .btn-primary:hover:not(:disabled) {
   background: #84898d;
   transform: translateY(-1px);

@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
+import { SpinnerService } from '../../../services/Spinner/spinner.service';
 
 @Component({
   selector: 'app-comp-team',
@@ -45,9 +46,11 @@ export class CompTeamComponent implements OnInit {
     private formBuilder: FormBuilder,
     private msgService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private spinnerService: SpinnerService,
   ) { }
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.gridLoad();
     this.ManageTeamsForm = this.formBuilder.group({
       team_name: [''],
@@ -62,6 +65,7 @@ export class CompTeamComponent implements OnInit {
   }
 
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
@@ -78,11 +82,11 @@ export class CompTeamComponent implements OnInit {
           ...val,
           scorecard: val.team_name || ''
         }));
-
+        this.spinnerService.raiseDataEmitterEvent('off');
       },
 
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.sourceTeams = [], this.targetTeams = []);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'),this.sourceTeams = [], this.targetTeams = []);
       });
 
 
@@ -96,7 +100,7 @@ export class CompTeamComponent implements OnInit {
 
 
     this.apiService.post(this.urlConstant.compTeamadd, params).subscribe((res: any) => {
-       this.TeamUpdate.emit();
+      this.TeamUpdate.emit();
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });

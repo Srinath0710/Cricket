@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { Output, EventEmitter } from '@angular/core';
+import { SpinnerService } from '../../../services/Spinner/spinner.service';
 
 @Component({
   selector: 'app-comp-ground',
@@ -38,12 +39,15 @@ export class CompGroundComponent implements OnInit {
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
+    private spinnerService: SpinnerService,
   ) { }
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.gridLoad();
   }
 
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {}
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
@@ -54,6 +58,8 @@ export class CompGroundComponent implements OnInit {
       this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
       // this.targetGround = res.data.all_grounds
       this.targetGround = res.data.selected_grounds
+      this.spinnerService.raiseDataEmitterEvent('off');
+
     }, (err: any) => {
       if (
         err.status_code === this.statusConstants.refresh &&

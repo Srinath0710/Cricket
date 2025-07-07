@@ -190,11 +190,13 @@
                                             <div class="row mt-4 sticky-footer-buttons">
                                                 <div class="col-12 text-end">
                                                     <button pButton type="button" label="Cancel"
-                                                        class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()"></button>
+                                                        class="p-button-secondary me-3 custom-cancel-btn"
+                                                        (click)="cancelForm()"></button>
 
                                                     <!-- (click)="addAnother=false" -->
 
-                                                    <button pButton type="button" class="p-button-secondary me-3 custom-cancel-btn"
+                                                    <button pButton type="button"
+                                                        class="p-button-secondary me-3 custom-cancel-btn"
                                                         *ngIf="roleMenuForm?.get('role_id')?.value == '' || roleMenuForm?.get('role_id')?.value == null"
                                                         (click)="resetForm()">
                                                         Clear
@@ -272,7 +274,7 @@
                                                                               </div> -->
 
                                                                         </div>
-                                                                        <div class="form-scroller row" style="max-height: 60vh; overflow-y: auto;">
+                                                                        <div class="form-scroller row">
 
                                                                             <div class="formAccodianList"
                                                                                 *ngFor="let modulesList of modules">
@@ -283,9 +285,12 @@
                                                                                         <span
                                                                                             class="formAccodianListTitle wicon"
                                                                                             [ngClass]="{'minimize' : modulesList.active == 1}"
-                                                                                            (click)="accordianclick(modulesList.module_id)"><i
-                                                                                                class="fa fa-circle-plus"></i>
-                                                                                            {{modulesList.module_name}}</span>
+                                                                                            (click)="accordianclick(modulesList.module_id)">
+                                                                                            <i class="fa"
+                                                                                                [class.fa-circle-plus]="modulesList.active != 1"
+                                                                                                [class.fa-circle-minus]="modulesList.active == 1"></i>
+                                                                                            {{modulesList.module_name}}
+                                                                                        </span>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="row">
@@ -349,7 +354,8 @@
                                                                                     (click)="hidePermisssionTab()"></button>
 
                                                                                 <button pButton type="submit"
-                                                                                    label="Submit" class="save-button custom-cancel-btn"
+                                                                                    label="Submit"
+                                                                                    class="save-button custom-cancel-btn"
                                                                                     (click)="menuRolePermission(permissionform)"></button>
                                                                             </div>
                                                                         </div>

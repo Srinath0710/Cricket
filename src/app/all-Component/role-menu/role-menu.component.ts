@@ -16,9 +16,9 @@ import { URLCONSTANT } from '../../services/url-constant';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 
-
- @Component({
+@Component({
     selector: 'app-role-menu',
     standalone: true,
     imports: [
@@ -72,16 +72,21 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
     menusData: any = [];
     modules: any;
     envImagePath = environment.imagePath;
-    selectedMenus:  { menu_id: string; name: string }[] = [];
-    selectedMenuId: string = ''; 
+    selectedMenus: { menu_id: string; name: string }[] = [];
+    selectedMenuId: string = '';
 
-  conditionConstants= CricketKeyConstant.condition_key;
-  statusConstants= CricketKeyConstant.status_code;
+    conditionConstants = CricketKeyConstant.condition_key;
+    statusConstants = CricketKeyConstant.status_code;
 
-   constructor(
-        private apiService: ApiService, private formBuilder: FormBuilder, private msgService: MessageService,
-        private snackBar: MatSnackBar, private urlConstant: URLCONSTANT, private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
-
+    constructor(
+        private apiService: ApiService,
+        private formBuilder: FormBuilder,
+        private msgService: MessageService,
+        private snackBar: MatSnackBar,
+        private urlConstant: URLCONSTANT,
+        private confirmationService: ConfirmationService,
+        public cricketKeyConstant: CricketKeyConstant,
+        public SpinnerService: SpinnerService) {
         this.roleMenuForm = this.formBuilder.group({
             role_id: [''],
             role_name: ['', [Validators.required]],
@@ -93,7 +98,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
 
 
     ngOnInit(): void {
-
+    this.SpinnerService.raiseDataEmitterEvent('on');
         setTimeout(() => {
             this.gridLoad();
         },)
@@ -121,11 +126,11 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
         this.display_name = role_name
         this.showPermissionTab();
         const params: any = {};
-          const client_id = 0;
-       this.choose_role = role_id;
+        const client_id = 0;
+        this.choose_role = role_id;
         params.user_id = this.user_id?.toString();
         params.role_id = role_id?.toString();
-           params.client_id = client_id.toString();
+        params.client_id = client_id.toString();
         const url = 'User/get_menu_permissions';
         params.action_flag = "get_menu_permissions";
 
@@ -135,13 +140,13 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
                 console.log(this.menusData);
 
                 var modulesList: any[] = [];
-                var uniquemoduleIds: any[] = []; 
+                var uniquemoduleIds: any[] = [];
 
                 for (var i = 0; i < this.menusData.length; i++) {
                     if (!uniquemoduleIds.includes(this.menusData[i].module_id) && this.menusData[i].module_id != 0) {
                         uniquemoduleIds.push(this.menusData[i].module_id);
 
-                        var moduleObj: any = {}; 
+                        var moduleObj: any = {};
                         moduleObj['module_id'] = this.menusData[i].module_id;
                         moduleObj['module_name'] = this.menusData[i].module_name;
 
@@ -176,91 +181,91 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
             }
         }
     }
-menuRolePermission(permissionform: NgForm) {
-    console.log(permissionform);
+    menuRolePermission(permissionform: NgForm) {
+        console.log(permissionform);
 
-    const menuIds = Object.values(permissionform.value)
-        .filter((item: any) => item && item.is_checked) 
-        .map((item: any) => ({ 
-            menu_id: item.menu_id,
-            name: this.filterName(item.menu_id)
-        })); 
+        const menuIds = Object.values(permissionform.value)
+            .filter((item: any) => item && item.is_checked)
+            .map((item: any) => ({
+                menu_id: item.menu_id,
+                name: this.filterName(item.menu_id)
+            }));
 
-    console.log("Menus:", menuIds);
+        console.log("Menus:", menuIds);
 
-    if (menuIds.length === 0) {
-        this.snackBar.open('No menu selected!', 'Close', { duration: 3000 });
-        return;
+        if (menuIds.length === 0) {
+            this.snackBar.open('No menu selected!', 'Close', { duration: 3000 });
+            return;
+        }
+
+        this.selectedMenus = menuIds;
+        console.log(this.selectedMenus);
+
+        this.selectedMenuId = menuIds[0]?.menu_id;
+        this.openPopup();
     }
 
-    this.selectedMenus = menuIds;
-    console.log(this.selectedMenus);
-    
-    this.selectedMenuId = menuIds[0]?.menu_id; 
-    this.openPopup();
-}
-
-filterName(id:number):string{
-var name=this.menusData.filter((value:any)=>value.menu_id===id)[0].menu_name
-    return name
-}
-openPopup() {
-    const popup = document.getElementById("menuPopup");
-    if (popup) popup.style.display = "block";
-}
-
-closePopup() {
-    const popup = document.getElementById("menuPopup");
-    if (popup) popup.style.display = "none";
-}
-
-confirmSelection(permissionform: NgForm) {
-    if (!this.selectedMenuId) {
-        this.snackBar.open('Please select a default menu!', 'Close', { duration: 3000 });
-        return;
+    filterName(id: number): string {
+        var name = this.menusData.filter((value: any) => value.menu_id === id)[0].menu_name
+        return name
+    }
+    openPopup() {
+        const popup = document.getElementById("menuPopup");
+        if (popup) popup.style.display = "block";
     }
 
-    this.closePopup();
+    closePopup() {
+        const popup = document.getElementById("menuPopup");
+        if (popup) popup.style.display = "none";
+    }
 
-    const params: any = {
-        user_id: this.user_id ? this.user_id.toString() : "0",
-        role_id: this.choose_role ? this.choose_role.toString() : "0",
-        client_id: this.client_id ? this.client_id.toString() : "0",
-        menu_ids: this.selectedMenus.map(item => item.menu_id).join(','),
-        default_menu_id: this.selectedMenuId    ? this.selectedMenuId.toString() : "0", 
-        action_flag: "update",
-        permissions: Object.values(permissionform.value).map((perm: any) => ({
-            menu_id: perm.menu_id ?? null,
-            create: perm.create ?? false,
-            read: perm.read ?? false,
-            modify: perm.modify ?? false,
-            remove: perm.remove ?? false
-        })),
-    };
+    confirmSelection(permissionform: NgForm) {
+        if (!this.selectedMenuId) {
+            this.snackBar.open('Please select a default menu!', 'Close', { duration: 3000 });
+            return;
+        }
 
-    this.apiService.post('User/update_menu_permissions', params).subscribe({
-        next: (res: any) => {
-            console.log(permissionform)
-            if (res.status_code === '200') {
-                this.snackBar.open('Permissions updated successfully', 'Close', { duration: 3000 });
-                this.hidePermisssionTab();
-                this.gridLoad();
-                permissionform.reset();
-            } else {
-                this.snackBar.open('Failed to update permissions', 'Close', { duration: 3000 });
-            }
-        },
-        error: (err: any) => {
-            if (err.status_code === this.statusConstants.refresh &&
-                err.error.message === this.statusConstants.refresh_msg) {
-                this.apiService.RefreshToken();
-            } else {
-                this.snackBar.open('Error updating permissions', 'Close', { duration: 3000 });
-            }
-        },
-    });
-    
-}
+        this.closePopup();
+
+        const params: any = {
+            user_id: this.user_id ? this.user_id.toString() : "0",
+            role_id: this.choose_role ? this.choose_role.toString() : "0",
+            client_id: this.client_id ? this.client_id.toString() : "0",
+            menu_ids: this.selectedMenus.map(item => item.menu_id).join(','),
+            default_menu_id: this.selectedMenuId ? this.selectedMenuId.toString() : "0",
+            action_flag: "update",
+            permissions: Object.values(permissionform.value).map((perm: any) => ({
+                menu_id: perm.menu_id ?? null,
+                create: perm.create ?? false,
+                read: perm.read ?? false,
+                modify: perm.modify ?? false,
+                remove: perm.remove ?? false
+            })),
+        };
+
+        this.apiService.post('User/update_menu_permissions', params).subscribe({
+            next: (res: any) => {
+                console.log(permissionform)
+                if (res.status_code === '200') {
+                    this.snackBar.open('Permissions updated successfully', 'Close', { duration: 3000 });
+                    this.hidePermisssionTab();
+                    this.gridLoad();
+                    permissionform.reset();
+                } else {
+                    this.snackBar.open('Failed to update permissions', 'Close', { duration: 3000 });
+                }
+            },
+            error: (err: any) => {
+                if (err.status_code === this.statusConstants.refresh &&
+                    err.error.message === this.statusConstants.refresh_msg) {
+                    this.apiService.RefreshToken();
+                } else {
+                    this.snackBar.open('Error updating permissions', 'Close', { duration: 3000 });
+                }
+            },
+        });
+
+    }
     isEnabled(value: any) {
         if (value === 1) {
             return value === 1
@@ -269,7 +274,7 @@ confirmSelection(permissionform: NgForm) {
         }
 
     }
-    
+
 
 
 
@@ -294,7 +299,7 @@ confirmSelection(permissionform: NgForm) {
     failedToast(data: any) {
         this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
     }
-  status(role_id: number, url: string) {
+    status(role_id: number, url: string) {
         const params: any = {
             user_id: this.user_id?.toString(),
             client_id: this.client_id?.toString(),
@@ -386,7 +391,7 @@ confirmSelection(permissionform: NgForm) {
         });
     }
 
-  
+
 
     /* START -  GET DROPDOWN FUNCTION */
 
@@ -405,6 +410,7 @@ confirmSelection(permissionform: NgForm) {
 
     /* Start of Code for parent role data grid */
     gridLoad() {
+        this.SpinnerService.raiseDataEmitterEvent('on');
         if (this.addAnother == false) {
             // this.spinnerService.raiseDataEmitterEvent('on');
             this.gridLoadData = []
@@ -417,7 +423,7 @@ confirmSelection(permissionform: NgForm) {
                 this.apiService.post(url, params).subscribe((res: any) => {
                     this.gridLoadData = res.data.roles != undefined ? res.data.roles : [];
                     this.totalData = this.gridLoadData.length;
-                    // this.spinnerService.raiseDataEmitterEvent('off');
+                    this.SpinnerService.raiseDataEmitterEvent('off');
 
                 }, (err: any) => {
                     if (err.status_code === this.statusConstants.refresh &&
@@ -425,7 +431,7 @@ confirmSelection(permissionform: NgForm) {
                         this.apiService.RefreshToken();
 
                     } else {
-                        // this.spinnerService.raiseDataEmitterEvent('off');
+                        this.SpinnerService.raiseDataEmitterEvent('off');
                         this.gridLoadData = []
 
                         this.totalData = this.gridLoadData.length;
@@ -453,9 +459,9 @@ confirmSelection(permissionform: NgForm) {
         this.submitted = false;
 
     }
-    
-    
- cancelForm() {
+
+
+    cancelForm() {
         this.ShowForm = false;
     }
 
@@ -474,7 +480,7 @@ confirmSelection(permissionform: NgForm) {
         params.role_name = this.roleMenuForm.value.role_name.toString();
         params.role_description = this.roleMenuForm.value.role_description.toString();
         params.parent_role_id = this.roleMenuForm.value.parent_role.toString();
-       params.client_id = this.client_id?.toString();
+        params.client_id = this.client_id?.toString();
 
         if (this.roleMenuForm.value.role_id !== null && this.roleMenuForm.value.role_id !== '') {
             params.role_id = this.roleMenuForm.get('role_id')?.value.toString();
@@ -534,10 +540,10 @@ confirmSelection(permissionform: NgForm) {
         })
         this.showAddForm();
     }
-      clears() {
-  this.searchKeyword = '';   
-  this.dt.clear();          
-  this.gridLoad();          
-}
+    clears() {
+        this.searchKeyword = '';
+        this.dt.clear();
+        this.gridLoad();
+    }
 
 }
