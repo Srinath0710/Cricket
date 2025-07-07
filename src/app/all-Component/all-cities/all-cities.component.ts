@@ -19,6 +19,7 @@ import { Country, UpdateCity } from './all-cities.model';
 import { Drawer } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { SpinnerService } from '../../services/Spinner/spinner.service'; 
 interface City {
   name: string;
   code: string;
@@ -91,12 +92,15 @@ export class AllCitiesComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService,
     private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant
+    private confirmationService: ConfirmationService, 
+    public cricketKeyConstant: CricketKeyConstant,
+    public spinnerService: SpinnerService
   ) {
 
   }
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.getCountries();
     this.addCityForm = this.formBuilder.group({
       city_id: ['', []],
@@ -197,6 +201,7 @@ export class AllCitiesComponent implements OnInit {
 
 
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.cityData = [];
     this.FormValue = false;
     const params: any = {};
@@ -210,8 +215,13 @@ export class AllCitiesComponent implements OnInit {
     this.apiService.post(this.urlConstant.getCityList, params).subscribe((res) => {
       this.cityData = res.data.states ?? [];
       this.totalData = this.cityData.length !== 0 ? res.data.states[0].total_records : 0;
+      this.spinnerService.raiseDataEmitterEvent('off');
+
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.cityData = [], this.totalData = this.cityData.length);
+      err.status_code === this.statusConstants.refresh && err.error.message === 
+      this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
+       (this.cityData = [],this.spinnerService.raiseDataEmitterEvent('off'),
+         this.totalData = this.cityData.length);
 
     });
   }

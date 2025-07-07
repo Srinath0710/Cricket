@@ -34,7 +34,6 @@ export class SpinnerService {
   dataemitterr= new EventEmitter<any>();
   sidebaremitterr= new EventEmitter<any>();
   activeUrlImage=new EventEmitter<any>();
-  //   dataemitterr= new Subject<any>();
      raiseDataEmitterEvent(data:any){
          this.dataemitterr.next(data);
      }

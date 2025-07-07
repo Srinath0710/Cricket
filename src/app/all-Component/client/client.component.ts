@@ -18,7 +18,7 @@ import { environment } from '../../environments/environment';
 import { Client, EditClient, UpdateClient } from './client.model';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 interface Country {
   country_id: number;
   country_name: string;
@@ -96,11 +96,12 @@ export class ClientComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
-    public cricketKeyConstant: CricketKeyConstant) {
+    public cricketKeyConstant: CricketKeyConstant,public spinnerService: SpinnerService) {
 
   }
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.getCountries();
     this.addClientForm = this.formBuilder.group({
       client_name: ['', [Validators.required]],
@@ -146,6 +147,7 @@ export class ClientComponent implements OnInit {
     this.addClientForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.Clientdata = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -155,6 +157,7 @@ export class ClientComponent implements OnInit {
       this.apiService.post(this.urlConstant.getclientList, params).subscribe((res) => {
         this.Clientdata = res.data ?? [];
         this.totalData = this.Clientdata.length ?? res.data[0].total_records;
+        this.spinnerService.raiseDataEmitterEvent('off');
         this.Clientdata.forEach((val) => {
           val.profile_img_url = `${val.profile_img_url}?${Math.random()}`;
         });
@@ -162,7 +165,8 @@ export class ClientComponent implements OnInit {
         err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg ?
           this.apiService.RefreshToken() : (this.Clientdata = [],
-            this.totalData = this.Clientdata.length);
+          this.spinnerService.raiseDataEmitterEvent('off'),
+          this.totalData = this.Clientdata.length);
 
       });
   }

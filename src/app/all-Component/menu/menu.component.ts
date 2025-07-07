@@ -20,7 +20,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
 import { Menu, addMenu, getMenudropdown, editMenu, endpointMenulist } from './menu.model';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 
 
 
@@ -100,9 +100,11 @@ export class MenuComponent implements OnInit {
     private confirmationService: ConfirmationService,
     public cricketKeyConstant: CricketKeyConstant,
     private uploadImgService: UploadImgService,
+    public spinnerService: SpinnerService,
   ) { }
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.gridLoad();
     this.parentmenuDropdown();
     this.endpointDropdown();
@@ -181,18 +183,18 @@ export class MenuComponent implements OnInit {
   }
 
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {}
     params.user_id = this.User_id?.toString()
-
-
     this.apiService.post(this.urlConstant.getMenuList, params).subscribe((res) => {
       this.MenuData = res.data.menus ?? [];
       this.totalData = this.MenuData.length != 0 ? res.data.menus[0].total_records : 0
+      this.spinnerService.raiseDataEmitterEvent('off');
       this.MenuData.forEach((val: any) => {
       });
     }, (err: any) => {
       err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken()
-        : (this.MenuData = [], this.totalData = this.MenuData.length);
+        : (this.spinnerService.raiseDataEmitterEvent('off'),this.MenuData = [], this.totalData = this.MenuData.length);
 
     });
 

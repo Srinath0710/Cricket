@@ -29,7 +29,7 @@ import { ToastModule } from 'primeng/toast';
 import { environment } from '../../environments/environment';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 interface official {
   config_id: string;
   country_id: number;
@@ -162,13 +162,14 @@ export class OfficialsComponent implements OnInit {
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT,
-    private msgService: MessageService, private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
+    private msgService: MessageService, private confirmationService: ConfirmationService, private uploadImgService: UploadImgService, private spinnerService: SpinnerService,
   ) {
 
   }
 
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.Clientdropdown()
     this.Natinalitydropdown()
     this.getCountries();
@@ -288,7 +289,7 @@ export class OfficialsComponent implements OnInit {
   }
 
   gridload() {
-
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -301,10 +302,13 @@ export class OfficialsComponent implements OnInit {
       if (res.data?.officials) {
         this.officialDataList = res.data.officials;
         this.totalData = this.officialDataList.length !== 0 ? res.data.officials[0].total_records : 0;
-
+       this.spinnerService.raiseDataEmitterEvent('off');
+ 
       } else {
         this.officialDataList = [];
         this.totalData = 0;
+        this.spinnerService.raiseDataEmitterEvent('off');
+      
       }
       // this.officialDataList = res.data.officials ?? [];
       // this.totalData = this.officialDataList.length != 0 ? res.data.officials[0].total_records : 0
@@ -314,7 +318,8 @@ export class OfficialsComponent implements OnInit {
     },
 
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [], this.totalData = this.officialDataList.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [],    this.spinnerService.raiseDataEmitterEvent('off'),
+ this.totalData = this.officialDataList.length);
 
       });
   }

@@ -22,7 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { environment } from '../../environments/environment';
 import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 interface Country {
   country_id: number;
   country_name: string;
@@ -113,11 +113,14 @@ imageForCropper: string | null = null;
     private msgService: MessageService,
     private confirmationService: ConfirmationService,
     public cricketKeyConstant: CricketKeyConstant,
-    private uploadImgService: UploadImgService) {
+    private uploadImgService: UploadImgService,
+    private spinnerService: SpinnerService
+  ) {
   }
 
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.getCountries();
     this.Clientdropdown();
 
@@ -240,6 +243,7 @@ imageForCropper: string | null = null;
 
 
   gridload() {
+     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.ClientID?.toString(),
@@ -252,6 +256,7 @@ imageForCropper: string | null = null;
         next: (res) => {
           this.groundsData = res.data?.grounds || [];
           this.totalData = this.groundsData.length != 0 ? res.data.grounds[0].total_records : 0
+         this.spinnerService.raiseDataEmitterEvent('off');
           this.clubsdropdown();
 
         },
@@ -265,6 +270,7 @@ imageForCropper: string | null = null;
             this.groundsData = [];
             this.configDataList = [];
             this.totalData = 0;
+            this.spinnerService.raiseDataEmitterEvent('off');
           }
         },
       });

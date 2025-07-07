@@ -24,7 +24,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { environment } from '../../environments/environment';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 interface Country {
   country_id: any;
   country_name: string;
@@ -95,13 +95,20 @@ export class ClubRegistrationComponent implements OnInit {
   imageDefault: any;
   croppedImage: any;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant, private uploadImgService: UploadImgService) {
+  constructor(private formBuilder: FormBuilder,
+     private apiService: ApiService,
+      private urlConstant: URLCONSTANT,
+       private msgService: MessageService,
+    private confirmationService: ConfirmationService, 
+    public cricketKeyConstant: CricketKeyConstant, 
+    private uploadImgService: UploadImgService,
+    private spinnerService: SpinnerService,
+  ) {
 
   }
 
   ngOnInit(): void {
-
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.addClubForm = this.formBuilder.group({
       club_id: [''],
       parent_club_id: ['', [Validators.required]],
@@ -147,6 +154,7 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   gridload() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -157,6 +165,8 @@ export class ClubRegistrationComponent implements OnInit {
       if (res.data.clubs) {
         this.gridData = res.data.clubs ?? [];
         this.totalData = res.data.clubs[0]?.total_records ?? this.gridData.length;
+        this.spinnerService.raiseDataEmitterEvent('off');
+
       }
       else {
         this.gridData = [];
@@ -167,7 +177,10 @@ export class ClubRegistrationComponent implements OnInit {
       });
 
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.gridData = [], this.totalData = this.gridData.length);
+      err.status_code === this.statusConstants.refresh && err.error.message ===
+       this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
+        (this.spinnerService.raiseDataEmitterEvent('off'),
+  this.gridData = [], this.totalData = this.gridData.length);
     });
   }
 

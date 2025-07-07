@@ -23,7 +23,7 @@ import { CompPlayerComponent } from './comp-player/comp-player.component';
 import { CompMatchComponent } from './comp-match/comp-match.component';
 import { Drawer } from 'primeng/drawer';
 import { TooltipModule } from 'primeng/tooltip';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 interface Competition {
   competition_id: number;
   client_id: string;
@@ -180,10 +180,12 @@ export class CompetitionComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private messageService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private spinnerService: SpinnerService,
   ) { }
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.initForm();
     this.Clientdropdown();
   }
@@ -228,6 +230,7 @@ export class CompetitionComponent implements OnInit {
   }
 
   loadCompetitions() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString(),
@@ -267,6 +270,8 @@ export class CompetitionComponent implements OnInit {
 
           if (this.compititionList.length > 0 && this.compititionList[0].total_records) {
             this.totalRecords = this.compititionList[0].total_records;
+            this.spinnerService.raiseDataEmitterEvent('off');
+
           }
 
         }
@@ -287,6 +292,7 @@ export class CompetitionComponent implements OnInit {
           this.compititionList = [];
           this.filteredCompititionList = [];
           this.totalRecords = 0;
+         this.spinnerService.raiseDataEmitterEvent('off');
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

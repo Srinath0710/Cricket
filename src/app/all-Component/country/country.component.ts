@@ -21,8 +21,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
-
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 @Component({
   selector: 'app-country',
   standalone: true,
@@ -94,10 +93,15 @@ export class CountryComponent implements OnInit {
   showCropperModal: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant, private uploadImgService: UploadImgService,) {
+    private confirmationService: ConfirmationService,
+    public cricketKeyConstant: CricketKeyConstant, private uploadImgService: UploadImgService,
+    public spinnerService: SpinnerService
+  ) {
 
   }
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
+
     this.gridLoad();
     this.timezoneDropdown();
     this.addCountryForm = this.formBuilder.group({
@@ -132,12 +136,17 @@ export class CountryComponent implements OnInit {
         ) {
           this.apiService.RefreshToken();
         } else {
+          this.spinnerService.raiseDataEmitterEvent('off');
           this.failedToast(err.error);
         }
       }
     );
   }
   gridLoad() {
+
+    setTimeout(() => {
+      this.spinnerService.raiseDataEmitterEvent('on');
+    }, 30);
     this.countriesData = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
@@ -148,11 +157,15 @@ export class CountryComponent implements OnInit {
       this.apiService.post(this.urlConstant.getCountryList, params).subscribe((res) => {
         this.countriesData = res.data.countries ?? [];
         this.totalData = this.countriesData.length != 0 ? res.data.countries[0].total_records : 0
+        this.spinnerService.raiseDataEmitterEvent('off');
         this.countriesData.forEach((val: any) => {
           val.country_image = `${val.country_image}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.countriesData = [], this.totalData = this.countriesData.length);
+        err.status_code === this.statusConstants.refresh && err.error.message
+          === this.statusConstants.refresh_msg ? this.apiService.RefreshToken()
+          : (this.spinnerService.raiseDataEmitterEvent('off'),
+            this.countriesData = [], this.totalData = this.countriesData.length);
 
       });
 
@@ -417,7 +430,7 @@ export class CountryComponent implements OnInit {
     this.filedata = this.base64ToBinary(this.filedata);
     this.showCropperModal = false;
   }
-   cancel() {
+  cancel() {
     this.filedata = null;
     this.url = null;
     this.imageBase64 = null;
@@ -426,7 +439,7 @@ export class CountryComponent implements OnInit {
     this.imageDefault = null;
     this.croppedImage = null;
   }
-   cancelImg(): void {
+  cancelImg(): void {
     this.showCropperModal = false;
     this.url = this.imageCropAlter;
     this.filedata = this.base64ToBinary(this.filedata);
@@ -462,7 +475,7 @@ export class CountryComponent implements OnInit {
       reader.readAsDataURL(blob);
     });
   }
-    imageLoaded() {
+  imageLoaded() {
     console.log('Image loaded');
   }
 

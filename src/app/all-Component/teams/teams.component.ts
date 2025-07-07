@@ -22,7 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
 import { environment } from '../../environments/environment';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 interface Team {
   config_id: string;
 }
@@ -111,10 +111,12 @@ export class TeamsComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant,
-    private uploadImgService: UploadImgService,) {
+    private uploadImgService: UploadImgService,
+    private SpinnerService: SpinnerService) {
 
   }
   ngOnInit(): void {
+    this.SpinnerService.raiseDataEmitterEvent('on');
     this.Clientdropdown();
 
     this.addTeamForm = this.formBuilder.group({
@@ -149,6 +151,7 @@ export class TeamsComponent implements OnInit {
 
 
   gridLoad() {
+    this.SpinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -159,6 +162,7 @@ export class TeamsComponent implements OnInit {
         if (res.data?.teams) {
           this.teamData = res.data.teams;
           this.totalData = this.teamData.length !== 0 ? res.data.teams[0].total_records : 0;
+          this.SpinnerService.raiseDataEmitterEvent('off');
           this.countryDropdown();
         } else {
           this.teamData = [];
@@ -169,7 +173,8 @@ export class TeamsComponent implements OnInit {
         });
 
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.teamData = [], this.totalData = this.teamData.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (    this.SpinnerService.raiseDataEmitterEvent('off'),
+this.teamData = [], this.totalData = this.teamData.length);
 
       });
 

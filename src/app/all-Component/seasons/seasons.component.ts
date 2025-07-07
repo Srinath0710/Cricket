@@ -21,7 +21,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Drawer } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 @Component({
   selector: 'app-seasons',
   standalone: true,
@@ -79,11 +79,14 @@ export class SeasonsComponent implements OnInit {
   Actionflag = CricketKeyConstant.action_flag;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant) {
+    private confirmationService: ConfirmationService,
+     public cricketKeyConstant: CricketKeyConstant,
+     public spinnerService:SpinnerService) {
 
   }
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.gridload();
     this.Clientdropdown();
     this.addSeasonsForm = this.formBuilder.group({
@@ -96,6 +99,7 @@ export class SeasonsComponent implements OnInit {
   }
 
   gridload() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
@@ -108,6 +112,7 @@ export class SeasonsComponent implements OnInit {
       next: (res) => {
         this.seasonsData = res.data?.seasons || [];
         this.totalData = res.data?.totalRecords || this.seasonsData.length;
+        this.spinnerService.raiseDataEmitterEvent('off');
       },
       error: (err) => {
         if (
@@ -116,6 +121,7 @@ export class SeasonsComponent implements OnInit {
         ) {
           this.apiService.RefreshToken();
         } else {
+          this.spinnerService.raiseDataEmitterEvent('off');
           this.seasonsData = [];
           this.totalData = 0;
         }

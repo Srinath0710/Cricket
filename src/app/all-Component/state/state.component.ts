@@ -19,7 +19,7 @@ import { Country } from '../country/country.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 @Component({
   selector: 'app-state',
   standalone: true,
@@ -66,10 +66,12 @@ export class StateComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private confirmationService: ConfirmationService,
-    public cricketKeyConstant: CricketKeyConstant
+    public cricketKeyConstant: CricketKeyConstant,
+    public spinnerService: SpinnerService,
   ) { }
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.countryDropdown();
     this.addStateForm = this.formBuilder.group({
       country_id: ['', [Validators.required]],
@@ -116,6 +118,7 @@ export class StateComponent implements OnInit {
 
 
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     if (this.countryID != null && this.countryID !== '') {
       setTimeout(() => {
         const params: any = {
@@ -132,6 +135,7 @@ export class StateComponent implements OnInit {
           (res) => {
             this.statesData = res.data.states ?? [];
             this.totalData = this.statesData.length !== 0 ? res.data.states[0].total_records : 0;
+            this.spinnerService.raiseDataEmitterEvent('off');
           },
           (err: any) => {
             if (
@@ -147,6 +151,7 @@ export class StateComponent implements OnInit {
         );
       });
     } else {
+      this.spinnerService.raiseDataEmitterEvent('off');
       this.statesData = [];
       this.totalData = 0;
     }

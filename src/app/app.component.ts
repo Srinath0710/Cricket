@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { SpinnerComponent } from './services/Spinner/spinner-component';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,7 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
   imports: 
   [ButtonModule, 
     InputTextModule,
-    RouterOutlet
+    RouterOutlet,
+    SpinnerComponent
   ], 
 
 })

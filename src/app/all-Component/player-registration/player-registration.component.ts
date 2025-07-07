@@ -26,7 +26,7 @@ import { ToastModule } from 'primeng/toast';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { environment } from '../../environments/environment';
-
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 
 interface player {
   parent_config_id: number;
@@ -168,10 +168,12 @@ export class PlayerRegistrationComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private confirmationService: ConfirmationService,
-    private uploadImgService: UploadImgService
+    private uploadImgService: UploadImgService,
+    private spinnerService: SpinnerService
   ) { }
 
   ngOnInit() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.Clientdropdown();
     this.Nationalitydropdown();
     this.getCountries();
@@ -325,6 +327,7 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   gridLoad() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -335,12 +338,13 @@ export class PlayerRegistrationComponent implements OnInit {
       this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
         this.PlayerData = res.data.players ?? [];
         this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
+       this.spinnerService.raiseDataEmitterEvent('off');
         this.clubsdropdown();
         this.PlayerData.forEach((val: any) => {
           val.country_image = `${val.country_image}?${Math.random()}`;
         });
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.PlayerData = [], this.totalData = this.PlayerData.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'),this.PlayerData = [], this.totalData = this.PlayerData.length);
 
       });
   }
