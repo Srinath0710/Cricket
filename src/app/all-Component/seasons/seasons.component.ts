@@ -148,6 +148,7 @@ export class SeasonsComponent implements OnInit {
   }
 
   showAddForm() {
+    this.isEditMode = false;
     this.ShowForm = true;
   }
 
@@ -229,6 +230,7 @@ export class SeasonsComponent implements OnInit {
             season_status: editRecord.season_status
           });
           this.showAddForm();
+           this.isEditMode = true;
         }
       } else {
         this.failedToast(res);
