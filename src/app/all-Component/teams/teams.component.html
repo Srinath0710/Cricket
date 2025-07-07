@@ -23,25 +23,25 @@
             </div>
             <!-- <div class="d-flex align-items-center"> -->
 
-              <!-- Search Form -->
-              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
-                <div class="p-input-icon-right flex-grow-1">
-                  <!-- <i class="pi pi-search" ></i> -->
-                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="  Search" (input)="filterGlobal()"
-                    (keydown.enter)="$event.preventDefault(); filterGlobal()" (keypress)="blockQuotesOnly($event)"
-                    (input)="sanitizeQuotesOnly('Search', $event)">
-                </div>
-
-                <button type="button" class="clear-button" (click)="searchKeyword = ''; filterGlobal();">
-                  Clear
-                </button>
-              </form>
-
-              <div class="card flex justify-center">
-                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                  (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
+            <!-- Search Form -->
+            <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+              <div class="p-input-icon-right flex-grow-1">
+                <!-- <i class="pi pi-search" ></i> -->
+                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                  placeholder="  Search" (input)="filterGlobal()"
+                  (keydown.enter)="$event.preventDefault(); filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                  (input)="sanitizeQuotesOnly('Search', $event)">
               </div>
+
+              <button type="button" class="clear-button" (click)="searchKeyword = ''; filterGlobal();">
+                Clear
+              </button>
+            </form>
+
+            <div class="card flex justify-center">
+              <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()" (click)="showAddForm()">
+                <i class="fas fa-plus"></i> Create</button>
+            </div>
             <!-- </div> -->
 
           </div>
@@ -116,32 +116,31 @@
           </p-table>
 
           <p-dialog header="Teams Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
-
-
             <div class="popup-container">
-
-              <!-- ✅ Top bar: Image on left, Cancel button on right -->
-              <div class="top-bar">
-                <div class="profile-image-wrapper">
-                  <img [src]="selectedTeams[0]?.profileImageUrl" alt="Img" class="profile-image" />
-                  <!-- <img src="https://via.placeholder.com/100" class="profile-image" /> -->
-                </div>
-                <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
-              </div>
-
-
               <div *ngFor="let teams of selectedTeams" class="popup-content">
+                <div class="top-bar">
+                  <div class="profile-image-wrapper">
+                    <span class="person-image-team-player">
+                      <img class="player-img Viewimg" *ngIf="teams.profile_img==null || teams.profile_img==''"
+                        [src]="default_img">
 
-                <!-- ✅ Teams name without 🏟️ icon -->
-                <header class="popup-header no-icon">
-                  <h1 class="popup-title">{{teams['team name'] | uppercase }}</h1>
-                </header>
+                      <img class="player-img viewimg" *ngIf="teams.profile_img!=null  && teams.profile_img!=''"
+                        [src]="teams.profile_img" (error)="handleImageError($event, default_img)">
+                    </span>
+                  </div>
+                  <div class="popup-title">
+                    {{ getTeamNameParts(teams['team name']).name | uppercase }}
+                    <br>
+                      <span style="font-weight: normal;">{{ getTeamNameParts(teams['team name']).category }}</span>
+                  </div>
+                  <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
+                </div>
 
-                <!-- Teams Details -->
                 <section class="popup-section">
                   <h2 class="section-title">⛳ Teams Details</h2>
-                  <div class="info-row"><span class="info-label">🚻Gender</span><span class="separator">|</span><span
-                      class="info-value">{{ teams['gender'] }}</span></div>
+                  <div class="info-row"><span class="info-label">🚻Gender</span>
+                    <span class="separator">|</span><span class="info-value">{{ teams['gender'] }}</span>
+                  </div>
                   <div class="info-row"><span class="info-label">📊 Age Group</span><span
                       class="separator">|</span><span class="info-value">{{ teams['age group'] }}</span></div>
                   <div class="info-row"><span class="info-label">🔢 Team Category</span><span
@@ -151,6 +150,7 @@
               </div>
             </div>
           </p-dialog>
+
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
             [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>

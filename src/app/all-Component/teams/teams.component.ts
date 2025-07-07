@@ -200,6 +200,14 @@ this.teamData = [], this.totalData = this.teamData.length);
       }
     });
   }
+  getTeamNameParts(fullName: string): { name: string, category: string } {
+  const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
+  return {
+    name: match?.[1]?.trim() || '',
+    category: match?.[2] || ''
+  };
+}
+
 
   closePopup() {
     this.showPopup = false;

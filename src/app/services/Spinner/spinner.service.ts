@@ -15,22 +15,6 @@ export class SpinnerService {
     return this.spinner$.asObservable();
   }
 
-  requestStarted() {
-    if (++this.count === 1) {
-      this.spinner$.next('start');
-    }
-  }
-
-  requestEnded() {
-    if (this.count === 0 || --this.count === 0) {
-      this.spinner$.next('stop');
-    }
-  }
-
-  resetSpinner() {
-    this.count = 0;
-    this.spinner$.next('stop');
-  }
   dataemitterr= new EventEmitter<any>();
   sidebaremitterr= new EventEmitter<any>();
   activeUrlImage=new EventEmitter<any>();
