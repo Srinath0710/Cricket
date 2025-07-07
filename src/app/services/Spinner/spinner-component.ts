@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectorRef, Injectable} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Injectable } from '@angular/core';
 import { SpinnerService } from './spinner.service';
 import { environment } from '../../environments/environment';
 import { CommonModule } from '@angular/common';
@@ -7,10 +7,10 @@ import { CommonModule } from '@angular/common';
   selector: 'app-spinner',
   templateUrl: './spinner-component.html',
   styleUrls: ['./spinner-component.css'],
-  imports:[CommonModule]
+  imports: [CommonModule]
 })
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class SpinnerComponent implements OnInit {
   datas: any;
@@ -22,14 +22,22 @@ export class SpinnerComponent implements OnInit {
 
   }
 
-ngOnInit(){
-  this.init();
-}
-  init() {
-   this.spinnerService.dataemitterr.subscribe((data)=>{
-       this.datas=data;
-   });
-   }
-  
+  ngOnInit() {
+    this.init();
   }
+  init() {
+    this.spinnerService.dataemitterr.subscribe((data) => {
+      if (data == 'on') {
+        this.datas = data;
+
+      }
+      else {
+        setTimeout(() => {
+          this.datas = data;
+        }, 300)
+      }
+    });
+  }
+
+}
 

@@ -101,7 +101,6 @@ export class CountryComponent implements OnInit {
   }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
-
     this.gridLoad();
     this.timezoneDropdown();
     this.addCountryForm = this.formBuilder.group({
@@ -143,10 +142,7 @@ export class CountryComponent implements OnInit {
     );
   }
   gridLoad() {
-
-    setTimeout(() => {
-      this.spinnerService.raiseDataEmitterEvent('on');
-    }, 30);
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.countriesData = [];
     const params: any = {};
     params.user_id = this.user_id?.toString();
