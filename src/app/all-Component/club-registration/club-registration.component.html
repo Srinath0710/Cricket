@@ -22,7 +22,7 @@
                             </p-dropdown>
                         </div>
 
-                        <div class="d-flex align-items-center">
+                        <!-- <div class="d-flex align-items-center"> -->
 
                             <form class="d-flex align-items-center gap-2" (submit)="gridload()" #searchForm="ngForm">
                                 <div class="p-input-icon-right flex-grow-1">
@@ -41,7 +41,7 @@
                                     Club
                                 </button>
                             </div>
-                        </div>
+                        <!-- </div> -->
                     </div>
 
                     <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"

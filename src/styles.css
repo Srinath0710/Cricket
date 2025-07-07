@@ -1570,7 +1570,7 @@ input.form-control:focus {
 }
 
 .modal-content {
-  width: 100% !important;
+  width: 90% !important;
 }
 
 /* Footer screen Matches  */
@@ -1667,7 +1667,7 @@ input.form-control:focus {
 
 /* Dropdown Search Size */
 .p-inputtext {
-    font-size: 11px !important;
+  font-size: 11px !important;
 }
 
 /* pagination overflow  */
@@ -1677,7 +1677,7 @@ input.form-control:focus {
 .card {
   overflow: visible !important;
 }
- 
+
 
 /* Popup Shows */
 
@@ -1740,7 +1740,7 @@ body.modal-open {
   position: relative;
   background: linear-gradient(to right, #60c3e4, #eabfff);
 
-} 
+}
 .profile-image-wrapper {
   display: flex;
   justify-content: center;
@@ -1761,18 +1761,18 @@ body.modal-open {
 }
 
 .popup-close {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    padding: 2px 5px;
-    border: 1px solid black;
-    /* border-radius: 34%; */
-    background-color: white;
-    font-size: 20px;
-    color: red;
-    cursor: pointer;
-    line-height: 1;
-    transition: color 0.3s ease, transform 0.3s ease;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 2px 5px;
+  border: 1px solid black;
+  /* border-radius: 34%; */
+  background-color: white;
+  font-size: 20px;
+  color: red;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .popup-close:hover {

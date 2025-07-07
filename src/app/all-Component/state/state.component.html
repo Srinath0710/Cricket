@@ -119,13 +119,11 @@
       <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div class="small-heading">
-            <div
-                *ngIf="addStateForm.get('state_id')?.value == '' || addStateForm.get('state_id')?.value == null">
-                Add State </div>
-            <div
-                *ngIf="addStateForm.get('state_id')?.value != null && addStateForm.get('state_id')?.value != ''">
-                Edit State</div>
-        </div>
+            <div *ngIf="addStateForm.get('state_id')?.value == '' || addStateForm.get('state_id')?.value == null">
+              Add State </div>
+            <div *ngIf="addStateForm.get('state_id')?.value != null && addStateForm.get('state_id')?.value != ''">
+              Edit State</div>
+          </div>
         </div>
         <form [formGroup]="addStateForm">
           <div class="row gy-3">
@@ -180,7 +178,8 @@
 
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()">
+              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
+                (click)="cancelForm()">
               </button>
 
               <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
