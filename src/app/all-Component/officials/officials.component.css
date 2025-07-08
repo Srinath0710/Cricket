@@ -1,26 +1,7 @@
-/* ::ng-deep .p-drawer-right {
-    width: 97vw !important;
-} */
-
 ::ng-deep .drawer-personal.p-drawer.p-drawer-right {
   width: 97vw !important;
   max-width: 97vw !important;
 }
-
-
-
-
-/* ::ng-deep .p-dropdown {
-  text-align: center !important;
-}
-
-::ng-deep .p-dropdown-label {
-  justify-content: center !important;
-  display: flex !important;
-  align-items: center !important;
-  text-align: center !important;
-} */
-
 
 .readonly-true {
   left: 88%;
@@ -58,9 +39,5 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
-/* .modal-content{
-  width: 70% !important;
-} */
 
 

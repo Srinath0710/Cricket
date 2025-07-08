@@ -1,10 +1,5 @@
 <div *ngIf="!ShowForm">
-  <!-- <div class="d-flex justify-content-end mb-2">
-    <button class="btn btn-primary btn-sm new-buttons" (click)="showDialog()">
-      + New Match
-    </button>
 
-  </div> -->
   <div class="row g-3" style="gap: 20px;">
     <div class="card shadow-sm p-3 col-md-4 mb-1 " *ngFor="let Fixtures of MatchData">
       <div class="d-flex justify-content-between align-items-center fixture-card p-2 rounded mb-3">
@@ -59,288 +54,287 @@
 
 
 <div *ngIf="ShowForm">
-  <!-- Header -->
-  <!-- <div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="mb-0">Add Matches Details</h4>
-  <a routerLink="/matches" class="btn btn-link text-primary p-0" (click)=cancelForm()>Go Back</a>
-</div> -->
 
   <!-- Form -->
-  <form [formGroup]="competitionFixturesForm">
-    <div class="row">
-      <div class="col-md-3 mb-3">
-        <label class="form-label">
-          Match No <span class="text-danger">*</span>
-        </label>
-        <input id="sequence_no" type="number" class="form-control" formControlName="sequence_no"
-          />
-        <small *ngIf="
+  <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+     <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="small-heading">
+                    <div
+                        *ngIf="competitionFixturesForm.get('match_id')?.value == '' || competitionFixturesForm.get('match_id')?.value == null">
+                        Add Match </div>
+                    <div
+                        *ngIf="competitionFixturesForm.get('match_id')?.value != null && competitionFixturesForm.get('match_id')?.value != ''">
+                        Edit Match</div>
+                </div>
+            </div>
+
+    <form [formGroup]="competitionFixturesForm">
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label class="form-label">
+            Match No <span class="text-danger">*</span>
+          </label>
+          <input id="sequence_no" type="number" class="form-control" formControlName="sequence_no" />
+          <small *ngIf="
           competitionFixturesForm.get('sequence_no')?.invalid &&
           (competitionFixturesForm.get('sequence_no')?.touched || submitted)" class="required-msg">
-          Match No is required
-        </small>
-      </div>
+            Match No is required
+          </small>
+        </div>
 
-      <div class="col-md-3 ">
-        <label for="match_name" class="form-label">
-          Match Name <span class="text-danger">*</span>
-        </label>
-        <input id="match_name" type="text" class="form-control" formControlName="match_name"
-          />
-        <small *ngIf="
+        <div class="col-md-3 ">
+          <label for="match_name" class="form-label">
+            Match Name <span class="text-danger">*</span>
+          </label>
+          <input id="match_name" type="text" class="form-control" formControlName="match_name" />
+          <small *ngIf="
           competitionFixturesForm.get('match_name')?.invalid &&
           (competitionFixturesForm.get('match_name')?.touched || submitted)" class="required-msg">
-          Match Name is required
-        </small>
-      </div>
+            Match Name is required
+          </small>
+        </div>
 
-      <div class="col-md-3 ">
-        <label for="match_overs" class="form-label">
-          Match Overs <span class="text-danger">*</span>
-        </label>
-        <input id="match_overs" type="number" class="form-control" formControlName="match_overs"
-          />
-      </div>
+        <div class="col-md-3 ">
+          <label for="match_overs" class="form-label">
+            Match Overs <span class="text-danger">*</span>
+          </label>
+          <input id="match_overs" type="number" class="form-control" formControlName="match_overs" />
+        </div>
 
-      <div class="col-md-3 ">
-        <label for="match_start_date" class="form-label">
-          Start Date <span class="text-danger">*</span>
-        </label>
-        <input id="match_start_date" type="date" class="form-control" formControlName="match_start_date" />
-        <small *ngIf="
+        <div class="col-md-3 ">
+          <label for="match_start_date" class="form-label">
+            Start Date <span class="text-danger">*</span>
+          </label>
+          <input id="match_start_date" type="date" class="form-control" formControlName="match_start_date" />
+          <small *ngIf="
           competitionFixturesForm.get('match_start_date')?.invalid &&
           (competitionFixturesForm.get('match_start_date')?.touched || submitted)" class="required-msg">
-          Start Date is required
-        </small>
-      </div>
+            Start Date is required
+          </small>
+        </div>
 
-      <div class="col-md-3 ">
-        <label for="match_end_date" class="form-label">
-          End Date <span class="text-danger">*</span>
-        </label>
-        <input id="match_end_date" type="date" class="form-control" formControlName="match_end_date" />
-        <small *ngIf="
+        <div class="col-md-3 ">
+          <label for="match_end_date" class="form-label">
+            End Date <span class="text-danger">*</span>
+          </label>
+          <input id="match_end_date" type="date" class="form-control" formControlName="match_end_date" />
+          <small *ngIf="
           competitionFixturesForm.get('match_end_date')?.invalid &&
           (competitionFixturesForm.get('match_end_date')?.touched || submitted)" class="required-msg">
-          End Date is required
-        </small>
-      </div>
-
-      <div class="col-md-3">
-        <label>Timezone</label>
-        <p-dropdown [options]="timezonetype" class="drop-error" formControlName="time_zone_id"
-          optionValue="time_zone_id" optionLabel="time_zone_name" placeholder="Select Timezone">
-          <ng-template let-timezone pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ timezone.time_zone_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-
-      <div class="col-md-3">
-        <label>DayType</label>
-        <p-dropdown [options]="daytype" class="drop-error" formControlName="day_type" optionValue="config_id"
-          optionLabel="config_name" placeholder="Select DayType">
-          <ng-template let-daytype pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ daytype.config_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Home Team</label>
-        <p-dropdown [options]="teamlist" class="drop-error" formControlName="team_1_code" optionValue="team_id"
-          optionLabel="team_name" placeholder="Select Team">
-          <ng-template let-hometeam pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ hometeam.team_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Away Team</label>
-        <p-dropdown [options]="teamlist" class="drop-error" formControlName="team_2_code" optionValue="team_id"
-          optionLabel="team_name" placeholder="Select Team">
-          <ng-template let-away pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ away.team_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Ground</label>
-        <p-dropdown [options]="groundlist" class="drop-error" formControlName="ground_id" optionValue="ground_id"
-          optionLabel="ground_name" placeholder="Select Ground">
-          <ng-template let-ground pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ ground.ground_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Match Group</label>
-        <p-dropdown [options]="matchgroup" class="drop-error" formControlName="match_group_id" optionValue="config_id"
-          optionLabel="config_name" placeholder="Select Match Group">
-          <ng-template let-matchgroup pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ matchgroup.config_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Match Phase</label>
-        <p-dropdown [options]="matchstage" class="drop-error" formControlName="match_phase_id" optionValue="config_id"
-          optionLabel="config_name" placeholder="Select Match Phase">
-          <ng-template let-matchphase pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ matchphase.config_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Umpire 1</label>
-        <p-dropdown [options]="filteredUmpireList1" class="drop-error" formControlName="umpire_1" optionValue="official_id"
-          optionLabel="official_name" [filter]="true"
-          [ngModel]="competitionFixturesForm.get('umpire_1')?.value"
-          (ngModelChange)="updateFilteredLists()"
-          filterBy="official_name" placeholder="Select Umpire1">
-          <ng-template let-ump1 pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ ump1.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown> 
-      </div>
-      <div class="col-md-3">
-        <label>Umpire 2</label>
-        <p-dropdown [options]="filteredUmpireList2" 
-         [ngModel]="competitionFixturesForm.get('umpire_2')?.value"
-          (ngModelChange)="updateFilteredLists()"
-        class="drop-error" formControlName="umpire_2" optionValue="official_id"
-          optionLabel="official_name" [filter]="true" filterBy="official_name" placeholder="Select Umpire2">
-          <ng-template let-ump2 pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ ump2.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Umpire 3</label>
-        <p-dropdown [options]="filteredUmpireList3" 
-         [ngModel]="competitionFixturesForm.get('umpire_3')?.value"
-          (ngModelChange)="updateFilteredLists()"
-        class="drop-error" formControlName="umpire_3" optionValue="official_id"
-          optionLabel="official_name" [filter]="true" filterBy="official_name" placeholder="Select Umpire3">
-          <ng-template let-ump3 pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ ump3.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Umpire 4</label>
-        <p-dropdown [options]="filteredUmpireList4" 
-         [ngModel]="competitionFixturesForm.get('umpire_4')?.value"
-          (ngModelChange)="updateFilteredLists()"
-        class="drop-error" formControlName="umpire_4" optionValue="official_id"
-          optionLabel="official_name" [filter]="true" filterBy="official_name" placeholder="Select Umpire4">
-          <ng-template let-ump4 pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ ump4.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-
-      <div class="col-md-3">
-        <label>Sr.Video Analyst</label>
-        <p-dropdown [options]="video_analyst_list" class="drop-error" formControlName="sr_video"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Sr Video Analyst">
-          <ng-template let-videoAnalyst pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ videoAnalyst.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Jr Video Analyst</label>
-        <p-dropdown [options]="video_analyst_list" class="drop-error" formControlName="jr_video"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Jr Video Analyst">
-          <ng-template let-videoAnalyst pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ videoAnalyst.official_name}}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Manual Scorer</label>
-        <p-dropdown [options]="scorer_list" class="drop-error" formControlName="manual_scorer_id"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Manual Scorer">
-          <ng-template let-scorer pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ scorer.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Digital Scorer</label>
-        <p-dropdown [options]="scorer_list" class="drop-error" formControlName="digital_scorer_id"
-          optionValue="official_id" optionLabel="official_name" placeholder="Select Digital Scorer">
-          <ng-template let-scorer pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ scorer.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3">
-        <label>Referee </label>
-        <p-dropdown [options]="referee" class="drop-error" formControlName="referee_id" optionValue="official_id"
-          optionLabel="official_name" placeholder="Select Referee">
-          <ng-template let-referee pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{ referee.official_name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-3 ">
-        <label>
-          Local Video Path
-        </label>
-        <input id="match_name" type="text" class="form-control" formControlName="local_video_path"
-           />
-      </div>
-
-      <div class="row">
-        <div class="col-12 text-end">
-          <button pButton type="button" class="p-button-secondary me-3 footer-button"
-            (click)="cancelForm()">Cancel</button>
-
-          <button pButton type="button" class="p-button-secondary me-3 footer-button"
-            *ngIf="competitionFixturesForm.get('team_id')?.value == '' || competitionFixturesForm.get('team_id')?.value == null"
-            (click)="resetForm()">Clear</button>
-
-          <button pButton type="button" class="p-button-secondary me-3 footer-button save-button"
-            (click)="addFixtures()">Save</button>
+            End Date is required
+          </small>
         </div>
+
+        <div class="col-md-3">
+          <label>Timezone</label>
+          <p-dropdown [options]="timezonetype" class="drop-error" formControlName="time_zone_id"
+            optionValue="time_zone_id" optionLabel="time_zone_name" placeholder="Select Timezone">
+            <ng-template let-timezone pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ timezone.time_zone_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+
+        <div class="col-md-3">
+          <label>DayType</label>
+          <p-dropdown [options]="daytype" class="drop-error" formControlName="day_type" optionValue="config_id"
+            optionLabel="config_name" placeholder="Select DayType">
+            <ng-template let-daytype pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ daytype.config_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Home Team</label>
+          <p-dropdown [options]="teamlist" class="drop-error" formControlName="team_1_code" optionValue="team_id"
+            optionLabel="team_name" placeholder="Select Team">
+            <ng-template let-hometeam pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ hometeam.team_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Away Team</label>
+          <p-dropdown [options]="teamlist" class="drop-error" formControlName="team_2_code" optionValue="team_id"
+            optionLabel="team_name" placeholder="Select Team">
+            <ng-template let-away pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ away.team_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Ground</label>
+          <p-dropdown [options]="groundlist" class="drop-error" formControlName="ground_id" optionValue="ground_id"
+            optionLabel="ground_name" placeholder="Select Ground">
+            <ng-template let-ground pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ ground.ground_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Match Group</label>
+          <p-dropdown [options]="matchgroup" class="drop-error" formControlName="match_group_id" optionValue="config_id"
+            optionLabel="config_name" placeholder="Select Match Group">
+            <ng-template let-matchgroup pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ matchgroup.config_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Match Phase</label>
+          <p-dropdown [options]="matchstage" class="drop-error" formControlName="match_phase_id" optionValue="config_id"
+            optionLabel="config_name" placeholder="Select Match Phase">
+            <ng-template let-matchphase pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ matchphase.config_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Umpire 1</label>
+          <p-dropdown [options]="filteredUmpireList1" class="drop-error" formControlName="umpire_1"
+            optionValue="official_id" optionLabel="official_name" [filter]="true"
+            [ngModel]="competitionFixturesForm.get('umpire_1')?.value" (ngModelChange)="updateFilteredLists()"
+            filterBy="official_name" placeholder="Select Umpire1">
+            <ng-template let-ump1 pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ ump1.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Umpire 2</label>
+          <p-dropdown [options]="filteredUmpireList2" [ngModel]="competitionFixturesForm.get('umpire_2')?.value"
+            (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_2"
+            optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
+            placeholder="Select Umpire2">
+            <ng-template let-ump2 pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ ump2.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Umpire 3</label>
+          <p-dropdown [options]="filteredUmpireList3" [ngModel]="competitionFixturesForm.get('umpire_3')?.value"
+            (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_3"
+            optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
+            placeholder="Select Umpire3">
+            <ng-template let-ump3 pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ ump3.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Umpire 4</label>
+          <p-dropdown [options]="filteredUmpireList4" [ngModel]="competitionFixturesForm.get('umpire_4')?.value"
+            (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_4"
+            optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
+            placeholder="Select Umpire4">
+            <ng-template let-ump4 pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ ump4.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+
+        <div class="col-md-3">
+          <label>Sr.Video Analyst</label>
+          <p-dropdown [options]="video_analyst_list" class="drop-error" formControlName="sr_video"
+            optionValue="official_id" optionLabel="official_name" placeholder="Select Sr Video Analyst">
+            <ng-template let-videoAnalyst pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ videoAnalyst.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Jr Video Analyst</label>
+          <p-dropdown [options]="video_analyst_list" class="drop-error" formControlName="jr_video"
+            optionValue="official_id" optionLabel="official_name" placeholder="Select Jr Video Analyst">
+            <ng-template let-videoAnalyst pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ videoAnalyst.official_name}}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Manual Scorer</label>
+          <p-dropdown [options]="scorer_list" class="drop-error" formControlName="manual_scorer_id"
+            optionValue="official_id" optionLabel="official_name" placeholder="Select Manual Scorer">
+            <ng-template let-scorer pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ scorer.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Digital Scorer</label>
+          <p-dropdown [options]="scorer_list" class="drop-error" formControlName="digital_scorer_id"
+            optionValue="official_id" optionLabel="official_name" placeholder="Select Digital Scorer">
+            <ng-template let-scorer pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ scorer.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label>Referee </label>
+          <p-dropdown [options]="referee" class="drop-error" formControlName="referee_id" optionValue="official_id"
+            optionLabel="official_name" placeholder="Select Referee">
+            <ng-template let-referee pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{ referee.official_name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-md-3 ">
+          <label>
+            Local Video Path
+          </label>
+          <input id="match_name" type="text" class="form-control" formControlName="local_video_path" />
+        </div>
+        <div class="row">
+          <div class="col-12 text-end">
+            <button pButton type="button" class="p-button-secondary me-3 custom-cancel-btn"
+              (click)="cancelForm()">Cancel</button>
+
+            <button pButton type="button" class="p-button-secondary me-3 custom-cancel-btn"
+              *ngIf="competitionFixturesForm.get('team_id')?.value == '' || competitionFixturesForm.get('team_id')?.value == null"
+              (click)="resetForm()">Clear</button>
+
+            <button pButton type="button" class="p-button-secondary me-3 footer-button save-button"
+              (click)="addFixtures()">Save</button>
+          </div>
+        </div>
+
+
       </div>
+    </form>
 
-
-    </div>
-  </form>
-
+  </p-drawer>
 </div>
 <p-toast key="tc" position="top-right"></p-toast>

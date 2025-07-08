@@ -500,7 +500,7 @@
 
 
                   <div class="col-md-6">
-                    <label>Primary Phone NO</label>
+                    <label>Primary Phone No</label>
                     <span class="text-danger">*</span>
                     <input class="form-control" type="text" maxlength="10" formControlName="primary_phone"
                       (input)="onPhoneNumberInput($event, 'primary_phone')"
@@ -521,7 +521,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <label>Secondary Phone NO</label>
+                    <label>Secondary Phone No</label>
                     <input class="form-control" type="text" maxlength="10" formControlName="secondary_phone"
                       (input)="onPhoneNumberInput($event, 'secondary_phone')"
                       [readonly]="disableReadonly&&isPersonalDataIntialized" />
@@ -726,7 +726,7 @@
 
 
                   <div class="col-md-6">
-                    <label>Emergency Phone NO</label>
+                    <label>Emergency Phone No</label>
                     <input class="form-control" type="text" maxlength="10" formControlName="emergency_number"
                       (input)="onPhoneNumberInput($event, 'emergency_number')"
                       [readonly]="disableReadonly&&isPersonalDataIntialized" />
@@ -834,7 +834,7 @@
 
 
                   <div class="col-md-6">
-                    <label class="">Years OF Experience
+                    <label class="">Years Of Experience
 
                     </label>
                     <input class="form-control" maxlength="50" type="text" formControlName="years_of_experience"
@@ -883,27 +883,23 @@
           <div class="form-wrapper pb-5">
 
             <div class="row mt-4 sticky-footer-buttons">
-              <div class="col-12 text-end">
+               <div class="col-12 text-end">
 
-                <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                   (click)="cancelForm()"></button>
 
-                <button *ngIf="!isEditPersonal" pButton type="button" label="Clear" class="p-button-secondary me-3"
+                <button *ngIf="!isEditPersonal" pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                   (click)="resetForm()">
                 </button>
 
                 <button pButton type="button" label="Save" class="save-button"
                   (click)="PersonalupdateOfficial()"></button>
-
-
-
-
-              </div>
+              </div> 
+      
             </div>
           </div>
         </form>
-        <!-- </div>
-      </p-sidebar> -->
+
 
       </p-drawer>
 

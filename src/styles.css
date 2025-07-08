@@ -1215,7 +1215,7 @@ main {
 .main-page-header {
   position: relative;
   z-index: 10;
-  background-color: #fff;
+  /* background-color: #fff; */
 }
 
 

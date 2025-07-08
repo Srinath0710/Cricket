@@ -302,13 +302,13 @@ export class OfficialsComponent implements OnInit {
       if (res.data?.officials) {
         this.officialDataList = res.data.officials;
         this.totalData = this.officialDataList.length !== 0 ? res.data.officials[0].total_records : 0;
-       this.spinnerService.raiseDataEmitterEvent('off');
- 
+        this.spinnerService.raiseDataEmitterEvent('off');
+
       } else {
         this.officialDataList = [];
         this.totalData = 0;
         this.spinnerService.raiseDataEmitterEvent('off');
-      
+
       }
       // this.officialDataList = res.data.officials ?? [];
       // this.totalData = this.officialDataList.length != 0 ? res.data.officials[0].total_records : 0
@@ -318,8 +318,8 @@ export class OfficialsComponent implements OnInit {
     },
 
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [],    this.spinnerService.raiseDataEmitterEvent('off'),
- this.totalData = this.officialDataList.length);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.officialDataList = [], this.spinnerService.raiseDataEmitterEvent('off'),
+          this.totalData = this.officialDataList.length);
 
       });
   }
@@ -508,6 +508,7 @@ export class OfficialsComponent implements OnInit {
           this.showAddForm();
           this.profileImages = editRecord.profile_img + '?' + Math.random();
           this.convertUrlToBase64(editRecord.profile_img + '?' + Math.random());
+          this.filedata = null;
         }
       } else {
         this.failedToast(res);

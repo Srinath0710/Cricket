@@ -11,6 +11,7 @@ import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
+import { Drawer } from 'primeng/drawer';
 
 interface MetaInfo {
   config_key: string;
@@ -27,7 +28,8 @@ interface MetaInfo {
     DropdownModule,
     FormsModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    Drawer
   ],
   templateUrl: './comp-match.component.html',
   styleUrl: './comp-match.component.css',

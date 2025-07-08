@@ -286,6 +286,7 @@ export class ClientComponent implements OnInit {
   showAddForm() {
     this.ShowForm = true;
   }
+  
   cancelForm() {
     this.ShowForm = false;
     this.filedata = null;
@@ -300,7 +301,14 @@ export class ClientComponent implements OnInit {
   resetForm() {
     this.addClientForm.reset();
     this.submitted = false;
-  }
+    this.previewUrl = null;
+    this.filedata = null;
+    this.profileImages = null;
+    this.url = null;
+    this.imageBase64 = null;
+    this.imageCropAlter = null;
+    this.imageDefault = null; 
+   }
   successToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 

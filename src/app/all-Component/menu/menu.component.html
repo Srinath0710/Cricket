@@ -292,7 +292,7 @@
             <div class="col-md-6">
               <label>Sort Order</label>
               <span class="text-danger">*</span>
-              <input class="form-control" type="number" placeholder="Enter Sort Order" formControlName="sort_order" />
+              <input class="form-control" type="number"  formControlName="sort_order" />
               <small
                 *ngIf="addMenuForm?.get('sort_order')?.invalid && (addMenuForm?.get('sort_order')?.touched || submitted)"
                 class="required-msg">Sort Order is required</small>
@@ -323,7 +323,7 @@
                 <label class="formItemLabel">Menu Image
                   <span class="text-danger">*</span>
                 </label>
-                <input class="form-control" maxlength="100" type="text" placeholder="Enter Menu Image"
+                <input class="form-control" maxlength="100" type="text" 
                   formControlName="menu_image">
                 <small
                   *ngIf="addMenuForm.get('menu_image')?.invalid &&

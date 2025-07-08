@@ -242,7 +242,7 @@
                         <label>Post Code
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" formControlName="post_code"
+                        <input class="form-control" maxlength="10" type="text" formControlName="post_code"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('post_code', $event)">
                         <small
                             *ngIf="addClientForm?.get('post_code')?.invalid &&(addClientForm?.get('post_code')?.touched) || (addClientForm.get('post_code')?.invalid && submitted)"
@@ -270,7 +270,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label>Phone No <span class="text-danger">*</span></label>
+                        <label>Phone No</label>
                         <input class="form-control" type="text" maxlength="10" formControlName="mobile"
                             (input)="onPhoneNumberInput($event)">
                         <div *ngIf="addClientForm.get('mobile')?.touched && addClientForm.get('mobile')?.invalid">

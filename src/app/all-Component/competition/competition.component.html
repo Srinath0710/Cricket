@@ -397,10 +397,10 @@
                   <div class="form-wrapper pb-5">
                     <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
                       <div class="col-12 text-end">
-                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3"
+                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                           (click)="cancelForm()"></button>
 
-                        <button pButton type="button" label="Clear" class="p-button-secondary me-3"
+                        <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                           *ngIf="addCompetitionForm.get('competition_id')?.value == '' || addCompetitionForm.get('competition_id')?.value == null"
                           (click)="resetForm()"></button>
 

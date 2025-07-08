@@ -183,7 +183,7 @@
                         <label class="">Season Name
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" placeholder="Enter Season Name"
+                        <input class="form-control" maxlength="50" type="text" 
                             formControlName="season_name" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('season_name', $event)">
                         <small
