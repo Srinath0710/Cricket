@@ -204,34 +204,6 @@ table.dataTable {
   height: 100%;       
 }
 
-
-/* ::ng-deep .cdk-global-overlay-wrapper, */
-::ng-deep .cdk-overlay-container {
-  top: -601px !important;
-  bottom: auto !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  pointer-events: auto !important;
-}
-
-
-::ng-deep .p-toast {
-  top: 20px !important;
-  bottom: auto !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  position: fixed !important;
-  z-index: 9999 !important;
-}
-:host ::ng-deep .p-toast {
-  top: 20px !important;
-  bottom: auto !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  position: fixed !important;
-}
-
-
 .custom-sticky-75 {
  width: 96.4vw !important;
 }
@@ -299,7 +271,7 @@ table.dataTable {
   .card-body {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    /* gap: 10px; */
   }
   
   .menu-item {
@@ -308,22 +280,8 @@ table.dataTable {
     align-items: center;
   }
   
-  .menu-info {
-    font-size: 14px;
-  }
-  
-  .menu-checkbox input {
-    transform: scale(1.2);
-  }
-  
-  .sticky-footer-buttons {
-    position: fixed;
-    bottom: 0px;
-    right: 12px;
-    width: 100%;
-    background-color: #fff;
-    padding: 10px 20px;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  .sticky-footer-buttons { 
     z-index: 999;
 }
+
 

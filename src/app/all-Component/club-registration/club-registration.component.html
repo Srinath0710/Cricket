@@ -24,7 +24,7 @@
 
                         <!-- <div class="d-flex align-items-center"> -->
 
-                            <form class="d-flex align-items-center gap-2" (submit)="gridload()" #searchForm="ngForm">
+                            <form class="d-flex align-items-center gap-2" (submit)="gridload()" >
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
                                         class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"

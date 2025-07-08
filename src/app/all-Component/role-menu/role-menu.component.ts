@@ -49,7 +49,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
     visible = false;
     visibleDialog = false;
     searchKeyword: any;
-    statuses = [];
+    // statuses = [];
     public totalRecords: any = '0';
     ShowForm = false;
     display_name: any;
@@ -98,7 +98,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
 
 
     ngOnInit(): void {
-    this.SpinnerService.raiseDataEmitterEvent('on');
+        this.SpinnerService.raiseDataEmitterEvent('on');
         setTimeout(() => {
             this.gridLoad();
         },)
@@ -182,8 +182,6 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
         }
     }
     menuRolePermission(permissionform: NgForm) {
-        console.log(permissionform);
-
         const menuIds = Object.values(permissionform.value)
             .filter((item: any) => item && item.is_checked)
             .map((item: any) => ({
@@ -191,16 +189,20 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
                 name: this.filterName(item.menu_id)
             }));
 
-        console.log("Menus:", menuIds);
-
         if (menuIds.length === 0) {
-            this.snackBar.open('No menu selected!', 'Close', { duration: 3000 });
+            this.msgService.add({
+                key: 'tc',
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No menu Selected',
+            
+            
+            })
+            // 'No menu selected!', 'Close', { duration: 3000 });
             return;
         }
 
         this.selectedMenus = menuIds;
-        console.log(this.selectedMenus);
-
         this.selectedMenuId = menuIds[0]?.menu_id;
         this.openPopup();
     }
@@ -245,14 +247,27 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
 
         this.apiService.post('User/update_menu_permissions', params).subscribe({
             next: (res: any) => {
-                console.log(permissionform)
                 if (res.status_code === '200') {
-                    this.snackBar.open('Permissions updated successfully', 'Close', { duration: 3000 });
+                    // Changed to toast message
+                    this.msgService.add({
+                        key: 'tc',
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Permissions updated successfully',
+                        life: 3000
+                    });
                     this.hidePermisssionTab();
                     this.gridLoad();
                     permissionform.reset();
                 } else {
-                    this.snackBar.open('Failed to update permissions', 'Close', { duration: 3000 });
+                    // Changed to toast message
+                    this.msgService.add({
+                        key: 'tc',
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Failed to update permissions',
+                        life: 3000
+                    });
                 }
             },
             error: (err: any) => {
@@ -260,11 +275,17 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
                     err.error.message === this.statusConstants.refresh_msg) {
                     this.apiService.RefreshToken();
                 } else {
-                    this.snackBar.open('Error updating permissions', 'Close', { duration: 3000 });
+                    // Changed to toast message
+                    this.msgService.add({
+                        key: 'tc',
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Error updating permissions',
+                        life: 3000
+                    });
                 }
             },
         });
-
     }
     isEnabled(value: any) {
         if (value === 1) {
@@ -286,8 +307,10 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
     }
 
 
-    clear(table: Table) {
-        table.clear();
+    clear() {
+        this.dt.clear();
+        this.searchKeyword = '';
+        this.gridLoad();
     }
 
     successToast(data: any) {
@@ -544,6 +567,18 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
         this.searchKeyword = '';
         this.dt.clear();
         this.gridLoad();
+    }
+
+    blockQuotesOnly(event: KeyboardEvent) {
+        if (event.key === '"' || event.key === "'") {
+            event.preventDefault();
+        }
+    }
+
+    sanitizeQuotesOnly(controlName: string, event: Event) {
+        const input = (event.target as HTMLInputElement).value;
+        const cleaned = input.replace(/['"]/g, '');
+        this.roleMenuForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
     }
 
 }

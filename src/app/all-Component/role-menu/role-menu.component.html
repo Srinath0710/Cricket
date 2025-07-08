@@ -6,65 +6,65 @@
                     <div class="card-body">
                         <div class="page-header main-page-header d-flex align-items-center justify-content-between">
                             <div class="main-page-title page-title playerbackground">
-                                <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+                                <i class="fa-solid fa-user-tie" aria-hidden="true">
+                                </i>
                                 All roles
                             </div>
                             <!-- Search Form -->
                             <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                                 <div class="p-input-icon-right flex-grow-1">
-                                    <input class="width-search widthsearch" pInputText type="text"
-                                        [(ngModel)]="searchKeyword" name="searchKeyword" placeholder="  Search"
-                                        (input)="filterGlobal($event, 'contains')"
-                                        style="background-color: white; color: #495057;  border: 1px solid #ced4da; padding-left: 18px; box-shadow: none;  outline: none;" />
+                                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
+                                        class="width-search" placeholder="  Search"
+                                        (input)="filterGlobal($event, 'contains')" (keypress)="blockQuotesOnly($event)"
+                                        (input)="sanitizeQuotesOnly('Search', $event)"
+                                         style="background-color: white; color: #495057;  
+                                         border: 1px solid #ced4da; padding-left: 18px; box-shadow: none;">
                                 </div>
-                                <button type="button" class="clear-button" (click)="clear(country)"> Clear </button>
+                                <button type="button" class="clear-button" (click)="clear()">
+                                    Clear
+                                </button>
                             </form>
                             <div class="card flex justify-center">
                                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                                     (click)="showAddForm()">
-                                    <i class="fas fa-plus"></i> New Role</button>
+                                    <i class="fas fa-plus"></i>
+                                    New Role
+                                </button>
                             </div>
                         </div>
-
                         <div class="main-page-title-manage page-title text-center" *ngIf="ShowForm">
-                            <!-- <span class="page-tile-img">
-                                    <i class="material-symbols-outlined">user_attributes</i>
-                                </span> -->
-
                         </div>
-
                         <!--grid code -->
                         <div class="page-content">
-
-                            <!-- <p-toast [showTransformOptions]="'translateY(100%)'" [showTransitionOptions]="'1000ms'"
-                                [hideTransitionOptions]="'700ms'" position="top-center" key="tc"
-                                [showTransformOptions]="'translateX(100%)'">
-                            </p-toast> -->
-
                             <p-table #dt [value]="gridLoadData" [styleClass]="'custom-table'"
                                 [globalFilterFields]="['role_name','record_status']">
                                 <ng-template pTemplate="header">
                                     <tr>
-                                        <th pSortableColumn="role_name">Role Name <p-sortIcon field="role_name">
+                                        <th pSortableColumn="role_name">
+                                            Role Name
+                                            <p-sortIcon field="role_name">
                                             </p-sortIcon>
                                         </th>
-                                        <th pSortableColumn="record_status">Status <p-sortIcon field="record_status">
+                                        <th pSortableColumn="record_status">
+                                            Status
+                                            <p-sortIcon field="record_status">
                                             </p-sortIcon>
                                         </th>
-                                        <th class="custom-header action-column-header">Actions</th>
+                                        <th class="custom-header action-column-header">
+                                            Actions
+                                        </th>
                                     </tr>
                                 </ng-template>
-
                                 <ng-template pTemplate="body" let-roles>
                                     <tr>
-
-
-                                        <td>{{ roles.role_name }}</td>
+                                        <td>
+                                            {{ roles.role_name }}
+                                        </td>
                                         <td>
                                             <span [ngClass]="{
-                        ' bg-success': roles.record_status === 'Active',
-                        ' bg-danger': roles.record_status === 'InActive'
-                      }">
+                           ' bg-success': roles.record_status === 'Active',
+                           ' bg-danger': roles.record_status === 'InActive'
+                        }">
                                                 {{ roles.record_status }}
                                             </span>
                                         </td>
@@ -79,34 +79,31 @@
                                                 pTooltip="Permission" tooltipPosition="top">
                                                 <i class="fas fa-key"></i>
                                             </span>
-
-
                                             <span class="icon-green"
                                                 (click)="StatusConfirm(roles.role_id,conditionConstants.active_status,roles.record_status)"
                                                 pTooltip="Activate" tooltipPosition="top">
                                                 <i class="fa-solid fa-circle-check"></i>
                                             </span>
-
                                             <span class="icon-red"
                                                 (click)="StatusConfirm(roles.role_id,conditionConstants.deactive_status,roles.record_status)"
                                                 pTooltip="Deactivate" tooltipPosition="top">
                                                 <i class="fa-solid fa-trash-can-arrow-up"></i>
                                             </span>
                                         </td>
-
                                     </tr>
                                 </ng-template>
                             </p-table>
-
                             <p-table [ngClass]="{inactive : ShowForm}" #country [value]="gridLoadData" dataKey="role_id"
                                 [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50
-                             ,100]" [paginator]="true"
+                  ,100]" [paginator]="true"
                                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                                 [globalFilterFields]="['role_name','record_status']"
                                 [tableStyle]="{  'min-width': '20rem'}" styleClass="p-datatable-gridlines">
                                 <ng-template pTemplate="emptymessage">
                                     <tr>
-                                        <td colspan="10" class="text-center ">No Records Found</td>
+                                        <td colspan="10" class="text-center ">
+                                            No Records Found
+                                        </td>
                                     </tr>
                                 </ng-template>
                             </p-table>
@@ -124,12 +121,9 @@
                                             {{ isEditMode ? 'Edit Role' : 'Add Role' }}
                                         </h3>
                                     </div>
-
-                                    <form [formGroup]="roleMenuForm" class="">
+                                    <form [formGroup]="roleMenuForm">
                                         <div class="row gy-3">
-
                                             <div class="col-md-6">
-
                                                 <label>Role Name
                                                     <span class="text-danger">*</span>
                                                 </label>
@@ -137,53 +131,43 @@
                                                     placeholder="Enter Role Name" formControlName="role_name">
                                                 <small
                                                     *ngIf="roleMenuForm?.get('role_name')?.invalid &&(roleMenuForm?.get('role_name')?.touched) || (roleMenuForm?.get('role_name')?.invalid && submitted)"
-                                                    class="required-msg"> Role Name Is Required
+                                                    class="required-msg">
+                                                    Role Name Is Required
                                                 </small>
-
-
                                             </div>
-
-
-
                                             <div class="col-md-6">
-
-                                                <label class="formItemLabel">Description
+                                                <label class="formItemLabel">
+                                                    Description
                                                     <span class="text-danger">*</span>
                                                 </label>
                                                 <input class="form-control" maxlength="150" type="text"
                                                     placeholder="Enter Description" formControlName="role_description">
                                                 <small
                                                     *ngIf="roleMenuForm?.get('role_description')?.invalid &&(roleMenuForm?.get('role_description')?.touched) || (roleMenuForm?.get('role_description')?.invalid && submitted)"
-                                                    class="required-msg">* Description Is Required
+                                                    class="required-msg">
+                                                    Description Is Required
                                                 </small>
-
-
                                             </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-
-                                            <label class="">Parent Role<span class="text-danger">*</span></label>
-                                            <p-dropdown [options]="roleDropdownData" class="drop-error "
-                                                formControlName="parent_role" optionValue="role_id"
-                                                optionLabel="role_name"
-                                                [ngModel]="roleMenuForm.get('parent_role')?.value"
-                                                placeholder="Select Parent Role" appendTo="body"
-                                                [panelStyleClass]="'custom-dropdown-panel'" [filter]="true">
-
-                                                <ng-template let-role pTemplate="item">
-                                                    <div class="flex align-items-center gap-2">
-
-                                                        <div>{{ role.role_name }}
+                                            <div class="col-md-6">
+                                                <label class="formItemLabel">
+                                                    Parent Role
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <p-dropdown [options]="roleDropdownData" class="drop-error"
+                                                    formControlName="parent_role" optionValue="role_id"
+                                                    optionLabel="role_name" placeholder="Select Parent Role">
+                                                    <ng-template let-option pTemplate="item">
+                                                        <div class="flex align-items-center gap-2">
+                                                            <div>{{ option.role_name }}</div>
                                                         </div>
-                                                    </div>
-                                                </ng-template>
-                                            </p-dropdown>
-
-                                            <small
-                                                *ngIf="roleMenuForm?.get('parent_role')?.invalid &&(roleMenuForm?.get('parent_role')?.touched) || (roleMenuForm?.get('parent_role')?.invalid && submitted)"
-                                                class="required-msg">* Parent Role Is Required
-                                            </small>
+                                                    </ng-template>
+                                                </p-dropdown>
+                                                <small
+                                                    *ngIf="roleMenuForm?.get('parent_role')?.invalid &&(roleMenuForm?.get('parent_role')?.touched) || (roleMenuForm?.get('parent_role')?.invalid && submitted)"
+                                                    class="required-msg">
+                                                    Parent Role Is Required
+                                                </small>
+                                            </div>
                                         </div>
 
                                         <div class="submit-section">
@@ -191,10 +175,9 @@
                                                 <div class="col-12 text-end">
                                                     <button pButton type="button" label="Cancel"
                                                         class="p-button-secondary me-3 custom-cancel-btn"
-                                                        (click)="cancelForm()"></button>
-
+                                                        (click)="cancelForm()">
+                                                    </button>
                                                     <!-- (click)="addAnother=false" -->
-
                                                     <button pButton type="button"
                                                         class="p-button-secondary me-3 custom-cancel-btn"
                                                         *ngIf="roleMenuForm?.get('role_id')?.value == '' || roleMenuForm?.get('role_id')?.value == null"
@@ -213,19 +196,18 @@
                                 </p-drawer>
                             </div>
                         </div>
-
                     </div>
-
                     <!--form code end-->
                 </div>
             </main>
             <!-- pop up status -->
             <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="1000" [draggable]="
-            false" [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+              false" [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
             </p-confirmDialog>
         </div>
     </div>
 </article>
+
 <article [ngClass]="{'inactive' : !showPermission}">
     <div *ngIf="showPermission">
         <div class="page-wrapper ">
@@ -239,21 +221,14 @@
                                     <div class="">
                                         <div class="page-header main-page-header">
                                             <div class="main-page-title-manage page-title text-center">
-                                                <!-- <span class="page-tile-img">
-                                                    <i class="material-symbols-outlined">user_attributes</i>
-                                                </span> -->
                                                 <div class="manage-title-name">
                                                     <div>{{display_name}}</div>
-                                                    <div class="sub-manage-title">Menu Permission</div>
+                                                    <div class="sub-manage-title">
+                                                        Menu Permission
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <!-- <div class="main-page-action-manage ">
-                                                <a class="manage-btn float-end" (click)="hidePermisssionTab()">
-                                                    <i class="fa fa-home"></i>
-                                                    All Roles</a>
-                                            </div> -->
                                         </div>
-
                                         <div id="permission" class="formContainer" role="dialog"
                                             [ngClass]="{'inactive' : !showPermission}">
                                             <div class="" role="document">
@@ -266,16 +241,12 @@
                                                                         <div class="formAccodianHead selectAllBlock">
                                                                             <div
                                                                                 class="col-lg-12 col-md-12 col-sm-12 mcColumn noPadding">
-                                                                                <span class="formAccodianTitle">Select
-                                                                                    Menu Item</span>
+                                                                                <span class="formAccodianTitle">
+                                                                                    Select Menu Item
+                                                                                </span>
                                                                             </div>
-                                                                            <!-- <div class="col-lg-4 col-md-4 col-sm-12 mcColumn noPadding">
-                                                                                <span class="formAccodianTitle">Is Applicable</span>
-                                                                              </div> -->
-
                                                                         </div>
                                                                         <div class="form-scroller row">
-
                                                                             <div class="formAccodianList"
                                                                                 *ngFor="let modulesList of modules">
                                                                                 <div class="formAccodianList_main"
@@ -288,7 +259,8 @@
                                                                                             (click)="accordianclick(modulesList.module_id)">
                                                                                             <i class="fa"
                                                                                                 [class.fa-circle-plus]="modulesList.active != 1"
-                                                                                                [class.fa-circle-minus]="modulesList.active == 1"></i>
+                                                                                                [class.fa-circle-minus]="modulesList.active == 1">
+                                                                                            </i>
                                                                                             {{modulesList.module_name}}
                                                                                         </span>
                                                                                     </div>
@@ -299,10 +271,8 @@
                                                                                         [ngModelGroup]="i.toString()">
                                                                                         <div class='col-md-2 mb-2'
                                                                                             *ngIf="files.module_id == modulesList.module_id">
-
                                                                                             <div class="formAccodiansubList "
-                                                                                                [ngClass]="{
-                                                                                  'active': modulesList.active == 1}">
+                                                                                                [ngClass]="{'active': modulesList.active == 1}">
                                                                                                 <div
                                                                                                     *ngIf="files.module_id == modulesList.module_id">
                                                                                                     <div class="card shadow-sm border rounded p-3"
@@ -311,8 +281,8 @@
                                                                                                             class="mb-2 text-primary">
                                                                                                             {{
                                                                                                             files.menu_name
-                                                                                                            }}</h6>
-
+                                                                                                            }}
+                                                                                                        </h6>
                                                                                                         <div
                                                                                                             class="form-check">
                                                                                                             <input
@@ -328,7 +298,6 @@
                                                                                                                 Applicable
                                                                                                             </label>
                                                                                                         </div>
-
                                                                                                         <input
                                                                                                             type="hidden"
                                                                                                             name="menu_id"
@@ -336,40 +305,36 @@
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-
                                                                                         </div>
                                                                                     </ng-container>
                                                                                 </div>
-
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-wrapper pb-5">
-
                                                                         <div class="row mt-4 sticky-footer-buttons">
                                                                             <div class="col-12 text-end">
                                                                                 <button pButton type="button"
                                                                                     label="Back"
                                                                                     class="p-button-secondary me-3 custom-cancel-btn"
-                                                                                    (click)="hidePermisssionTab()"></button>
-
+                                                                                    (click)="hidePermisssionTab()">
+                                                                                </button>
                                                                                 <button pButton type="submit"
                                                                                     label="Submit"
                                                                                     class="save-button custom-cancel-btn"
-                                                                                    (click)="menuRolePermission(permissionform)"></button>
+                                                                                    (click)="menuRolePermission(permissionform)">
+                                                                                </button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                                 <div class="table-responsive m-t-15">
-
-
                                                                     <!-- POPUP MODAL -->
                                                                     <div id="menuPopup" class="popup">
                                                                         <div class="popup-content">
-                                                                            <h2>Select Default Menu</h2>
-
+                                                                            <h2>
+                                                                                Select Default Menu
+                                                                            </h2>
                                                                             <select [(ngModel)]="selectedMenuId"
                                                                                 name="defaultMenu" required>
                                                                                 <option
@@ -378,16 +343,15 @@
                                                                                     {{ menu.name }}
                                                                                 </option>
                                                                             </select>
-
                                                                             <div class="popup-actions">
                                                                                 <button (click)="closePopup()"
-                                                                                    class="cancel-btns">Cancel</button>
+                                                                                    class="p-button-secondary me-3 custom-cancel-btn">Cancel
+                                                                                </button>
                                                                                 <button [disabled]="!selectedMenuId"
                                                                                     (click)="confirmSelection(permissionform)"
                                                                                     class="confirm-btn save-button">
                                                                                     Confirm
                                                                                 </button>
-
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -398,7 +362,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -409,30 +372,9 @@
         </div>
     </div>
 </article>
-<div class="card flex justify-content-center">
-    <!-- <p-toast position="center" key="confirm" (onClose)="onReject()" [baseZIndex]="5000">
-        <ng-template let-message pTemplate="message">
-            <div class="flex flex-column" style="flex: 1">
-                <div class="text-center">
-                    <i class="fa fa-exclamation-triangle" style="font-size: 3rem"></i>
-                    <h4>{{message.summary}}</h4>
-                    <p>{{message.detail}}</p>
-                </div>
-                <div class="row ">
-                    <div class="col-6 p-fluid">
 
-                        <button type="button col-12" pButton (click)="onConfirm()" label="Yes"
-                            class="p-button-success"></button>
-                    </div>
-                    <div class="col-6 p-fluid ">
-
-                        <button type="button col-12" pButton (click)="onReject()" label="No"
-                            class="p-button-secondary"></button>
-                    </div>
-
-                </div>
-            </div>
-        </ng-template>
-    </p-toast> -->
+<div *ngIf="visibleShowConfirm" class="backdrop">
 </div>
-<div *ngIf="visibleShowConfirm" class="backdrop"></div>
+
+<p-toast key="tc" position="top-right">
+</p-toast>
