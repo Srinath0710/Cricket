@@ -54,7 +54,6 @@ export class ClubRegistrationComponent implements OnInit {
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = 0;
   public ShowForm: boolean = false;
-  isEditMode: boolean = false;
   isClientShow: boolean = false;
   club_id: any;
   loading = false;
@@ -96,11 +95,11 @@ export class ClubRegistrationComponent implements OnInit {
   croppedImage: any;
 
   constructor(private formBuilder: FormBuilder,
-     private apiService: ApiService,
-      private urlConstant: URLCONSTANT,
-       private msgService: MessageService,
-    private confirmationService: ConfirmationService, 
-    public cricketKeyConstant: CricketKeyConstant, 
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private msgService: MessageService,
+    private confirmationService: ConfirmationService,
+    public cricketKeyConstant: CricketKeyConstant,
     private uploadImgService: UploadImgService,
     private spinnerService: SpinnerService,
   ) {
@@ -111,7 +110,7 @@ export class ClubRegistrationComponent implements OnInit {
     this.spinnerService.raiseDataEmitterEvent('on');
     this.addClubForm = this.formBuilder.group({
       club_id: [''],
-      parent_club_id: ['', [Validators.required]],
+      parent_club_id: [''],
       club_short: ['', [Validators.required]],
       club_name: ['', Validators.required],
       country_id: ['', Validators.required],
@@ -119,9 +118,8 @@ export class ClubRegistrationComponent implements OnInit {
       city_id: ['', Validators.required],
       address_1: [''],
       address_2: [''],
-      post_code: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9]{1,10}$')]],
+      post_code: ['', [ Validators.pattern('^[A-Za-z0-9]{1,10}$')]],
       email_id: ['', [
-        Validators.required,
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
       mobile: ['', [Validators.pattern('^[0-9]{10}$')]],
@@ -178,9 +176,9 @@ export class ClubRegistrationComponent implements OnInit {
 
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message ===
-       this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
+        this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
         (this.spinnerService.raiseDataEmitterEvent('off'),
-  this.gridData = [], this.totalData = this.gridData.length);
+          this.gridData = [], this.totalData = this.gridData.length);
     });
   }
 
@@ -195,6 +193,14 @@ export class ClubRegistrationComponent implements OnInit {
     const cleaned = input.replace(/['"]/g, '');
     this.addClubForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
+
+  allowOnlyNumbers(event: KeyboardEvent) {
+    const key = event.key;
+    if (!/^\d$/.test(key)) {
+      event.preventDefault();
+    }
+  }
+
 
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
@@ -227,11 +233,8 @@ export class ClubRegistrationComponent implements OnInit {
     this.imageDefault = null;
   }
   clearForm() {
-    if (!this.isEditMode) {
       this.addClubForm.reset();
       this.submitted = false;
-
-      // Clear image-related data
       this.filedata = null;
       this.url = null;
       this.profileImages = null;
@@ -239,7 +242,7 @@ export class ClubRegistrationComponent implements OnInit {
       this.showCropperModal = false;
       this.stateList = [];
       this.citiesList = [];
-    }
+    
   }
 
   onSearchChange() {
@@ -264,6 +267,8 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   onAddClub() {
+
+    
     this.submitted = true;
 
     if (this.addClubForm.invalid) {
@@ -271,7 +276,7 @@ export class ClubRegistrationComponent implements OnInit {
       return;
     }
 
-    const isEdit = !!this.addClubForm.value.club_id;
+    const isEdit = !this.addClubForm.value.club_id;
 
     const params: UpdateClub = {
       user_id: String(this.user_id),
@@ -350,7 +355,6 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   EditClub(club_id: any) {
-    this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -537,10 +541,9 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   openAddClubForm() {
-    this.isEditMode = false;
     this.ShowForm = true;
     this.submitted = false;
-    this.addClubForm.reset();
+    // this.addClubForm.reset();
     this.previewUrl = null;
     this.stateList = [];
     this.citiesList = [];
@@ -754,6 +757,7 @@ export class ClubRegistrationComponent implements OnInit {
       this.addCallBack(baseRes);
     }
   }
+  
 
 }
 

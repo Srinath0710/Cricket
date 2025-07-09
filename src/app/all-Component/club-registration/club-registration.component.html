@@ -24,23 +24,23 @@
 
                         <!-- <div class="d-flex align-items-center"> -->
 
-                            <form class="d-flex align-items-center gap-2" (submit)="gridload()" >
-                                <div class="p-input-icon-right flex-grow-1">
-                                    <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
-                                        class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"
-                                        (input)="filterGlobal()" (input)="sanitizeQuotesOnly('club_name', $event)"
-                                        (ngModelChange)="onSearchChange()" />
-                                </div>
-                                <button type="button" class="clear-button" (click)="clearSearch()">Clear</button>
-                            </form>
-
-                            <div class="card flex justify-center">
-                                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                                    (click)="openAddClubForm()">
-                                    <i class="fas fa-plus"></i>
-                                    Club
-                                </button>
+                        <form class="d-flex align-items-center gap-2" (submit)="gridload()">
+                            <div class="p-input-icon-right flex-grow-1">
+                                <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
+                                    class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"
+                                    (input)="filterGlobal()" (input)="sanitizeQuotesOnly('club_name', $event)"
+                                    (ngModelChange)="onSearchChange()" />
                             </div>
+                            <button type="button" class="clear-button" (click)="clearSearch()">Clear</button>
+                        </form>
+
+                        <div class="card flex justify-center">
+                            <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                                (click)="openAddClubForm()">
+                                <i class="fas fa-plus"></i>
+                                Club
+                            </button>
+                        </div>
                         <!-- </div> -->
                     </div>
 
@@ -126,10 +126,15 @@
             [closable]="false" [styleClass]="'p-confirm-dialog-custom'"></p-confirmDialog>
 
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="small-heading">
-                    {{ isEditMode ? 'Edit Club' : 'Add Club' }}
-                </h3>
+             <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="small-heading">
+                    <div
+                        *ngIf="addClubForm.get('club_id')?.value == '' || addClubForm.get('club_id')?.value == null">
+                        Add Club </div>
+                    <div
+                        *ngIf="addClubForm.get('club_id')?.value != null && addClubForm.get('club_id')?.value != ''">
+                        Edit Club</div>
+                </div>
             </div>
 
             <form [formGroup]="addClubForm">
@@ -153,18 +158,14 @@
                             placeholder="Parent Club Name" optionValue="club_id" class="drop-error"
                             [panelStyleClass]="'custom-dropdown-panel'">
                         </p-dropdown>
-                        <!-- <small
-                            *ngIf="addClubForm.get('parent_club_id')?.invalid && (addClubForm.get('parent_club_id')?.touched || submitted)"
-                            class="required-msg">
-                            Parent Club Name is Required
-                        </small> -->
+            
                     </div>
 
                     <div class="col-md-6">
                         <label> Club Short
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" formControlName="club_short"
+                        <input class="form-control" maxlength="10" type="text" formControlName="club_short"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('club_short',$event)">
                         <small
                             *ngIf="addClubForm.get('club_short')?.invalid && (addClubForm.get('club_short')?.touched || submitted)"
@@ -239,7 +240,6 @@
                     </div>
 
                     <div class="col-md-6"><label> Address 1
-                            <span class="text-danger">*</span>
                         </label>
                         <input class="form-control" maxlength="50" type="text" formControlName="address_1"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('address_1',$event)">
@@ -263,31 +263,19 @@
                     </div>
 
                     <div class="col-md-6"><label> Post Code
-                        
+
                         </label>
                         <input class="form-control" maxlength="10" type="text" formControlName="post_code"
                             pattern="^[A-Za-z0-9]{1,10}$" (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('post_code', $event)">
-
-                        <small
-                            *ngIf="addClubForm.get('post_code')?.invalid && (addClubForm.get('post_code')?.touched || submitted)"
-                            class="required-msg">
-                            {{
-                            addClubForm.get('post_code')?.errors?.['required']
-                            ? 'post code is Required'
-                            : addClubForm.get('post_code')?.errors?.['pattern']
-                            ? 'Please enter a valid post code (e.g., 123456)'
-                            : ''
-                            }}
-                        </small>
                     </div>
 
                     <div class="col-md-6">
-                        <label>Email ID <span class="text-danger">*</span></label>
+                        <label>Email ID</label>
                         <input class="form-control" type="text" formControlName="email_id"
                             pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('email_id', $event)">
-                        <small
+                         <small
                             *ngIf="addClubForm.get('email_id')?.invalid && (addClubForm.get('email_id')?.touched || submitted)"
                             class="required-msg">
                             {{
@@ -295,26 +283,27 @@
                             ? 'Please enter a valid Email ID (e.g., example@domain.com)'
                             : ''
                             }}
-                        </small>
+                        </small> 
                     </div>
 
                     <div class="col-md-6">
-                        <label>Mobile <span class="text-danger">*</span></label>
+                        <label>Mobile</label>
                         <input class="form-control" type="text" maxlength="10" formControlName="mobile"
-                            pattern="^[0-9]{10}$" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('mobile', $event)">
+                            (keypress)="allowOnlyNumbers($event)" (input)="sanitizeQuotesOnly('mobile', $event)" />
 
                         <small
                             *ngIf="addClubForm.get('mobile')?.errors?.['required'] && (addClubForm.get('mobile')?.touched || submitted)"
                             class="required-msg">
                             Mobile Number is Required
                         </small>
+
                         <small
                             *ngIf="addClubForm.get('mobile')?.errors?.['pattern'] && (addClubForm.get('mobile')?.touched || submitted)"
                             class="required-msg">
                             Please enter a valid 10-digit Mobile Number
                         </small>
                     </div>
+
 
                     <div class="col-md-6">
                         <label>Website</label>
@@ -326,7 +315,7 @@
 
                     <div class="col-md-6">
                         <label>Remarks</label>
-                        <textarea class="form-control" formControlName="remarks" rows="4" maxlength="500"
+                        <textarea class="form-control" formControlName="remarks" rows="4" maxlength="150"
                             (keypress)="blockQuotesOnly($event)"
                             (input)="sanitizeQuotesOnly('remarks', $event)"></textarea>
 
@@ -398,7 +387,7 @@
                                 (click)="clearForm()">
                             </button>
 
-                            <button pButton type="button" label="Save" class="save-button"
+                            <button pButton type="" label="Save" class="save-button"
                                 (click)="onAddClub()"></button>
                         </div>
                     </div>
