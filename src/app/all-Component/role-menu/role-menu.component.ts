@@ -301,11 +301,13 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
 
     /*  "CLEAR" button and "search box" on top of the table  */
 
+  filterGlobal() {
+  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
 
-    filterGlobal($event: any, stringVal: any) {
-        this.dt?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-    }
-
+    this.dt?.filterGlobal(this.searchKeyword, 'contains');
+    this.gridLoad();
+  }
+  }
 
     clear() {
         this.dt.clear();

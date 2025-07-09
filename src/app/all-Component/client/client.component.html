@@ -28,8 +28,11 @@
                             </div>
                         </div>
                     </div>
-                    <p-table #dt [value]="Clientdata" [styleClass]="'custom-table'"
-                        [globalFilterFields]="['Client','country','email_id','mobile','record_status']">
+                 
+
+                    <p-table #dt [value]="Clientdata" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
+                        [rowsPerPageOptions]="[10,25,50,100]" [styleClass]="'custom-table'"
+                        [globalFilterFields]="['Client','country','email_id','mobile','record_status']"> 
                         <ng-template pTemplate="header">
                             <tr>
                                 <th class="col-3" pSortableColumn="Client">Client <p-sortIcon field="country_name">
@@ -102,9 +105,7 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-                        [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
-                    </p-paginator>
+            
 
                 </div>
             </div>
@@ -367,7 +368,7 @@
                                 *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
                                 (click)="resetForm()"></button>
 
-                            <button pButton type="button" label="Save" class="save-button"
+                            <button pButton  label="Save" class="save-button"
                                 (click)="onAddClient()"></button>
 
 

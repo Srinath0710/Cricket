@@ -15,7 +15,7 @@
                                 <div class="p-input-icon-right flex-grow-1">
                                     <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword"
                                         class="width-search" placeholder="  Search"
-                                        (input)="filterGlobal($event, 'contains')" (keypress)="blockQuotesOnly($event)"
+                                        (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
                                         (input)="sanitizeQuotesOnly('Search', $event)"
                                          style="background-color: white; color: #495057;  
                                          border: 1px solid #ced4da; padding-left: 18px; box-shadow: none;">
@@ -184,7 +184,7 @@
                                                         (click)="resetForm()">
                                                         Clear
                                                     </button>
-                                                    <button pButton type="button" class="save-button"
+                                                    <button pButton  class="save-button"
                                                         (click)="addNewRole()">Save
                                                     </button>
                                                     <!-- class="clear-button submit-btn margin-right" -->

@@ -729,7 +729,12 @@ export class GroundsComponent implements OnInit {
   }
 
   filterGlobal() {
+  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
+    this.first = 1;
+    this.gridload();
+  }
   }
 
   clear() {

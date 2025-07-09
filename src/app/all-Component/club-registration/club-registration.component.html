@@ -28,8 +28,7 @@
                             <div class="p-input-icon-right flex-grow-1">
                                 <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
                                     class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"
-                                    (input)="filterGlobal()" (input)="sanitizeQuotesOnly('club_name', $event)"
-                                    (ngModelChange)="onSearchChange()" />
+                                    (input)="filterGlobal()" (input)="sanitizeQuotesOnly('club_name', $event)" />
                             </div>
                             <button type="button" class="clear-button" (click)="clearSearch()">Clear</button>
                         </form>
@@ -387,7 +386,7 @@
                                 (click)="clearForm()">
                             </button>
 
-                            <button pButton type="" label="Save" class="save-button"
+                            <button pButton  label="Save" class="save-button"
                                 (click)="onAddClub()"></button>
                         </div>
                     </div>

@@ -1240,17 +1240,18 @@ duplicateChange(isEditMode: boolean = false) {
   }
 
   filterGlobal() {
+  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
+    this.first = 1;
+    this.gridLoad();
+  }
   }
   clear() {
     this.searchKeyword = '';
     this.dt.clear();
     this.gridLoad();
   }
-  // onEnterPress(event: KeyboardEvent): void {
-  //   event.preventDefault();
-  //   this.filterGlobal();
-  // }
 
 
 }

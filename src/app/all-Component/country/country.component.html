@@ -7,45 +7,40 @@
             <div class="main-page-title page-title playerbackground">
               <i class="fa-solid fa-globe" aria-hidden="true"></i>
               All Countries
-            <div class="totalrecord">: {{ totalData }}</div>
+              <div class="totalrecord">: {{ totalData }}</div>
             </div>
             <div class="d-flex align-items-center">
 
-           <!-- Search Form -->
-           <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
-            <div class="p-input-icon-right flex-grow-1">
-              <input
-                pInputText
-                type="text"
-                [(ngModel)]="searchKeyword"
-                name="searchKeyword"
-                class="width-search"
-                placeholder="  Search"
-                (input)="filterGlobal()"
-              (keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('team_name', $event)">
-            </div>
-          
-             <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
+              <!-- Search Form -->
+              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                <div class="p-input-icon-right flex-grow-1">
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('team_name', $event)">
+                </div>
 
-          </form>
+                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
 
-      
-            <div class="card flex justify-center">
-              <button  *ngIf="!ShowForm" class="new-button p-button-text"
-                (click)="resetForm()" (click)="showAddForm()"> <i class="fas fa-plus"></i> Country</button>
+              </form>
+
+
+              <div class="card flex justify-center">
+                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                  (click)="showAddForm()"> <i class="fas fa-plus"></i> Country</button>
+              </div>
             </div>
           </div>
-          </div>
-          <p-table #dt [value]="countriesData"[styleClass]="'custom-table'" 
-     [globalFilterFields]="['country_name','iso_code_3','region_name','sub_region','record_status']"
-        >     <ng-template pTemplate="header">
+          <p-table #dt [value]="countriesData" [styleClass]="'custom-table'"
+            [globalFilterFields]="['country_name','iso_code_3','region_name','sub_region','record_status']">
+            <ng-template pTemplate="header">
               <tr>
-                <th class="col-3" pSortableColumn="country_name">Country Name <p-sortIcon field="country_name"></p-sortIcon>
+                <th class="col-3" pSortableColumn="country_name">Country Name <p-sortIcon
+                    field="country_name"></p-sortIcon>
                 </th>
                 <th class="col-2" pSortableColumn="iso_code_3">ISO Code 3 <p-sortIcon field="iso_code_3"></p-sortIcon>
                 </th>
-                <th class="col-2" pSortableColumn="region_name">Region Name <p-sortIcon field="region_name"></p-sortIcon>
+                <th class="col-2" pSortableColumn="region_name">Region Name <p-sortIcon
+                    field="region_name"></p-sortIcon>
                 </th>
                 <th class="col-2" pSortableColumn="sub_region">Sub Region<p-sortIcon field="sub_region"></p-sortIcon>
                 </th>
@@ -57,18 +52,18 @@
 
             <ng-template pTemplate="body" let-country>
               <tr>
-               <td>
+                <td>
                   <div class="player-name-cell">
-                  <span class="person-image-team-player">
-                    <img class="player-img" *ngIf="country.country_image==null || country.country_image==''"
-                      [src]="default_img">
+                    <span class="person-image-team-player">
+                      <img class="player-img" *ngIf="country.country_image==null || country.country_image==''"
+                        [src]="default_img">
 
-                    <img class="player-img" *ngIf="country.country_image!=null  && country.country_image!=''"
-                      [src]="country.country_image" (error)="handleImageError($event, default_img)">
-                  </span>
+                      <img class="player-img" *ngIf="country.country_image!=null  && country.country_image!=''"
+                        [src]="country.country_image" (error)="handleImageError($event, default_img)">
+                    </span>
                     {{ country.country_name }}
-                </div>
-               </td>
+                  </div>
+                </td>
                 <td>{{ country.iso_code_3 }}</td>
                 <td>{{ country.region_name }}</td>
                 <td>{{ country.sub_region }}</td>
@@ -77,15 +72,16 @@
                     ' bg-success': country.record_status === 'Active',
                     ' bg-danger': country.record_status === 'InActive'
                   }">
-                {{ country.record_status }}
-              </span>
+                    {{ country.record_status }}
+                  </span>
                 </td>
                 <td>
-                <span class="icon-blue" (click)="EditCountry(country.country_id)" pTooltip="Edit" tooltipPosition="top">
-                  <i class="fa-solid fa-user-pen"></i>
-                </span>
+                  <span class="icon-blue" (click)="EditCountry(country.country_id)" pTooltip="Edit"
+                    tooltipPosition="top">
+                    <i class="fa-solid fa-user-pen"></i>
+                  </span>
 
-               <span class="icon-green"
+                  <span class="icon-green"
                     (click)="StatusConfirm(country.country_id,conditionConstants.active_status,country.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
@@ -100,162 +96,146 @@
               </tr>
             </ng-template>
           </p-table>
-     <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-      [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>
       </div>
     </main>
-                  <!-- STATUS Confirmation POPUP -->
+    <!-- STATUS Confirmation POPUP -->
 
-    <p-confirmDialog 
-    [style]="{width: '300px', height: '200px'}"
-    [baseZIndex]="10000"
-    [draggable]="false"
-    [closable]="false"
-    [styleClass]="'p-confirm-dialog-custom'">
-  </p-confirmDialog>
+    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+    </p-confirmDialog>
 
-  <p-drawer [(visible)]="ShowForm"  [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+    <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div class="small-heading">
-        <div
-            *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="small-heading">
+          <div *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null">
             Add Country </div>
-        <div
-            *ngIf="addCountryForm.get('country_id')?.value != null && addCountryForm.get('country_id')?.value != ''">
+          <div *ngIf="addCountryForm.get('country_id')?.value != null && addCountryForm.get('country_id')?.value != ''">
             Edit Country</div>
-    </div>
-    </div>
+        </div>
+      </div>
 
- 
-        <form [formGroup]="addCountryForm">
-          <div class="row gy-3">
-           <div class="col-md-6">
-              <label> Region <span class="text-danger">*</span>
-              </label>
-              <p-dropdown 
-                [options]="regionsData"
-                formControlName="region_id"
-                optionValue="region_id" 
-                optionLabel="region_name"
-                placeholder="Select Region"
-                class="drop-error">
-                
-                <ng-template let-region1 pTemplate="item">
-                  <div class="flex align-items-center gap-2">
-                    <div>{{ region1.region_name }}</div>
+
+      <form [formGroup]="addCountryForm">
+        <div class="row gy-3">
+          <div class="col-md-6">
+            <label> Region <span class="text-danger">*</span>
+            </label>
+            <p-dropdown [options]="regionsData" formControlName="region_id" optionValue="region_id"
+              optionLabel="region_name" placeholder="Select Region" class="drop-error">
+
+              <ng-template let-region1 pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ region1.region_name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+
+            <small
+              *ngIf="addCountryForm.get('region_id')?.invalid && (addCountryForm.get('region_id')?.touched || submitted)"
+              class="required-msg">
+              Region is required
+            </small>
+          </div>
+
+
+          <div class="col-md-6">
+            <label>Country Name
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" formControlName="country_name"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('team_name', $event)">
+            <small
+              *ngIf="addCountryForm?.get('country_name')?.invalid &&(addCountryForm?.get('country_name')?.touched) || (addCountryForm.get('country_name')?.invalid && submitted)"
+              class="required-msg">Country
+              Name Is Required
+            </small>
+          </div>
+          <div class="col-md-6">
+            <label>Time Zone
+              <span class="text-danger">*</span></label>
+            <p-dropdown [options]="timezoneData" class="drop-error "
+              [ngModel]="addCountryForm.get('time_zone_id')?.value" formControlName="time_zone_id"
+              optionValue="time_zone_id" optionLabel="time_zone_anme" [filter]="true" filterBy="time_zone_anme"
+              [showClear]="false" placeholder="Select Timezone" [panelStyleClass]="'custom-dropdown-panel'">
+
+              <ng-template let-timezone pTemplate="item">
+                <div class="flex align-items-center gap-2 ">
+
+                  <div>{{ timezone.time_zone_anme }}
                   </div>
-                </ng-template>
-              </p-dropdown>
-            
-              <small
-                *ngIf="addCountryForm.get('region_id')?.invalid && (addCountryForm.get('region_id')?.touched || submitted)"
-                class="required-msg">
-                Region is required
-              </small>
-            </div> 
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              *ngIf="addCountryForm.get('time_zone_id')?.invalid &&(addCountryForm.get('time_zone_id')?.touched) || (addCountryForm.get('time_zone_id')?.invalid && submitted)"
+              class="required-msg"> Time Zone Is Required
+            </small>
+          </div>
+          <div class="col-md-6">
+            <label>Iso Code 2
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="2" type="text" formControlName="iso_code_2"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('iso_code_2', $event)">
+            <small
+              *ngIf="addCountryForm?.get('iso_code_2')?.invalid &&(addCountryForm?.get('iso_code_2')?.touched) || (addCountryForm.get('iso_code_2')?.invalid && submitted)"
+              class="required-msg"> Iso Code 2 Is Required
+            </small>
+          </div>
 
+          <div class="col-md-6">
+            <label>Iso Code 3
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="3" type="text" formControlName="iso_code_3"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('iso_code_3', $event)">
+            <small
+              *ngIf="addCountryForm?.get('iso_code_3')?.invalid &&(addCountryForm?.get('iso_code_3')?.touched) || (addCountryForm.get('iso_code_3')?.invalid && submitted)"
+              class="required-msg">Iso Code 3 Is Required
+            </small>
+          </div>
 
-            <div class="col-md-6">
-              <label >Country Name
-                <span class="text-danger">*</span>
-              </label>
-              <input class="form-control" maxlength="50" type="text"
-                formControlName="country_name"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('team_name', $event)">
-              <small
-                *ngIf="addCountryForm?.get('country_name')?.invalid &&(addCountryForm?.get('country_name')?.touched) || (addCountryForm.get('country_name')?.invalid && submitted)"
-                class="required-msg">Country
-                Name Is Required
-              </small>
-            </div>
-            <div class="col-md-6">
-                <label >Time Zone
-                  <span class="text-danger">*</span></label>
-                <p-dropdown [options]="timezoneData" class="drop-error "
-                  [ngModel]="addCountryForm.get('time_zone_id')?.value" formControlName="time_zone_id"
-                  optionValue="time_zone_id" optionLabel="time_zone_anme" [filter]="true"
-                  filterBy="time_zone_anme" [showClear]="false"
-                  placeholder="Select Timezone"
-
-                  [panelStyleClass]="'custom-dropdown-panel'">
-
-                  <ng-template let-timezone pTemplate="item">
-                    <div class="flex align-items-center gap-2 ">
-
-                      <div>{{ timezone.time_zone_anme }}
-                      </div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-                <small
-                  *ngIf="addCountryForm.get('time_zone_id')?.invalid &&(addCountryForm.get('time_zone_id')?.touched) || (addCountryForm.get('time_zone_id')?.invalid && submitted)"
-                  class="required-msg"> Time Zone Is Required
-                </small>
-            </div>
-            <div class="col-md-6">
-              <label >Iso Code 2
-                <span class="text-danger">*</span>
-              </label>
-              <input class="form-control" maxlength="2" type="text"
-                formControlName="iso_code_2"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('iso_code_2', $event)">
-              <small
-                *ngIf="addCountryForm?.get('iso_code_2')?.invalid &&(addCountryForm?.get('iso_code_2')?.touched) || (addCountryForm.get('iso_code_2')?.invalid && submitted)"
-                class="required-msg"> Iso Code 2 Is Required
-              </small>
-            </div>
-
-            <div class="col-md-6">
-              <label >Iso Code 3
-                <span class="text-danger">*</span>
-              </label>
-              <input class="form-control" maxlength="3" type="text"
-                formControlName="iso_code_3"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('iso_code_3', $event)">
-              <small
-                *ngIf="addCountryForm?.get('iso_code_3')?.invalid &&(addCountryForm?.get('iso_code_3')?.touched) || (addCountryForm.get('iso_code_3')?.invalid && submitted)"
-                class="required-msg">Iso Code 3 Is Required
-              </small>
-            </div>
-
-            <div class="col-md-6">
-              <label>Sub Region
-                <span class="text-danger">*</span>
-              </label>
-              <input class="form-control" maxlength="50" type="text"
-                formControlName="sub_region"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('sub_region', $event)">
-              <small
-                *ngIf="addCountryForm.get('sub_region')?.invalid &&(addCountryForm.get('sub_region')?.touched) || (addCountryForm.get('sub_region')?.invalid && submitted)"
-                class="required-msg">Sub Region Is Required
-              </small>
-            </div>
-               <div class="col-md-6">
+          <div class="col-md-6">
+            <label>Sub Region
+              <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" maxlength="50" type="text" formControlName="sub_region"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('sub_region', $event)">
+            <small
+              *ngIf="addCountryForm.get('sub_region')?.invalid &&(addCountryForm.get('sub_region')?.touched) || (addCountryForm.get('sub_region')?.invalid && submitted)"
+              class="required-msg">Sub Region Is Required
+            </small>
+          </div>
+          <div class="col-md-6">
             <label>Profile Image</label>
             <div class="image-upload-container text-center">
 
-                <div class="image-preview-wrapper">
-                  <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
-                  <img  *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"  [src]="default_img"  alt="Profile Image" class="profile-img">
-                  <img  *ngIf="filedata != null && filedata != ''" [src]="url"  alt="Profile Image" class="profile-img">
-                  <img  *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
-                </div>
+              <div class="image-preview-wrapper">
+                <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+                <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                  [src]="default_img" alt="Profile Image" class="profile-img">
+                <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image" class="profile-img">
+                <img *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"
+                  (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
+              </div>
 
 
-               <div class="split-button-wrapper">
-                  <label for="profileImageInput" class="split-button upload-half">
-                    <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
-                      formControlName="country_image" />
-                    Upload
-                  </label>
-                  <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
-                    Crop
-                  </button>
-                </div>
+              <div class="split-button-wrapper">
+                <label for="profileImageInput" class="split-button upload-half">
+                  <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
+                    formControlName="country_image" />
+                  Upload
+                </label>
+                <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                  Crop
+                </button>
+              </div>
 
             </div>
             <small class="text-danger" *ngIf="addCountryForm.get('country_image')?.errors">
@@ -268,37 +248,34 @@
                   <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
                 </div>
                 <div class="modal-body img-fix">
-                  <image-cropper [imageBase64]="imageBase64" 
-                    [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
-                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" 
-                    (cropperReady)="cropperReady()"
+                  <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
                     (loadImageFailed)="loadImageFailed()">
                   </image-cropper>
                 </div>
-             <div class="modal-footer crop-footer">
-                    <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
-                    <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
-                  </div>
+                <div class="modal-footer crop-footer">
+                  <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
+                  <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+                </div>
               </div>
             </div>
           </div>
-            
-          </div>
-          <div class="form-wrapper pb-5">
+
+        </div>
+        <div class="form-wrapper pb-5">
           <div class="row mt-4 sticky-footer-buttons">
             <div class="col-12 text-end">
               <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                 (click)="cancelForm()"></button>
-                <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
+              <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                 *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null"
                 (click)="resetForm()"></button>
-              <button pButton type="button" label="Save" class="save-button"
-                (click)="onAddCountry()"></button>      
+              <button pButton  label="Save" class="save-button" (click)="onAddCountry()"></button>
             </div>
           </div>
-          </div>
-        </form>
-  </p-drawer>
+        </div>
+      </form>
+    </p-drawer>
   </div>
 </div>
- <p-toast key="tc" position="top-right"></p-toast>
+<p-toast key="tc" position="top-right"></p-toast>

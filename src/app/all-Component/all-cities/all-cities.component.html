@@ -64,7 +64,7 @@
             </div>
           </div>
 
-          <p-table [value]="cityData" [styleClass]="'custom-table'"
+          <p-table #dt [value]="cityData" [styleClass]="'custom-table'"
             [globalFilterFields]="['city_name','city_code','state_name','country_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
@@ -160,9 +160,10 @@
           </div>
           <div class="col-md-6">
             <label>State
+              <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="statesFormList" class="drop-error " formControlName="state_id" optionValue="state_id"
-              optionLabel="state_name" placeholder="select State" [filter]="true">
+              optionLabel="state_name" placeholder="Select State" [filter]="true">
               <ng-template let-state pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ state.state_name }}
@@ -170,6 +171,9 @@
                 </div>
               </ng-template>
             </p-dropdown>
+            <small *ngIf="addCityForm.get('state_id')?.invalid && (addCityForm.get('state_id')?.touched || submitted)"
+              class="required-msg">State Name is required
+            </small>
 
           </div>
 
@@ -186,7 +190,7 @@
           <div class="col-md-6">
             <label for="city_code">City Code <span class="text-danger">*</span></label>
             <input id="city_code" type="text" class="form-control drop-error" 
-              formControlName="city_code" maxlength="10"(keypress)="blockQuotesOnly($event)"
+              formControlName="city_code" maxlength="6"(keypress)="blockQuotesOnly($event)"
               (input)="sanitizeQuotesOnly('city_code', $event)">
 
             <small *ngIf="addCityForm.get('city_code')?.invalid && (addCityForm.get('city_code')?.touched || submitted)"
@@ -203,7 +207,7 @@
 
               <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                 (click)="resetForm()"></button>
-              <button pButton type="button" label="Save" class="save-button" (click)="onAddCity()"></button>
+              <button pButton  label="Save" class="save-button" (click)="onAddCity()"></button>
             </div>
           </div>
           </div>

@@ -19,7 +19,7 @@ import { Country, UpdateCity } from './all-cities.model';
 import { Drawer } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { SpinnerService } from '../../services/Spinner/spinner.service'; 
+import { SpinnerService } from '../../services/Spinner/spinner.service';
 interface City {
   name: string;
   code: string;
@@ -92,7 +92,7 @@ export class AllCitiesComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService,
     private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, 
+    private confirmationService: ConfirmationService,
     public cricketKeyConstant: CricketKeyConstant,
     public spinnerService: SpinnerService
   ) {
@@ -208,7 +208,8 @@ export class AllCitiesComponent implements OnInit {
     params.client_id = this.client_id?.toString();
     params.page_no = this.first.toString();
     params.records = this.rows.toString();
-    params.user_id = this.user_id?.toString();
+    params.search_text = this.searchKeyword.toString(),
+      params.user_id = this.user_id?.toString();
     params.action_flag = this.Actionflag.Gridload;
     params.state_id = this.stateId != null ? this.stateId.toString() : null;
 
@@ -218,10 +219,10 @@ export class AllCitiesComponent implements OnInit {
       this.spinnerService.raiseDataEmitterEvent('off');
 
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === 
-      this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
-       (this.cityData = [],this.spinnerService.raiseDataEmitterEvent('off'),
-         this.totalData = this.cityData.length);
+      err.status_code === this.statusConstants.refresh && err.error.message ===
+        this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
+        (this.cityData = [], this.spinnerService.raiseDataEmitterEvent('off'),
+          this.totalData = this.cityData.length);
 
     });
   }
@@ -370,7 +371,12 @@ export class AllCitiesComponent implements OnInit {
     });
   }
   filterGlobal() {
+  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+
     this.dt?.filterGlobal(this.searchKeyword, 'contains');
+    this.first = 1;
+    this.gridLoad();
+  }
   }
   clear() {
     this.searchKeyword = '';

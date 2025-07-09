@@ -2,7 +2,7 @@
   <div class="content container-fluid">
     <main>
       <div class="card margin-card">
-        <div class="card-body mb-5">
+        <div class="card-body">
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
               <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
@@ -123,8 +123,14 @@
               </tr>
             </ng-template>
           </p-table>
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
+          </p-paginator>
+        </div>
+      </div>
+    </main>
 
-
+    
           <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
 
 
@@ -191,14 +197,6 @@
             </div>
 
           </p-dialog>
-
-
-          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-            [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
-          </p-paginator>
-        </div>
-      </div>
-    </main>
 
     <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
       [styleClass]="'p-confirm-dialog-custom'">
@@ -619,7 +617,7 @@
                 *ngIf="addGroundForm.get('ground_id')?.value == '' || addGroundForm.get('ground_id')?.value == null"
                 (click)="resetForm()"></button>
 
-              <button pButton type="button" label="Save" class="save-button" (click)="onAddGround()"></button>
+              <button pButton  label="Save" class="save-button" (click)="onAddGround()"></button>
             </div>
           </div>
         </div>
