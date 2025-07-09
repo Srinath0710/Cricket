@@ -82,6 +82,7 @@ export class PlayerRegistrationComponent implements OnInit {
   user_id: number = Number(localStorage.getItem('user_id'));
   client_id: number = Number(localStorage.getItem('client_id'));
   submitted: boolean = true;
+  isFirstEdit: boolean = true;
   PlayerData: any[] = [];
   first: number = 1;
   oldfirst: number = 1;
@@ -466,39 +467,45 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
     }
   }
 
-  duplicateChange() {
-    this.submitted = true;
-    if (this.playerRegistrationform.invalid) {
-      this.playerRegistrationform.markAllAsTouched();
-      return;
-    }
-    const params: DuplicatePlayer = {
-      user_id: this.user_id.toString(),
-      client_id: this.client_id.toString(),
-      first_name: this.playerRegistrationform.value.first_name,
-      display_name: this.playerRegistrationform.value.display_name,
-      sur_name: this.playerRegistrationform.value.sur_name,
-    };
-    this.apiService.post(this.urlConstant.duplicateplayer, params).subscribe(
-      (res) => {
-        if (
-          res.status_code === this.statusConstants.success &&
-          res.status &&
-          (res.data !== null && res.data.players.length !== 0)
-        ) {
-          this.showDuplicatePopup(res);
-        } else {
-          this.addplayerdata(); // call add only if no duplicates
-        }
-      },
-      (err: any) => {
-        err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-          ? this.apiService.RefreshToken()
-          : this.failedToast(err.error);
-      }
-    );
+duplicateChange(isEditMode: boolean = false) {
+  this.submitted = true;
+  if (this.playerRegistrationform.invalid) {
+    this.playerRegistrationform.markAllAsTouched();
+    return;
   }
+  
+  // Skip duplicate check if in edit mode
+  if (isEditMode) {
+    this.addplayerdata();
+    return;
+  }
+
+  const params: DuplicatePlayer = {
+    user_id: this.user_id.toString(),
+    client_id: this.client_id.toString(),
+    first_name: this.playerRegistrationform.value.first_name,
+    display_name: this.playerRegistrationform.value.display_name,
+    sur_name: this.playerRegistrationform.value.sur_name,
+  };
+  
+  this.apiService.post(this.urlConstant.duplicateplayer, params).subscribe(
+    (res) => {
+      if (res.status_code === this.statusConstants.success &&
+          res.status &&
+          (res.data !== null && res.data.players.length !== 0)) {
+        this.showDuplicatePopup(res);
+      } else {
+        this.addplayerdata();
+      }
+    },
+    (err: any) => {
+      err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
+        ? this.apiService.RefreshToken()
+        : this.failedToast(err.error);
+    }
+  );
+}
 
   showDuplicatePopup(response: any) {
 
@@ -683,6 +690,8 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
     client_id: this.client_id.toString(),
     player_id: player.player_id.toString()
   };
+  
+  this.visible = false;
 
   this.apiService.post(this.urlConstant.editplayer, params).subscribe((res) => {
     if (res.status_code === this.statusConstants.success && res.status) {
@@ -692,12 +701,10 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
       this.playerRegistrationform.reset();
       
       // Manually filter specs based on the player's bowling type
-     const bowlingId=editRecord.bowling_type_id??0;
-          //  console.log(this.bowlingspec,'bowlingspec',editRecord.bowling_type_id,bowlingId)
-
-        this.filteredSpecs = this.bowlingspec.filter(
-          spec => spec.parent_config_id === Number(bowlingId)
-        );
+      const bowlingId = editRecord.bowling_type_id ?? 0;
+      this.filteredSpecs = this.bowlingspec.filter(
+        spec => spec.parent_config_id === Number(bowlingId)
+      );
       
       // console.log(this.filteredSpecs,'filteredSpecs')
 
@@ -727,13 +734,37 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
         reference_id: editRecord.reference_id
       });
 
-      this.showAddForm();
+      this.ShowForm = true;
       this.filedata = null;
       this.profileImages = editRecord.profile_image + '?' + Math.random();
       this.convertUrlToBase64(editRecord.profile_image + '?' + Math.random());
     }
   });
 }
+
+
+  //  first_name: editRecord.first_name,
+  //       middle_name: editRecord.middle_name,
+  //       sur_name: editRecord.sur_name,
+  //       display_name: editRecord.display_name,
+  //       nationality_id: editRecord.nationality_id,
+  //       player_dob: editRecord.player_dob ? editRecord.player_dob.split('T')[0] : null,
+  //       mobile_no: editRecord.mobile_no,
+  //       email: editRecord.email,
+  //       gender_id: editRecord.gender_id,
+  //       player_role_id: editRecord.player_role_id,
+  //       batting_style_id: editRecord.batting_style_id,
+  //       batting_order_id: editRecord.batting_order_id,
+  //       bowling_style_id: editRecord.bowling_style_id,
+  //       bowling_type_id: editRecord.bowling_type_id,
+  //       bowling_spec_id: editRecord.bowling_spec_id,
+  //       remarks: editRecord.remarks,
+  //       jersey_no: editRecord.jersey_no,
+  //       profile_image: null,
+  //       player_id: editRecord.player_id,
+  //       club_id: editRecord.club_id,
+  //       scorecard_name: editRecord.scorecard_name,
+  //       reference_id: editRecord.reference_id
 
    fileEvent(event: any) {
     if (this.playerRegistrationform.value.profile_image.value !== null &&
