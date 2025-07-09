@@ -129,8 +129,8 @@ export class TeamsComponent implements OnInit {
       team_profile: [''],
       primary_color: [''],
       secondary_color: [''],
-      club_id: ['', [Validators.required]],
-      reference_id: ['', [Validators.required]],
+      club_id: ['',[Validators.required]],
+      reference_id: [''],
       country_id: ['', [Validators.required]],
 
     })

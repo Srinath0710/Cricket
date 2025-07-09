@@ -191,7 +191,7 @@
             <label class="">Short Name
               <span class="text-danger">*</span>
             </label>
-            <input class="form-control" maxlength="50" type="text" formControlName="team_short"
+            <input class="form-control" maxlength="15" type="text" formControlName="team_short"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('team_short', $event)">
             <small
               *ngIf="addTeamForm?.get('team_short')?.invalid &&(addTeamForm?.get('team_short')?.touched) || (addTeamForm.get('team_name')?.invalid && submitted)"
@@ -315,15 +315,10 @@
           </div>
 
           <div class="col-md-6">
-            <label class="">Reference Sourece ID
-              <span class="text-danger">*</span>
+            <label class="">Reference Source ID
             </label>
             <input class="form-control" maxlength="20" type="text" formControlName="reference_id"
               (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('reference_id', $event)">
-            <small
-              *ngIf="addTeamForm?.get('reference_id')?.invalid &&(addTeamForm?.get('reference_id')?.touched) || (addTeamForm.get('reference_id')?.invalid && submitted)"
-              class="required-msg">Reference Sourece ID Required
-            </small>
           </div>
 
           <div class="col-md-6">
@@ -386,7 +381,7 @@
                 *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
                 (click)="resetForm()"></button>
 
-              <button pButton type="button" label="Save" class="save-button" (click)="onAddTeam()"></button>
+              <button pButton type="" label="Save" class="save-button" (click)="onAddTeam()"></button>
             </div>
           </div>
         </div>
