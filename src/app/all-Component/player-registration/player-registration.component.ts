@@ -690,7 +690,7 @@ duplicateChange(isEditMode: boolean = false) {
     client_id: this.client_id.toString(),
     player_id: player.player_id.toString()
   };
-  
+
   this.visible = false;
 
   this.apiService.post(this.urlConstant.editplayer, params).subscribe((res) => {
@@ -734,7 +734,7 @@ duplicateChange(isEditMode: boolean = false) {
         reference_id: editRecord.reference_id
       });
 
-      this.ShowForm = true;
+      this.showAddForm();
       this.filedata = null;
       this.profileImages = editRecord.profile_image + '?' + Math.random();
       this.convertUrlToBase64(editRecord.profile_image + '?' + Math.random());

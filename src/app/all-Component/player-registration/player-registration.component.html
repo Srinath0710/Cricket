@@ -26,29 +26,29 @@
               </div>
 
               <!-- <div class="d-flex align-items-center"> -->
-                <!-- Search Form -->
-                <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
-                  <div class="p-input-icon-right flex-grow-1">
-                    <!-- <i class="pi pi-search" ></i> -->
-                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                      placeholder="Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-                      (input)="sanitizeQuotesOnly('Search', $event)">
-                  </div>
-                  <button type="button" class="clear-button" (click)="clear()"> Clear </button>
-                </form>
-
-                <!-- Filter Button -->
-                <div class="filter-icon-wrapper">
-                  <button class="filter-icon-button" (click)="toggleFilters()">
-                    <i class="fa fa-filter"></i>
-                  </button>
+              <!-- Search Form -->
+              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                <div class="p-input-icon-right flex-grow-1">
+                  <!-- <i class="pi pi-search" ></i> -->
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('Search', $event)">
                 </div>
+                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+              </form>
 
-                <!-- Add Button -->
-                <div class="card flex justify-center">
-                  <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                    (click)="showAddForm();editLabel()"> <i class="fas fa-plus"></i> Create</button>
-                </div>
+              <!-- Filter Button -->
+              <div class="filter-icon-wrapper">
+                <button class="filter-icon-button" (click)="toggleFilters()">
+                  <i class="fa fa-filter"></i>
+                </button>
+              </div>
+
+              <!-- Add Button -->
+              <div class="card flex justify-center">
+                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                  (click)="showAddForm();editLabel()"> <i class="fas fa-plus"></i> Create</button>
+              </div>
               <!-- </div> -->
             </div>
             <!-- STATUS Confirmation POPUP -->
@@ -221,14 +221,19 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Email Id</label>
+                          <label>Email Id
+                            <span class="text-danger">*</span>
+                          </label>
                           <input type="email" formControlName="email" class="form-control" placeholder="Enter Email">
 
                           <div
                             *ngIf="playerRegistrationform.get('email')?.touched && playerRegistrationform.get('email')?.invalid">
+                            <small *ngIf="playerRegistrationform.get('email')?.errors?.['required']" class="required-msg">
+                              Email ID is Required
+                            </small>
                             <small *ngIf="playerRegistrationform.get('email')?.errors?.['pattern']"
                               class="required-msg">
-                              * Invalid email: abcd&#64;example.com
+                              Invalid email: abcd&#64;example.com
                             </small>
                           </div>
                         </div>
@@ -525,9 +530,11 @@
                 <ng-template pTemplate="footer">
                   <div class="row mt-4 sticky-footer-buttons">
                     <div class="col-12 text-end">
-                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn" (click)="hideDialog()"></button>
+                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
+                        (click)="hideDialog()"></button>
 
-                      <button pButton type="button" label="Update" class="save-button" (click)="addplayerdata()"></button>
+                      <button pButton type="button" label="Update" class="save-button"
+                        (click)="addplayerdata()"></button>
                     </div>
                   </div>
                 </ng-template>
