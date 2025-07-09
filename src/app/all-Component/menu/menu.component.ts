@@ -65,7 +65,6 @@ export class MenuComponent implements OnInit {
   public showEndpointsGrid: boolean = false;
   public addMenuForm!: FormGroup<any>;
   public addEndpointForm!: FormGroup<any>;
-  default_img = CricketKeyConstant.default_image_url.officials;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   MenuData: Menu[] = [];
   totalData: any = 0;
@@ -190,8 +189,9 @@ export class MenuComponent implements OnInit {
       this.MenuData = res.data.menus ?? [];
       this.totalData = this.MenuData.length != 0 ? res.data.menus[0].total_records : 0
       this.spinnerService.raiseDataEmitterEvent('off');
-      this.MenuData.forEach((val: any) => {
-      });
+          this.MenuData.forEach((val: any) => {
+          val.menu_image = `${val.menu_image}?${Math.random()}`;
+        });
     }, (err: any) => {
       err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken()
         : (this.spinnerService.raiseDataEmitterEvent('off'),this.MenuData = [], this.totalData = this.MenuData.length);

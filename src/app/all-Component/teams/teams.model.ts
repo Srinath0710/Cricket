@@ -62,7 +62,7 @@ export class UpdateTeams {
     team_name: string;
     team_short: string;
      club_id: string|number;
-     reference_id: string|number;
+     reference_id: string|number|null;
      country_id:string|number;
     action_flag: string;
     profile_img : string;

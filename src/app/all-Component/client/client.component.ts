@@ -201,14 +201,15 @@ export class ClientComponent implements OnInit {
       profile_img_url: this.filedata ? '' : this.profileImages
 
     };
-
+ 
     if (this.addClientForm.value.client_id) {
-
       params.action_flag = this.actionflags.Update;
       params.client_id = String(this.addClientForm.value.client_id);
       this.apiService.post(this.urlConstant.updateclient, params).subscribe((res) => {
+
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
+            console.log("1")
             this.profileImgAppend(params.client_id);
           } else {
             this.addCallBack(res)
@@ -630,6 +631,7 @@ export class ClientComponent implements OnInit {
   //   );
   // }
   profileImgAppend(client_id: any) {
+
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);

@@ -58,13 +58,13 @@
               <ng-template pTemplate="body" let-menu>
                 <tr>
                   <td>
-                    <span class="person-image-team-player">
-                      <img class="player-img" *ngIf="menu.profile_img==null || menu.profile_img==''"
+                    <!-- <span class="person-image-team-player">
+                      <img class="player-img" *ngIf="menu.menu_image==null || menu.menu_image==''"
                         [src]="default_img">
 
-                      <img class="player-img" *ngIf="menu.profile_img!=null  && menu.profile_img!=''"
+                      <img class="player-img" *ngIf="menu.menu_image!=null  && menu.menu_image!=''"
                         [src]="menu.menu_image" (error)="handleImageError($event, default_img)">
-                    </span>
+                    </span> -->
                     {{ menu.menu_name }}
                   </td>
 

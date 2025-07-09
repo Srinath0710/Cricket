@@ -374,7 +374,7 @@ export class TeamsComponent implements OnInit {
       age_category_id: String(this.addTeamForm.value.age_category_id),
       format_id: String(this.addTeamForm.value.format_id),
       club_id: String(this.addTeamForm.value.club_id),
-      reference_id: String(this.addTeamForm.value.reference_id),
+      reference_id:this.addTeamForm.value.reference_id ? String(this.addTeamForm.value.reference_id): null,
       country_id: String(this.addTeamForm.value.country_id),
       action_flag: this.Actionflag.Create,
       profile_img: this.filedata ? '' : this.profileImages
