@@ -9,7 +9,7 @@
               Add Cities
               <div class="totalrecord">: {{ totalData }}</div>
             </div>
-            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right">
+            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="countryData" optionLabel="country_name" optionValue="country_id"
                 [(ngModel)]="countryId" (ngModelChange)="getStates()" placeholder="Country" [filter]="true"
                 appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"  class="w-100 drop-error header-drop">
@@ -22,8 +22,8 @@
 
             </div>
 
-            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right-align">
-              <p-dropdown [options]="statesList" class="drop-error"  [(ngModel)]="stateId" optionValue="state_id"
+            <div class="col-md-2 d-flex align-items-center gap-2 dropdown-right me-2">
+              <p-dropdown [options]="statesList" class="w-100 drop-error header-drop"  [(ngModel)]="stateId" optionValue="state_id"
                 optionLabel="state_name" placeholder="Select State" (ngModelChange)="gridLoad()"
                 [panelStyleClass]="'custom-dropdown-panel'"[filter]="true" appendTo="body"
                 >
@@ -37,9 +37,8 @@
             </div>
     
             <div class="d-flex align-items-center">
-              
               <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
-                <div class="p-input-icon-right flex-grow-1">
+                <div class="p-input-icon-right flex-grow-1 me-2">
                   <input
                     pInputText
                     type="text"
@@ -62,7 +61,7 @@
                   <i class="fas fa-plus"></i> Create</button>
               </div>
             </div>
-          </div>
+          </div>  
 
           <p-table #dt [value]="cityData" [styleClass]="'custom-table'"
             [globalFilterFields]="['city_name','city_code','state_name','country_name','record_status']">

@@ -310,11 +310,19 @@ export class ClientComponent implements OnInit {
     this.imageCropAlter = null;
     this.imageDefault = null; 
    }
-  successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+successToast(data: any) {
+  this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
   }
+//   this.msgService.add({
+//     severity: 'success',
+//     summary: 'Success',
+//     detail: data.message,
+//     data: { image: 'assets/images/default-logo.png' },
+//     life:3000000
 
+//   });
+// }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });

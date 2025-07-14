@@ -1,7 +1,7 @@
 <div class="page-wrapper">
   <div class="content container-fluid">
     <main>
-      <div class="card margin-card">
+     <div class="card margin-card">
         <div class="card-body">
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
@@ -9,37 +9,34 @@
               All States
               <div class="totalrecord">: {{ totalData }}</div>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="countriesData" optionLabel="country_name" optionValue="country_id"
                 [(ngModel)]="countryID" (ngModelChange)="gridLoad()" placeholder="Country" [filter]="true"
-                appendTo="body" class=" w-100 
-                 drop-error header-drop">
-
+                appendTo="body" [panelStyleClass]="'custom-dropdown-panel'" class="w-100 drop-error header-drop">
                 <ng-template let-country pTemplate="item">
-                  <div class="country-item">
+                  <div >
                     <div>{{ country.country_name }}</div>
                   </div>
                 </ng-template>
-
               </p-dropdown>
+
             </div>
 
-              <!-- Search Form -->
-              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
-                <div class="p-input-icon-right flex-grow-1">
-                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-                    (input)="sanitizeQuotesOnly('Search', $event)">
-                </div>
-
-                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
-
-              </form>
-
-              <div class="card flex justify-center">
-                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                  (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
+            <div class="d-flex align-items-center">
+            <!-- Search Form -->
+            <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                <div class="p-input-icon-right flex-grow-1 me-2">
+                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                  placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                  (input)="sanitizeQuotesOnly('Search', $event)">
               </div>
+              <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+            </form>
+              <div class="card flex justify-center">
+              <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()" (click)="showAddForm()">
+                <i class="fas fa-plus"></i> Create</button>
+            </div>
+            </div>
           </div>
 
           <p-table #dt [value]="statesData" [styleClass]="'custom-table'"
@@ -182,7 +179,7 @@
                 *ngIf="addStateForm.get('state_id')?.value == '' || addStateForm.get('state_id')?.value == null"
                 (click)="resetForm()"></button>
 
-              <button pButton  label="Save" class="save-button" (click)="onAddState()"></button>
+              <button pButton label="Save" class="save-button" (click)="onAddState()"></button>
             </div>
           </div>
         </form>
@@ -191,4 +188,4 @@
   </div>
 
 </div>
-<p-toast key="tc"  position="top-right"></p-toast>
+<p-toast key="tc" position="top-right"></p-toast>

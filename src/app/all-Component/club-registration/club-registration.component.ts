@@ -169,6 +169,8 @@ export class ClubRegistrationComponent implements OnInit {
       else {
         this.gridData = [];
         this.totalData = 0;
+        this.spinnerService.raiseDataEmitterEvent('off')
+
       }
       this.gridData.forEach((val: any) => {
         val.profile_image = `${val.profile_image}?${Math.random()}`;

@@ -23,14 +23,8 @@ body.modal-open {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  font-size: 15px;
 }
 
-.info-label {
-  min-width: 140px;
-  font-weight: 700;
-  color: #007BFF;
-}
 
 .separator {
   margin: 0 10px;
@@ -86,13 +80,6 @@ body.modal-open {
     width: 41%;
     margin-top: -1%;
 }
-  .header-drop {
-  margin-left: -10px;
-  margin-top: 17px;
-  line-height: 18px !important;
-  font-size: 17px;
-}
-
 .image-upload-container {
   display: flex;
   flex-direction: column;

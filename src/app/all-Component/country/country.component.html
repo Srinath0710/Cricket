@@ -26,7 +26,7 @@
 
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                  (click)="showAddForm()"> <i class="fas fa-plus"></i> Country</button>
+                  (click)="showAddForm()"> <i class="fas fa-plus"></i> Create</button>
               </div>
             </div>
           </div>
@@ -54,14 +54,14 @@
               <tr>
                 <td>
                   <div class="player-name-cell">
-                    <span class="person-image-team-player">
+                    <span class="person-image-team-player ">
                       <img class="player-img" *ngIf="country.country_image==null || country.country_image==''"
                         [src]="default_img">
 
                       <img class="player-img" *ngIf="country.country_image!=null  && country.country_image!=''"
                         [src]="country.country_image" (error)="handleImageError($event, default_img)">
                     </span>
-                    {{ country.country_name }}
+                    <span class="name-space">{{ country.country_name }}</span>
                   </div>
                 </td>
                 <td>{{ country.iso_code_3 }}</td>

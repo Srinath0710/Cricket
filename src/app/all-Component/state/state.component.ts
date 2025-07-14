@@ -146,6 +146,7 @@ export class StateComponent implements OnInit {
             } else {
               this.statesData = [];
               this.totalData = 0;
+              this.spinnerService.raiseDataEmitterEvent('off');
             }
           }
         );

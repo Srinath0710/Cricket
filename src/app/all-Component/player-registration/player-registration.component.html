@@ -12,7 +12,7 @@
                 <div class="totalrecord">: {{ totalData }}</div>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
                 <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name"
                   optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridLoad()" placeholder="Client Id"
                   [filter]="true" appendTo="body" class=" w-100 
@@ -25,7 +25,7 @@
                 </p-dropdown>
               </div>
 
-              <!-- <div class="d-flex align-items-center"> -->
+              <div class="d-flex align-items-center">
               <!-- Search Form -->
               <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1">
@@ -49,7 +49,7 @@
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                   (click)="showAddForm();editLabel()"> <i class="fas fa-plus"></i> Create</button>
               </div>
-              <!-- </div> -->
+              </div>
             </div>
             <!-- STATUS Confirmation POPUP -->
             <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
@@ -90,7 +90,8 @@
                         <img class="player-img" *ngIf="player.profile_image!=null  && player.profile_image!=''"
                           [src]="player.profile_image" (error)="handleImageError($event, default_img)">
                       </span>
-                      {{ player.display_name }}
+                      <span class="name-space">{{ player.display_name }}</span>
+                      
                     </div>
                   </td>
                   <td>{{ player.player_dob }}</td>

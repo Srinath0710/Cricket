@@ -9,7 +9,7 @@
                             Club Registrations
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+                        <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
                             <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
                                 optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridload()"
                                 placeholder="Client Id" [filter]="true" appendTo="body"
@@ -22,7 +22,7 @@
                             </p-dropdown>
                         </div>
 
-                        <!-- <div class="d-flex align-items-center"> -->
+                        <div class="d-flex align-items-center">
 
                         <form class="d-flex align-items-center gap-2" (submit)="gridload()">
                             <div class="p-input-icon-right flex-grow-1">
@@ -37,10 +37,10 @@
                             <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                                 (click)="openAddClubForm()">
                                 <i class="fas fa-plus"></i>
-                                Club
+                                Create
                             </button>
                         </div>
-                        <!-- </div> -->
+                        </div>
                     </div>
 
                     <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
@@ -79,7 +79,7 @@
                                             *ngIf="club.profile_img != null && club.profile_img != ''"
                                             [src]="club.profile_img" (error)="handleImageError($event, default_img)" />
                                     </span>
-                                    <span>{{ club.club_name }}</span>
+                                    <span class="name-space">{{ club.club_name }}</span>
                                 </td>
                                 <td>{{ club.parent_club_name }}</td>
                                 <td>{{ club.country }}</td>
@@ -125,13 +125,11 @@
             [closable]="false" [styleClass]="'p-confirm-dialog-custom'"></p-confirmDialog>
 
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-             <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="small-heading">
-                    <div
-                        *ngIf="addClubForm.get('club_id')?.value == '' || addClubForm.get('club_id')?.value == null">
+                    <div *ngIf="addClubForm.get('club_id')?.value == '' || addClubForm.get('club_id')?.value == null">
                         Add Club </div>
-                    <div
-                        *ngIf="addClubForm.get('club_id')?.value != null && addClubForm.get('club_id')?.value != ''">
+                    <div *ngIf="addClubForm.get('club_id')?.value != null && addClubForm.get('club_id')?.value != ''">
                         Edit Club</div>
                 </div>
             </div>
@@ -157,7 +155,7 @@
                             placeholder="Parent Club Name" optionValue="club_id" class="drop-error"
                             [panelStyleClass]="'custom-dropdown-panel'">
                         </p-dropdown>
-            
+
                     </div>
 
                     <div class="col-md-6">
@@ -274,7 +272,7 @@
                         <input class="form-control" type="text" formControlName="email_id"
                             pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('email_id', $event)">
-                         <small
+                        <small
                             *ngIf="addClubForm.get('email_id')?.invalid && (addClubForm.get('email_id')?.touched || submitted)"
                             class="required-msg">
                             {{
@@ -282,7 +280,7 @@
                             ? 'Please enter a valid Email ID (e.g., example@domain.com)'
                             : ''
                             }}
-                        </small> 
+                        </small>
                     </div>
 
                     <div class="col-md-6">
@@ -386,8 +384,7 @@
                                 (click)="clearForm()">
                             </button>
 
-                            <button pButton  label="Save" class="save-button"
-                                (click)="onAddClub()"></button>
+                            <button pButton label="Save" class="save-button" (click)="onAddClub()"></button>
                         </div>
                     </div>
                 </div>

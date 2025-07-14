@@ -6,7 +6,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { PaginatorModule } from 'primeng/paginator';
@@ -101,6 +101,7 @@ export interface ManageDataItem {
   standalone: true
 })
 export class CompetitionComponent implements OnInit {
+  @ViewChild('dt') dt!: Table;
 
   @ViewChild(CompGroundComponent) compGround!: CompGroundComponent;
   @ViewChild(CompOfficialComponent) compOfficial!: CompOfficialComponent;
@@ -280,6 +281,8 @@ export class CompetitionComponent implements OnInit {
           this.compititionList = [];
           this.filteredCompititionList = [];
           this.totalRecords = 0;
+          this.spinnerService.raiseDataEmitterEvent('off');
+
         }
         this.getGlobalData();
 
@@ -607,4 +610,18 @@ export class CompetitionComponent implements OnInit {
 onShowFormChange(isShown: boolean) {
   this.showNewMatchForm = isShown;
 }
+
+  filterGlobal() {
+  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+
+    this.dt?.filterGlobal(this.searchKeyword, 'contains');
+    this.first = 1;
+    this.loadCompetitions();
+  }
+  }
+    clear() {
+    this.searchKeyword = '';
+    this.dt.clear();
+    this.loadCompetitions();
+  }
 }

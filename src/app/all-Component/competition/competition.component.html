@@ -10,7 +10,7 @@
                   Competitions
                   <div class="">: {{ totalRecords }}</div>
                 </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+           <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
                   <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name"
                     optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="loadCompetitions()"
                     placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
@@ -24,10 +24,10 @@
 
                   </p-dropdown>
                 </div>
-                <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center">
 
                   <!-- Search Form -->
-                  <form class="flex-grow-1 mx-3 search-width">
+                  <!-- <form class="d-flex align-items-center  gap-2">
                     <div class="form-group">
                       <span class="p-input-icon-left ml-auto">
                         <span class="p-input-icon-right input-icons search-padding">
@@ -36,7 +36,23 @@
                         </span>
                       </span>
                     </div>
-                  </form>
+                  </form> -->
+                   <form class="d-flex align-items-center  gap-2" (submit)="loadCompetitions()">
+                <div class="p-input-icon-right flex-grow-1 me-2">
+                  <input
+                    pInputText
+                    type="text"
+                    [(ngModel)]="searchKeyword"
+                    name="searchKeyword"
+                    class="width-search"
+                    placeholder="  Search"
+                    (input)="filterGlobal()"
+                 >
+                </div>
+              
+                 <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
+    
+              </form>
 
                   <!-- Filter Button -->
                   <div class="filter-icon-wrapper">
@@ -441,7 +457,7 @@
 
               <!-- Competition Grid Layout -->
               <div class="competition-grid">
-                <div class="grid-card" *ngFor="let competition of compititionList">
+                <div class="grid-card" #dt *ngFor="let competition of compititionList">
                   <div class="card-header">
                     <div class="date-range">{{ competition.start_date }} - {{ competition.end_date }}</div>
                     <div class="category-info">

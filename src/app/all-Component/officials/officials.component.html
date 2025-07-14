@@ -9,7 +9,7 @@
               All Official
               <div class="totalrecord">: {{ totalData }}</div>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center gap-2 mb-2">
+            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="client_id" (ngModelChange)="callBackClientChange()" placeholder="Client Id" [filter]="true"
                 appendTo="body" class=" w-100 
@@ -21,23 +21,25 @@
                 </ng-template>
               </p-dropdown>
             </div>
-            <!-- Search Form -->
-            <form class="d-flex align-items-center  gap-2" (submit)="gridload()">
-              <div class="p-input-icon-right flex-grow-1">
+            <div class="d-flex align-items-center">
+              <!-- Search Form -->
+              <form class="d-flex align-items-center  gap-2" (submit)="gridload()">
+                <div class="p-input-icon-right flex-grow-1">
 
-                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                  placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-                  (input)="sanitizeQuotesOnly('Search', $event)">
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('Search', $event)">
+                </div>
+                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+
+              </form>
+
+              <div class="card flex justify-center">
+                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                  (click)="showAddForm()">
+                  <i class="fas fa-plus"></i> Create</button>
               </div>
-              <button type="button" class="clear-button" (click)="clear()"> Clear </button>
-
-            </form>
-
-            <div class="card flex justify-center">
-              <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()" (click)="showAddForm()">
-                <i class="fas fa-plus"></i> Create</button>
             </div>
-
           </div>
           <!-- STATUS Confirmation POPUP -->
 
@@ -103,7 +105,7 @@
                     <img class="player-img" *ngIf="official.profile_img!=null  && official.profile_img!=''"
                       [src]="official.profile_img" (error)="handleImageError($event, default_img)">
                   </span>
-                  {{official.display_name}}
+                  <span class="name-space">{{official.display_name}}</span>
                 </td>
 
                 <td>{{ official.country }}</td>
@@ -411,7 +413,7 @@
                   *ngIf="addOfficialForm.get('official_id')?.value == '' || addOfficialForm.get('official_id')?.value == null"
                   (click)="resetForm()">
                 </button>
-                <button pButton  label="Save" class="save-button" (click)="addOfficialdata()"></button>
+                <button pButton label="Save" class="save-button" (click)="addOfficialdata()"></button>
               </div>
             </div>
           </div>
@@ -883,19 +885,18 @@
           <div class="form-wrapper pb-5">
 
             <div class="row mt-4 sticky-footer-buttons">
-               <div class="col-12 text-end">
+              <div class="col-12 text-end">
 
                 <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                   (click)="cancelForm()"></button>
 
-                <button *ngIf="!isEditPersonal" pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
-                  (click)="resetForm()">
+                <button *ngIf="!isEditPersonal" pButton type="button" label="Clear"
+                  class="p-button-secondary me-3 custom-cancel-btn" (click)="resetForm()">
                 </button>
 
-                <button pButton  label="Save" class="save-button"
-                  (click)="PersonalupdateOfficial()"></button>
-              </div> 
-      
+                <button pButton label="Save" class="save-button" (click)="PersonalupdateOfficial()"></button>
+              </div>
+
             </div>
           </div>
         </form>
