@@ -27,5 +27,146 @@ popup-overlay {
   border-right: 1px solid #007BFF;
   color: #222;
   max-height: calc(100vh - 40px);
+}
 
+::ng-deep .p-toast {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9999 !important;
+  width: auto;
+}
+
+
+::ng-deep .p-toast .p-toast-message {
+  padding: 0rem;
+  border: 1px solid #086bff;
+  background-color: #f6fff8;
+  border-radius: 0.5rem;
+  box-shadow: 0px 0px 10px rgba(0, 128, 0, 0.2);
+  position: relative;
+  color: black;
+}
+
+::ng-deep .p-toast .p-toast-icon-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  color: red;
+  font-size: 1.2rem;
+}
+
+::ng-deep .p-toast-message-content {
+  display: flex !important;
+  gap: 10px;
+
+}
+
+::ng-deep .custom-toast-message {
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+::ng-deep .p-toast {
+  position: fixed !important;
+  top: 10% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  /* Initial centering */
+  z-index: 9999 !important;
+  width: auto;
+}
+
+@keyframes center-to-top {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -150%) scale(1);
+  }
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-enter {
+  animation: center-to-top 5.5s forwards;
+}
+
+::ng-deep .p-drawer {
+  border: 3px solid transparent; 
+  border-radius: 8px;
+  background-image: linear-gradient(#fff, #fff), linear-gradient(to bottom, #e36fe5, #60c3e4);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  padding: 2px;
+}
+/* ::ng-deep .label {
+  background: linear-gradient(to right, #60c3e4, #ba4cbb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; 
+} */
+.form-drawer-header {
+  background: linear-gradient(to right, #ba4cbb, #99fffd);
+  padding: 10px;
+  border-radius: 4px;
+  color: #ebebeb;
+}
+
+/* ::ng-deep .p-dialog .p-dialog-content {
+  padding: 0 0.5rem 0.5rem 0.5rem;
+  border-radius: 0px;
+  max-width: 400px;
+  background: linear-gradient(to top, #60c3e4, #be87d9);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+} */
+
+
+
+::ng-deep .p-confirm-dialog-custom .p-dialog-content,
+.p-confirm-dialog-footer {
+  text-align: center;
+  justify-content: center;
+  margin-bottom: -33px;
+}
+
+::ng-deep .p-confirm-dialog-custom .icon-wrapper i {
+  font-size: 5rem;
+  color: #120b01;
+}
+
+::ng-deep .p-confirm-dialog-custom .action-heading {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #070501;
+  margin-top: 0.5rem;
+  margin-left: -18px;
+}
+
+::ng-deep .warning {
+  font-family: "emoji";
+  font-size: x-large;
+}
+
+::ng-deep .p-confirm-dialog-custom .logo-img {
+  width: 257px;
+  height: auto;
+  margin-bottom: 2px;
+  padding-right: 171px;
+  margin-top: -22px;
+  border-top: 1px solid #dee2e6;
+}
+
+::ng-deep .p-confirm-dialog-custom .warning-icon {
+  font-size: 50px;
 }

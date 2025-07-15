@@ -86,7 +86,7 @@ export class ClubRegistrationComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   dropDownConstants = CricketKeyConstant.dropdown_keys;
-  Actionflag = CricketKeyConstant.action_flag;
+  actionflags = CricketKeyConstant.action_flag;
 
   imageBase64: any = null;
   showCropperModal = false;
@@ -118,7 +118,7 @@ export class ClubRegistrationComponent implements OnInit {
       city_id: ['', Validators.required],
       address_1: [''],
       address_2: [''],
-      post_code: ['', [ Validators.pattern('^[A-Za-z0-9]{1,10}$')]],
+      post_code: ['', [Validators.pattern('^[A-Za-z0-9]{1,10}$')]],
       email_id: ['', [
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
@@ -135,7 +135,7 @@ export class ClubRegistrationComponent implements OnInit {
 
   ClubDropdown() {
     const params: any = {
-      action_flag: this.Actionflag.Dropdown,
+      action_flag: this.actionflags.Dropdown,
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString()
     };
@@ -235,16 +235,16 @@ export class ClubRegistrationComponent implements OnInit {
     this.imageDefault = null;
   }
   clearForm() {
-      this.addClubForm.reset();
-      this.submitted = false;
-      this.filedata = null;
-      this.url = null;
-      this.profileImages = null;
-      this.imageBase64 = null;
-      this.showCropperModal = false;
-      this.stateList = [];
-      this.citiesList = [];
-    
+    this.addClubForm.reset();
+    this.submitted = false;
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageBase64 = null;
+    this.showCropperModal = false;
+    this.stateList = [];
+    this.citiesList = [];
+
   }
 
 
@@ -267,25 +267,18 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   onAddClub() {
-
-    
     this.submitted = true;
-
     if (this.addClubForm.invalid) {
       this.addClubForm.markAllAsTouched();
-      return;
+      return
     }
-
-    const isEdit = !this.addClubForm.value.club_id;
-
     const params: UpdateClub = {
       user_id: String(this.user_id),
+      club_name: this.addClubForm.value.club_name,
       club_id: String(this.addClubForm.value.club_id || ''),
       client_id: String(this.client_id),
       club_short: this.addClubForm.value.club_short,
-      club_name: this.addClubForm.value.club_name,
-      parent_club_id: this.addClubForm.value.parent_club_id ? String(this.addClubForm.value.parent_club_id) : null,
-      address_1: this.addClubForm.value.address_1,
+      parent_club_id: this.addClubForm.value.parent_club_id ? String(this.addClubForm.value.parent_club_id) : null, address_1: this.addClubForm.value.address_1,
       address_2: this.addClubForm.value.address_2,
       country_id: String(this.addClubForm.value.country_id),
       state_id: String(this.addClubForm.value.state_id),
@@ -295,37 +288,46 @@ export class ClubRegistrationComponent implements OnInit {
       mobile: this.addClubForm.value.mobile,
       website: this.addClubForm.value.website || '',
       contact: this.addClubForm.value.contact || '',
-      action_flag: isEdit ? this.Actionflag.Update : this.Actionflag.Create,
       remarks: this.addClubForm.value.remarks,
       profile_img: this.filedata ? '' : this.profileImages
+
     };
 
-    const apiUrl = isEdit ? this.urlConstant.updateClub : this.urlConstant.addClub;
+    if (this.addClubForm.value.club_id) {
+      params.action_flag = this.actionflags.Update;
+      params.club_id = String(this.addClubForm.value.club_id);
+      this.apiService.post(this.urlConstant.updateClub, params).subscribe((res) => {
 
-    this.apiService.post(apiUrl, params).subscribe(
-      (res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
-          const clubId = isEdit ? params.club_id : res.data?.clubs?.[0]?.club_id;
-          if (this.filedata && clubId) {
-            this.profileImgAppend(clubId, res);
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(params.club_id);
           } else {
-            this.addCallBack(res);
+            this.addCallBack(res)
           }
         } else {
-          this.failedToast(res);
+          this.failedToast(res)
         }
-      },
-      (err: any) => {
-        if (err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err.error);
-        }
-      }
-    );
-  }
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      });
+    } else {
 
+      this.apiService.post(this.urlConstant.addClub, params).subscribe((res) => {
+        if (res.status_code === this.statusConstants.success && res.status) {
+          if (res.data !== null && this.filedata != null) {
+            this.profileImgAppend(res.data.club_id);
+          } else {
+            this.addCallBack(res)
+          }
+        } else {
+          this.failedToast(res)
+        }
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      });
+    }
+
+  }
   addCallBack(res: any) {
     this.resetForm();
     this.cancelForm();
@@ -337,7 +339,7 @@ export class ClubRegistrationComponent implements OnInit {
 
   getGlobalData() {
     const params: any = {
-      action_flag: this.Actionflag.Dropdown,
+      action_flag: this.actionflags.Dropdown,
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
@@ -452,7 +454,7 @@ export class ClubRegistrationComponent implements OnInit {
 
   getCountries() {
     const params: any = {};
-    params.action_flag = this.Actionflag.Country;
+    params.action_flag = this.actionflags.Country;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.countryLookups, params).subscribe((res) => {
@@ -485,7 +487,7 @@ export class ClubRegistrationComponent implements OnInit {
       });
     }
 
-    params.action_flag = this.Actionflag.City;
+    params.action_flag = this.actionflags.City;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.state_id = state_id.toString();
@@ -517,7 +519,7 @@ export class ClubRegistrationComponent implements OnInit {
       });
     }
 
-    params.action_flag = this.Actionflag.State;
+    params.action_flag = this.actionflags.State;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
     params.country_id = country_id.toString();
@@ -537,12 +539,12 @@ export class ClubRegistrationComponent implements OnInit {
   }
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridload();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridload();
+    }
   }
 
   openAddClubForm() {
@@ -709,60 +711,37 @@ export class ClubRegistrationComponent implements OnInit {
 
     }
   }
-  profileImgUpdate(upload_profile_url: any, club_id: any, baseRes: any) {
-    const params: any = {
-      action_flag: this.Actionflag.Uploadprofile,
-      profile_img: upload_profile_url.toString(),
-      user_id: this.user_id.toString(),
-      club_id: club_id.toString(),
-      client_id: this.client_id.toString()
-    };
 
-    this.apiService.post(this.urlConstant.profileclub, params).subscribe(
-      (res) => {
-        if (res.status_code == this.statusConstants.success && res.status) {
-          this.addCallBack(baseRes);
-        } else {
-          this.failedToast(res);
-          this.addCallBack(baseRes);
-        }
-      },
-      (err) => {
-        this.failedToast(err.error);
-        this.addCallBack(baseRes);
-      }
-    );
-  }
-
-  profileImgAppend(club_id: any, baseRes: any) {
+  profileImgAppend(club_id: any) {
     const myFormData = new FormData();
 
     if (this.filedata) {
       myFormData.append('imageFile', this.filedata);
       myFormData.append('client_id', this.client_id.toString());
       myFormData.append('file_id', club_id);
-      myFormData.append('upload_type', 'officials');
+      myFormData.append('upload_type', 'club');
       myFormData.append('user_id', this.user_id.toString());
 
       this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
         (res) => {
-          if (res.status_code == this.statusConstants.success && res.url) {
-            this.profileImgUpdate(res.url, club_id, baseRes);
-          } else {
-            this.failedToast(res);
-            this.addCallBack(baseRes);
+          if (res.status_code == this.statusConstants.success) {
+            if (res.url != null && res.url != '') {
+              this.addCallBack(res)
+            } else {
+              this.failedToast(res);
+            }
           }
         },
-        (err) => {
-          this.failedToast(err.error);
-          this.addCallBack(baseRes);
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+
+          } else {
+            this.failedToast(err.error);
+          }
         }
       );
-    } else {
-      this.addCallBack(baseRes);
     }
   }
-  
-
 }
 

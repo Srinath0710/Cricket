@@ -209,7 +209,6 @@ export class ClientComponent implements OnInit {
 
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            console.log("1")
             this.profileImgAppend(params.client_id);
           } else {
             this.addCallBack(res)
@@ -311,21 +310,21 @@ export class ClientComponent implements OnInit {
     this.imageDefault = null; 
    }
 successToast(data: any) {
-  this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+  // this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
-  }
-//   this.msgService.add({
-//     severity: 'success',
-//     summary: 'Success',
-//     detail: data.message,
-//     data: { image: 'assets/images/default-logo.png' },
-//     life:3000000
-
-//   });
-// }
+  // }
+  this.msgService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+    life: 1900
+  });
+}
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({data: { image: 'assets/images/default-logo.png' },
+    life:1900, severity: 'error', summary: 'Error', detail: data.message });
   }
   addCallBack(res: any) {
     this.resetForm();
@@ -353,30 +352,72 @@ successToast(data: any) {
       }
     );
   }
-  StatusConfirm(client_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+StatusConfirm(client_id: number, action: { key: string, label: string }, currentStatus: string) {
+    const { active_status, deactive_status } = this.conditionConstants;
+    const isSameStatus =
+      (action.key === active_status.key && currentStatus === active_status.status) ||
+      (action.key === deactive_status.key && currentStatus === deactive_status.status);
 
-    if (AlreadyStatestatus) {
-      return;
-    }
+    if (isSameStatus) return;
+
+    const isActivating = action.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f'; 
+    const message = `Are you sure you want to proceed?`;
+
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this Client?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
+      header: ``,
+      message: `
+      <div class="custom-confirm-content">
+      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <div class="warning">Warning</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
       acceptLabel: 'Yes',
       rejectLabel: 'No',
+      styleClass: 'p-confirm-dialog-custom',
       accept: () => {
-        const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
+        const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
         this.status(client_id, url);
         this.confirmationService.close();
       },
-      reject: () => {
-        this.confirmationService.close();
-      }
-    });
+      reject: () => this.confirmationService.close()
+    } as any);
   }
+
+  // StatusConfirm(client_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+  //   const AlreadyStatestatus =
+  //     (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+  //     (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+
+  //  if (isSameStatus) return;
+
+  //   const isActivating = action.key === active_status.key;
+  //   const iconColor = isActivating ? '#4CAF50' : '#d32f2f'; 
+  //   const message = `Are you sure you want to proceed?`;
+
+  //   this.confirmationService.confirm({
+  //     header: ``,
+  //     message: `
+  //     <div class="custom-confirm-content">
+  //     <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+  //       <div class="warning">Warning</div>
+  //       <div class="message-text">${message}</div>
+  //     </div>
+  //   `,
+  //     acceptLabel: 'Yes',
+  //     rejectLabel: 'No',
+  //     styleClass: 'p-confirm-dialog-custom',
+  //     accept: () => {
+  //       const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
+  //       this.status(client_id, url);
+  //       this.confirmationService.close();
+  //     },
+  //     reject: () => {
+  //       this.confirmationService.close();
+  //     }
+  //   });
+  // }
   filterGlobal() {
   if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
 

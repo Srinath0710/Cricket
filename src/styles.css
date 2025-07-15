@@ -31,12 +31,12 @@
 }
 
 .p-component {
-    font-family: "PT Sans" !important;
-    font-size: 12px;
-    font-weight: normal;
-    line-height: 22px;
-    letter-spacing: 0em;
-    /* text-align: left; */
+  font-family: "PT Sans" !important;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 22px;
+  letter-spacing: 0em;
+  /* text-align: left; */
 
 }
 
@@ -103,10 +103,10 @@ h3 {
 
 label {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   display: block;
+  /* background: linear-gradient(to right, #60c3e4, #ba4cbb); */
 }
-
 .form-control {
   font-size: 12px !important;
   border-radius: 0 !important;
@@ -207,10 +207,11 @@ label {
 } */
 .main-page-header {
   padding: 0 5px;
-  height: 36px;
+  height: 50px;
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  /* background: linear-gradient(to left, #ff88c8, #99fffd); */
+     background:  #d5fffe;
 }
 
 .main-page-title {
@@ -237,8 +238,8 @@ label {
 }
 
 .main-page-title i {
-    /* background: linear-gradient(to right, #60c3e4, #eabfff); */
-  color: #007bff  !important;
+  /* background: linear-gradient(to right, #60c3e4, #eabfff); */
+  color: #007bff !important;
   margin-right: 0.5rem !important;
   font-size: 1.4rem !important;
 
@@ -870,7 +871,7 @@ tr:hover {
   display: flex;
   justify-content: flex-end;
   padding: 1rem 0px 12px 58px;
-  border-top: 1px solid #dee2e6;
+  /* border-top: 1px solid #dee2e6; */
   margin-top: 1rem;
   flex-direction: row-reverse !important;
 }
@@ -912,12 +913,6 @@ tr:hover {
   cursor: pointer;
 }
 
-.icon-rose {
-  font-size: 15px;
-  margin-right: 10px;
-  color: #b11c96;
-  cursor: pointer;
-}
 
 
 
@@ -1140,7 +1135,7 @@ option {
 .card.flex.justify-center {
   display: flex !important;
   align-items: center !important;
-  margin-top: 5px;
+  /* margin-top: 5px; */
 }
 
 .filter-actions {
@@ -1356,14 +1351,15 @@ input.form-control:focus {
 }
 
 .small-heading {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
+  /* padding: 5px; */
+  /* background: linear-gradient(to right, #60c3e4, #be87d9); */
 }
 
 .header-drop {
-    margin-left: -8px;
-    margin-top: 10px;
-    line-height: 18px
+  margin-top: 3px;
+  line-height: 18px
 }
 
 
@@ -1386,7 +1382,7 @@ input.form-control:focus {
 }
 
 
-.groundnameover { 
+.groundnameover {
   cursor: pointer;
   color: #3103e7;
 }
@@ -1726,7 +1722,7 @@ body.modal-open {
 .top-bar {
   display: flex;
   align-items: center;
-  padding: 5px 40px;
+  padding: 0px 6px;
   position: relative;
   background: linear-gradient(to right, #60c3e4, #eabfff);
 
@@ -1858,7 +1854,7 @@ body.modal-open {
   color: #007bff !important;
   cursor: pointer;
   margin-right: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.3rem;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
 }
@@ -1872,7 +1868,7 @@ body.modal-open {
   color: #367039 !important;
   cursor: pointer;
   margin-right: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.3rem;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
 }
@@ -1885,7 +1881,8 @@ body.modal-open {
 .icon-red {
   color: #dc3545 !important;
   cursor: pointer;
-  padding: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.3rem;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
 }
@@ -1894,7 +1891,29 @@ body.modal-open {
   background: #f8f9fa !important;
   color: #dc3545 !important;
 }
-.name-space{
+
+.icon-rose:hover {
+  background: #f8f9fa !important;
+  color: #b11c96 !important;
+}
+
+.icon-rose {
+  color: #b11c96;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  margin-right: 0.5rem;
+
+
+}
+
+.name-space {
   margin-left: 15px;
 }
 
+.p-paginator-page.p-paginator-page-selected
+ {
+    background: #0084B1 !important;
+    color: white !important;
+}

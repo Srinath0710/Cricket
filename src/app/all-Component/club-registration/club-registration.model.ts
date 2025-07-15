@@ -98,7 +98,7 @@ export class UpdateClub {
     country_id : string;
     state_id : string;
     city_id : string;
-    action_flag : string;
+    action_flag?: string;
     post_code : string | number;
     email_id : string;
     mobile : string | number;

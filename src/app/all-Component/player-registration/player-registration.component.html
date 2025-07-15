@@ -12,7 +12,7 @@
                 <div class="totalrecord">: {{ totalData }}</div>
               </div>
 
-             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
+              <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
                 <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name"
                   optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridLoad()" placeholder="Client Id"
                   [filter]="true" appendTo="body" class=" w-100 
@@ -26,29 +26,29 @@
               </div>
 
               <div class="d-flex align-items-center">
-              <!-- Search Form -->
-              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
-                <div class="p-input-icon-right flex-grow-1">
-                  <!-- <i class="pi pi-search" ></i> -->
-                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                    placeholder="Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-                    (input)="sanitizeQuotesOnly('Search', $event)">
+                <!-- Search Form -->
+                <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                  <div class="p-input-icon-right flex-grow-1">
+                    <!-- <i class="pi pi-search" ></i> -->
+                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                      placeholder="Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                      (input)="sanitizeQuotesOnly('Search', $event)">
+                  </div>
+                  <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+                </form>
+
+                <!-- Filter Button -->
+                <div class="filter-icon-wrapper">
+                  <button class="filter-icon-button" (click)="toggleFilters()">
+                    <i class="fa fa-filter"></i>
+                  </button>
                 </div>
-                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
-              </form>
 
-              <!-- Filter Button -->
-              <div class="filter-icon-wrapper">
-                <button class="filter-icon-button" (click)="toggleFilters()">
-                  <i class="fa fa-filter"></i>
-                </button>
-              </div>
-
-              <!-- Add Button -->
-              <div class="card flex justify-center">
-                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                  (click)="showAddForm();editLabel()"> <i class="fas fa-plus"></i> Create</button>
-              </div>
+                <!-- Add Button -->
+                <div class="card flex justify-center">
+                  <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                    (click)="showAddForm();editLabel()"> <i class="fas fa-plus"></i> Create</button>
+                </div>
               </div>
             </div>
             <!-- STATUS Confirmation POPUP -->
@@ -91,7 +91,7 @@
                           [src]="player.profile_image" (error)="handleImageError($event, default_img)">
                       </span>
                       <span class="name-space">{{ player.display_name }}</span>
-                      
+
                     </div>
                   </td>
                   <td>{{ player.player_dob }}</td>
@@ -107,27 +107,30 @@
                   </td>
 
                   <td>
-                    <span class="icon-blue" (click)="Editplayer(player)" pTooltip="Edit" tooltipPosition="top">
-                      <i class="fa-solid fa-user-pen"></i>
-                    </span>
+                    <div class="action-icons">
+                      <span class="icon-blue" (click)="Editplayer(player)" pTooltip="Edit" tooltipPosition="top">
+                        <i class="fa-solid fa-user-pen"></i>
+                      </span>
 
-                    <span class="icon-green"
-                      (click)="StatusConfirm(player.player_id,conditionConstants.active_status,player.record_status)"
-                      pTooltip="Activate" tooltipPosition="top">
-                      <i class="fa-solid fa-circle-check"></i>
-                    </span>
+                      <span class="icon-green"
+                        (click)="StatusConfirm(player.player_id, conditionConstants.active_status, player.record_status)"
+                        pTooltip="Activate" tooltipPosition="top">
+                        <i class="fa-solid fa-circle-check"></i>
+                      </span>
 
-                    <span class="icon-red"
-                      (click)="StatusConfirm(player.player_id,conditionConstants.deactive_status,player.record_status)"
-                      pTooltip="Deactivate" tooltipPosition="top">
-                      <i class="fa-solid fa-trash-can-arrow-up"></i>
-                    </span>
+                      <span class="icon-red"
+                        (click)="StatusConfirm(player.player_id, conditionConstants.deactive_status, player.record_status)"
+                        pTooltip="Deactivate" tooltipPosition="top">
+                        <i class="fa-solid fa-trash-can-arrow-up"></i>
+                      </span>
 
-                    <span class="icon-rose" pTooltip="Manage" tooltipPosition="top"
-                      (click)="EditpersonalPlayers(player)">
-                      <i class="fa-solid fa-building-columns"></i>
-                    </span>
+                      <span class="icon-rose" pTooltip="Personal Info" tooltipPosition="top"
+                        (click)="EditpersonalPlayers(player)">
+                        <i class="fa-solid fa-building-columns"></i>
+                      </span>
+                    </div>
                   </td>
+
                 </tr>
               </ng-template>
             </p-table>
@@ -229,7 +232,8 @@
 
                           <div
                             *ngIf="playerRegistrationform.get('email')?.touched && playerRegistrationform.get('email')?.invalid">
-                            <small *ngIf="playerRegistrationform.get('email')?.errors?.['required']" class="required-msg">
+                            <small *ngIf="playerRegistrationform.get('email')?.errors?.['required']"
+                              class="required-msg">
                               Email ID is Required
                             </small>
                             <small *ngIf="playerRegistrationform.get('email')?.errors?.['pattern']"
@@ -481,8 +485,7 @@
                         *ngIf="playerRegistrationform.get('player_id')?.value == '' || playerRegistrationform.get('player_id')?.value == null"
                         (click)="resetForm()"></button>
 
-                      <button pButton  label="Save" class="save-button"
-                        (click)="duplicateChange()"></button>
+                      <button pButton label="Save" class="save-button" (click)="duplicateChange()"></button>
                     </div>
                   </div>
                 </div>
@@ -534,8 +537,7 @@
                       <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                         (click)="hideDialog()"></button>
 
-                      <button pButton  label="Update" class="save-button"
-                        (click)="addplayerdata()"></button>
+                      <button pButton label="Update" class="save-button" (click)="addplayerdata()"></button>
                     </div>
                   </div>
                 </ng-template>

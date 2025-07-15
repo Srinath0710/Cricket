@@ -34,7 +34,7 @@ export class SpinnerComponent implements OnInit {
       else {
         setTimeout(() => {
           this.datas = data;
-        }, 300)
+        }, 350)
       }
     });
   }

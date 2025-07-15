@@ -28,11 +28,11 @@
                             </div>
                         </div>
                     </div>
-                 
+
 
                     <p-table #dt [value]="Clientdata" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
                         [rowsPerPageOptions]="[10,25,50,100]" [styleClass]="'custom-table'"
-                        [globalFilterFields]="['Client','country','email_id','mobile','record_status']"> 
+                        [globalFilterFields]="['Client','country','email_id','mobile','record_status']">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th class="col-3" pSortableColumn="Client">Client <p-sortIcon field="country_name">
@@ -105,20 +105,20 @@
                             </tr>
                         </ng-template>
                     </p-table>
-            
+
 
                 </div>
             </div>
         </main>
         <!-- STATUS Confirmation POPUP -->
 
-        <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
-            [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
-        </p-confirmDialog>
+        <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+      [styleClass]="'p-confirm-dialog-custom'">
+    </p-confirmDialog>
 
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="small-heading">
+            <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header ">
+                <div class="small-heading ">
                     <div
                         *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null">
                         Add Client </div>
@@ -368,8 +368,7 @@
                                 *ngIf="addClientForm.get('client_id')?.value == '' || addClientForm.get('client_id')?.value == null"
                                 (click)="resetForm()"></button>
 
-                            <button pButton  label="Save" class="save-button"
-                                (click)="onAddClient()"></button>
+                            <button pButton label="Save" class="save-button" (click)="onAddClient()"></button>
 
 
                         </div>
@@ -379,7 +378,7 @@
 
 
         </p-drawer>
-        <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
+        <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true">
             <div class="popup-container">
                 <div *ngFor="let client of seletedclient" class="popup-content">
                     <div class="top-bar">
@@ -432,4 +431,19 @@
 
     </div>
 </div>
-<p-toast key="tc" position="top-right"></p-toast>
+<!-- <p-toast key="tc" position="top-right"></p-toast> -->
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img
+        *ngIf="message?.data?.image"
+        [src]="message.data.image"
+        style="width: 40px; height: 40px"
+      />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>
