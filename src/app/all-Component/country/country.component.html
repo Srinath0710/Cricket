@@ -105,8 +105,8 @@
     </main>
     <!-- STATUS Confirmation POPUP -->
 
-    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
-      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+    <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+      [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
 
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
@@ -270,7 +270,7 @@
               <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                 *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null"
                 (click)="resetForm()"></button>
-              <button pButton  label="Save" class="save-button" (click)="onAddCountry()"></button>
+              <button pButton label="Save" class="save-button" (click)="onAddCountry()"></button>
             </div>
           </div>
         </div>

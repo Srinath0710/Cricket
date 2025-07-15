@@ -1,22 +1,23 @@
-
 .img-croper-popup .modal-content.crop-image {
   width: auto;
-  max-width: 500px;  
+  max-width: 500px;
   padding: 0;
   margin: auto;
 }
- .img-croper-popup {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  .modal-content.crop-image {
+
+.img-croper-popup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content.crop-image {
   width: 500px;
   max-width: 500px;
   height: 500px;
@@ -29,4 +30,56 @@
   align-items: center;
   overflow: hidden;
   max-height: 500px;
+}
+    /* pop up */
+
+/* ::ng-deep .p-confirm-dialog-custom {
+  position: relative;
+  border: 4px solid transparent !important;
+  border-radius: 8px;
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  background-image: 
+    linear-gradient(#ffffff, #ffffff),
+    linear-gradient(to left, #60c3e4, #eabfff); 
+} */
+
+
+
+::ng-deep .p-confirm-dialog-custom .p-dialog-content,
+.p-confirm-dialog-footer {
+  text-align: center;
+  justify-content: center;
+  margin-bottom: -33px;
+}
+
+::ng-deep .p-confirm-dialog-custom .icon-wrapper i {
+  font-size: 5rem;
+  color: #120b01;
+}
+
+::ng-deep .p-confirm-dialog-custom .action-heading {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #070501;
+  margin-top: 0.5rem;
+  margin-left: -18px;
+}
+
+::ng-deep .warning {
+  font-family: "emoji";
+  font-size: x-large;
+}
+
+::ng-deep .p-confirm-dialog-custom .logo-img {
+  width: 257px;
+  height: auto;
+  margin-bottom: 2px;
+  padding-right: 171px;
+  margin-top: -22px;
+  border-top: 1px solid #dee2e6;
+}
+
+::ng-deep .p-confirm-dialog-custom .warning-icon {
+  font-size: 50px;
 }
