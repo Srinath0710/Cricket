@@ -870,9 +870,9 @@ tr:hover {
 .p-dialog .p-dialog-footer {
   display: flex;
   justify-content: flex-end;
-  padding: 1rem 0px 12px 58px;
+  padding: 1rem 0px 12px 70px;
   /* border-top: 1px solid #dee2e6; */
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
   flex-direction: row-reverse !important;
 }
 
@@ -880,6 +880,7 @@ tr:hover {
   margin-left: 1.5rem;
   background-color: #3f51b5 !important;
   border: blue !important;
+  border-radius: 1px;
 }
 
 /* FORM OPEN */
@@ -1108,7 +1109,7 @@ main {
 }
 
 .p-dialog .p-dialog-content {
-  padding: 0 0.5rem 0.5rem 0.5rem;
+  padding: 21px 0.5rem 0.5rem 0.5rem;
 }
 
 

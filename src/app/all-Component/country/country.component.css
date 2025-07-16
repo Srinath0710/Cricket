@@ -50,7 +50,6 @@
 .p-confirm-dialog-footer {
   text-align: center;
   justify-content: center;
-  margin-bottom: -33px;
 }
 
 ::ng-deep .p-confirm-dialog-custom .icon-wrapper i {
@@ -82,4 +81,9 @@
 
 ::ng-deep .p-confirm-dialog-custom .warning-icon {
   font-size: 50px;
+}
+
+::ng-deep .message-text{
+      margin-top: 14px !important;
+    font-size: 14px !important;
 }
