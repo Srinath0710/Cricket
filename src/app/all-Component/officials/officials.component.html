@@ -122,35 +122,27 @@
                 </td>
 
                 <td>
-
-
                   <span class="icon-blue" (click)="Editofficial(official)" pTooltip="Edit" tooltipPosition="top">
                     <i class="fa-solid fa-user-pen"></i>
                   </span>
-
-
                   <span class="icon-green"
                     (click)="StatusConfirm(official.official_id,conditionConstants.active_status,official.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
-
                   <span class="icon-red"
                     (click)="StatusConfirm(official.official_id,conditionConstants.deactive_status,official.record_status)"
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span>
-
-                  <!-- <span class="icon-white" (click)="Perfoileupdate(official)" pTooltip="Edit" tooltipPosition="top">
-                       <i class="fa-solid fa-eye"></i> 
-                  </span>  -->
-
-
                   <span class="icon-rose" pTooltip="Personal Info" tooltipPosition="top"
                     (click)="Editpersonalofficial(official )">
                     <i class="fa-solid fa-building-columns"></i>
                   </span>
+                </td>
+
               </tr>
+
             </ng-template>
           </p-table>
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
@@ -907,6 +899,7 @@
     </main>
   </div>
 </div>
+<!-- <p-toast key="tc" position="top-right"></p-toast> -->
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">

@@ -212,7 +212,8 @@ label {
   display: flex;
   align-items: center;
   /* background: linear-gradient(to left, #ff88c8, #99fffd); */
-  background: #d5fffe;
+  /* background: #d5fffe; */
+  background: #dafaff;
 }
 
 .main-page-title {

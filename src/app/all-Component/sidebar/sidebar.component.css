@@ -26,7 +26,8 @@
   height: calc(100vh - 60px);
   /* background:#d9d9d9; */
    /*background: linear-gradient(to right, #60c3e4, #eabfff); */
-     background:  #898989;
+     /* background:  #898989; */
+     background:  #dafaff;
 
 
   border-right: 1px solid var(--sidebar-border);

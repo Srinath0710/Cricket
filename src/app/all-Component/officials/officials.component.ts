@@ -894,23 +894,23 @@ export class OfficialsComponent implements OnInit {
 
     this.visible = false;
   }
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
-    data: { image: 'assets/images/default-logo.png' },
-    severity: 'error',
-    summary: 'Error',
-    detail: data.message
-   });
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
 
   status(official_id: number, url: string) {
@@ -930,8 +930,8 @@ successToast(data: any) {
       });
   }
 
-    StatusConfirm(official_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-     const { active_status, deactive_status } = this.conditionConstants;
+  StatusConfirm(official_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
+    const { active_status, deactive_status } = this.conditionConstants;
     const isSameStatus =
       (actionObject.key === active_status.key && currentStatus === active_status.status) ||
       (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
@@ -967,12 +967,12 @@ successToast(data: any) {
   }
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridload();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridload();
+    }
   }
 
   clear() {

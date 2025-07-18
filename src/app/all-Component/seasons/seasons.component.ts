@@ -80,8 +80,8 @@ export class SeasonsComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService,
-     public cricketKeyConstant: CricketKeyConstant,
-     public spinnerService:SpinnerService) {
+    public cricketKeyConstant: CricketKeyConstant,
+    public spinnerService: SpinnerService) {
 
   }
 
@@ -167,23 +167,23 @@ export class SeasonsComponent implements OnInit {
     this.submitted = false;
   }
 
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
-    data: { image: 'assets/images/default-logo.png' },
-    severity: 'error',
-    summary: 'Error',
-    detail: data.message
-   });
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
   onAddSeason() {
     this.submitted = true;
@@ -246,7 +246,7 @@ successToast(data: any) {
             season_status: editRecord.season_status
           });
           this.showAddForm();
-           this.isEditMode = true;
+          this.isEditMode = true;
         }
       } else {
         this.failedToast(res);
@@ -301,8 +301,9 @@ successToast(data: any) {
   //   });
   // }
 
-        StatusConfirm(season_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-     const { active_status, deactive_status } = this.conditionConstants;
+  StatusConfirm(season_id: number, actionObject: { key: string; label: string }, 
+    currentStatus: string) {
+    const { active_status, deactive_status } = this.conditionConstants;
     const isSameStatus =
       (actionObject.key === active_status.key && currentStatus === active_status.status) ||
       (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
@@ -332,12 +333,12 @@ successToast(data: any) {
     } as any);
   }
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridload();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridload();
+    }
   }
 
   clear() {

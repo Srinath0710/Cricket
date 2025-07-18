@@ -3,7 +3,7 @@
     <div class="col-6">
       <p-table #dt1 [value]="sourceTeams" [paginator]="true" selectionMode="multiple"
         [globalFilterFields]="['team_name']" [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines"
-        [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+        [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" >
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
             <div class="p-1 Child-header text-center">Available Teams</div>
@@ -62,7 +62,7 @@
     </div>
 
     <div class="col-md-6">
-      <p-table #dt2 [value]="targetTeams" [paginator]="true" selectionMode="multiple"
+      <p-table #dt2 [value]="targetTeams" selectionMode="multiple"
         [globalFilterFields]="['team_name']" [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines"
         [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
         <ng-template pTemplate="caption">
@@ -111,8 +111,8 @@
                   </button>
                 </span>
                 <span>
-                  <button class="clear-width delete-button" (click)="moveToSource(team)">
-                    <i class="fa-solid fa-reply-all" pTooltip="Remove" tooltipPosition="top"></i>
+                  <button class="clear-width delete-button" >
+                    <i class="fa-solid fa-reply-all" (click)="moveToSource(team)" pTooltip="Remove" tooltipPosition="top"></i>
                   </button>
                 </span>
               </div>
