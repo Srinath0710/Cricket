@@ -10,7 +10,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
-
+import { SpinnerService } from '../../../services/Spinner/spinner.service';
 
 @Component({
   selector: 'app-comp-player',
@@ -34,10 +34,10 @@ import { ToastModule } from 'primeng/toast';
   standalone: true
 })
 export class CompPlayerComponent implements OnInit {
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
   @Output() PlayerUpdated = new EventEmitter<void>();
   client_id: number = Number(localStorage.getItem('client_id'));
-  default_img= CricketKeyConstant.default_image_url.players;
+  default_img = CricketKeyConstant.default_image_url.players;
   sourcePlayer!: [];
   targetPlayer!: any[];
   teamsDropDown: any;
@@ -46,7 +46,7 @@ export class CompPlayerComponent implements OnInit {
   selectedTeamId: number | null = null;
   isEditPopupVisible = false;
   public ManagePlayerForm!: FormGroup<any>;
-  statusConstants= CricketKeyConstant.status_code;
+  statusConstants = CricketKeyConstant.status_code;
 
   selectedPlayer: any = null;
 
@@ -62,10 +62,11 @@ export class CompPlayerComponent implements OnInit {
     private formBuilder: FormBuilder,
     private msgService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private spinnerService: SpinnerService
   ) { }
   ngOnInit() {
-
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.gridLoad();
     this.ManagePlayerForm = this.formBuilder.group({
       player_id: ['', []],
@@ -82,31 +83,56 @@ export class CompPlayerComponent implements OnInit {
   }
 
   chooseTeam(teamId: any) {
-    this.team_id = teamId;
+    // Only proceed if a different team is selected
+    if (this.team_id !== teamId) {
+      this.team_id = teamId;
+      this.gridLoad();
+    } else {
+      this.sourcePlayer = [];
+      this.targetPlayer = [];
+    }
   }
 
   gridLoad() {
-    const params: any = {}
+    this.spinnerService.raiseDataEmitterEvent('on');
+    const params: any = {};
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-    this.apiService.post(this.urlConstant.compplayerlist, params).subscribe((res: any) => {
-      this.teamsDropDown = res.data.teams ?? [];
-      
-      setTimeout(() => {
-        //     if (this.teamsDropDown.length > 0) {
-        //   this.team_id = this.teamsDropDown[0].team_id;
-        // }
-        const allItems = res.data.all_players.filter((item: any) => item.team_id == this.team_id);
-        const mappedIds = res.data.selected_players.filter((item: any) => item.team_id == this.team_id).map((value: any) => value.player_id);
-        this.sourcePlayer = allItems.filter((item: any) => !mappedIds.includes(item.player_id));
-        this.targetPlayer = res.data.selected_players.filter((item: any) => item.team_id == this.team_id);
-        console.log(this.sourcePlayer, this.targetPlayer, mappedIds)
-      }, 100)
 
-    }, (err: any) => {
+    this.apiService.post(this.urlConstant.compplayerlist, params).subscribe(
+      (res: any) => {
+        this.teamsDropDown = res.data.teams ?? [];
 
-    })
+        const allItems = res.data.all_players.filter(
+          (item: any) => item.team_id == this.team_id
+        );
+        const selectedPlayers = res.data.selected_players.filter(
+          (item: any) => item.team_id == this.team_id
+        );
+        const AvailablePlayer = selectedPlayers.map((p: any) => p.player_id);
+        this.sourcePlayer = allItems.filter(
+          (item: any) => !AvailablePlayer.includes(item.player_id)
+        );
+        this.targetPlayer = selectedPlayers;
+        if (allItems.length === 0 && selectedPlayers.length === 0) {
+          this.sourcePlayer = [];
+          this.targetPlayer = [];
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+
+        console.log('All Items:', allItems);
+        console.log('Selected Players:', selectedPlayers);
+        console.log('Available Players:', this.sourcePlayer);
+      },
+      (err: any) => {
+        console.error('Error loading player list:', err);
+        this.spinnerService.raiseDataEmitterEvent('off'); // Ensure spinner is turned off on error
+        // Optionally, clear player lists on error
+        this.sourcePlayer = [];
+        this.targetPlayer = [];
+      }
+    );
   }
 
   addplayer() {
@@ -117,24 +143,37 @@ export class CompPlayerComponent implements OnInit {
     params.team_id = this.team_id?.toString();
     params.player_id = this.player_id?.toString();
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',');
-
     this.apiService.post(this.urlConstant.compplayeradd, params).subscribe(
       (res: any) => {
         this.PlayerUpdated.emit();
+        this.successToast(res);
       },
       (err: any) => {
-          err.status_code === this.statusConstants.refresh && err.error.message
-           === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
-            this.failedToast(err.error);
+        err.status_code === this.statusConstants.refresh && err.error.message
+          === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
+          this.failedToast(err.error);
 
       });
   }
 
-     /* Failed Toast */
-  failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
-  }
+successToast(data: any) {
 
+  this.msgService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+  });
+}
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
+  }
   updateplayer(): void {
     if (!this.selectedPlayer) {
       console.error('No team selected for update!');
@@ -163,11 +202,11 @@ export class CompPlayerComponent implements OnInit {
     );
   }
 
-  selectTeam(id: number) {
-    this.selectedTeamId = id;
-    this.team_id = id;
-    this.gridLoad();
-  }
+  // selectTeam(id: number) {
+  //   this.selectedTeamId = id;
+  //   this.team_id = id;
+  //   this.gridLoad();
+  // }
   onMoveToTarget(event: any) {
     event.items.forEach((item: any) => {
       item.highlighted = true;

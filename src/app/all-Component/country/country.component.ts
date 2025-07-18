@@ -315,15 +315,25 @@ export class CountryComponent implements OnInit {
       });
   }
 
-  successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+successToast(data: any) {
 
-  }
-
+  this.msgService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+  });
+}
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({
+    data: { image: 'assets/images/default-logo.png' },
+    severity: 'error',
+    summary: 'Error',
+    detail: data.message
+   });
   }
+  
   onAddCountry() {
     this.submitted = true;
     if (this.addCountryForm.invalid) {

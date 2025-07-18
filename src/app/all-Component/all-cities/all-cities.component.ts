@@ -253,14 +253,24 @@ export class AllCitiesComponent implements OnInit {
     this.resetForm();
   }
   successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
   }
-
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
+
 
   status(city_id: number, url: string) {
     const params: any = {
@@ -344,32 +354,39 @@ export class AllCitiesComponent implements OnInit {
   }
 
   StatusConfirm(city_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-    const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
+     const { active_status, deactive_status } = this.conditionConstants;
+    const isSameStatus =
+      (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+      (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+    if (isSameStatus) return;
+    const isActivating = actionObject.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+    const message = `Are you sure you want to proceed?`;
 
-    if (AlreadyStatestatus) {
-      return;
-    }
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this city?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
+      header: ``,
+      message: `
+      <div class="custom-confirm-content">
+      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <div class="warning">Warning</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
       acceptLabel: 'Yes',
       rejectLabel: 'No',
+      styleClass: 'p-confirm-dialog-custom',
       accept: () => {
-
-        const url: string = this.conditionConstants.active_status.key === actionObject.key
-          ? this.urlConstant.activecity
-          : this.urlConstant.deactiveCity;
+        const url = isActivating ? this.urlConstant.activecity : this.urlConstant.deactiveCity;
         this.status(city_id, url);
         this.confirmationService.close();
       },
-      reject: () => {
-        this.confirmationService.close();
-      }
-    });
+      reject: () => this.confirmationService.close()
+    } as any);
   }
+
+
+
+
   filterGlobal() {
   if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
 

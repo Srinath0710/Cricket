@@ -1,33 +1,33 @@
-  <div class="page-wrapper">
-    <div class="content container-fluid">
-      <main>
-        <div class="card margin-card">
-          <div class="card-body mb-5">
-            <section [ngClass]="{'inactive': showTabs}">
-              <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-                <div class="main-page-title page-title playerbackground">
-                  <i class="fa-solid fa-trophy" aria-hidden="true"></i>
-                  Competitions
-                  <div class="">: {{ totalRecords }}</div>
-                </div>
-           <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
-                  <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name"
-                    optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="loadCompetitions()"
-                    placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <main>
+      <div class="card margin-card">
+        <div class="card-body mb-5">
+          <section [ngClass]="{'inactive': showTabs}">
+            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+              <div class="main-page-title page-title playerbackground">
+                <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+                Competitions
+                <div class="">: {{ totalRecords }}</div>
+              </div>
+              <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
+                <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name"
+                  optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="loadCompetitions()"
+                  placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
                      drop-error header-drop">
 
-                    <ng-template let-Client pTemplate="item">
-                      <div class="country-item">
-                        <div>{{ Client.client_name }}</div>
-                      </div>
-                    </ng-template>
+                  <ng-template let-Client pTemplate="item">
+                    <div class="country-item">
+                      <div>{{ Client.client_name }}</div>
+                    </div>
+                  </ng-template>
 
-                  </p-dropdown>
-                </div>
-            <div class="d-flex align-items-center">
+                </p-dropdown>
+              </div>
+              <div class="d-flex align-items-center">
 
-                  <!-- Search Form -->
-                  <!-- <form class="d-flex align-items-center  gap-2">
+                <!-- Search Form -->
+                <!-- <form class="d-flex align-items-center  gap-2">
                     <div class="form-group">
                       <span class="p-input-icon-left ml-auto">
                         <span class="p-input-icon-right input-icons search-padding">
@@ -37,157 +37,149 @@
                       </span>
                     </div>
                   </form> -->
-                   <form class="d-flex align-items-center  gap-2" (submit)="loadCompetitions()">
-                <div class="p-input-icon-right flex-grow-1 me-2">
-                  <input
-                    pInputText
-                    type="text"
-                    [(ngModel)]="searchKeyword"
-                    name="searchKeyword"
-                    class="width-search"
-                    placeholder="  Search"
-                    (input)="filterGlobal()"
-                 >
+                <form class="d-flex align-items-center  gap-2" (submit)="loadCompetitions()">
+                  <div class="p-input-icon-right flex-grow-1 me-2">
+                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                      placeholder="  Search" (input)="filterGlobal()">
+                  </div>
+
+                  <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+
+                </form>
+
+                <!-- Filter Button -->
+                <div class="filter-icon-wrapper">
+                  <button class="filter-icon-button" (click)="toggleFilters()">
+                    <i class="fa fa-filter"></i>
+                  </button>
                 </div>
-              
-                 <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
-    
-              </form>
 
-                  <!-- Filter Button -->
-                  <div class="filter-icon-wrapper">
-                    <button class="filter-icon-button" (click)="toggleFilters()">
-                      <i class="fa fa-filter"></i>
-                    </button>
-                  </div>
+                <div class="card flex justify-center">
+                  <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="showDialog()"> <i
+                      class="fas fa-plus"></i> Create</button>
+                </div>
 
-                  <div class="card flex justify-center">
-                    <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="showDialog()"> <i
-                        class="fas fa-plus"></i> Create</button>
-                  </div>
+              </div>
+            </div>
 
+            <!-- Filter Section -->
+            <div class="filter-panel" [ngClass]="{'show-filters': showFilters}">
+              <div class="filter-row">
+                <div class="filter-item">
+                  <label>Status</label>
+                  <select class="filter-select" [(ngModel)]="filterStatus">
+                    <option value="">All</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Match Type</label>
+                  <select class="filter-select" [(ngModel)]="filterMatchType">
+                    <option value="">All</option>
+                    <option value="ODI">ODI</option>
+                    <option value="T20">T20</option>
+                    <option value="Test">Test</option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Category</label>
+                  <select class="filter-select" [(ngModel)]="filterCategory">
+                    <option value="">All</option>
+                    <option value="Domestic">Domestic</option>
+                    <option value="International">International</option>
+                    <option value="League">League</option>
+                  </select>
+                </div>
+                <div class="filter-actions">
+                  <button class="filter-apply-btn" (click)="applyFilters()">Apply</button>
                 </div>
               </div>
+            </div>
 
-              <!-- Filter Section -->
-              <div class="filter-panel" [ngClass]="{'show-filters': showFilters}">
-                <div class="filter-row">
-                  <div class="filter-item">
-                    <label>Status</label>
-                    <select class="filter-select" [(ngModel)]="filterStatus">
-                      <option value="">All</option>
-                      <option value="Active">Active</option>
-                      <option value="InActive">InActive</option>
-                    </select>
-                  </div>
-                  <div class="filter-item">
-                    <label>Match Type</label>
-                    <select class="filter-select" [(ngModel)]="filterMatchType">
-                      <option value="">All</option>
-                      <option value="ODI">ODI</option>
-                      <option value="T20">T20</option>
-                      <option value="Test">Test</option>
-                    </select>
-                  </div>
-                  <div class="filter-item">
-                    <label>Category</label>
-                    <select class="filter-select" [(ngModel)]="filterCategory">
-                      <option value="">All</option>
-                      <option value="Domestic">Domestic</option>
-                      <option value="International">International</option>
-                      <option value="League">League</option>
-                    </select>
-                  </div>
-                  <div class="filter-actions">
-                    <button class="filter-apply-btn" (click)="applyFilters()">Apply</button>
-                  </div>
-                </div>
+            <!-- Create/Edit Competition Dialog -->
+
+            <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="small-heading">{{ isEditMode ? 'Edit Competition' : 'Add Competition' }}</h4>
               </div>
 
-              <!-- Create/Edit Competition Dialog -->
+              <form [formGroup]="addCompetitionForm">
 
-              <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                  <h4 class="small-heading">{{ isEditMode ? 'Edit Competition' : 'Add Competition' }}</h4>
-                </div>
-
-                <form [formGroup]="addCompetitionForm">
-
-                  <div class="row">
-                    <!-- Left Column - Input Fields -->
-                    <div class="col-md-6">
-                      <div class="p-3 border rounded shadow-sm h-100 bg-white">
-                        <h6 class="mb-3">Competition Information</h6>
-                        <div class="row gy-3">
-                          <div class="col-md-4">
-                            <label class="">Competition Name
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="text" formControlName="competition_name">
-                            <small
-                              *ngIf="addCompetitionForm?.get('competition_name')?.invalid &&(addCompetitionForm?.get('competition_name')?.touched) || (addCompetitionForm.get('competition_name')?.invalid && submitted)"
-                              class="required-msg"> Competition Name Is Required
-                            </small>
-                          </div>
-                          <div class="col-md-4">
-                            <label class="">Display Name
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="text" formControlName="visual_name">
-                            <small
-                              *ngIf="addCompetitionForm?.get('visual_name')?.invalid &&(addCompetitionForm?.get('visual_name')?.touched) || (addCompetitionForm.get('visual_name')?.invalid && submitted)"
-                              class="required-msg"> Display Name Is Required
-                            </small>
-                          </div>
-                          <div class="col-md-4">
-                            <label class="">Trophy Name
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="text" formControlName="trophy_name">
-                            <small
-                              *ngIf="addCompetitionForm?.get('trophy_name')?.invalid &&(addCompetitionForm?.get('trophy_name')?.touched) || (addCompetitionForm.get('trophy_name')?.invalid && submitted)"
-                              class="required-msg">Trophy Name Is Required
-                            </small>
-                          </div>
-                          <div class="col-md-4">
-                            <label>Season<span class="text-danger">*</span></label>
-                            <p-dropdown [options]="seasonList" class="drop-error" formControlName="season_id"
-                              optionValue="season_id" optionLabel="season_name" placeholder="Select Season"
-                              appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
-                              <ng-template let-season pTemplate="item">
-                                <div class="flex align-items-center gap-2">
-                                  <div>{{ season.season_name }}</div>
-                                </div>
-                              </ng-template>
-                            </p-dropdown>
-                            <small *ngIf="
+                <div class="row">
+                  <!-- Left Column - Input Fields -->
+                  <div class="col-md-6">
+                    <div class="p-3 border rounded shadow-sm h-100 bg-white">
+                      <h6 class="mb-3">Competition Information</h6>
+                      <div class="row gy-3">
+                        <div class="col-md-4">
+                          <label class="">Competition Name
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="text" formControlName="competition_name">
+                          <small
+                            *ngIf="addCompetitionForm?.get('competition_name')?.invalid &&(addCompetitionForm?.get('competition_name')?.touched) || (addCompetitionForm.get('competition_name')?.invalid && submitted)"
+                            class="required-msg"> Competition Name Is Required
+                          </small>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="">Display Name
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="text" formControlName="visual_name">
+                          <small
+                            *ngIf="addCompetitionForm?.get('visual_name')?.invalid &&(addCompetitionForm?.get('visual_name')?.touched) || (addCompetitionForm.get('visual_name')?.invalid && submitted)"
+                            class="required-msg"> Display Name Is Required
+                          </small>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="">Trophy Name
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="text" formControlName="trophy_name">
+                          <small
+                            *ngIf="addCompetitionForm?.get('trophy_name')?.invalid &&(addCompetitionForm?.get('trophy_name')?.touched) || (addCompetitionForm.get('trophy_name')?.invalid && submitted)"
+                            class="required-msg">Trophy Name Is Required
+                          </small>
+                        </div>
+                        <div class="col-md-4">
+                          <label>Season<span class="text-danger">*</span></label>
+                          <p-dropdown [options]="seasonList" class="drop-error" formControlName="season_id"
+                            optionValue="season_id" optionLabel="season_name" placeholder="Select Season"
+                            appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                            <ng-template let-season pTemplate="item">
+                              <div class="flex align-items-center gap-2">
+                                <div>{{ season.season_name }}</div>
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
+                          <small *ngIf="
                             addCompetitionForm.get('season_id')?.invalid &&
                             (addCompetitionForm.get('season_id')?.touched || submitted)" class="required-msg">
-                              Season Name is required
-                            </small>
-                          </div>
+                            Season Name is required
+                          </small>
+                        </div>
 
-                          <div class="col-md-4">
-                            <label>Match Type*</label>
-                            <p-dropdown [options]="tourtypeList" class="drop-error"
-                              formControlName="competition_type_id" optionValue="config_id" optionLabel="config_name"
-                              placeholder="Select Match Type " appendTo="body"
-                              [panelStyleClass]="'custom-dropdown-panel'">
-                              <ng-template let-comptype pTemplate="item">
-                                <div class="flex align-items-center gap-2">
-                                  <div>{{ comptype.config_name }}</div>
-                                </div>
-                              </ng-template>
-                            </p-dropdown>
-                            <small *ngIf="
+                        <div class="col-md-4">
+                          <label>Match Type*</label>
+                          <p-dropdown [options]="tourtypeList" class="drop-error" formControlName="competition_type_id"
+                            optionValue="config_id" optionLabel="config_name" placeholder="Select Match Type "
+                            appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                            <ng-template let-comptype pTemplate="item">
+                              <div class="flex align-items-center gap-2">
+                                <div>{{ comptype.config_name }}</div>
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
+                          <small *ngIf="
                             addCompetitionForm.get('competition_type_id')?.invalid &&
                             (addCompetitionForm.get('competition_type_id')?.touched || submitted)"
-                              class="required-msg">
-                              Match Type is required
-                            </small>
+                            class="required-msg">
+                            Match Type is required
+                          </small>
 
-                          </div>
-                          <!-- <div class="col-md-4">
+                        </div>
+                        <!-- <div class="col-md-4">
                             <label>Competition Category</label>
                             <p-dropdown [options]="genderList" class="drop-error "
                               formControlName="competition_category_id" optionValue="config_id"
@@ -204,317 +196,332 @@
                               </ng-template>
                             </p-dropdown>
                           </div> -->
-                          <div class="col-md-4">
-                            <label>Gender*</label>
-                            <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id"
-                              optionValue="config_id" optionLabel="config_name"
-                              [ngModel]="addCompetitionForm.get('gender_id')?.value" placeholder="Select Gender"
-                              appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                        <div class="col-md-4">
+                          <label>Gender*</label>
+                          <p-dropdown [options]="genderList" class="drop-error " formControlName="gender_id"
+                            optionValue="config_id" optionLabel="config_name"
+                            [ngModel]="addCompetitionForm.get('gender_id')?.value" placeholder="Select Gender"
+                            appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
-                              <ng-template let-gender pTemplate="item">
-                                <div class="flex align-items-center gap-2">
+                            <ng-template let-gender pTemplate="item">
+                              <div class="flex align-items-center gap-2">
 
-                                  <div>{{ gender.config_name }}
-                                  </div>
+                                <div>{{ gender.config_name }}
                                 </div>
-                              </ng-template>
-                            </p-dropdown>
-                            <small *ngIf="
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
+                          <small *ngIf="
                             addCompetitionForm.get('gender_id')?.invalid &&
                             (addCompetitionForm.get('gender_id')?.touched || submitted)" class="required-msg">
-                              Gender is required
-                            </small>
-                          </div>
-                          <div class="col-md-4">
-                            <label>Age Group*</label>
-                            <p-dropdown [options]="ageGroupList" class="drop-error " formControlName="age_category_id"
-                              optionValue="config_id" optionLabel="config_name"
-                              [ngModel]="addCompetitionForm.get('age_category_id')?.value"
-                              placeholder="Select Age Category" appendTo="body"
-                              [panelStyleClass]="'custom-dropdown-panel'">
+                            Gender is required
+                          </small>
+                        </div>
+                        <div class="col-md-4">
+                          <label>Age Group*</label>
+                          <p-dropdown [options]="ageGroupList" class="drop-error " formControlName="age_category_id"
+                            optionValue="config_id" optionLabel="config_name"
+                            [ngModel]="addCompetitionForm.get('age_category_id')?.value"
+                            placeholder="Select Age Category" appendTo="body"
+                            [panelStyleClass]="'custom-dropdown-panel'">
 
-                              <ng-template let-agecategory pTemplate="item">
-                                <div class="flex align-items-center gap-2">
+                            <ng-template let-agecategory pTemplate="item">
+                              <div class="flex align-items-center gap-2">
 
-                                  <div>{{ agecategory.config_name }}
-                                  </div>
+                                <div>{{ agecategory.config_name }}
                                 </div>
-                              </ng-template>
-                            </p-dropdown>
-                            <small *ngIf="
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
+                          <small *ngIf="
                             addCompetitionForm.get('age_category_id')?.invalid &&
                             (addCompetitionForm.get('age_category_id')?.touched || submitted)" class="required-msg">
-                              Age Group is required
-                            </small>
-                          </div>
-                          <div class="col-md-4">
-                            <label>Tour Level*</label>
-                            <p-dropdown [options]="tourlevelList" class="drop-error "
-                              formControlName="competition_level" optionValue="config_id" optionLabel="config_name"
-                              [ngModel]="addCompetitionForm.get('competition_level')?.value"
-                              placeholder="Select Tour Level" appendTo="body"
-                              [panelStyleClass]="'custom-dropdown-panel'">
+                            Age Group is required
+                          </small>
+                        </div>
+                        <div class="col-md-4">
+                          <label>Tour Level*</label>
+                          <p-dropdown [options]="tourlevelList" class="drop-error " formControlName="competition_level"
+                            optionValue="config_id" optionLabel="config_name"
+                            [ngModel]="addCompetitionForm.get('competition_level')?.value"
+                            placeholder="Select Tour Level" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
-                              <ng-template let-agecategory pTemplate="item">
-                                <div class="flex align-items-center gap-2">
+                            <ng-template let-agecategory pTemplate="item">
+                              <div class="flex align-items-center gap-2">
 
-                                  <div>{{ agecategory.config_name }}
-                                  </div>
+                                <div>{{ agecategory.config_name }}
                                 </div>
-                              </ng-template>
-                            </p-dropdown>
-                            <small *ngIf="
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
+                          <small *ngIf="
                             addCompetitionForm.get('competition_level')?.invalid &&
                             (addCompetitionForm.get('competition_level')?.touched || submitted)" class="required-msg">
-                              Tour Level is required
-                            </small>
-                          </div>
-                          <div class="col-md-4">
-                            <label>Competition Format*</label>
-                            <p-dropdown [options]="filterTourformatList" class="drop-error "
-                              formControlName="competition_format_id" optionValue="config_id" optionLabel="config_name"
-                              [ngModel]="addCompetitionForm.get('competition_format_id')?.value"
-                              placeholder="Select Format" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                            Tour Level is required
+                          </small>
+                        </div>
+                        <div class="col-md-4">
+                          <label>Competition Format*</label>
+                          <p-dropdown [options]="filterTourformatList" class="drop-error "
+                            formControlName="competition_format_id" optionValue="config_id" optionLabel="config_name"
+                            [ngModel]="addCompetitionForm.get('competition_format_id')?.value"
+                            placeholder="Select Format" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
-                              <ng-template let-Format pTemplate="item">
-                                <div class="flex align-items-center gap-2">
+                            <ng-template let-Format pTemplate="item">
+                              <div class="flex align-items-center gap-2">
 
-                                  <div>{{ Format.config_name }}
-                                  </div>
+                                <div>{{ Format.config_name }}
                                 </div>
-                              </ng-template>
-                            </p-dropdown>
-                            <small *ngIf="
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
+                          <small *ngIf="
                             addCompetitionForm.get('competition_format_id')?.invalid &&
                             (addCompetitionForm.get('competition_format_id')?.touched || submitted)"
-                              class="required-msg">
-                              Competition Format is required
-                            </small>
+                            class="required-msg">
+                            Competition Format is required
+                          </small>
+                        </div>
+                        <div class="col-md-4">
+                          <label>Is Practice</label>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="is_practice" [value]="1"
+                              formControlName="is_practice" id="practiceYes" />
+                            <label class="form-check-label" for="practiceYes">Yes</label>
                           </div>
-                          <div class="col-md-4">
-                            <label>Is Practice</label>
-                            <div class="form-check">
-                              <input class="form-check-input" type="radio" name="is_practice" [value]="1"
-                                formControlName="is_practice" id="practiceYes" />
-                              <label class="form-check-label" for="practiceYes">Yes</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="radio" name="is_practice" [value]="0"
-                                formControlName="is_practice" id="practiceNo" />
-                              <label class="form-check-label" for="practiceNo">No</label>
-                            </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="is_practice" [value]="0"
+                              formControlName="is_practice" id="practiceNo" />
+                            <label class="form-check-label" for="practiceNo">No</label>
+                          </div>
 
-                            <small *ngIf="
+                          <small *ngIf="
                             addCompetitionForm.get('is_practice')?.invalid &&
                             (addCompetitionForm.get('is_practice')?.touched || submitted)" class="required-msg">
-                              Is Practice is required
-                            </small>
-                          </div>
-
+                            Is Practice is required
+                          </small>
                         </div>
+
                       </div>
                     </div>
+                  </div>
 
 
-                    <div class="col-md-6">
-                      <div class="p-3 border rounded shadow-sm h-100 bg-white">
-                        <h6 class="mb-3">Match Details</h6>
-                        <div class="row gy-3">
-                          <div class="col-md-4">
-                            <label class="formItemLabel">Start Date
-                              <span class="text-danger">*</span></label>
-                            <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter Start Date"
-                              formControlName="start_date">
-                            <small *ngIf="
+                  <div class="col-md-6">
+                    <div class="p-3 border rounded shadow-sm h-100 bg-white">
+                      <h6 class="mb-3">Match Details</h6>
+                      <div class="row gy-3">
+                        <div class="col-md-4">
+                          <label class="formItemLabel">Start Date
+                            <span class="text-danger">*</span></label>
+                          <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter Start Date"
+                            formControlName="start_date">
+                          <small *ngIf="
                               addCompetitionForm.get('start_date')?.invalid &&
                               (addCompetitionForm.get('start_date')?.touched || submitted)" class="required-msg">
-                              Start Date is required
-                            </small>
+                            Start Date is required
+                          </small>
 
-                          </div>
-                          <div class="col-md-4">
-                            <label class="formItemLabel">End Date
-                              <span class="text-danger">*</span></label>
-                            <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter End Date"
-                              formControlName="end_date">
-                            <small *ngIf="
+                        </div>
+                        <div class="col-md-4">
+                          <label class="formItemLabel">End Date
+                            <span class="text-danger">*</span></label>
+                          <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter End Date"
+                            formControlName="end_date">
+                          <small *ngIf="
                               addCompetitionForm.get('end_date')?.invalid &&
                               (addCompetitionForm.get('end_date')?.touched || submitted)" class="required-msg">
-                              End Date is required
-                            </small>
-                          </div>
+                            End Date is required
+                          </small>
+                        </div>
 
 
-                          <div class="col-md-4">
-                            <label class="">overs_per_innings
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number"
-                              formControlName="overs_per_innings">
-                          </div>
+                        <div class="col-md-4">
+                          <label class="">overs_per_innings
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="overs_per_innings">
+                        </div>
 
-                          <div class="col-md-4">
-                            <label class="">overs_per_bowler
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number" formControlName="overs_per_bowler">
-                          </div>
-                          <div class="col-md-4">
-                            <label class="">points_abandoned
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number" formControlName="points_abandoned">
-                          </div>
+                        <div class="col-md-4">
+                          <label class="">overs_per_bowler
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="overs_per_bowler">
+                        </div>
+                        <div class="col-md-4">
+                          <label class="">points_abandoned
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="points_abandoned">
+                        </div>
 
-                          <div class="col-md-4">
-                            <label class="">points_draw
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number" formControlName="points_draw">
-                          </div>
+                        <div class="col-md-4">
+                          <label class="">points_draw
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="points_draw">
+                        </div>
 
-                          <div class="col-md-4">
-                            <label class="">points_win
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number" formControlName="points_win">
-                          </div>
+                        <div class="col-md-4">
+                          <label class="">points_win
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="points_win">
+                        </div>
 
-                          <div class="col-md-4">
-                            <label class="">points_lead
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number" formControlName="points_lead">
-                          </div>
-                          <div class="col-md-4">
-                            <label class="">points_tie
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number" formControlName="points_tie">
-                          </div>
-                          <div class="col-md-4">
-                            <label class="">calculation
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="number" formControlName="calculation">
-                          </div>
+                        <div class="col-md-4">
+                          <label class="">points_lead
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="points_lead">
+                        </div>
+                        <div class="col-md-4">
+                          <label class="">points_tie
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="points_tie">
+                        </div>
+                        <div class="col-md-4">
+                          <label class="">calculation
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="number" formControlName="calculation">
+                        </div>
 
 
-                          <div class="col-md-4">
-                            <label class="">video_path
-                              <span class="text-danger">*</span>
-                            </label>
-                            <input class="form-control" maxlength="50" type="text" formControlName="video_path">
-                          </div>
+                        <div class="col-md-4">
+                          <label class="">video_path
+                            <span class="text-danger">*</span>
+                          </label>
+                          <input class="form-control" maxlength="50" type="text" formControlName="video_path">
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="form-wrapper pb-5">
-                    <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
-                      <div class="col-12 text-end">
-                        <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
-                          (click)="cancelForm()"></button>
-
-                        <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
-                          *ngIf="addCompetitionForm.get('competition_id')?.value == '' || addCompetitionForm.get('competition_id')?.value == null"
-                          (click)="resetForm()"></button>
-
-                        <button pButton  label="Save" class="save-button"
-                          (click)="onAddCompetition()"></button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </p-drawer>
-
-              <!-- View Competition Dialog -->
-              <p-dialog [(visible)]="visibleDialog" [style]="{ width: '30vw' }" [closable]="false" [modal]="true">
-                <div class="tabel-info position-relative">
-                  <div class="view-name">{{ selectedcompitition?.name | uppercase }}</div>
-                  <button type="button" pButton icon="pi pi-times" class="p-button-rounded p-button-text close-btn"
-                    (click)="visibleDialog = false" style="position: absolute; right: 1rem; top: 1rem; color: #e53935;"
-                    aria-label="Close">
-                  </button>
                 </div>
+                <div class="form-wrapper pb-5">
+                  <div class="row mt-4 sticky-footer-buttons" *ngIf="!viewMode">
+                    <div class="col-12 text-end">
+                      <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
+                        (click)="cancelForm()"></button>
 
-                <!-- Grid Info -->
-                <div class="tabel-grid">
-                  <div class="info-block">
-                    <label>Start Date</label>
-                    <div>{{ selectedcompitition?.start_date }}</div>
-                  </div>
-                  <div class="info-block">
-                    <label>End Date</label>
-                    <div>{{ selectedcompitition?.end_date }}</div>
-                  </div>
-                  <div class="info-block">
-                    <label>Match Type</label>
-                    <div>{{ selectedcompitition?.match_type }}</div>
+                      <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
+                        *ngIf="addCompetitionForm.get('competition_id')?.value == '' || addCompetitionForm.get('competition_id')?.value == null"
+                        (click)="resetForm()"></button>
+
+                      <button pButton label="Save" class="save-button" (click)="onAddCompetition()"></button>
+                    </div>
                   </div>
                 </div>
-              </p-dialog>
+              </form>
+            </p-drawer>
 
-              <!-- Competition Grid Layout -->
-              <div class="competition-grid">
-                <div class="grid-card" #dt *ngFor="let competition of compititionList">
-                  <div class="card-header">
-                    <div class="date-range">{{ competition.start_date }} - {{ competition.end_date }}</div>
-                    <div class="category-info">
-                      <span class="gender-category">{{ competition.gender || 'Men' }} - {{ competition.age_category ||
-                        'Senior' }}</span>
-                      <span class="match-type">{{ competition.match_type }}</span>
-                    </div>
+            <!-- View Competition Dialog -->
+            <p-dialog header="Competition Details" [(visible)]="visibleDialog" [modal]="true">
+              <div class="popup-container">
+                <div class="top-bar" style="    padding: 6px 50px;">
+                  <div class="view-name">{{ selectedcompitition?.competition_name | uppercase }}</div>
+                  <button class="popup-close" (click)="visibleDialog = false" aria-label="Close popup">✖</button>
+                </div>
+                <section class="popup-section">
+                  <h2 class="section-title">Competition Details</h2>
+                  <div class="info-row"><span class="info-label">Start Date</span>
+                    <span class="separator">|</span>
+                    <span class="info-value">{{ selectedcompitition?.start_date }}</span>
                   </div>
-                  <div class="card-body">
-                    <div class="competition-name">
-                      {{ competition.name | uppercase }}
-                      <div class="competition-location"> {{ competition.trophy_name }}</div>
-                    </div>
+                  <div class="info-row"><span class="info-label">End Date</span>
+                    <span class="separator">|</span>
+                    <span class="info-value">{{ selectedcompitition?.end_date }}</span>
                   </div>
-                  <div class="card-footer">
-                    <div class="action-links">
-                      <a class="link-item grounds" (click)="changeTabs('ground',competition)">Grounds</a>
-                      <a class="link-item officials" (click)="changeTabs('officials',competition)">Officials</a>
-                      <a class="link-item squad" (click)="changeTabs('squads',competition)">Squad</a>
-                    </div>
-                    <div class="action-links">
-                      <a class="link-item teams" (click)="changeTabs('teams',competition)">Teams</a>
-                      <a class="link-item fixtures" (click)="changeTabs('matches',competition)">Fixtures</a>
-                    </div>
+                  <div class="info-row"><span class="info-label">Tour Type</span>
+                    <span class="separator">|</span>
+                    <span class="info-value">{{ selectedcompitition?.tour_type }}</span>
                   </div>
-                  <div class="card-actions">
-                    <div class="action-icon" (click)="editCompitition(competition)" pTooltip="Edit"
-                      tooltipPosition="top">
-                      <span>
-                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                      </span>
-                    </div>
-                    <div class="action-icon" (click)="viewCompitition(competition)" pTooltip="View"
-                      tooltipPosition="top">
-                      <span>
-                        <i class="fa fa-eye" aria-hidden="true"></i>
-                      </span>
-                    </div>
-                    <div class="action-icon">
-                      <span (click)="StatusConfirm(competition.competition_id, competition.status === 'Active' 
+                  <div class="info-row"><span class="info-label">Trophy Name</span>
+                    <span class="separator">|</span>
+                    <span class="info-value">{{ selectedcompitition?.trophy_name }}</span>
+                  </div>
+                </section>
+
+
+              </div>
+
+              <!-- Grid Info -->
+              <!-- <div class="tabel-grid">
+                <div class="info-block">
+                  <label>Start Date</label>
+                  <div>{{ selectedcompitition?.start_date }}</div>
+                </div>
+                <div class="info-block">
+                  <label>End Date</label>
+                  <div>{{ selectedcompitition?.end_date }}</div>
+                </div>
+                <div class="info-block">
+                  <label>Match Type</label>
+                  <div>{{ selectedcompitition?.match_type }}</div>
+                </div>
+              </div> -->
+            </p-dialog>
+
+            <!-- Competition Grid Layout -->
+            <div class="competition-grid">
+              <div class="grid-card" #dt *ngFor="let competition of compititionList">
+                <div class="card-header">
+                  <div class="date-range">{{ competition.start_date }} - {{ competition.end_date }}</div>
+                  <div class="category-info">
+                    <span class="gender-category">{{ competition.gender || 'Men' }} - {{ competition.age_category ||
+                      'Senior' }}</span>
+                    <span class="match-type">{{ competition.match_type }}</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="competition-name">
+                    {{ competition.name | uppercase }}
+                    <div class="competition-location"> {{ competition.trophy_name }}</div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="action-links">
+                    <a class="link-item grounds" (click)="changeTabs('ground',competition)">Grounds</a>
+                    <a class="link-item officials" (click)="changeTabs('officials',competition)">Officials</a>
+                    <a class="link-item squad" (click)="changeTabs('squads',competition)">Squad</a>
+                  </div>
+                  <div class="action-links">
+                    <a class="link-item teams" (click)="changeTabs('teams',competition)">Teams</a>
+                    <a class="link-item fixtures" (click)="changeTabs('matches',competition)">Fixtures</a>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <div class="action-icon" (click)="editCompitition(competition)" pTooltip="Edit" tooltipPosition="top">
+                    <span>
+                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                  <div class="action-icon" (click)="viewCompitition(competition)" pTooltip="View" tooltipPosition="top">
+                    <span>
+                      <i class="fa fa-eye" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                  <div class="action-icon">
+                    <span (click)="StatusConfirm(competition.competition_id, competition.status === 'Active' 
                             ? { key: 'inactive', label: 'deactivate' } 
                             : { key: 'active', label: 'activate' })">
-                        <i class="fa"
-                          [ngClass]="competition.status === 'Active' ? 'fa-trash text-danger' : 'fa-check-square text-success'"
-                          [pTooltip]="competition.status === 'Active' ? 'Disable Competition' : 'Enable Competition'"
-                          tooltipPosition="top">
-                        </i>
-                      </span>
-                    </div>
-
+                      <i class="fa"
+                        [ngClass]="competition.status === 'Active' ? 'fa-trash text-danger' : 'fa-check-square text-success'"
+                        [pTooltip]="competition.status === 'Active' ? 'Disable Competition' : 'Enable Competition'"
+                        tooltipPosition="top">
+                      </i>
+                    </span>
                   </div>
-                </div>
 
-                <!-- Empty state message -->
-                <div class="empty-message" *ngIf="compititionList.length === 0">
                 </div>
               </div>
+
+              <!-- Empty state message -->
+              <div class="empty-message" *ngIf="compititionList.length === 0">
+              </div>
+            </div>
 
               <!-- Pagination -->
               <div class="competition-pagination">
@@ -522,60 +529,74 @@
                   (onPageChange)="onPageChange($event)">
                 </p-paginator>
               </div>
-            </section>
+          </section>
 
-            <!-- Detailed Competition View -->
-            <section [ngClass]="{ 'inactive': !showTabs }">
-              <div *ngIf="showTabs" class="container-fluid">
-                <div class="row">
-                  <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2"
-                    [class.disabled]="isEditDisabled">
-                    <span class="fw-bold text-uppercase flex-grow-1">{{ manageData.name }}</span>
+          <!-- Detailed Competition View -->
+          <section [ngClass]="{ 'inactive': !showTabs }">
+            <div *ngIf="showTabs" class="container-fluid">
+              <div class="row">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2"
+                  [class.disabled]="isEditDisabled" style="margin-top: 10px;">
+                  <span class="fw-bold text-uppercase flex-grow-1">{{ manageData.name }}</span>
 
-                    <div class="d-flex flex-wrap gap-2">
-                      <button *ngIf="activeTab !== 'matches'" class="btn btn-primary update-child-btn"
-                        (click)="UpdateFromParent()">Update</button>
-                      <button *ngIf="activeTab === 'matches' && !showNewMatchForm"
-                        class="btn btn-primary btn-sm new-buttons  "
-                        (click)="UpdateFromParent()">
-                        + New Match
-                      </button>
-                      <button class="btn btn-secondary custom-cancel-btn" *ngIf="!showNewMatchForm" (click)="goBack()"
-                        [disabled]="isEditDisabled">Back</button>
-                    </div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button *ngIf="activeTab !== 'matches'" class="btn btn-primary update-child-btn"
+                      (click)="UpdateFromParent()">Update</button>
+                    <button *ngIf="activeTab === 'matches' && !showNewMatchForm"
+                      class="btn btn-primary btn-sm new-buttons  " (click)="UpdateFromParent()">
+                      + New Match
+                    </button>
+                    <button class="btn btn-secondary custom-cancel-btn" *ngIf="!showNewMatchForm" (click)="goBack()"
+                      [disabled]="isEditDisabled">Back</button>
                   </div>
+                </div>
 
-                  <!-- Right Content Area -->
-                  <div class="col-md-12 col-lg-12 ps-4">
-                    <div *ngIf="activeTab === 'ground'">
-                      <app-comp-ground [CompetitionData]="manageData" (groundUpdated)="goBack()">
-                      </app-comp-ground>
-                    </div>
-                    <div *ngIf="activeTab === 'teams'">
-                      <app-comp-team [CompetitionData]="manageData" (TeamUpdate)="goBack()"></app-comp-team>
-                    </div>
-                    <div *ngIf="activeTab === 'officials'">
-                      <app-comp-official [CompetitionData]="manageData" (UpdateOfficial)="goBack()"></app-comp-official>
-                    </div>
-                    <div *ngIf="activeTab === 'squads'">
-                      <app-comp-player [CompetitionData]="manageData" (PlayerUpdated)="goBack()"></app-comp-player>
-                    </div>
-                    <div *ngIf="activeTab === 'matches'">
-                      <app-comp-match [CompetitionData]="manageData"  (showFormChange)="onShowFormChange($event)">
-                      </app-comp-match>
-                    </div>
+                <!-- Right Content Area -->
+                <div class="col-md-12 col-lg-12 ps-4">
+                  <div *ngIf="activeTab === 'ground'">
+                    <app-comp-ground [CompetitionData]="manageData" (groundUpdated)="goBack()">
+                    </app-comp-ground>
+                  </div>
+                  <div *ngIf="activeTab === 'teams'">
+                    <app-comp-team [CompetitionData]="manageData" (TeamUpdate)="goBack()"></app-comp-team>
+                  </div>
+                  <div *ngIf="activeTab === 'officials'">
+                    <app-comp-official [CompetitionData]="manageData" (UpdateOfficial)="goBack()"></app-comp-official>
+                  </div>
+                  <div *ngIf="activeTab === 'squads'">
+                    <app-comp-player [CompetitionData]="manageData" (PlayerUpdated)="goBack()"></app-comp-player>
+                  </div>
+                  <div *ngIf="activeTab === 'matches'">
+                    <app-comp-match [CompetitionData]="manageData" (showFormChange)="onShowFormChange($event)">
+                    </app-comp-match>
                   </div>
                 </div>
               </div>
-            </section>
-          </div>
+            </div>
+          </section>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   </div>
-  <!-- Toast for notifications -->
-  <p-toast key="tc" position="top-right"></p-toast>
-  <p-confirmDialog [style]="{ width: '300px' , height: '200px'}" [baseZIndex]="10000" [draggable]="false"
-    [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
-  </p-confirmDialog>
+</div>
+<!-- Toast for notifications -->
+<p-confirmDialog [style]="{ width: '300px' , height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+  [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+</p-confirmDialog>
+
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img
+        *ngIf="message?.data?.image"
+        [src]="message.data.image"
+        style="width: 40px; height: 40px"
+      />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>
 

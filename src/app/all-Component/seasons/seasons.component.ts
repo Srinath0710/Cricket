@@ -167,14 +167,24 @@ export class SeasonsComponent implements OnInit {
     this.submitted = false;
   }
 
-  successToast(data: any) {
-    this.msgService.add({ key: 'ts', severity: 'success', summary: 'Success', detail: data.message });
-  }
+successToast(data: any) {
 
+  this.msgService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+  });
+}
+  /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({ key: 'ts', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({
+    data: { image: 'assets/images/default-logo.png' },
+    severity: 'error',
+    summary: 'Error',
+    detail: data.message
+   });
   }
-
   onAddSeason() {
     this.submitted = true;
     if (this.addSeasonsForm.invalid) {
@@ -266,29 +276,60 @@ export class SeasonsComponent implements OnInit {
     );
   }
 
-  StatusConfirm(season_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
+  // StatusConfirm(season_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+  //   const AlreadyStatestatus =
+  //     (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
+  //     (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
 
-    if (AlreadyStatestatus) {
-      return;
-    }
+  //   if (AlreadyStatestatus) {
+  //     return;
+  //   }
+  //   this.confirmationService.confirm({
+  //     message: `Are you sure you want to ${actionObject.label} this season?`,
+  //     header: 'Confirmation',
+  //     icon: 'pi pi-question-circle',
+  //     acceptLabel: 'Yes',
+  //     rejectLabel: 'No',
+  //     accept: () => {
+  //       const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activateSeason : this.urlConstant.deactivateSeason;
+  //       this.status(season_id, url);
+  //       this.confirmationService.close();
+  //     },
+  //     reject: () => {
+  //       this.confirmationService.close();
+  //     }
+  //   });
+  // }
+
+        StatusConfirm(season_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
+     const { active_status, deactive_status } = this.conditionConstants;
+    const isSameStatus =
+      (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+      (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+    if (isSameStatus) return;
+    const isActivating = actionObject.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+    const message = `Are you sure you want to proceed?`;
+
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this season?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
+      header: ``,
+      message: `
+      <div class="custom-confirm-content">
+      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <div class="warning">Warning</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
       acceptLabel: 'Yes',
       rejectLabel: 'No',
+      styleClass: 'p-confirm-dialog-custom',
       accept: () => {
-        const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activateSeason : this.urlConstant.deactivateSeason;
+        const url = isActivating ? this.urlConstant.activateSeason : this.urlConstant.deactivateSeason;
         this.status(season_id, url);
         this.confirmationService.close();
       },
-      reject: () => {
-        this.confirmationService.close();
-      }
-    });
+      reject: () => this.confirmationService.close()
+    } as any);
   }
   filterGlobal() {
   if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){

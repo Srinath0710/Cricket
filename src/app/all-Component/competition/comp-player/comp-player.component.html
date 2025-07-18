@@ -1,23 +1,19 @@
-<!-- <div class="parent-container">
-  <button class="new-button p-button-text Comp-child-butn" 
-  (click)="addplayer()">UpdatePlayer</button>
-</div> -->
-
 <div class="team-body">
-
   <div class="team-container">
-    <!-- Left: Team List -->
     <div class="team-list">
-      <div class ="select-team">Select Team</div>
-
+      <div class="select-team">Select Team</div>
       <div *ngFor="let team of teamsDropDown" class="team-card" 
       [ngClass]="{ 'selected': team.team_id === team_id }"
         (click)="chooseTeam(team.team_id)">
-
         {{ team.team_name }}
       </div>
+
     </div>
   </div>
+  <div class="mt-3 text-danger small">
+  Source Count: {{ sourcePlayer.length }} |
+  Target Count: {{ targetPlayer.length }}
+</div>
   <div style="flex: 1;">
     <p-pickList [source]="sourcePlayer" [target]="targetPlayer" [dragdrop]="true" [responsive]="true"
       [showSourceFilter]="true" [showTargetFilter]="true" filterBy="display_name"
@@ -45,23 +41,20 @@
       </ng-template>
 
       <ng-template pTemplate="item" let-player let-i="index">
-        <div class="flex flex-wrap p-2 align-items-center gap-3"
-         [ngClass]="{ 'highlight-target': player.highlighted }">
+        <div class="flex flex-wrap p-2 align-items-center gap-3" [ngClass]="{ 'highlight-target': player.highlighted }">
           <div class="flex-1 flex flex-column gap-2">
             <span class="person-image-team-player">
               <img class="player-img" *ngIf="!player.profile_img || 
               !player.player_profile" [src]="default_img">
 
               <img class="player-img" *ngIf="player.profile_img &&
-               player.player_profile" [src]="player.profile_img"
-                (error)="handleImageError($event, default_img)">
+               player.player_profile" [src]="player.profile_img" (error)="handleImageError($event, default_img)">
             </span>
             <span class="font-bold">{{ player.display_name }}</span>
-          <span *ngIf="TeamInTarget(player)">
-          <button class="clear-width edit-button" (click)="showEditPopup(player)">
-             <i class="fas fa-edit"></i></button>
-        </span>
-
+            <span *ngIf="TeamInTarget(player)">
+              <button class="clear-width edit-button" (click)="showEditPopup(player)">
+                <i class="fas fa-edit"></i></button>
+            </span>
           </div>
         </div>
       </ng-template>
@@ -73,16 +66,13 @@
 <div *ngIf="isEditPopupVisible" class="popup-backdrop">
   <div class="popup-wrapper">
     <div class="popup">
-      <form [formGroup]="ManagePlayerForm" 
-      class="p-4 border rounded shadow-sm bg-white">
+      <form [formGroup]="ManagePlayerForm" class="p-4 border rounded shadow-sm bg-white">
         <div class="mb-3 d-flex align-items-center comp-grid">
           <div>
             <span class="person-image-team-player">
-              <img class="player-img Child-image" *ngIf="!selectedPlayer?.profile_url"
-               [src]="default_img">
+              <img class="player-img Child-image" *ngIf="!selectedPlayer?.profile_url" [src]="default_img">
 
-              <img class="player-img Child-image" *ngIf="selectedPlayer?.profile_url" 
-              [src]="selectedPlayer.profile_url"
+              <img class="player-img Child-image" *ngIf="selectedPlayer?.profile_url" [src]="selectedPlayer.profile_url"
                 (error)="handleImageError($event, default_img)">
             </span>
           </div>
@@ -96,8 +86,7 @@
           <label for="jersey_number" class="form-label fw-semibold me-2 mb-0 text-width">
             Jersey Number :
           </label>
-          <input id="jersey_number" type="text" class="form-control"
-           formControlName="jersey_number" />
+          <input id="jersey_number" type="text" class="form-control" formControlName="jersey_number" />
         </div>
 
         <!-- Sponsor Name Input -->
@@ -105,18 +94,15 @@
           <label for="scorecard_name" class="form-label fw-semibold me-2 mb-0 text-width">
             Scorecard Name :
           </label>
-          <input id="scorecard_name" type="text" class="form-control" 
-          formControlName="scorecard_name" />
+          <input id="scorecard_name" type="text" class="form-control" formControlName="scorecard_name" />
         </div>
 
         <!-- Buttons -->
         <div class="text-end">
-          <button type="submit" class="btn btn-primary save-button"
-           (click)="updateplayer()">
+          <button type="submit" class="btn btn-primary save-button" (click)="updateplayer()">
             Submit
           </button>
-          <button type="button" class="btn btn-secondary ms-2 custom-cancel-btn" 
-          (click)="closeEditPopup()">
+          <button type="button" class="btn btn-secondary ms-2 custom-cancel-btn" (click)="closeEditPopup()">
             Close
           </button>
         </div>
@@ -125,4 +111,18 @@
     </div>
   </div>
 </div>
-<p-toast key="tc" position="top-right"></p-toast>
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img
+        *ngIf="message?.data?.image"
+        [src]="message.data.image"
+        style="width: 40px; height: 40px"
+      />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>

@@ -38,7 +38,7 @@ interface MetaInfo {
   ]
 })
 export class CompMatchComponent implements OnInit {
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
  @Output() Newmatch= new EventEmitter<void>();
   public ShowForm: any = false;
   public competitionFixturesForm !: FormGroup<any>;
@@ -223,12 +223,23 @@ export class CompMatchComponent implements OnInit {
 this.hideNewMatchForm();
   }
   /* Failed Toast */
-  failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
-  }
-  successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+successToast(data: any) {
 
+  this.msgService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+  });
+}
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
 
   addCallBack(res: any) {

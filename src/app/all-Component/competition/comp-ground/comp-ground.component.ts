@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../../services/api.service';
 import { CricketKeyConstant } from '../../../services/cricket-key-constant';
@@ -9,10 +9,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { Output, EventEmitter } from '@angular/core';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
+import { Table, TableModule } from 'primeng/table';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-comp-ground',
-  imports: [PickListModule, CommonModule, FormsModule, ReactiveFormsModule,ToastModule],
+  imports: [PickListModule, 
+    CommonModule,
+     FormsModule,
+      ReactiveFormsModule,
+      ToastModule,
+      TableModule,
+      Tooltip,
+    ],
   templateUrl: './comp-ground.component.html',
   styleUrl: './comp-ground.component.css',
   providers: [
@@ -24,16 +33,22 @@ import { SpinnerService } from '../../../services/Spinner/spinner.service';
   standalone: true
 })
 export class CompGroundComponent implements OnInit {
+  @ViewChild('dt1') dt1: Table | undefined;
+  @ViewChild('dt2') dt2: Table | undefined;
   @Input() CompetitionData: any;
   @Output() groundUpdated = new EventEmitter<void>();
   client_id: number = Number(localStorage.getItem('client_id'));
-  sourceGround!: [];
-  targetGround!:[];
   movedToTarget: any[] = [];
   user_id: number = Number(localStorage.getItem('user_id'));
   movedToTargetIds = new Set<number>();
   statusConstants= CricketKeyConstant.status_code;
   default_img = CricketKeyConstant.default_image_url.grounds;
+  targetGround: any[] = [];
+  sourceGround: any[] = [];
+  searchText: string = '';
+  filteredTeams: any[] = [];
+  sourceSearchKeyword: string = '';
+  targetSearchKeyword: string = '';
 
   constructor(
     private apiService: ApiService,
@@ -89,31 +104,59 @@ export class CompGroundComponent implements OnInit {
       }
     })
   }
+successToast(data: any) {
+
+  this.msgService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+  });
+}
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
+  }
+
+
+  
+  moveToSource(ground: any) {
+    this.targetGround = this.targetGround.filter((t: any) => t.ground_id !== ground.ground_id);
+    this.sourceGround.push(ground);
+  }
+
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
-  successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
+  moveToTarget(ground: any) {
+    this.sourceGround = this.sourceGround.filter(t => t !== ground);
+    this.targetGround.push(ground);
   }
 
-  /* Failed Toast */
-  failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+  filterGlobalSource($event: any, stringVal: string) {
+    this.dt1?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
+  filterGlobalTarget($event: any, stringVal: string) {
+    this.dt2?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
 
-  onMoveToTarget(event: any) {
-    event.items.forEach((item: any) => {
-      item.highlighted = true; 
-    });
+  clearSource(table: Table) {
+    table.clear();
+    this.sourceSearchKeyword = '';
   }
-  
-  onMoveToSource(event: any) {
-    event.items.forEach((item: any) => {
-      item.highlighted = false; 
-    });
+
+  clearTarget(table: Table) {
+    table.clear();
+    this.targetSearchKeyword = '';
   }
+
 }
 

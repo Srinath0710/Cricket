@@ -1,37 +1,141 @@
-<p-pickList [source]="sourceGround" [target]="targetGround" [dragdrop]="true" [responsive]="true"
-  [showSourceFilter]="true" [showTargetFilter]="true" filterBy="ground_name"
-  sourceFilterPlaceholder="Search Available..." targetFilterPlaceholder="Search Target..."
-  [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" (onMoveToTarget)="onMoveToTarget($event)"
-  (onMoveToSource)="onMoveToSource($event)">
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-6">
+      <p-table #dt1 [value]="sourceGround" [paginator]="true" selectionMode="multiple"
+        [globalFilterFields]="['ground_name']" [tableStyle]="{ 'min-width': '20rem' }"
+        styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
+        [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
+            <div class="p-1 Child-header text-center">Available Grounds</div>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="p-input-icon-left">
+                <span class="p-input-icon-right input-icons search-padding">
+                  <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
+                    placeholder="Search" filterBy="ground_name" [(ngModel)]="sourceSearchKeyword"
+                    (input)="filterGlobalSource($event, 'contains')" />
+                </span>
+              </div>
+              <button class="clear-width table-counts" style="background: aliceblue" (click)="clearSource(dt1)">
+                Clear
+              </button>
+            </div>
+          </div>
+        </ng-template>
 
-  <ng-template pTemplate="sourceHeader">
-    <div class="p-d-flex p-ai-center">
-      Available Ground
+        <ng-template pTemplate="header">
+          <tr class="table-row">
+            <th class="position-relative" pSortableColumn="ground_name">
+              Ground Name
+              <p-sortIcon field="ground_name"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-ground>
+          <tr>
+            <td>
+              <div class="image-person-name">
+                <span class="person-image">
+                  <img *ngIf="!ground.ground_image" [src]="default_img" class="player-img image-border" />
+                  <img *ngIf="ground.ground_image" [src]="ground.ground_image" class="player-img image-border"
+                    (error)="handleImageError($event, default_img)" />
+                </span>
+                <span class="person-name padding-grid-center">
+                  <strong>{{ ground.ground_name }}</strong>
+                </span>
+                <span>
+                  <button class="clear-width edit-button" pTooltip="Add Ground" tooltipPosition="top"
+                    (click)="moveToTarget(ground)">
+                    <i class="fa-solid fa-user-plus"></i> &raquo;
+                  </button>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center">No Records Found</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
-  </ng-template>
 
-  <ng-template pTemplate="targetHeader">
-    <div class="p-d-flex p-ai-center">
-      Selected Ground
+    <div class="col-md-6">
+      <p-table #dt2 [value]="targetGround" [paginator]="true" selectionMode="multiple"
+        [globalFilterFields]="['ground_name']" [tableStyle]="{ 'min-width': '20rem' }"
+        styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
+        [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
+            <div class="p-1 Child-header text-center">Selected Grounds</div>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="p-input-icon-left">
+                <span class="p-input-icon-right input-icons search-padding">
+                  <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
+                    placeholder="Search" filterBy="ground_name" [(ngModel)]="targetSearchKeyword"
+                    (input)="filterGlobalTarget($event, 'contains')" />
+                </span>
+              </div>
+              <button class="clear-width table-counts" style="background: aliceblue" (click)="clearTarget(dt2)">
+                Clear
+              </button>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr class="table-row">
+            <th class="position-relative" pSortableColumn="ground_name">
+              Ground Name
+              <p-sortIcon field="ground_name"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-ground>
+          <tr>
+            <td>
+              <div class="image-person-name">
+                <span class="person-image">
+                  <img *ngIf="!ground.ground_image" [src]="default_img" class="player-img image-border" />
+                  <img *ngIf="ground.ground_image" [src]="ground.ground_image" class="player-img image-border"
+                    (error)="handleImageError($event, default_img)" />
+                </span>
+                <span class="person-name padding-grid-center">
+                  <strong>{{ ground.ground_name }}</strong>
+                </span>
+                <span>
+                  <button class="clear-width delete-button" (click)="moveToSource(ground)">
+                    <i class="fa-solid fa-reply-all" pTooltip="Remove" tooltipPosition="top"></i>
+                  </button>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center">No Records Found</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
-  </ng-template>
-
-  <ng-template pTemplate="item" let-product let-i="index">
-    <div class="flex flex-wrap p-2 align-items-center gap-3" [ngClass]="{ 'highlight-target': product.highlighted }">
-
-      <div class="flex-1 flex flex-column gap-2">
-        <span class="person-image-team-player">
-          <img class="player-img" *ngIf="product.ground_image==null || 
-          product.ground_image==''" [src]="default_img">
-
-          <img class="player-img " *ngIf="product.ground_image !=null && 
-         product.ground_image !=''" [src]="product.ground_image " 
-         (error)="handleImageError($event,default_img)">
-        </span>
-        <span class="font-bold">{{ product.ground_name }}</span>
+  </div>
+</div>
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img
+        *ngIf="message?.data?.image"
+        [src]="message.data.image"
+        style="width: 40px; height: 40px"
+      />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
       </div>
     </div>
   </ng-template>
-
-</p-pickList>
-<p-toast key="tc" position="top-right"></p-toast>
+</p-toast>

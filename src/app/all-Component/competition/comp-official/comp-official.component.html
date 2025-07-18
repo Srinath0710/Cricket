@@ -1,34 +1,141 @@
-<!-- <div class="parent-container">
-  <button class="new-button p-button-text Comp-child-butn" (click)="updateOfficial()">UpdateOfficial</button>
-</div> -->
-<p-pickList [source]="sourceOfficial" [target]="targetOfficial" [dragdrop]="true" [responsive]="true"
-  [showSourceFilter]="true" [showTargetFilter]="true" filterBy="official_name"
-  sourceFilterPlaceholder="Search Available..." targetFilterPlaceholder="Search Target..." [dragdrop]="true"
-  [sourceStyle]="{ height: '30rem' }" [targetStyle]="{ height: '30rem' }" (onMoveToTarget)="onMoveToTarget($event)"
-  (onMoveToSource)="onMoveToSource($event)">
-  <ng-template pTemplate="sourceHeader">
-    <div class="p-d-flex p-ai-center">
-      Available Official
-    </div>
-  </ng-template>
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-6">
+      <p-table #dt1 [value]="sourceOfficial" [paginator]="true" selectionMode="multiple"
+        [globalFilterFields]="['official_name']" [tableStyle]="{ 'min-width': '20rem' }"
+        styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
+        [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
+            <div class="p-1 Child-header text-center">Available Officials</div>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="p-input-icon-left">
+                <span class="p-input-icon-right input-icons search-padding">
+                  <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
+                    placeholder="Search" filterBy="official_name" [(ngModel)]="sourceSearchKeyword"
+                    (input)="filterGlobalSource($event, 'contains')" />
+                </span>
+              </div>
+              <button class="clear-width table-counts" style="background: aliceblue" (click)="clearSource(dt1)">
+                Clear
+              </button>
+            </div>
+          </div>
+        </ng-template>
 
-  <ng-template pTemplate="targetHeader">
-    <div class="p-d-flex p-ai-center">
-      Selected Official
-    </div>
-  </ng-template>
+        <ng-template pTemplate="header">
+          <tr class="table-row">
+            <th class="position-relative" pSortableColumn="official_name">
+              Officials Name
+              <p-sortIcon field="official_name"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
 
-  <ng-template pTemplate="item" let-product let-i="index">
-    <div class="flex flex-wrap p-2 align-items-center gap-3" 
-    [ngClass]="{ 'highlight-target': product.highlighted }">
-      <div class="flex flex-wrap p-2 align-items-center gap-3">
-        <div class="flex-1 flex flex-column gap-2">
-          <span class="font-bold">{{ product.official_name }}</span>
-          <span class="official-type">{{ product.official_type }}
-          </span>
-        </div>
+        <ng-template pTemplate="body" let-official>
+          <tr>
+            <td>
+              <div class="image-person-name">
+                <span class="person-image">
+                  <img *ngIf="!official.profile_img" [src]="default_img" class="player-img image-border" />
+                  <img *ngIf="official.profile_img" [src]="official.profile_img" class="player-img image-border"
+                    (error)="handleImageError($event, default_img)" />
+                </span>
+                <span class="person-name padding-grid-center">
+                  <strong>{{ official.official_name }}</strong>
+                </span>
+                <span>
+                  <button class="clear-width edit-button" pTooltip="Add official" tooltipPosition="top"
+                    (click)="moveToTarget(official)">
+                    <i class="fa-solid fa-user-plus"></i> &raquo;
+                  </button>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center">No Records Found</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div class="col-md-6">
+      <p-table #dt2 [value]="targetOfficial" [paginator]="true" selectionMode="multiple"
+        [globalFilterFields]="['official_name']" [tableStyle]="{ 'min-width': '20rem' }"
+        styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
+        [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
+            <div class="p-1 Child-header text-center">Selected Officials</div>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="p-input-icon-left">
+                <span class="p-input-icon-right input-icons search-padding">
+                  <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
+                    placeholder="Search" filterBy="official_name" [(ngModel)]="targetSearchKeyword"
+                    (input)="filterGlobalTarget($event, 'contains')" />
+                </span>
+              </div>
+              <button class="clear-width table-counts" style="background: aliceblue" (click)="clearTarget(dt2)">
+                Clear
+              </button>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr class="table-row">
+            <th class="position-relative" pSortableColumn="official_name">
+              Officials Name
+              <p-sortIcon field="official_name"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-official>
+          <tr>
+            <td>
+              <div class="image-person-name">
+                <span class="person-image">
+                  <img *ngIf="!official.profile_img" [src]="default_img" class="player-img image-border" />
+                  <img *ngIf="official.profile_img" [src]="official.profile_img" class="player-img image-border"
+                    (error)="handleImageError($event, default_img)" />
+                </span>
+                <span class="person-name padding-grid-center">
+                  <strong>{{ official.official_name }}</strong>
+                </span>
+                <span>
+                  <button class="clear-width delete-button" (click)="moveToSource(official)">
+                    <i class="fa-solid fa-reply-all" pTooltip="Remove" tooltipPosition="top"></i>
+                  </button>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center">No Records Found</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img
+        *ngIf="message?.data?.image"
+        [src]="message.data.image"
+        style="width: 40px; height: 40px"
+      />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
       </div>
     </div>
   </ng-template>
-</p-pickList>
-<p-toast key="tc" position="top-right"></p-toast>
+</p-toast>

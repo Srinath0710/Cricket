@@ -17,9 +17,8 @@
 
 main {
   width: 100% !important;
-  height: auto !important;
   padding-right: 0px !important;
-  
+
 }
 
 .margin-card {
@@ -38,7 +37,13 @@ main {
 
 .card-body {
   padding: 0 !important;
-  overflow: hidden !important;
+}
+.card-body {
+  overflow: visible !important;
+}
+
+.card {
+  overflow: visible !important;
 }
 
 .main-page-header {
@@ -399,6 +404,21 @@ main {
   }
 }
 
-.child-comp-name{
+.child-comp-name {
   margin-left: 45%;
+}
+.popup-container {
+  max-height: 90vh;
+  max-width: 600px;
+  margin: 8px auto;
+  background: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 7px;
+  position: relative;
+  padding: 12px 16px;
+  border-top: 1px solid #007BFF;
+  border-left: 1px solid #007BFF;
+  border-right: 1px solid #007BFF;
+  color: #222;
+  max-height: calc(100vh - 40px);
 }

@@ -211,4 +211,18 @@
         </p-drawer>
     </div>
 </div>
-<p-toast key="ts" position="top-right"></p-toast>
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img
+        *ngIf="message?.data?.image"
+        [src]="message.data.image"
+        style="width: 40px; height: 40px"
+      />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>

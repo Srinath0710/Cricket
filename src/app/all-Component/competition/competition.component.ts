@@ -62,7 +62,9 @@ export interface ManageDataItem {
   gender: string,
   age_category: string,
   start_date: string,
-  end_date: string
+  end_date: string,
+  tour_type: string,
+  trophy_name: string
 }
 
 @Component({
@@ -143,6 +145,7 @@ export class CompetitionComponent implements OnInit {
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
+  default_img = CricketKeyConstant.default_image_url.teamimage;
 
 
   // Filter properties
@@ -150,7 +153,7 @@ export class CompetitionComponent implements OnInit {
   filterStatus: string = '';
   filterMatchType: string = '';
   filterCategory: string = '';
-  manageData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
+  manageData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
   competitionData: Competition = {
     competition_id: 0,
     client_id: '',
@@ -371,11 +374,6 @@ export class CompetitionComponent implements OnInit {
 
   }
 
-  viewShowDialog() {
-    this.visibleDialog = true;
-    this.backScreen = "overlay1";
-  }
-
   viewCompitition(competition: any) {
     this.selectedcompitition = competition;
     this.visibleDialog = true;
@@ -410,7 +408,10 @@ export class CompetitionComponent implements OnInit {
       match_type: competition.match_type,
       gender: competition.gender,
       start_date: competition.start_date,
-      end_date: competition.end_date
+      end_date: competition.end_date,
+      tour_type: competition.tour_type,
+      trophy_name: competition.trophy_name
+
     }
 
   }
@@ -428,14 +429,23 @@ export class CompetitionComponent implements OnInit {
     this.addCompetitionForm.reset();
     this.submitted = false;
   }
-  successToast(data: any) {
-    this.messageService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+successToast(data: any) {
 
-  }
-
+  this.messageService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+  });
+}
   /* Failed Toast */
   failedToast(data: any) {
-    this.messageService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    this.messageService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
   addCallBack(res: any) {
     this.resetForm();
@@ -549,24 +559,52 @@ export class CompetitionComponent implements OnInit {
       }
     });
   }
+  // StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
+  //   this.confirmationService.confirm({
+  //     message: `Are you sure you want to ${actionObject.label} this Competition?`,
+  //     header: 'Confirmation',
+  //     icon: 'pi pi-question-circle',
+  //     acceptLabel: 'Yes',
+  //     rejectLabel: 'No',
+  //     accept: () => {
+  //       const url: string = this.conditionConstants.active_status.key === actionObject.key
+  //         ? this.urlConstant.activecompetition
+  //         : this.urlConstant.deactivecompetition;
+  //       this.status(competition_id, url);
+  //       this.confirmationService.close();
+  //     },
+  //     reject: () => {
+  //       this.confirmationService.close();
+  //     }
+  //   });
+  // }
+
+
   StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
+    const { active_status, deactive_status } = this.conditionConstants;
+    const isActivating = actionObject.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+    const message = `Are you sure you want to proceed?`;
+
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this Competition?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
+      header: ``,
+      message: `
+      <div class="custom-confirm-content">
+      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <div class="warning">Warning</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
       acceptLabel: 'Yes',
       rejectLabel: 'No',
+      styleClass: 'p-confirm-dialog-custom',
       accept: () => {
-        const url: string = this.conditionConstants.active_status.key === actionObject.key
-          ? this.urlConstant.activecompetition
-          : this.urlConstant.deactivecompetition;
+        const url = isActivating ? this.urlConstant.activecompetition : this.urlConstant.deactivecompetition;
         this.status(competition_id, url);
         this.confirmationService.close();
       },
-      reject: () => {
-        this.confirmationService.close();
-      }
-    });
+      reject: () => this.confirmationService.close()
+    } as any);
   }
   status(competition_id: number, url: string) {
     const params: any = {

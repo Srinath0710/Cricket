@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../../services/api.service';
 import { CricketKeyConstant } from '../../../services/cricket-key-constant';
@@ -9,10 +9,15 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
+import { Table, TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-comp-team',
-  imports: [PickListModule, CommonModule, FormsModule, ReactiveFormsModule, ToastModule
+  imports: [PickListModule,
+    CommonModule, FormsModule, ReactiveFormsModule, ToastModule,
+    TableModule, TooltipModule
+
   ],
   templateUrl: './comp-team.component.html',
   styleUrl: './comp-team.component.css',
@@ -26,11 +31,12 @@ import { SpinnerService } from '../../../services/Spinner/spinner.service';
 
 })
 export class CompTeamComponent implements OnInit {
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '' };
+  [x: string]: any;
+  @ViewChild('dt1') dt1: Table | undefined;
+ @ViewChild('dt2') dt2: Table  | undefined;
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
   @Output() TeamUpdate = new EventEmitter<void>();
   client_id: number = Number(localStorage.getItem('client_id'));
-  sourceTeams!: [];
-  targetTeams!: [];
   user_id: number = Number(localStorage.getItem('user_id'));
   team_id: any;
   public compTeamsList = [];
@@ -40,6 +46,14 @@ export class CompTeamComponent implements OnInit {
   default_img = CricketKeyConstant.default_image_url.teamimage;
   statusConstants = CricketKeyConstant.status_code;
   teams: any[] = []
+  popUpTeamList: any[] = [];
+  targetTeams: any[] = [];
+  sourceTeams: any[] = [];
+  searchText: string = '';
+  filteredTeams: any[] = [];
+ sourceSearchKeyword: string = '';
+  targetSearchKeyword: string = '';
+
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
@@ -62,6 +76,7 @@ export class CompTeamComponent implements OnInit {
       scorecard_name: ['', [Validators.required]],
       profile_url: [''],
     })
+
   }
 
   gridLoad() {
@@ -86,31 +101,48 @@ export class CompTeamComponent implements OnInit {
       },
 
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'),this.sourceTeams = [], this.targetTeams = []);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.sourceTeams = [], this.targetTeams = []);
       });
-
-
   }
+
+  popUpTeamsData() {
+    this.spinnerService.raiseDataEmitterEvent('on');
+    setTimeout(() => {
+      this.popUpTeamList = this.sourceTeams;
+      this.spinnerService.raiseDataEmitterEvent('off');
+
+    }, 100)
+  }
+  // filterTeams() {
+  //   const search = this.searchText.toLowerCase();
+  //   this.filteredTeams = this.teams.filter(team =>
+  //     team.team_name.toLowerCase().includes(search)
+  //   );
+  // }
+
+  // clearSearch() {
+  //   this.searchText = '';
+  //   this.filteredTeams = [...this.teams];
+  // }
+
   AddTeam() {
     const params: any = {}
     params.client_id = this.client_id.toString();
     params.user_id = this.user_id.toString();
     params.team_list = this.targetTeams.map((p: any) => p.team_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-
-
     this.apiService.post(this.urlConstant.compTeamadd, params).subscribe((res: any) => {
       this.TeamUpdate.emit();
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
+
   updateTeam(): void {
     if (!this.selectedTeam) {
       console.error('No team selected for update!');
       return;
     }
-
     const params: any = {
       client_id: this.client_id.toString(),
       user_id: this.user_id.toString(),
@@ -128,15 +160,23 @@ export class CompTeamComponent implements OnInit {
       }
     );
   }
-  successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+successToast(data: any) {
 
-  }
-
+  this.msgService.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: data.message,
+    data: { image: 'assets/images/default-logo.png' },
+  });
+}
   /* Failed Toast */
   failedToast(data: any) {
-    console.log(data)
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
   onMoveToTarget(event: any) {
     event.items.forEach((item: any) => {
@@ -144,16 +184,16 @@ export class CompTeamComponent implements OnInit {
     });
   }
 
-  onMoveToSource(event: any) {
-    event.items.forEach((item: any) => {
-      item.highlighted = false;
-    });
+  moveToSource(team: any) {
+    this.targetTeams = this.targetTeams.filter((t: any) => t.team_id !== team.team_id);
+    this.sourceTeams.push(team);
   }
 
   /* For Edit button hidden in target teams*/
   TeamInTarget(teams: any): boolean {
     return this.targetTeams?.some((t: any) => t.team_id === teams.team_id);
   }
+
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
@@ -174,5 +214,27 @@ export class CompTeamComponent implements OnInit {
   closeEditPopup() {
     this.isEditPopupVisible = false;
     this.selectedTeam = null;
+  }
+  moveToTarget(team: any) {
+    this.sourceTeams = this.sourceTeams.filter(t => t !== team);
+    this.targetTeams.push(team);
+  }
+
+filterGlobalSource($event: any, stringVal: string) {
+    this.dt1?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+
+  filterGlobalTarget($event: any, stringVal: string) {
+    this.dt2?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+
+ clearSource(table: Table) {
+    table.clear();
+    this.sourceSearchKeyword = ''; 
+  }
+
+  clearTarget(table: Table) {
+    table.clear();
+    this.targetSearchKeyword = ''; 
   }
 }

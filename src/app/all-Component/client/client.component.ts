@@ -201,7 +201,7 @@ export class ClientComponent implements OnInit {
       profile_img_url: this.filedata ? '' : this.profileImages
 
     };
- 
+
     if (this.addClientForm.value.client_id) {
       params.action_flag = this.actionflags.Update;
       params.client_id = String(this.addClientForm.value.client_id);
@@ -286,7 +286,7 @@ export class ClientComponent implements OnInit {
   showAddForm() {
     this.ShowForm = true;
   }
-  
+
   cancelForm() {
     this.ShowForm = false;
     this.filedata = null;
@@ -307,25 +307,27 @@ export class ClientComponent implements OnInit {
     this.url = null;
     this.imageBase64 = null;
     this.imageCropAlter = null;
-    this.imageDefault = null; 
-   }
-successToast(data: any) {
-  // this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+    this.imageDefault = null;
+  }
+  successToast(data: any) {
 
-  // }
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-    life: 1900
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({data: { image: 'assets/images/default-logo.png' },
-    life:1900, severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
+
   addCallBack(res: any) {
     this.resetForm();
     this.cancelForm();
@@ -352,7 +354,7 @@ successToast(data: any) {
       }
     );
   }
-StatusConfirm(client_id: number, action: { key: string, label: string }, currentStatus: string) {
+  StatusConfirm(client_id: number, action: { key: string, label: string }, currentStatus: string) {
     const { active_status, deactive_status } = this.conditionConstants;
     const isSameStatus =
       (action.key === active_status.key && currentStatus === active_status.status) ||
@@ -361,7 +363,7 @@ StatusConfirm(client_id: number, action: { key: string, label: string }, current
     if (isSameStatus) return;
 
     const isActivating = action.key === active_status.key;
-    const iconColor = isActivating ? '#4CAF50' : '#d32f2f'; 
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
     const message = `Are you sure you want to proceed?`;
 
     this.confirmationService.confirm({
@@ -385,46 +387,13 @@ StatusConfirm(client_id: number, action: { key: string, label: string }, current
     } as any);
   }
 
-  // StatusConfirm(client_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-  //   const AlreadyStatestatus =
-  //     (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-  //     (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
-
-  //  if (isSameStatus) return;
-
-  //   const isActivating = action.key === active_status.key;
-  //   const iconColor = isActivating ? '#4CAF50' : '#d32f2f'; 
-  //   const message = `Are you sure you want to proceed?`;
-
-  //   this.confirmationService.confirm({
-  //     header: ``,
-  //     message: `
-  //     <div class="custom-confirm-content">
-  //     <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
-  //       <div class="warning">Warning</div>
-  //       <div class="message-text">${message}</div>
-  //     </div>
-  //   `,
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     styleClass: 'p-confirm-dialog-custom',
-  //     accept: () => {
-  //       const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
-  //       this.status(client_id, url);
-  //       this.confirmationService.close();
-  //     },
-  //     reject: () => {
-  //       this.confirmationService.close();
-  //     }
-  //   });
-  // }
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridLoad();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
   }
   clear() {
     this.searchKeyword = '';
@@ -508,7 +477,7 @@ StatusConfirm(client_id: number, action: { key: string, label: string }, current
           this.seletedclient.forEach((clients: any) => {
             clients.profile_img_url = clients.profile_img_url + '?' + Math.random();
           });
-          
+
           this.viewDialogVisible = true;
         }
       },
@@ -655,35 +624,6 @@ StatusConfirm(client_id: number, action: { key: string, label: string }, current
       reader.readAsDataURL(blob);
     });
   }
-  /*profile image update */
-
-  // profileImgUpdate(upload_profile_url: string) {
-
-  //   const params: any = {};
-  //   params.action_flag = this.actionflags.Uploadprofile;
-  //   params.profile_img = upload_profile_url.toString();
-  //   params.user_id = this.user_id.toString();
-  //   params.client_id = this.client_id.toString();
-
-  //   this.apiService.post(this.urlConstant.profileclient, params).subscribe(
-  //     (res) => {
-  //       if (res.status_code == this.statusConstants.success && res.status) {
-  //         // this.filedata = null;
-  //         this.addCallBack(res)
-  //       } else {
-  //         this.failedToast(res);
-  //       }
-  //     },
-  //     (err: any) => {
-  //       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-  //         this.apiService.RefreshToken();
-
-  //       } else {
-  //         this.failedToast(err.error);
-  //       }
-  //     }
-  //   );
-  // }
   profileImgAppend(client_id: any) {
 
     const myFormData = new FormData();

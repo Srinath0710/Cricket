@@ -59,7 +59,7 @@ export class StateComponent implements OnInit {
   StateNamePattern = /^[^'"]+$/; //allstringonly allow value
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
-  Actionflag=CricketKeyConstant.action_flag
+  Actionflag = CricketKeyConstant.action_flag
   constructor(
     private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -103,7 +103,7 @@ export class StateComponent implements OnInit {
       this.countryID = this.countriesData[0].country_id;
       this.gridLoad();
 
-    }, (err) =>  {
+    }, (err) => {
       if (
         err.status_code === this.statusConstants.refresh &&
         err.error?.message === this.statusConstants.refresh_msg
@@ -130,7 +130,7 @@ export class StateComponent implements OnInit {
           records: this.rows.toString(),
           search_text: this.searchKeyword.toString()
         };
-  
+
         this.apiService.post(this.urlConstant.getStateList, params).subscribe(
           (res) => {
             this.statesData = res.data.states ?? [];
@@ -157,7 +157,7 @@ export class StateComponent implements OnInit {
       this.totalData = 0;
     }
   }
-  
+
   calculateFirst(): number {
     return (this.first - 1) * this.rows;
   }
@@ -184,16 +184,24 @@ export class StateComponent implements OnInit {
     this.submitted = false;
   }
 
-
   successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
   }
-
+  /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
-
   status(state_id: number, url: string) {
     const params: any = {
       user_id: this.User_id?.toString(),
@@ -211,33 +219,36 @@ export class StateComponent implements OnInit {
       });
   }
 
-  StatusConfirm(state_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
+  StatusConfirm(state_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
+    const { active_status, deactive_status } = this.conditionConstants;
+    const isSameStatus =
+      (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+      (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+    if (isSameStatus) return;
+    const isActivating = actionObject.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+    const message = `Are you sure you want to proceed?`;
 
-    if (AlreadyStatestatus) {
-      return;
-    }
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this state?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
+      header: ``,
+      message: `
+      <div class="custom-confirm-content">
+      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <div class="warning">Warning</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
       acceptLabel: 'Yes',
       rejectLabel: 'No',
+      styleClass: 'p-confirm-dialog-custom',
       accept: () => {
-        const url: string = this.conditionConstants.active_status.key === actionObject.key
-          ? this.urlConstant.activateState
-          : this.urlConstant.deactivateState;
+        const url = isActivating ? this.urlConstant.activateState : this.urlConstant.deactivateState;
         this.status(state_id, url);
         this.confirmationService.close();
       },
-      reject: () => {
-        this.confirmationService.close();
-      }
-    });
+      reject: () => this.confirmationService.close()
+    } as any);
   }
-
   addCallBack(res: any) {
     this.countryID = this.addStateForm.value.country_id;
     this.resetForm();
@@ -295,12 +306,12 @@ export class StateComponent implements OnInit {
   }
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridLoad();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
   }
   clear() {
     this.searchKeyword = '';

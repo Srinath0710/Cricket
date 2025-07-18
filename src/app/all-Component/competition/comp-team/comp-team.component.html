@@ -1,93 +1,196 @@
-<!-- <div class="parent-container">
-  <button class="new-button p-button-text Comp-child-butn" (click)="AddTeam()">Update Teams</button>
-</div> -->
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-6">
+      <p-table #dt1 [value]="sourceTeams" [paginator]="true" selectionMode="multiple"
+        [globalFilterFields]="['team_name']" [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines"
+        [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
+            <div class="p-1 Child-header text-center">Available Teams</div>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="p-input-icon-left">
+                <span class="p-input-icon-right input-icons search-padding">
+                  <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
+                    placeholder="Search" filterBy="team_name" [(ngModel)]="sourceSearchKeyword"
+                    (input)="filterGlobalSource($event, 'contains')" />
+                </span>
+              </div>
+              <button class="clear-width table-counts" style="background: aliceblue" (click)="clearSource(dt1)">
+                Clear
+              </button>
+            </div>
+          </div>
+        </ng-template>
 
-<p-pickList [source]="sourceTeams" [target]="targetTeams" [dragdrop]="true" [responsive]="true"
-  [showSourceFilter]="true" [showTargetFilter]="true" filterBy="team_name" sourceFilterPlaceholder="Search Available..."
-  targetFilterPlaceholder="Search Target..." [sourceStyle]="{ height: '20rem' }" [targetStyle]="{ height: '20rem' }"
-  (onMoveToTarget)="onMoveToTarget($event)" (onMoveToSource)="onMoveToSource($event)">
-  <ng-template pTemplate="sourceHeader">
-    <div class="p-d-flex p-ai-center">Available</div>
-  </ng-template>
+        <ng-template pTemplate="header">
+          <tr class="table-row">
+            <th class="position-relative" pSortableColumn="team_name">
+              Team Name
+              <p-sortIcon field="team_name"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
 
-  <ng-template pTemplate="targetHeader">
-    <div class="p-d-flex p-ai-center">Selected Teams</div>
-  </ng-template>
-
-  <ng-template pTemplate="targetItem" let-team let-i="index">
-    <div class="flex flex-wrap p-2 align-items-center gap-3" [ngClass]="{ 'highlight-target': team.highlighted }">
-      <div class="flex-1 flex flex-column gap-2">
-        <span class="person-image-team-player">
-          <img class="player-img" *ngIf="!team.profile_img" [src]="default_img">
-          <img class="player-img" *ngIf="team.profile_img" [src]="team.profile_img"
-            (error)="handleImageError($event, default_img)">
-        </span>
-        <span class="font-bold">{{ team.team_name }}</span>
-
-        <span *ngIf="TeamInTarget(team)">
-          <button class="clear-width edit-button" (click)="showEditPopup(team)"> <i class="fas fa-edit"></i></button>
-        </span>
-      </div>
+        <ng-template pTemplate="body" let-team>
+          <tr>
+            <td>
+              <div class="image-person-name">
+                <span class="person-image">
+                  <img *ngIf="!team.profile_img" [src]="default_img" class="player-img image-border" />
+                  <img *ngIf="team.profile_img" [src]="team.profile_img" class="player-img image-border"
+                    (error)="handleImageError($event, default_img)" />
+                </span>
+                <span class="person-name padding-grid-center">
+                  <strong>{{ team.team_name }}</strong>
+                </span>
+                <span>
+                  <button class="clear-width edit-button" pTooltip="Add Team" tooltipPosition="top"
+                    (click)="moveToTarget(team)">
+                    <i class="fa-solid fa-user-plus"></i> &raquo;
+                  </button>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center">No Records Found</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
-  </ng-template>
-</p-pickList>
 
+    <div class="col-md-6">
+      <p-table #dt2 [value]="targetTeams" [paginator]="true" selectionMode="multiple"
+        [globalFilterFields]="['team_name']" [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines"
+        [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+        <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
+            <div class="p-1 Child-header text-center">Selected Teams</div>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="p-input-icon-left">
+                <span class="p-input-icon-right input-icons search-padding">
+                  <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
+                    placeholder="Search" filterBy="team_name" [(ngModel)]="targetSearchKeyword"
+                    (input)="filterGlobalTarget($event, 'contains')" />
+                </span>
+              </div>
+              <button class="clear-width table-counts" style="background: aliceblue" (click)="clearTarget(dt2)">
+                Clear
+              </button>
+            </div>
+          </div>
+        </ng-template>
 
-<!-- Edit Popup for Selected Team -->
+        <ng-template pTemplate="header">
+          <tr class="table-row">
+            <th class="position-relative" pSortableColumn="team_name">
+              Team Name
+              <p-sortIcon field="team_name"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-team>
+          <tr>
+            <td>
+              <div class="image-person-name">
+                <span class="person-image">
+                  <img *ngIf="!team.profile_img" [src]="default_img" class="player-img image-border" />
+                  <img *ngIf="team.profile_img" [src]="team.profile_img" class="player-img image-border"
+                    (error)="handleImageError($event, default_img)" />
+                </span>
+                <span class="person-name padding-grid-center">
+                  <strong>{{ team.team_name }}</strong>
+                </span>
+                <span *ngIf="TeamInTarget(team)">
+                  <button class="clear-width edit-button" pTooltip="Edit" tooltipPosition="top"
+                    (click)="showEditPopup(team)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </span>
+                <span>
+                  <button class="clear-width delete-button" (click)="moveToSource(team)">
+                    <i class="fa-solid fa-reply-all" pTooltip="Remove" tooltipPosition="top"></i>
+                  </button>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center">No Records Found</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
 <div *ngIf="isEditPopupVisible" class="popup-backdrop">
   <div class="popup-wrapper">
 
     <div class="popup">
 
-   <form [formGroup]="ManageTeamsForm" class="p-4 border rounded shadow-sm bg-white">
-  <div class="mb-3 d-flex align-items-center" style="background: linear-gradient(to right, #ba4cbb, #99fffd)">
-    <div>
-      <span class="person-image-team-player">
-        <img class="player-img Child-image"
-             *ngIf="!selectedTeam?.profile_url"
-             [src]="default_img">
+      <form [formGroup]="ManageTeamsForm" class="p-4 border rounded shadow-sm bg-white">
+        <div class="mb-3 d-flex align-items-center" style="background: linear-gradient(to right, #ba4cbb, #99fffd)">
+          <div>
+            <span class="person-image-team-player">
+              <img class="player-img Child-image" *ngIf="!selectedTeam?.profile_url" [src]="default_img">
 
-        <img class="player-img Child-image"
-             *ngIf="selectedTeam?.profile_url"
-             [src]="selectedTeam.profile_url"
-             (error)="handleImageError($event, default_img)">
-      </span>
-    </div>
-    <div class="ms-2 fw-bold fs-6">
-      {{ ManageTeamsForm.get('team_name')?.value | uppercase }}
-    </div>
-  </div>
+              <img class="player-img Child-image" *ngIf="selectedTeam?.profile_url" [src]="selectedTeam.profile_url"
+                (error)="handleImageError($event, default_img)">
+            </span>
+          </div>
+          <div class="ms-2 fw-bold fs-6">
+            {{ ManageTeamsForm.get('team_name')?.value | uppercase }}
+          </div>
+        </div>
 
-  <!-- Scorecard Name Input -->
-  <div class="mb-3 d-flex align-items-center" >
-    <label for="scorecardName" class="form-label fw-semibold me-2 mb-0 text-width">
-      Scorecard Name :
-    </label>
-    <input id="scorecardName" type="text" class="form-control" formControlName="scorecard_name"
-           placeholder="Enter scorecard name" />
-  </div>
+        <!-- Scorecard Name Input -->
+        <div class="mb-3 d-flex align-items-center">
+          <label for="scorecardName" class="form-label fw-semibold me-2 mb-0 text-width">
+            Scorecard Name :
+          </label>
+          <input id="scorecardName" type="text" class="form-control" formControlName="scorecard_name"
+            placeholder="Enter scorecard name" />
+        </div>
 
-  <!-- Sponsor Name Input -->
-  <div class="mb-3 d-flex align-items-center">
-    <label for="sponsorName" class="form-label fw-semibold me-2 mb-0 text-width" >
-      Sponsor Name :
-    </label>
-    <input id="sponsorName" type="text" class="form-control" formControlName="sponser_name"
-           placeholder="Enter sponsor name (optional)" />
-  </div>
+        <!-- Sponsor Name Input -->
+        <div class="mb-3 d-flex align-items-center">
+          <label for="sponsorName" class="form-label fw-semibold me-2 mb-0 text-width">
+            Sponsor Name :
+          </label>
+          <input id="sponsorName" type="text" class="form-control" formControlName="sponser_name"
+            placeholder="Enter sponsor name (optional)" />
+        </div>
 
-  <!-- Buttons -->
-  <div class="text-end">
-    <button type="submit" class="btn btn-primary save-button" (click)="updateTeam()">
-      Submit
-    </button>
-    <button type="button" class="btn btn-secondary ms-2 custom-cancel-btn" (click)="closeEditPopup()">
-      Close
-    </button>
-  </div>
-</form>
-
+        <!-- Buttons -->
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary save-button" (click)="updateTeam()">
+            Submit
+          </button>
+          <button type="button" class="btn btn-secondary ms-2 custom-cancel-btn" (click)="closeEditPopup()">
+            Close
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
-<p-toast key="tc" position="top-right"></p-toast>
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img
+        *ngIf="message?.data?.image"
+        [src]="message.data.image"
+        style="width: 40px; height: 40px"
+      />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>
