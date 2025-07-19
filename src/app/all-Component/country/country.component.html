@@ -111,7 +111,7 @@
 
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
 
-      <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
         <div class="small-heading">
           <div *ngIf="addCountryForm.get('country_id')?.value == '' || addCountryForm.get('country_id')?.value == null">
             Add Country </div>

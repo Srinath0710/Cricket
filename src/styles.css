@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap');
 @import "material-icons/iconfont/material-icons.css";
 @import "primeicons/primeicons.css";
-
+/* 
 @font-face {
   font-family: 'PT Sans';
   src: url('/assets/fonts/PT_Sans/PTSans-Regular.ttf') format('truetype');
@@ -28,10 +28,10 @@
   src: url('/assets/fonts/PT_Sans/PTSans-BoldItalic.ttf') format('truetype');
   font-weight: bold;
   font-style: italic;
-}
+} */
 
 .p-component {
-  font-family: "PT Sans" !important;
+  font-family: "Open Sans" !important;
   font-size: 12px;
   font-weight: normal;
   line-height: 22px;
@@ -59,9 +59,7 @@
 
 body {
   background-color: #eceffd;
-  /* font-family: "Poppins", sans-serif; */
-  font-family: 'PT Sans', sans-serif;
-  /* font-family:  'Lato', sans-serif; */
+  font-family: 'PT Sans';
   margin: 0;
 }
 
@@ -290,7 +288,7 @@ label {
 .formContainer .formItem input {
   border: 1px solid #D9D9D9;
   border-radius: 4px;
-  font-family: "Titillium Web";
+  font-family: "PT Sans";
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -368,7 +366,7 @@ label {
 .list-search-dropdown .p-dropdown-trigger {
   font-size: 12px;
   font-weight: 600;
-  font-family: 'Titillium Web' !important;
+  font-family: 'PT Sans' !important;
   color: #fff;
 }
 
@@ -377,7 +375,7 @@ label {
 .list-search-dropdown .inputtext {
   font-size: 12px;
   font-weight: 600;
-  font-family: 'Titillium Web' !important;
+  font-family: 'PT Sans' !important;
   color: black;
 }
 
@@ -403,7 +401,7 @@ label {
 .list-search-dropdown .p-multiselect-trigger {
   font-size: 12px;
   font-weight: 700;
-  font-family: 'Titillium Web' !important;
+  font-family: 'PT Sans' !important;
   color: #fff;
 }
 
@@ -420,7 +418,7 @@ label {
   border: 0.5px solid #545454;
   background: rgba(84, 84, 84, 0.00);
   color: var(--Grey, #545454);
-  font-family: "Titillium Web";
+  font-family: "PT Sans";
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
@@ -553,7 +551,7 @@ label {
 }
 
 .formContainer .formItemLabel {
-  font-family: "Titillium Web";
+  font-family: "PT Sans";
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -565,7 +563,7 @@ label {
 .formContainer .formItem input {
   border: 1px solid #D9D9D9;
   border-radius: 4px;
-  font-family: "Titillium Web";
+  font-family: "PT Sans";
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -782,6 +780,12 @@ tr:hover {
   border: none;
   height: 30px;
 }
+/* .child-cancel-button {
+  background-color: #ee2c05;
+  color: white;
+  border: none;
+  height: 30px;
+} */
 
 .p-dialog {
   /* border-radius: 14px !important; */
@@ -894,6 +898,7 @@ tr:hover {
   width: 27rem !important;
 }
 
+
 .new-button {
   background-color: #367039 !important;
   border: none !important;
@@ -903,7 +908,15 @@ tr:hover {
   width: 85px;
   font-size: 12px !important;
 }
-
+.cancel-button {
+  background-color: #6c757d !important;
+  border: none !important;
+  border-color: #6c757d !important;
+  color: white !important;
+  height: 31px;
+  width: 85px;
+  font-size: 12px !important;
+}
 .new-button:hover {
   background-color: #367039 !important;
   border-color: #367039 !important;
@@ -1910,7 +1923,7 @@ body.modal-open {
 }
 
 .name-space {
-  margin-left: 15px;
+  margin-left: 18px;
 }
 
 .p-paginator-page.p-paginator-page-selected {
@@ -2091,6 +2104,5 @@ body.modal-open {
 
 .Child-header {
   font-size: larger !important;
-  font-weight: bold !important;
   color: #fff !important;
 }

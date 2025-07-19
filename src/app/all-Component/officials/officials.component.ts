@@ -143,12 +143,9 @@ export class OfficialsComponent implements OnInit {
   clubsDropdownData: any;
   personal_official_id: any;
   isFormEmpty: boolean = true;
-  // personalupadteformvalue
-
   isPersonalDataIntialized: boolean = false;
   disableReadonly: boolean = true;
   isClientShow: boolean = false;
-
   showCropperModal = false;
   imageBase64: any = null;
   profile_img: any
@@ -310,8 +307,6 @@ export class OfficialsComponent implements OnInit {
         this.spinnerService.raiseDataEmitterEvent('off');
 
       }
-      // this.officialDataList = res.data.officials ?? [];
-      // this.totalData = this.officialDataList.length != 0 ? res.data.officials[0].total_records : 0
       this.officialDataList.forEach((val) => {
         val.profile_img = `${val.profile_img}?${Math.random()}`;
       });

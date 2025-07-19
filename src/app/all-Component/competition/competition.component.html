@@ -100,10 +100,16 @@
             <!-- Create/Edit Competition Dialog -->
 
             <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="small-heading">{{ isEditMode ? 'Edit Competition' : 'Add Competition' }}</h4>
+              <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
+                <div class="small-heading">
+                  <div
+                    *ngIf="addCompetitionForm.get('competition_id')?.value == '' || addCompetitionForm.get('competition_id')?.value == null">
+                    Add Competition </div>
+                  <div
+                    *ngIf="addCompetitionForm.get('competition_id')?.value != null && addCompetitionForm.get('competition_id')?.value != ''">
+                    Edit Competition</div>
+                </div>
               </div>
-
               <form [formGroup]="addCompetitionForm">
 
                 <div class="row">
@@ -523,12 +529,12 @@
               </div>
             </div>
 
-              <!-- Pagination -->
-              <div class="competition-pagination">
-                <p-paginator [rows]="rows" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 18, 24]"
-                  (onPageChange)="onPageChange($event)">
-                </p-paginator>
-              </div>
+            <!-- Pagination -->
+            <div class="competition-pagination">
+              <p-paginator [rows]="rows" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 18, 24]"
+                (onPageChange)="onPageChange($event)">
+              </p-paginator>
+            </div>
           </section>
 
           <!-- Detailed Competition View -->
@@ -540,13 +546,14 @@
                   <span class="fw-bold text-uppercase flex-grow-1">{{ manageData.name }}</span>
 
                   <div class="d-flex flex-wrap gap-2">
-                    <button *ngIf="activeTab !== 'matches'" class="btn btn-primary update-child-btn"
+                    <button *ngIf="activeTab !== 'matches'" class="new-button p-button-text"
                       (click)="UpdateFromParent()">Update</button>
                     <button *ngIf="activeTab === 'matches' && !showNewMatchForm"
                       class="btn btn-primary btn-sm new-buttons  " (click)="UpdateFromParent()">
                       + New Match
                     </button>
-                    <button class="btn btn-secondary custom-cancel-btn" *ngIf="!showNewMatchForm" (click)="goBack()"
+                    <button class="cancel-button p-button-text" 
+                     *ngIf="!showNewMatchForm" (click)="goBack()"
                       [disabled]="isEditDisabled">Back</button>
                   </div>
                 </div>
@@ -587,11 +594,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>
@@ -599,4 +602,3 @@
     </div>
   </ng-template>
 </p-toast>
-

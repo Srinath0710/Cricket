@@ -152,7 +152,7 @@
         </div>
       </div>
       <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
           <div class="small-heading">
             <div
               *ngIf="addOfficialForm.get('official_id')?.value == '' || addOfficialForm.get('official_id')?.value == null">
@@ -262,7 +262,7 @@
             </div>
 
             <div class="col-md-6">
-              <label>Player DOB</label>
+              <label>DOB</label>
               <input class="form-control" type="date" placeholder="Enter DOB" formControlName="dob">
             </div>
 
@@ -417,7 +417,7 @@
       <p-drawer [(visible)]="personalShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false"
         styleClass="drawer-personal">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
 
           <button *ngIf="isPersonalDataIntialized" pButton type="button" (click)="enableEditMode()"
             [ngClass]="disableReadonly ? 'readonly-true' : 'readonly-false'">

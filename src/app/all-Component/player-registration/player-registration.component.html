@@ -140,10 +140,15 @@
             </p-paginator>
 
             <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="small-heading">
-                  {{ isEditMode ? 'Edit Player' : 'Add Player' }}
-                </h3>
+              <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
+                <div class="small-heading">
+                  <div
+                    *ngIf="playerRegistrationform.get('player_id')?.value == '' || playerRegistrationform.get('player_id')?.value == null">
+                    Add Player </div>
+                  <div
+                    *ngIf="playerRegistrationform.get('player_id')?.value != null && playerRegistrationform.get('player_id')?.value != ''">
+                    Edit Player</div>
+                </div>
               </div>
 
               <form [formGroup]="playerRegistrationform">
@@ -545,10 +550,10 @@
               <!-- </div> -->
               <!-- </p-sidebar> -->
             </p-drawer>
-            <!-- Personal Upadte Form Page -->
+            <!-- Personal Update Form Page -->
             <p-drawer [(visible)]="personalShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false"
               styleClass="drawer-personal">
-              <div class="d-flex justify-content-between align-items-center mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
                 <button *ngIf="isPersonalDataIntialized" pButton type="button" (click)="enableEditMode()"
                   [ngClass]="disableReadonly ? 'readonly-true' : 'readonly-false'">
                   {{ disableReadonly ? 'Enable Edit' : 'Disable Edit' }}
@@ -977,11 +982,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>

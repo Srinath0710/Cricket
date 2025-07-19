@@ -23,26 +23,26 @@
                         </div>
                         <!-- <div class="d-flex align-items-center"> -->
 
-                            <!-- Search Form -->
-                            <form class="d-flex align-items-center gap-2" (submit)="gridload()">
-                                <div class="p-input-icon-right flex-grow-1">
+                        <!-- Search Form -->
+                        <form class="d-flex align-items-center gap-2" (submit)="gridload()">
+                            <div class="p-input-icon-right flex-grow-1">
 
-                                    <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchkeyword"
-                                        class="width-search" placeholder="search" (keypress)="blockQuotesOnly($event)"
-                                        (input)="filterGlobal()" (input)="sanitizeQuotesOnly('Search', $event)">
-                                </div>
-
-                                <button type="button" class="clear-button" (click)="clear()">Clear
-                                </button>
-                            </form>
-
-                            <div class="card flex justify-center">
-                                <button *ngIf="!ShowForm" class="new-button p-button-text"
-                                    (click)="resetForm(); showAddForm()">
-                                    <i class="fas fa-plus"></i>
-                                    Create
-                                </button>
+                                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchkeyword"
+                                    class="width-search" placeholder="search" (keypress)="blockQuotesOnly($event)"
+                                    (input)="filterGlobal()" (input)="sanitizeQuotesOnly('Search', $event)">
                             </div>
+
+                            <button type="button" class="clear-button" (click)="clear()">Clear
+                            </button>
+                        </form>
+
+                        <div class="card flex justify-center">
+                            <button *ngIf="!ShowForm" class="new-button p-button-text"
+                                (click)="resetForm(); showAddForm()">
+                                <i class="fas fa-plus"></i>
+                                Create
+                            </button>
+                        </div>
                         <!-- </div> -->
                     </div>
 
@@ -119,8 +119,13 @@
 
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="small-heading">{{ isEditMode ? 'Edit Season' : 'Add Season' }}</h4>
+            <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
+                <div class="small-heading">
+                    <div *ngIf="addSeasonsForm.get('season_id')?.value == '' || addSeasonsForm.get('season_id')?.value == null">
+                        Add Season </div>
+                    <div *ngIf="addSeasonsForm.get('season_id')?.value != null && addSeasonsForm.get('season_id')?.value != ''">
+                        Edit Season</div>
+                </div>
             </div>
 
 
@@ -183,9 +188,8 @@
                         <label class="">Season Name
                             <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="50" type="text" 
-                            formControlName="season_name" (keypress)="blockQuotesOnly($event)"
-                            (input)="sanitizeQuotesOnly('season_name', $event)">
+                        <input class="form-control" maxlength="50" type="text" formControlName="season_name"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('season_name', $event)">
                         <small
                             *ngIf="addSeasonsForm?.get('season_name')?.invalid &&(addSeasonsForm?.get('season_name')?.touched) || (addSeasonsForm.get('season_name')?.invalid && submitted)"
                             class="required-msg"> Season
@@ -202,8 +206,7 @@
                                 *ngIf="addSeasonsForm.get('season_id')?.value == '' || addSeasonsForm.get('season_id')?.value == null"
                                 (click)="resetForm()"></button>
 
-                            <button pButton  label="Save" class="save-button"
-                                (click)="onAddSeason()"></button>
+                            <button pButton label="Save" class="save-button" (click)="onAddSeason()"></button>
                         </div>
                     </div>
                 </div>
@@ -212,17 +215,13 @@
     </div>
 </div>
 <p-toast position="center" [baseZIndex]="11000">
-  <ng-template let-message pTemplate="message">
-    <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
-      <div>
-        <div class="font-bold">{{ message.summary }}</div>
-        <div>{{ message.detail }}</div>
-      </div>
-    </div>
-  </ng-template>
+    <ng-template let-message pTemplate="message">
+        <div class="custom-toast-message">
+            <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
+            <div>
+                <div class="font-bold">{{ message.summary }}</div>
+                <div>{{ message.detail }}</div>
+            </div>
+        </div>
+    </ng-template>
 </p-toast>

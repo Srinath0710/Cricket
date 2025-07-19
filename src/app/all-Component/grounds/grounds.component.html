@@ -202,10 +202,13 @@
       [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="small-heading">
-          {{ isEditMode ? 'Edit Ground' : 'Add Ground' }}
-        </h3>
+      <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
+        <div class="small-heading">
+          <div *ngIf="addGroundForm.get('ground_id')?.value == '' || addGroundForm.get('ground_id')?.value == null">
+            Add Ground </div>
+          <div *ngIf="addGroundForm.get('ground_id')?.value != null && addGroundForm.get('ground_id')?.value != ''">
+            Edit Ground</div>
+        </div>
       </div>
 
       <form [formGroup]="addGroundForm">

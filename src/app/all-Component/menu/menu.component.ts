@@ -411,7 +411,6 @@ export class MenuComponent implements OnInit {
 
   addEndpoint() {
     this.submitted = true;
-    console.log(this.isEditEndpoint);
     if (this.addEndpointForm.invalid) {
       this.addEndpointForm.markAllAsTouched();
       return;

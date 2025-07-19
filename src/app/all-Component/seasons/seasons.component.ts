@@ -276,31 +276,6 @@ export class SeasonsComponent implements OnInit {
     );
   }
 
-  // StatusConfirm(season_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-  //   const AlreadyStatestatus =
-  //     (actionObject.key === this.conditionConstants.active_status.key && currentStatus === this.conditionConstants.active_status.status) ||
-  //     (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === this.conditionConstants.deactive_status.status);
-
-  //   if (AlreadyStatestatus) {
-  //     return;
-  //   }
-  //   this.confirmationService.confirm({
-  //     message: `Are you sure you want to ${actionObject.label} this season?`,
-  //     header: 'Confirmation',
-  //     icon: 'pi pi-question-circle',
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     accept: () => {
-  //       const url: string = this.conditionConstants.active_status.key === actionObject.key ? this.urlConstant.activateSeason : this.urlConstant.deactivateSeason;
-  //       this.status(season_id, url);
-  //       this.confirmationService.close();
-  //     },
-  //     reject: () => {
-  //       this.confirmationService.close();
-  //     }
-  //   });
-  // }
-
   StatusConfirm(season_id: number, actionObject: { key: string; label: string }, 
     currentStatus: string) {
     const { active_status, deactive_status } = this.conditionConstants;

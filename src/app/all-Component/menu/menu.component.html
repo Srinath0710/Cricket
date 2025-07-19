@@ -222,10 +222,14 @@
 
 
       <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h3 class="small-heading">
-            {{ isEditMode ? 'Edit Menu' : 'Add Menu' }}
-          </h3>
+        <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
+          <div class="small-heading">
+            <div *ngIf="addMenuForm.get('menu_id')?.value == '' || addMenuForm.get('menu_id')?.value == null">
+              Add Menu </div>
+            <div *ngIf="addMenuForm.get('menu_id')?.value != null && addMenuForm.get('menu_id')?.value != ''">
+              Edit Menu
+            </div>
+          </div>
         </div>
         <form [formGroup]="addMenuForm">
           <div class="row gy-3">
@@ -292,7 +296,7 @@
             <div class="col-md-6">
               <label>Sort Order</label>
               <span class="text-danger">*</span>
-              <input class="form-control" type="number"  formControlName="sort_order" />
+              <input class="form-control" type="number" formControlName="sort_order" />
               <small
                 *ngIf="addMenuForm?.get('sort_order')?.invalid && (addMenuForm?.get('sort_order')?.touched || submitted)"
                 class="required-msg">Sort Order is required</small>
@@ -323,13 +327,10 @@
                 <label class="formItemLabel">Menu Image
                   <span class="text-danger">*</span>
                 </label>
-                <input class="form-control" maxlength="100" type="text" 
-                  formControlName="menu_image">
-                <small
-                  *ngIf="addMenuForm.get('menu_image')?.invalid &&
+                <input class="form-control" maxlength="100" type="text" formControlName="menu_image">
+                <small *ngIf="addMenuForm.get('menu_image')?.invalid &&
                   (addMenuForm.get('menu_image')?.touched) || 
-                  (addMenuForm.get('menu_image')?.invalid && submitted)"
-                  class="text-danger">* Menu Image Is Required
+                  (addMenuForm.get('menu_image')?.invalid && submitted)" class="text-danger">* Menu Image Is Required
                 </small>
 
 
@@ -350,7 +351,7 @@
                   *ngIf="addMenuForm.get('menu_id')?.value == '' || addMenuForm.get('menu_id')?.value == null"
                   (click)="resetForm()"></button>
 
-                <button pButton  label="Save" class="save-button" (click)="addMenu()"></button>
+                <button pButton label="Save" class="save-button" (click)="addMenu()"></button>
               </div>
             </div>
 
@@ -360,7 +361,7 @@
       </p-drawer>
 
       <p-drawer [(visible)]="showEndpointForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
           <h3 class="small-heading">
             {{ isEditEndpoint ? 'Edit Endpoint' : 'Add Endpoint' }}
           </h3>
@@ -451,7 +452,7 @@
                 *ngIf="addEndpointForm.get('api_id')?.value == '' || addEndpointForm.get('api_id')?.value == null"
                 (click)="resetForm()"></button>
 
-              <button pButton  label="Save" class="save-button" (click)="addEndpoint()"></button>
+              <button pButton label="Save" class="save-button" (click)="addEndpoint()"></button>
             </div>
           </div>
         </form>
