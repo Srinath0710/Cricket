@@ -1766,7 +1766,7 @@ body.modal-open {
   top: 2px;
   right: 2px;
   padding: 2px 5px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   /* border-radius: 34%; */
   background-color: white;
   font-size: 20px;
@@ -2066,8 +2066,8 @@ body.modal-open {
 .edit-button {
   position: absolute;
   right: 30px;
-  /* color:#367039 ; */
-  color: rgb(24, 24, 218);
+  color:#020425 ;
+  /* color: rgb(24, 24, 218); */
   font-size: 14px;
 }
 

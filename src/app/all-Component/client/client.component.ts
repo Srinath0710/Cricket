@@ -316,6 +316,7 @@ export class ClientComponent implements OnInit {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
+      life: 3000000
     });
   }
   /* Failed Toast */

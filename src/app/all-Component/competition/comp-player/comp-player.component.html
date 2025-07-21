@@ -8,10 +8,10 @@
       </div>
     </div>
   </div>
-  <div class="mt-3 text-danger small">
+  <!-- <div class="mt-3 text-danger small">
     Source Count: {{ sourcePlayer.length }} |
     Target Count: {{ targetPlayer.length }}
-  </div>
+  </div> -->
   <div class="container">
     <div class="row mb-3">
       <div class="col-6">
@@ -80,7 +80,7 @@
         <p-table #dt2 [value]="targetPlayer" [paginator]="true" selectionMode="multiple"
           [globalFilterFields]="['display_name']" [tableStyle]="{ 'min-width': '20rem' }"
           styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
-          [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+          [rowsPerPageOptions]="[10, 25, 50]">
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
               <div class="p-1 Child-header text-center">Selected Players</div>
@@ -101,9 +101,9 @@
 
           <ng-template pTemplate="header">
             <tr class="table-row">
-              <th class="position-relative" pSortableColumn="display_name">
+              <th class="position-relative" pSortableColumn="player_name">
                 Player Name
-                <p-sortIcon field="display_name"></p-sortIcon>
+                <p-sortIcon field="player_name"></p-sortIcon>
               </th>
             </tr>
           </ng-template>
@@ -118,7 +118,13 @@
                       (error)="handleImageError($event, default_img)" />
                   </span>
                   <span class="person-name padding-grid-center">
-                    <strong>{{ player.display_name }}</strong>
+                    <strong>{{ player.player_name }}</strong>
+                  </span>
+                  <span *ngIf="TeamInTarget(player)">
+                    <button class="clear-width edit-button" pTooltip="Edit" tooltipPosition="top"
+                      (click)="showEditPopup(player)">
+                      <i class="fas fa-edit"></i>
+                    </button>
                   </span>
                   <span>
                     <button class="clear-width delete-button" pTooltip="Remove" tooltipPosition="top"

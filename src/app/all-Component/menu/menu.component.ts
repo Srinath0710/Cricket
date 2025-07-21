@@ -206,12 +206,22 @@ export class MenuComponent implements OnInit {
     this.gridLoad();
   }
   successToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
 
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
   }
-
+  /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
   status(menu_id: number, url: string) {
     const params: any = {
@@ -243,61 +253,94 @@ export class MenuComponent implements OnInit {
         }
       });
   }
-  StatusConfirm(menu_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    console.log('StatusConfirm called', { menu_id, actionObject, currentStatus });
-    const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+    StatusConfirm(menu_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
+        const { active_status, deactive_status } = this.conditionConstants;
+        const isSameStatus =
+            (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+            (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+        if (isSameStatus) return;
+        const isActivating = actionObject.key === active_status.key;
+        const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+        const message = `Are you sure you want to proceed?`;
 
-    if (AlreadyStatestatus) {
-      return;
+        this.confirmationService.confirm({
+            header: ``,
+            message: `
+      <div class="custom-confirm-content">
+      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <div class="warning">Warning</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
+            acceptLabel: 'Yes',
+            rejectLabel: 'No',
+            styleClass: 'p-confirm-dialog-custom',
+            accept: () => {
+                const url = isActivating ? this.urlConstant.activateMenu : this.urlConstant.deactivateMenu;
+                this.status(menu_id, url);
+                this.confirmationService.close();
+            },
+            reject: () => this.confirmationService.close()
+        } as any);
     }
-    this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this menu name?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        const url: string = this.conditionConstants.active_status.key === actionObject.key
-          ? this.urlConstant.activateMenu
-          : this.urlConstant.deactivateMenu;
-        this.status(menu_id, url);
-        this.confirmationService.close();
-      },
-      reject: () => {
-        this.confirmationService.close();
-      }
-    });
-  }
+  // StatusConfirmendpoint(api_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+  //   console.log('StatusConfirmendpoint called', { api_id, actionObject, currentStatus });
+  //   const AlreadyStatestatus =
+  //     (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
+  //     (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
 
-  StatusConfirmendpoint(api_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    console.log('StatusConfirmendpoint called', { api_id, actionObject, currentStatus });
-    const AlreadyStatestatus =
-      (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-      (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
+  //   if (AlreadyStatestatus) {
+  //     return;
+  //   }
+  //   this.confirmationService.confirm({
+  //     message: `Are you sure you want to ${actionObject.label} this  api?`,
+  //     header: 'Confirmation',
+  //     icon: 'pi pi-question-circle',
+  //     acceptLabel: 'Yes',
+  //     rejectLabel: 'No',
+  //     accept: () => {
+  //       const url: string = this.conditionConstants.active_status.key === actionObject.key
+  //         ? this.urlConstant.activateEndpoint
+  //         : this.urlConstant.deactivateEndpoint;
+  //       this.statusconvert(api_id, url);
+  //       this.confirmationService.close();
+  //     },
+  //     reject: () => {
+  //       this.confirmationService.close();
+  //     }
+  //   });
+  // }
 
-    if (AlreadyStatestatus) {
-      return;
+      StatusConfirmendpoint(api_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+        const { active_status, deactive_status } = this.conditionConstants;
+        const isSameStatus =
+            (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+            (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+        if (isSameStatus) return;
+        const isActivating = actionObject.key === active_status.key;
+        const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+        const message = `Are you sure you want to proceed?`;
+
+        this.confirmationService.confirm({
+            header: ``,
+            message: `
+      <div class="custom-confirm-content">
+      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <div class="warning">Warning</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
+            acceptLabel: 'Yes',
+            rejectLabel: 'No',
+            styleClass: 'p-confirm-dialog-custom',
+            accept: () => {
+                const url = isActivating ? this.urlConstant.activateEndpoint : this.urlConstant.deactivateEndpoint;
+                this.statusconvert(api_id, url);
+                this.confirmationService.close();
+            },
+            reject: () => this.confirmationService.close()
+        } as any);
     }
-    this.confirmationService.confirm({
-      message: `Are you sure you want to ${actionObject.label} this  api?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        const url: string = this.conditionConstants.active_status.key === actionObject.key
-          ? this.urlConstant.activateEndpoint
-          : this.urlConstant.deactivateEndpoint;
-        this.statusconvert(api_id, url);
-        this.confirmationService.close();
-      },
-      reject: () => {
-        this.confirmationService.close();
-      }
-    });
-  }
   addCallBack(res: any) {
     this.menuID = this.addMenuForm.value.menu_id;
     this.resetForm();

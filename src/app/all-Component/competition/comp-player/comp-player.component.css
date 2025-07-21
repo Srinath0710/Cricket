@@ -45,12 +45,6 @@
   }
 }
 
-.edit-button {
-  position: absolute;
-  right: 12px;
-  color: rgb(24, 24, 218);
-  font-size: 14px;
-}
 
 .popup-backdrop {
   position: fixed;
@@ -74,7 +68,7 @@
   text-align: center;
   font-weight: bold;
   padding: 7px;
-  background: #5b89b6;
+  background: #8e9fcf;
   margin-bottom: 10px;
   color: white;
 }

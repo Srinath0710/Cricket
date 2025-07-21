@@ -11,11 +11,13 @@ import { Table, TableModule } from 'primeng/table';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
+import { Tooltip, TooltipModule } from 'primeng/tooltip';
+
 interface Team {
   team_id: number;
   team_name: string;
   // other fields...
-}
+}   
 @Component({
   selector: 'app-comp-player',
   imports: [
@@ -25,8 +27,9 @@ interface Team {
     ReactiveFormsModule,
     DropdownModule,
     TableModule,
-    ToastModule
-  ],
+    ToastModule,
+    Tooltip
+    ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
   providers: [
@@ -87,7 +90,8 @@ selectedPlayersRaw: any[] = []; // To store all selected players fetched from th
     private msgService: MessageService,
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+
   ) { }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -101,7 +105,7 @@ selectedPlayersRaw: any[] = []; // To store all selected players fetched from th
       profile_url: ['', []],
       user_id: ['', []],
       team_id: ['', []],
-      display_name: ['', []],
+      display_name: [''],
       team_name: ['', []]
     });
   }
@@ -143,9 +147,7 @@ chooseTeam(team_id: any) {
         this.teamID = this.teamsData[0].team_id;
       }
       this.filterPlayersByTeam(this.teamID);
-
       this.spinnerService.raiseDataEmitterEvent('off');
-
       console.log('All Items Raw:', this.allPlayersRaw); 
       console.log('Selected Players Raw:', this.selectedPlayersRaw); 
     },
@@ -163,27 +165,21 @@ filterPlayersByTeam(teamId: number) {
     this.targetPlayer = [];
     return;
   }
-
-  const allItemsForTeam = this.allPlayersRaw.filter(
-    (item: any) => item.team_id == teamId
-  );
+  const allItemsForTeam = this.allPlayersRaw
   const selectedPlayersForTeam = this.selectedPlayersRaw.filter(
     (item: any) => item.team_id == teamId
   );
-
-  const selectedPlayerIdsForTeam = new Set(selectedPlayersForTeam.map((players: any) => players.player_id));
+  const selectedPlayerIdsForTeam = new Set(this.selectedPlayersRaw.map((players: any) => players.player_id));
   this.sourcePlayer = allItemsForTeam.filter(
     (item: any) => !selectedPlayerIdsForTeam.has(item.player_id)
   );
   this.targetPlayer = selectedPlayersForTeam;
-
   const selectedTeam = this.teamsData.find(team => team.team_id === teamId);
   this.teamname = selectedTeam ? selectedTeam.team_name : '';
   this.sourceSearchKeyword = '';
   this.targetSearchKeyword = '';
   if (this.dt1) this.dt1.filterGlobal('', 'contains');
   if (this.dt2) this.dt2.filterGlobal('', 'contains');
-
   console.log('Source Players (filtered):', this.sourcePlayer);
   console.log('Target Players (filtered):', this.targetPlayer);
 }
@@ -212,7 +208,6 @@ filterPlayersByTeam(teamId: number) {
   }
 
   successToast(data: any) {
-
     this.msgService.add({
       severity: 'success',
       summary: 'Success',
@@ -234,7 +229,6 @@ filterPlayersByTeam(teamId: number) {
       console.error('No team selected for update!');
       return;
     }
-
     const params: any = {
       client_id: this.client_id.toString(),
       user_id: this.user_id.toString(),
@@ -256,35 +250,6 @@ filterPlayersByTeam(teamId: number) {
       }
     );
   }
-
-  // selectTeam(id: number) {
-  //   this.selectedTeamId = id;
-  //   this.team_id = id;
-  //   this.gridLoad();
-  // }
-  onMoveToTarget(event: any) {
-    event.items.forEach((item: any) => {
-      item.highlighted = true;
-    });
-  }
-
-  onMoveAllToTarget(event: any) {
-    const highlightedIds = new Set(event.items.map((squard: any) => squard.player_id));
-
-    this.targetPlayer = this.targetPlayer.map((player: any) => {
-      if (highlightedIds.has(player.player_id)) {
-        return { ...player, highlighted: true };
-      }
-      return player;
-    });
-  }
-
-  onMoveToSource(event: any) {
-    event.items.forEach((item: any) => {
-      item.highlighted = false;
-    });
-  }
-
   showEditPopup(player: any) {
     this.selectedPlayer = player;
     this.ManagePlayerForm.patchValue({
@@ -294,8 +259,7 @@ filterPlayersByTeam(teamId: number) {
       jersey_number: player.jersey_number || '',
       profile_url: player.profile_url || '',
       team_name: player.team_name || '',
-      display_name: player.display_name || ''
-
+      display_name: player.player_name || player.display_name,
     });
     this.isEditPopupVisible = true;
   }
@@ -304,18 +268,16 @@ filterPlayersByTeam(teamId: number) {
     this.isEditPopupVisible = false;
     this.selectedPlayer = null;
   }
-  TeamInTarget(player: any): boolean {
-    return this.targetPlayer?.some((p: any) => p.player_id === player.player_id);
-  }
-
-
-
-
   moveToSource(player: any) {
     this.targetPlayer = this.targetPlayer.filter((t: any) => t.player_id !== player.player_id);
     this.sourcePlayer.push(player);
   }
 
+  /* Edit button not show in Available Players */
+
+  TeamInTarget(player: any): boolean {
+    return this.targetPlayer?.some((t: any) => t.team_id === player.team_id);
+  }
   handleImageError(event: Event, fallbackUrl: string): void {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
@@ -323,7 +285,10 @@ filterPlayersByTeam(teamId: number) {
 
   moveToTarget(player: any) {
     this.sourcePlayer = this.sourcePlayer.filter(t => t !== player);
+    player.player_name= player.player_name || player.display_name; // Ensure player_name is set
     this.targetPlayer.push(player);
+    const targetplayer=this.targetPlayer;
+    this.targetPlayer=targetplayer
   }
 
   filterGlobalSource($event: any, stringVal: string) {

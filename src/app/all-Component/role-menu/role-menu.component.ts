@@ -315,15 +315,25 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
         this.gridLoad();
     }
 
-    successToast(data: any) {
-        this.msgService.add({ key: 'tc', severity: 'success', summary: 'Success', detail: data.message });
+  successToast(data: any) {
 
-    }
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
+  /* Failed Toast */
+  failedToast(data: any) {
+    this.msgService.add({
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
+  }
 
-    /* Failed Toast */
-    failedToast(data: any) {
-        this.msgService.add({ key: 'tc', severity: 'error', summary: 'Error', detail: data.message });
-    }
     status(role_id: number, url: string) {
         const params: any = {
             user_id: this.user_id?.toString(),
@@ -339,37 +349,6 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
             }
         );
     }
-
-
-    // StatusConfirm(role_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-    //     console.log(role_id);
-    //     const AlreadyStatestatus =
-    //         (actionObject.key === this.conditionConstants.active_status.key && currentStatus === 'Active') ||
-    //         (actionObject.key === this.conditionConstants.deactive_status.key && currentStatus === 'InActive');
-
-    //     if (AlreadyStatestatus) {
-    //         return;
-    //     }
-    //     this.confirmationService.confirm({
-    //         message: `Are you sure you want to ${actionObject.label} this Role?`,
-    //         header: 'Confirmation',
-    //         icon: 'pi pi-question-circle',
-    //         acceptLabel: 'Yes',
-    //         rejectLabel: 'No',
-    //         accept: () => {
-    //             const url: string = this.conditionConstants.active_status.key === actionObject.key
-    //                 ? this.urlConstant.activeRole
-    //                 : this.urlConstant.deactivateRole;
-    //             this.status(role_id, url);
-    //             this.confirmationService.close();
-    //         },
-
-    //         reject: () => {
-    //             this.confirmationService.close();
-    //         }
-
-    //     });
-    // }
     StatusConfirm(role_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
         const { active_status, deactive_status } = this.conditionConstants;
         const isSameStatus =

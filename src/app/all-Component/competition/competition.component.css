@@ -183,7 +183,7 @@ main {
 
 .card-header {
   /* background: linear-gradient(to right, #84f5b9, #8fcff2); */
-  background: linear-gradient(to right, #60c3e4, #be87d9);
+  background: linear-gradient(to right, #95b1ff, #cb9595);
   color: white;
 }
 
@@ -200,7 +200,7 @@ main {
 }
 
 .gender-category {
-  background-color: #555;
+  background-color: #787878;
   color: white;
   flex: 1;
   padding: 5px;
@@ -210,7 +210,7 @@ main {
 
 .match-type {
   /* background-color: #973c7d; */
-  background-color: #ca68ae;
+  background-color: #c2ff946e;
   color: white;
   flex: 1;
   padding: 5px;
