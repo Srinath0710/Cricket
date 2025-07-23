@@ -7,6 +7,8 @@
                         <div class="main-page-title page-title playerbackground">
                             <i class="fa-solid fa-chess fa-fw" aria-hidden="true"></i>
                             Club Registrations
+                            <div class="totalrecord">: {{ visibleRecords }}</div>
+
                         </div>
 
                         <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
@@ -24,26 +26,26 @@
 
                         <div class="d-flex align-items-center">
 
-                        <form class="d-flex align-items-center gap-2" (submit)="gridload()">
-                            <div class="p-input-icon-right flex-grow-1">
-                                <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
-                                    class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"
-                                    (input)="filterGlobal()" (input)="sanitizeQuotesOnly('club_name', $event)" />
-                            </div>
-                            <button type="button" class="clear-button" (click)="clearSearch()">Clear</button>
-                        </form>
+                            <form class="d-flex align-items-center gap-2" (submit)="gridload()">
+                                <div class="p-input-icon-right flex-grow-1">
+                                    <input pInputText type="text" name="searchKeyword" [(ngModel)]="searchKeyword"
+                                        class="width-search" placeholder="Search" (keypress)="blockQuotesOnly($event)"
+                                        (input)="filterGlobal()" (input)="sanitizeQuotesOnly('club_name', $event)" />
+                                </div>
+                                <button type="button" class="clear-button" (click)="clearSearch()">Clear</button>
+                            </form>
 
-                        <div class="card flex justify-center">
-                            <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
-                                (click)="openAddClubForm()">
-                                <i class="fas fa-plus"></i>
-                                Create
-                            </button>
-                        </div>
+                            <div class="card flex justify-center">
+                                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                                    (click)="openAddClubForm()">
+                                    <i class="fas fa-plus"></i>
+                                    Create
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
+                    <p-table #dt [value]="ClubData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
                         [rowsPerPageOptions]="[10,25,50,100]" [styleClass]="'custom-table'"
                         [globalFilterFields]="['club_name','parent_club_name','country','state','record_status']">
                         <ng-template pTemplate="header">
@@ -112,6 +114,11 @@
                                 </td>
                             </tr>
                         </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="10" class="text-center ">No Records Found</td>
+                            </tr>
+                        </ng-template>
                     </p-table>
                     <!-- <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
                         [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="onPageChange($event)">
@@ -151,7 +158,7 @@
                     <div class="col-md-6">
                         <label>Parent Club Name
                         </label>
-                        <p-dropdown [options]="gridData" formControlName="parent_club_id" optionLabel="club_name"
+                        <p-dropdown [options]="ClubData" formControlName="parent_club_id" optionLabel="club_name"
                             placeholder="Parent Club Name" optionValue="club_id" class="drop-error"
                             [panelStyleClass]="'custom-dropdown-panel'">
                         </p-dropdown>
@@ -394,17 +401,13 @@
     </div>
 </div>
 <p-toast position="center" [baseZIndex]="11000">
-  <ng-template let-message pTemplate="message">
-    <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
-      <div>
-        <div class="font-bold">{{ message.summary }}</div>
-        <div>{{ message.detail }}</div>
-      </div>
-    </div>
-  </ng-template>
+    <ng-template let-message pTemplate="message">
+        <div class="custom-toast-message">
+            <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
+            <div>
+                <div class="font-bold">{{ message.summary }}</div>
+                <div>{{ message.detail }}</div>
+            </div>
+        </div>
+    </ng-template>
 </p-toast>

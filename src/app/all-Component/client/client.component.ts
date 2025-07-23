@@ -90,6 +90,9 @@ export class ClientComponent implements OnInit {
   base64: any;
   url: any;
   croppedImage: any;
+  lookupDataList = [];
+
+
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   actionflags = CricketKeyConstant.action_flag;
@@ -103,6 +106,8 @@ export class ClientComponent implements OnInit {
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
     this.getCountries();
+    this.dbserverLookup();
+
     this.addClientForm = this.formBuilder.group({
       client_name: ['', [Validators.required]],
       client_code: ['', [Validators.required]],
@@ -113,7 +118,7 @@ export class ClientComponent implements OnInit {
       mobile: ['', [Validators.pattern(this.mobileRegex)]],
       website: [''],
       description: [''],
-      connection_id: [''],
+      app_con_id: [''],
       country_id: ['', [Validators.required]],
       state_id: ['', [Validators.required]],
       city_id: ['', [Validators.required]],
@@ -167,8 +172,10 @@ export class ClientComponent implements OnInit {
           this.apiService.RefreshToken() : (this.Clientdata = [],
             this.spinnerService.raiseDataEmitterEvent('off'),
             this.totalData = this.Clientdata.length);
-
       });
+      // (err: any) => {
+      //   err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      // }
   }
 
   onAddClient() {
@@ -192,12 +199,13 @@ export class ClientComponent implements OnInit {
       country_id: String(this.addClientForm.value.country_id),
       city_id: String(this.addClientForm.value.city_id),
       action_flag: this.actionflags.Create,
+      connection_id: this.addClientForm.value.app_con_id != null ? this.addClientForm.value.app_con_id.toString() : null,
       header_color: '',
       tbl_header_color: '',
       tbl_header_font_color: '',
       button_color: '',
       button_font_color: '',
-      connection_id: '',
+
       profile_img_url: this.filedata ? '' : this.profileImages
 
     };
@@ -211,7 +219,8 @@ export class ClientComponent implements OnInit {
           if (res.data !== null && this.filedata != null) {
             this.profileImgAppend(params.client_id);
           } else {
-            this.addCallBack(res)
+            this.addCallBack(res);
+
           }
         } else {
           this.failedToast(res)
@@ -224,9 +233,10 @@ export class ClientComponent implements OnInit {
       this.apiService.post(this.urlConstant.createclient, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(res.data.client_id);
+            this.profileImgAppend(res.data[0].client_id);
           } else {
-            this.addCallBack(res)
+            this.addCallBack(res);
+            this.showList();
           }
         } else {
           this.failedToast(res)
@@ -237,8 +247,14 @@ export class ClientComponent implements OnInit {
     }
 
   }
+  showList() {
+    // this.addClientForm.controls['app_con_id'].enable();
+    // this.ShowForm = false;
+  }
 
   EditClient(client_id: number) {
+    this.showCropperModal = false;
+    // this.addClientForm.controls['app_con_id'].disable();
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = client_id?.toString();
@@ -266,12 +282,12 @@ export class ClientComponent implements OnInit {
             tbl_header_font_color: null,
             button_color: null,
             button_font_color: null,
-            connection_id: editRecord.connection_id ?? null
+            app_con_id: editRecord.app_con_id || null,
+
           });
           this.profileImages = editRecord.profile_img_url + '?' + Math.random();
           this.convertUrlToBase64(editRecord.profile_img_url + '?' + Math.random());
           this.filedata = null;
-          this.showCropperModal = false;
           this.showAddForm();
         }
       } else {
@@ -286,6 +302,23 @@ export class ClientComponent implements OnInit {
   showAddForm() {
     this.ShowForm = true;
   }
+  dbserverLookup() {
+    const params: any = {};
+    params.user_id = this.user_id.toString();
+    params.action_flag = this.actionflags.Dropdown;
+    this.apiService.post(this.urlConstant.lookupdropdown, params).subscribe((res) => {
+      if (res.status_code === this.statusConstants.success && res.status) {
+        this.lookupDataList = res.data;
+      } else {
+        this.failedToast(res);
+      }
+    }, (err: any) => {
+      err.status_code === this.statusConstants.refresh && err.error.message ===
+        this.statusConstants.refresh_msg
+        ? this.apiService.RefreshToken()
+        : this.failedToast(err.error);
+    });
+  }
 
   cancelForm() {
     this.ShowForm = false;
@@ -296,8 +329,8 @@ export class ClientComponent implements OnInit {
     this.imageBase64 = null;
     this.imageDefault = null;
     this.croppedImage = null;
-
   }
+
   resetForm() {
     this.addClientForm.reset();
     this.submitted = false;
@@ -316,7 +349,6 @@ export class ClientComponent implements OnInit {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
-      life: 3000000
     });
   }
   /* Failed Toast */
@@ -655,5 +687,9 @@ export class ClientComponent implements OnInit {
       );
     }
   }
+
+  get visibleRecords(): number {
+  return this.Clientdata?.length || 0;
+}
 }
 

@@ -11,7 +11,7 @@
 
             </div>
 
-           <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
+            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="ClientID" (ngModelChange)="gridload()" placeholder="Client Id" [filter]="true"
                 appendTo="body" class=" w-100 
@@ -122,6 +122,11 @@
                 </td>
               </tr>
             </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6" class="text-center">No Records Found</td>
+              </tr>
+            </ng-template>
           </p-table>
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
             [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
@@ -130,73 +135,73 @@
       </div>
     </main>
 
-    
-          <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
+
+    <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
 
 
-            <div class="popup-container" *ngFor="let ground of selectedGround">
+      <div class="popup-container" *ngFor="let ground of selectedGround">
 
-              <!-- ✅ Top bar: Image on left, Cancel button on right -->
-              <div class="top-bar">
-                <div class="profile-image-wrapper">
-                  <span class="person-image-team-player">
-                    <img class="player-img Viewimg" *ngIf="ground.profile_img==null || ground.profile_img==''"
-                      [src]="default_img">
+        <!-- ✅ Top bar: Image on left, Cancel button on right -->
+        <div class="top-bar">
+          <div class="profile-image-wrapper">
+            <span class="person-image-team-player">
+              <img class="player-img Viewimg" *ngIf="ground.profile_img==null || ground.profile_img==''"
+                [src]="default_img">
 
-                    <img class="player-img viewimg" *ngIf="ground.profile_img!=null  && ground.profile_img!=''"
-                      [src]="ground.profile_img" (error)="handleImageError($event, default_img)">
-                  </span>
-                </div>
-                <header class="popup-header no-icon">
-                  <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
-                </header>
+              <img class="player-img viewimg" *ngIf="ground.profile_img!=null  && ground.profile_img!=''"
+                [src]="ground.profile_img" (error)="handleImageError($event, default_img)">
+            </span>
+          </div>
+          <header class="popup-header no-icon">
+            <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
+          </header>
 
-                <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
-              </div>
+          <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
+        </div>
 
 
-              <div class="popup-content">
-                <!-- Ground Details -->
-                <section class="popup-section">
-                  <h2 class="section-title">⛳ Ground Details</h2>
-                  <div class="info-row"><span class="info-label"> Address 1</span><span
-                      class="separator">|</span><span class="info-value">{{ ground['address 1'] }}</span></div>
-                  <div class="info-row"><span class="info-label"> Address 2</span><span
-                      class="separator">|</span><span class="info-value">{{ ground['address 2'] }}</span></div>
-                  <div class="info-row"><span class="info-label"> Post Code</span><span
-                      class="separator">|</span><span class="info-value">{{ ground['post code'] }}</span></div>
-                  <!-- <div class="info-row"><span class="info-label"> Northern End</span><span
+        <div class="popup-content">
+          <!-- Ground Details -->
+          <section class="popup-section">
+            <h2 class="section-title">⛳ Ground Details</h2>
+            <div class="info-row"><span class="info-label"> Address 1</span><span class="separator">|</span><span
+                class="info-value">{{ ground['address 1'] }}</span></div>
+            <div class="info-row"><span class="info-label"> Address 2</span><span class="separator">|</span><span
+                class="info-value">{{ ground['address 2'] }}</span></div>
+            <div class="info-row"><span class="info-label"> Post Code</span><span class="separator">|</span><span
+                class="info-value">{{ ground['post code'] }}</span></div>
+            <!-- <div class="info-row"><span class="info-label"> Northern End</span><span
                       class="separator">|</span><span class="info-value">{{ ground['northern end'] }}</span></div>
                   <div class="info-row"><span class="info-label"> southern End</span><span
                       class="separator">|</span><span class="info-value">{{ ground['southern end'] }}</span></div>
                   <div class="info-row"><span class="info-label">capacity</span><span class="separator">|</span><span
                       class="info-value">{{ ground['capacity'] }}</span></div> -->
-                  <!-- <div class="info-row"><span class="info-label"> Profile</span><span class="separator">|</span><span
+            <!-- <div class="info-row"><span class="info-label"> Profile</span><span class="separator">|</span><span
                       class="info-value">{{ ground.profile }}</span></div> -->
-                  <div class="info-row"><span class="info-label"> North</span><span class="separator">|</span><span
-                      class="info-value">{{ ground['north'] }}</span></div>
-                  <div class="info-row"><span class="info-label"> South</span><span class="separator">|</span><span
-                      class="info-value">{{ ground['south'] }}</span></div>
-                  <div class="info-row"><span class="info-label">East</span><span class="separator">|</span><span
-                      class="info-value">{{ ground['east'] }}</span></div>
-                  <div class="info-row"><span class="info-label"> West</span><span class="separator">|</span><span
-                      class="info-value">{{ ground['west'] }}</span></div>
-                  <div class="info-row"><span class="info-label"> Latitude</span><span class="separator">|</span><span
-                      class="info-value">{{ ground['latitude'] }}</span></div>
-                  <div class="info-row"><span class="info-label"> Longitude</span><span
-                      class="separator">|</span><span class="info-value">{{ ground.longitude }}</span></div>
-                  <div class="info-row"><span class="info-label"> Country</span><span class="separator">|</span><span
-                      class="info-value">{{ ground.country }}</span></div>
-                  <div class="info-row"><span class="info-label"> State</span><span class="separator">|</span><span
-                      class="info-value">{{ ground.state }}</span></div>
-                  <div class="info-row"><span class="info-label"> City</span><span class="separator">|</span><span
-                      class="info-value">{{ ground.city }}</span></div>
-                </section>
+            <div class="info-row"><span class="info-label"> North</span><span class="separator">|</span><span
+                class="info-value">{{ ground['north'] }}</span></div>
+            <div class="info-row"><span class="info-label"> South</span><span class="separator">|</span><span
+                class="info-value">{{ ground['south'] }}</span></div>
+            <div class="info-row"><span class="info-label">East</span><span class="separator">|</span><span
+                class="info-value">{{ ground['east'] }}</span></div>
+            <div class="info-row"><span class="info-label"> West</span><span class="separator">|</span><span
+                class="info-value">{{ ground['west'] }}</span></div>
+            <div class="info-row"><span class="info-label"> Latitude</span><span class="separator">|</span><span
+                class="info-value">{{ ground['latitude'] }}</span></div>
+            <div class="info-row"><span class="info-label"> Longitude</span><span class="separator">|</span><span
+                class="info-value">{{ ground.longitude }}</span></div>
+            <div class="info-row"><span class="info-label"> Country</span><span class="separator">|</span><span
+                class="info-value">{{ ground.country }}</span></div>
+            <div class="info-row"><span class="info-label"> State</span><span class="separator">|</span><span
+                class="info-value">{{ ground.state }}</span></div>
+            <div class="info-row"><span class="info-label"> City</span><span class="separator">|</span><span
+                class="info-value">{{ ground.city }}</span></div>
+          </section>
 
-              </div>
-            </div>
+        </div>
+      </div>
 
-          </p-dialog>
+    </p-dialog>
 
     <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
       [styleClass]="'p-confirm-dialog-custom'">
@@ -620,7 +625,7 @@
                 *ngIf="addGroundForm.get('ground_id')?.value == '' || addGroundForm.get('ground_id')?.value == null"
                 (click)="resetForm()"></button>
 
-              <button pButton  label="Save" class="save-button" (click)="onAddGround()"></button>
+              <button pButton label="Save" class="save-button" (click)="onAddGround()"></button>
             </div>
           </div>
         </div>
@@ -631,11 +636,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>

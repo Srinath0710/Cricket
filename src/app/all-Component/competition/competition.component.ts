@@ -241,8 +241,6 @@ export class CompetitionComponent implements OnInit {
       page_no: this.first.toString(),
       records: this.rows.toString()
     };
-
-
     if (this.filterStatus) {
       params.status = this.filterStatus;
     }
@@ -277,17 +275,22 @@ export class CompetitionComponent implements OnInit {
             this.spinnerService.raiseDataEmitterEvent('off');
 
           }
-
-        }
-        else {
-          console.log(res)
+      else {
+          console.log("ewe",res);
           this.compititionList = [];
           this.filteredCompititionList = [];
           this.totalRecords = 0;
           this.spinnerService.raiseDataEmitterEvent('off');
 
         }
-        this.getGlobalData();
+         this.getGlobalData();
+
+        }
+        else{
+              this.spinnerService.raiseDataEmitterEvent('off');
+
+        }
+
 
       },
       (err) => {

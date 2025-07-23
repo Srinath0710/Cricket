@@ -7,11 +7,11 @@
         <div class="gap-2">
           <span class="p-button-sm status-color">{{ Fixtures.match_status }}</span>
           <button pButton type="button" class="p-button-sm p-button-info background-edit"
-            (click)="editCardData(Fixtures.match_id)">
+           pTooltip="Edit" tooltipPosition="top" (click)="editCardData(Fixtures.match_id)">
             <i class="fa fa-pencil me-2"></i>
           </button>
           <button pButton type="button" class="p-button-sm p-button-danger background-delete"
-            (click)="StatusConfirm(Fixtures.match_id)">
+             pTooltip="Delete" tooltipPosition="top" (click)="StatusConfirm(Fixtures.match_id)">
             <i class="fa fa-trash me-2"></i>
           </button>
 

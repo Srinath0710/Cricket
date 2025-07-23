@@ -9,13 +9,13 @@
               All Teams
               <div class="totalrecord">: {{ totalData }}</div>
             </div>
-              <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
+            <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="client_id" (ngModelChange)="gridLoad()" placeholder="Client Id" [filter]="true"
                 appendTo="body" class=" w-100 
                  drop-error header-drop">
                 <ng-template let-Client pTemplate="item">
-                  <div >
+                  <div>
                     <div>{{ Client.client_name }}</div>
                   </div>
                 </ng-template>
@@ -23,25 +23,26 @@
             </div>
             <div class="d-flex align-items-center">
 
-            <!-- Search Form -->
-            <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
-              <div class="p-input-icon-right flex-grow-1">
-                <!-- <i class="pi pi-search" ></i> -->
-                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                  placeholder="  Search" (input)="filterGlobal()"
-                  (keydown.enter)="$event.preventDefault(); filterGlobal()" (keypress)="blockQuotesOnly($event)"
-                  (input)="sanitizeQuotesOnly('Search', $event)">
+              <!-- Search Form -->
+              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+                <div class="p-input-icon-right flex-grow-1">
+                  <!-- <i class="pi pi-search" ></i> -->
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="  Search" (input)="filterGlobal()"
+                    (keydown.enter)="$event.preventDefault(); filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('Search', $event)">
+                </div>
+
+                <button type="button" class="clear-button" (click)="searchKeyword = ''; filterGlobal();">
+                  Clear
+                </button>
+              </form>
+
+              <div class="card flex justify-center">
+                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                  (click)="showAddForm()">
+                  <i class="fas fa-plus"></i> Create</button>
               </div>
-
-              <button type="button" class="clear-button" (click)="searchKeyword = ''; filterGlobal();">
-                Clear
-              </button>
-            </form>
-
-            <div class="card flex justify-center">
-              <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()" (click)="showAddForm()">
-                <i class="fas fa-plus"></i> Create</button>
-            </div>
             </div>
 
           </div>
@@ -113,6 +114,11 @@
 
               </tr>
             </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="10" class="text-center ">No Records Found</td>
+              </tr>
+            </ng-template>
           </p-table>
 
           <p-dialog header="Teams Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
@@ -131,7 +137,7 @@
                   <div class="popup-title">
                     {{ getTeamNameParts(teams['team name']).name | uppercase }}
                     <br>
-                      <span style="font-weight: normal;">{{ getTeamNameParts(teams['team name']).category }}</span>
+                    <span style="font-weight: normal;">{{ getTeamNameParts(teams['team name']).category }}</span>
                   </div>
                   <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
                 </div>
@@ -141,8 +147,8 @@
                   <div class="info-row"><span class="info-label">Gender</span>
                     <span class="separator">|</span><span class="info-value">{{ teams['gender'] }}</span>
                   </div>
-                  <div class="info-row"><span class="info-label">Age Group</span><span
-                      class="separator">|</span><span class="info-value">{{ teams['age group'] }}</span></div>
+                  <div class="info-row"><span class="info-label">Age Group</span><span class="separator">|</span><span
+                      class="info-value">{{ teams['age group'] }}</span></div>
                   <div class="info-row"><span class="info-label">Team Category</span><span
                       class="separator">|</span><span class="info-value">{{ teams['team category'] }}</span></div>
 
@@ -381,7 +387,7 @@
                 *ngIf="addTeamForm.get('team_id')?.value == '' || addTeamForm.get('team_id')?.value == null"
                 (click)="resetForm()"></button>
 
-              <button pButton  label="Save" class="save-button" (click)="onAddTeam()"></button>
+              <button pButton label="Save" class="save-button" (click)="onAddTeam()"></button>
             </div>
           </div>
         </div>
@@ -393,11 +399,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>

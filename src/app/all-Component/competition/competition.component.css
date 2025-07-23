@@ -38,6 +38,7 @@ main {
 .card-body {
   padding: 0 !important;
 }
+
 .card-body {
   overflow: visible !important;
 }
@@ -179,12 +180,13 @@ main {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   position: relative;
+  border: 2px solid #b7b7b7;
 }
 
 .card-header {
   /* background: linear-gradient(to right, #84f5b9, #8fcff2); */
-  background: linear-gradient(to right, #0084B1, #2b4750);
-  color: white;
+  background: linear-gradient(to right, #ffffff, #f7f7f7);
+  /* color: white; */
 }
 
 
@@ -200,28 +202,33 @@ main {
 }
 
 .gender-category {
-  background-color: #2a2828;
-  color: white;
+  background-color: #f7f7f7;
+  ;
+  /* color: white; */
   flex: 1;
   padding: 5px;
   text-align: center;
   font-size: 12px;
+  border: 1px solid;
+  border-color: #b9b9b9;
 }
 
 .match-type {
   /* background-color: #973c7d; */
-  background-color: #5f9ea0;
-  color: white;
+  background-color: #f9f9f9;
+  /* color: white; */
   flex: 1;
   padding: 5px;
   text-align: center;
   font-size: 12px;
+  border: 1px solid;
+  border-color: #9d9d9d;
 }
 
-.card-body {
+/* .card-body {
   padding: 12px;
   background-color: #f5f3e6;
-}
+} */
 
 .competition-name {
   font-weight: bold;
@@ -407,6 +414,7 @@ main {
 .child-comp-name {
   margin-left: 45%;
 }
+
 .popup-container {
   max-height: 90vh;
   max-width: 600px;

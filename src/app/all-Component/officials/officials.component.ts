@@ -851,9 +851,7 @@ export class OfficialsComponent implements OnInit {
             } else {
               this.failedToast(res);
             }
-          } else {
-            this.failedToast(res);
-          }
+          } 
         },
         (err: any) => {
           if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {

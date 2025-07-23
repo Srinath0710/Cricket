@@ -236,7 +236,7 @@ export class CountryComponent implements OnInit {
         this.imageDefault = event.target.result
       }
     } else {
-      this.filedata = null;
+      this.filedata = null; 
       this.url = this.imageDefault
       this.filedata = this.base64ToBinary(this.imageDefault);
 
@@ -283,7 +283,8 @@ export class CountryComponent implements OnInit {
           }
         },
         (err: any) => {
-          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+          if (err.status_code === this.statusConstants.refresh && 
+            err.error.message === this.statusConstants.refresh_msg) {
             this.apiService.RefreshToken();
 
           } else {
@@ -315,25 +316,25 @@ export class CountryComponent implements OnInit {
       });
   }
 
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
-    data: { image: 'assets/images/default-logo.png' },
-    severity: 'error',
-    summary: 'Error',
-    detail: data.message
-   });
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
-  
+
   onAddCountry() {
     this.submitted = true;
     if (this.addCountryForm.invalid) {
@@ -372,11 +373,13 @@ successToast(data: any) {
         }, (err: any) => {
           err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
         });
-    } else {
+    }
+     else {
       this.apiService.post(this.urlConstant.addCountry, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(res.data.countries[0].country_id);
+
+            this.profileImgAppend(res.data[0].country_id);
           } else {
             this.addCallBack(res)
           }
@@ -395,6 +398,7 @@ successToast(data: any) {
     this.gridLoad();
   }
   EditCountry(country_id: number) {
+    this.showCropperModal = false;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.client_id?.toString();
@@ -403,7 +407,7 @@ successToast(data: any) {
       if (res.status_code == this.statusConstants.success && res.status) {
         const editRecord: EditCountry = res.data.countries[0] ?? {};
         if (editRecord != null) {
-          this.addCountryForm.setValue({
+          this.addCountryForm.patchValue({
             country_id: editRecord.country_id,
             iso_code_2: editRecord.iso_code_2,
             iso_code_3: editRecord.iso_code_3,
@@ -411,7 +415,6 @@ successToast(data: any) {
             region_id: editRecord.region_id,
             sub_region: editRecord.sub_region,
             time_zone_id: editRecord.time_zone_id,
-            country_image: null
           });
           this.showAddForm();
           this.filedata = null;
@@ -511,7 +514,7 @@ successToast(data: any) {
     );
   }
 
-StatusConfirm(country_id: number, action: { key: string, label: string }, currentStatus: string) {
+  StatusConfirm(country_id: number, action: { key: string, label: string }, currentStatus: string) {
     const { active_status, deactive_status } = this.conditionConstants;
     const isSameStatus =
       (action.key === active_status.key && currentStatus === active_status.status) ||
@@ -520,7 +523,7 @@ StatusConfirm(country_id: number, action: { key: string, label: string }, curren
     if (isSameStatus) return;
 
     const isActivating = action.key === active_status.key;
-    const iconColor = isActivating ? '#4CAF50' : '#d32f2f'; 
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
     const message = `Are you sure you want to proceed?`;
 
     this.confirmationService.confirm({
@@ -548,10 +551,10 @@ StatusConfirm(country_id: number, action: { key: string, label: string }, curren
   filterGlobal() {
   if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridLoad();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
   }
   clear() {
     this.searchKeyword = '';

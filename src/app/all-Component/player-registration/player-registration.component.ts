@@ -207,7 +207,7 @@ export class PlayerRegistrationComponent implements OnInit {
       club_id: ['', []],
       scorecard_name: ['', []],
       reference_id: ['', []],
-      
+
     })
     this.addplayerpersonalform = this.fb.group({
       nationality_id: ['', [Validators.required]],
@@ -337,17 +337,25 @@ export class PlayerRegistrationComponent implements OnInit {
     params.search_text = this.searchKeyword.toString(),
 
       this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
-        this.PlayerData = res.data.players ?? [];
-        this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
-       this.spinnerService.raiseDataEmitterEvent('off');
-        this.clubsdropdown();
-        this.PlayerData.forEach((val: any) => {
-          val.country_image = `${val.country_image}?${Math.random()}`;
-        });
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'),this.PlayerData = [], this.totalData = this.PlayerData.length);
+        if (res.data?.players) {
+          this.PlayerData = res.data.players;
+          this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
+          this.spinnerService.raiseDataEmitterEvent('off');
+          this.clubsdropdown();
+        }
+        else {
+          this.PlayerData = [];
+          this.totalData = 0;
+          this.spinnerService.raiseDataEmitterEvent('off');
 
-      });
+        }
+          this.PlayerData.forEach((val: any) => {
+            val.country_image = `${val.country_image}?${Math.random()}`;
+          });
+        }, (err: any) => {
+          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
+
+        });
   }
 
   calculateFirst(): number {
@@ -421,22 +429,22 @@ export class PlayerRegistrationComponent implements OnInit {
       this.formSetValue();
     });
   }
-onBowlingTypeChange(selectedBowlingTypeId: number): void {
-  if (!selectedBowlingTypeId) {
-    this.filteredSpecs = [];
-    this.playerRegistrationform.get('bowling_spec_id')?.reset();
-    return;
-  }
-  console.log(this.filteredSpecs,'sdsds');
-  this.filteredSpecs = [...this.bowlingspec.filter(
-    spec => spec.parent_config_id === selectedBowlingTypeId
-  )];
-    console.log(this.filteredSpecs,'selectedBowlingTypeId',selectedBowlingTypeId);
+  onBowlingTypeChange(selectedBowlingTypeId: number): void {
+    if (!selectedBowlingTypeId) {
+      this.filteredSpecs = [];
+      this.playerRegistrationform.get('bowling_spec_id')?.reset();
+      return;
+    }
+    console.log(this.filteredSpecs, 'sdsds');
+    this.filteredSpecs = [...this.bowlingspec.filter(
+      spec => spec.parent_config_id === selectedBowlingTypeId
+    )];
+    console.log(this.filteredSpecs, 'selectedBowlingTypeId', selectedBowlingTypeId);
 
-  this.playerRegistrationform.patchValue({
-    bowling_spec_id: null
-  });
-}
+    this.playerRegistrationform.patchValue({
+      bowling_spec_id: null
+    });
+  }
 
   formSetValue() {
     // 🔁 Generic setter
@@ -467,45 +475,45 @@ onBowlingTypeChange(selectedBowlingTypeId: number): void {
     }
   }
 
-duplicateChange(isEditMode: boolean = false) {
-  this.submitted = true;
-  if (this.playerRegistrationform.invalid) {
-    this.playerRegistrationform.markAllAsTouched();
-    return;
-  }
-  
-  // Skip duplicate check if in edit mode
-  if (isEditMode) {
-    this.addplayerdata();
-    return;
-  }
+  duplicateChange(isEditMode: boolean = false) {
+    this.submitted = true;
+    if (this.playerRegistrationform.invalid) {
+      this.playerRegistrationform.markAllAsTouched();
+      return;
+    }
 
-  const params: DuplicatePlayer = {
-    user_id: this.user_id.toString(),
-    client_id: this.client_id.toString(),
-    first_name: this.playerRegistrationform.value.first_name,
-    display_name: this.playerRegistrationform.value.display_name,
-    sur_name: this.playerRegistrationform.value.sur_name,
-  };
-  
-  this.apiService.post(this.urlConstant.duplicateplayer, params).subscribe(
-    (res) => {
-      if (res.status_code === this.statusConstants.success &&
+    // Skip duplicate check if in edit mode
+    if (isEditMode) {
+      this.addplayerdata();
+      return;
+    }
+
+    const params: DuplicatePlayer = {
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString(),
+      first_name: this.playerRegistrationform.value.first_name,
+      display_name: this.playerRegistrationform.value.display_name,
+      sur_name: this.playerRegistrationform.value.sur_name,
+    };
+
+    this.apiService.post(this.urlConstant.duplicateplayer, params).subscribe(
+      (res) => {
+        if (res.status_code === this.statusConstants.success &&
           res.status &&
           (res.data !== null && res.data.players.length !== 0)) {
-        this.showDuplicatePopup(res);
-      } else {
-        this.addplayerdata();
+          this.showDuplicatePopup(res);
+        } else {
+          this.addplayerdata();
+        }
+      },
+      (err: any) => {
+        err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+          ? this.apiService.RefreshToken()
+          : this.failedToast(err.error);
       }
-    },
-    (err: any) => {
-      err.status_code === this.statusConstants.refresh &&
-        err.error.message === this.statusConstants.refresh_msg
-        ? this.apiService.RefreshToken()
-        : this.failedToast(err.error);
-    }
-  );
-}
+    );
+  }
 
   showDuplicatePopup(response: any) {
 
@@ -537,7 +545,7 @@ duplicateChange(isEditMode: boolean = false) {
         (res) => {
           if (res.status_code == this.statusConstants.success) {
             if (res.url != null && res.url != '') {
-                this.addCallBack(res)
+              this.addCallBack(res)
             } else {
               this.failedToast(res);
             }
@@ -683,64 +691,64 @@ duplicateChange(isEditMode: boolean = false) {
   }
 
   Editplayer(player: any) {
-  this.isEditMode = true;
-  this.playerId = player.player_id;
-  const params = {
-    user_id: this.user_id.toString(),
-    client_id: this.client_id.toString(),
-    player_id: player.player_id.toString()
-  };
+    this.isEditMode = true;
+    this.playerId = player.player_id;
+    const params = {
+      user_id: this.user_id.toString(),
+      client_id: this.client_id.toString(),
+      player_id: player.player_id.toString()
+    };
 
-  this.visible = false;
+    this.visible = false;
 
-  this.apiService.post(this.urlConstant.editplayer, params).subscribe((res) => {
-    if (res.status_code === this.statusConstants.success && res.status) {
-      const editRecord = res.data.players[0] || {};
-      
-      // First reset the form
-      this.playerRegistrationform.reset();
-      
-      // Manually filter specs based on the player's bowling type
-      const bowlingId = editRecord.bowling_type_id ?? 0;
-      this.filteredSpecs = this.bowlingspec.filter(
-        spec => spec.parent_config_id === Number(bowlingId)
-      );
-      
-      // console.log(this.filteredSpecs,'filteredSpecs')
+    this.apiService.post(this.urlConstant.editplayer, params).subscribe((res) => {
+      if (res.status_code === this.statusConstants.success && res.status) {
+        const editRecord = res.data.players[0] || {};
 
-      // Then patch all values
-      this.playerRegistrationform.patchValue({
-        first_name: editRecord.first_name,
-        middle_name: editRecord.middle_name,
-        sur_name: editRecord.sur_name,
-        display_name: editRecord.display_name,
-        nationality_id: editRecord.nationality_id,
-        player_dob: editRecord.player_dob ? editRecord.player_dob.split('T')[0] : null,
-        mobile_no: editRecord.mobile_no,
-        email: editRecord.email,
-        gender_id: editRecord.gender_id,
-        player_role_id: editRecord.player_role_id,
-        batting_style_id: editRecord.batting_style_id,
-        batting_order_id: editRecord.batting_order_id,
-        bowling_style_id: editRecord.bowling_style_id,
-        bowling_type_id: editRecord.bowling_type_id,
-        bowling_spec_id: editRecord.bowling_spec_id,
-        remarks: editRecord.remarks,
-        jersey_no: editRecord.jersey_no,
-        profile_image: null,
-        player_id: editRecord.player_id,
-        club_id: editRecord.club_id,
-        scorecard_name: editRecord.scorecard_name,
-        reference_id: editRecord.reference_id
-      });
+        // First reset the form
+        this.playerRegistrationform.reset();
 
-      this.showAddForm();
-      this.filedata = null;
-      this.profileImages = editRecord.profile_image + '?' + Math.random();
-      this.convertUrlToBase64(editRecord.profile_image + '?' + Math.random());
-    }
-  });
-}
+        // Manually filter specs based on the player's bowling type
+        const bowlingId = editRecord.bowling_type_id ?? 0;
+        this.filteredSpecs = this.bowlingspec.filter(
+          spec => spec.parent_config_id === Number(bowlingId)
+        );
+
+        // console.log(this.filteredSpecs,'filteredSpecs')
+
+        // Then patch all values
+        this.playerRegistrationform.patchValue({
+          first_name: editRecord.first_name,
+          middle_name: editRecord.middle_name,
+          sur_name: editRecord.sur_name,
+          display_name: editRecord.display_name,
+          nationality_id: editRecord.nationality_id,
+          player_dob: editRecord.player_dob ? editRecord.player_dob.split('T')[0] : null,
+          mobile_no: editRecord.mobile_no,
+          email: editRecord.email,
+          gender_id: editRecord.gender_id,
+          player_role_id: editRecord.player_role_id,
+          batting_style_id: editRecord.batting_style_id,
+          batting_order_id: editRecord.batting_order_id,
+          bowling_style_id: editRecord.bowling_style_id,
+          bowling_type_id: editRecord.bowling_type_id,
+          bowling_spec_id: editRecord.bowling_spec_id,
+          remarks: editRecord.remarks,
+          jersey_no: editRecord.jersey_no,
+          profile_image: null,
+          player_id: editRecord.player_id,
+          club_id: editRecord.club_id,
+          scorecard_name: editRecord.scorecard_name,
+          reference_id: editRecord.reference_id
+        });
+
+        this.showAddForm();
+        this.filedata = null;
+        this.profileImages = editRecord.profile_image + '?' + Math.random();
+        this.convertUrlToBase64(editRecord.profile_image + '?' + Math.random());
+      }
+    });
+  }
 
 
   //  first_name: editRecord.first_name,
@@ -766,7 +774,7 @@ duplicateChange(isEditMode: boolean = false) {
   //       scorecard_name: editRecord.scorecard_name,
   //       reference_id: editRecord.reference_id
 
-   fileEvent(event: any) {
+  fileEvent(event: any) {
     if (this.playerRegistrationform.value.profile_image.value !== null &&
       this.playerRegistrationform.value.profile_image.value !== '') {
       this.profileImages = null;
@@ -1188,23 +1196,23 @@ duplicateChange(isEditMode: boolean = false) {
   //   this.gridLoad();
   // }
 
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
-    data: { image: 'assets/images/default-logo.png' },
-    severity: 'error',
-    summary: 'Error',
-    detail: data.message
-   });
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
 
   status(player_id: number, url: string) {
@@ -1225,8 +1233,8 @@ successToast(data: any) {
       }
     );
   }
-      StatusConfirm(player_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-     const { active_status, deactive_status } = this.conditionConstants;
+  StatusConfirm(player_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
+    const { active_status, deactive_status } = this.conditionConstants;
     const isSameStatus =
       (actionObject.key === active_status.key && currentStatus === active_status.status) ||
       (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
@@ -1257,12 +1265,12 @@ successToast(data: any) {
   }
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridLoad();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
   }
   clear() {
     this.searchKeyword = '';

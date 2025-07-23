@@ -66,7 +66,7 @@ export class ClubRegistrationComponent implements OnInit {
   Client: any;
   profileImages: any;
   url: any;
-  gridData: any = [];
+  ClubData: any = [];
   submitted: boolean = true;
   visible: boolean = false;
   envImagePath = environment.imagePath;
@@ -161,28 +161,32 @@ export class ClubRegistrationComponent implements OnInit {
     params.search_text = this.searchKeyword.toString();
     this.apiService.post(this.urlConstant.getClubList, params).subscribe((res) => {
       if (res.data.clubs) {
-        this.gridData = res.data.clubs ?? [];
-        this.totalData = res.data.clubs[0]?.total_records ?? this.gridData.length;
+        this.ClubData = res.data.clubs ?? [];
+        this.totalData = res.data.clubs[0]?.total_records ?? this.ClubData.length;
         this.spinnerService.raiseDataEmitterEvent('off');
 
       }
       else {
-        this.gridData = [];
+        this.ClubData = [];
         this.totalData = 0;
         this.spinnerService.raiseDataEmitterEvent('off')
 
       }
-      this.gridData.forEach((val: any) => {
+      this.ClubData.forEach((val: any) => {
         val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
 
-    }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message ===
-        this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
-        (this.spinnerService.raiseDataEmitterEvent('off'),
-          this.gridData = [], this.totalData = this.gridData.length);
-    });
+    }
+      , (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message ===
+          this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
+          (this.spinnerService.raiseDataEmitterEvent('off'),
+            this.ClubData = [], this.totalData = this.ClubData.length);
+      });
+    console.log("ClubData", this.ClubData);
+    this.spinnerService.raiseDataEmitterEvent('off')
   }
+ 
 
   blockQuotesOnly(event: KeyboardEvent) {
     if (event.key === '"' || event.key === "'") {
@@ -257,25 +261,25 @@ export class ClubRegistrationComponent implements OnInit {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
-    data: { image: 'assets/images/default-logo.png' },
-    severity: 'error',
-    summary: 'Error',
-    detail: data.message
-   });
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message
+    });
   }
-  
+
 
   onAddClub() {
     this.submitted = true;
@@ -436,7 +440,7 @@ successToast(data: any) {
   }
 
   StatusConfirm(club_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-     const { active_status, deactive_status } = this.conditionConstants;
+    const { active_status, deactive_status } = this.conditionConstants;
     const isSameStatus =
       (actionObject.key === active_status.key && currentStatus === active_status.status) ||
       (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
@@ -756,6 +760,9 @@ successToast(data: any) {
         }
       );
     }
+  }
+  get visibleRecords(): number {
+    return this.ClubData?.length || 0;
   }
 }
 

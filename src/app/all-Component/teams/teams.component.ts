@@ -129,7 +129,7 @@ export class TeamsComponent implements OnInit {
       team_profile: [''],
       primary_color: [''],
       secondary_color: [''],
-      club_id: ['',[Validators.required]],
+      club_id: ['', [Validators.required]],
       reference_id: [''],
       country_id: ['', [Validators.required]],
 
@@ -167,6 +167,8 @@ export class TeamsComponent implements OnInit {
         } else {
           this.teamData = [];
           this.totalData = 0;
+          this.SpinnerService.raiseDataEmitterEvent('off');
+
         }
         this.teamData.forEach((val: any) => {
           val.profile_img = `${val.profile_img}?${Math.random()}`;
@@ -195,7 +197,7 @@ export class TeamsComponent implements OnInit {
           this.selectedTeams.forEach((teams: any) => {
             teams.profile_img = teams.profile_img + '?' + Math.random();
           });
-           this.viewDialogVisible = true;
+          this.viewDialogVisible = true;
         }
       },
       error: (err) => {
@@ -254,15 +256,15 @@ export class TeamsComponent implements OnInit {
     this.imageCropAlter = null;
     this.imageDefault = null;
   }
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
@@ -386,7 +388,7 @@ successToast(data: any) {
       age_category_id: String(this.addTeamForm.value.age_category_id),
       format_id: String(this.addTeamForm.value.format_id),
       club_id: String(this.addTeamForm.value.club_id),
-      reference_id:this.addTeamForm.value.reference_id ? String(this.addTeamForm.value.reference_id): null,
+      reference_id: this.addTeamForm.value.reference_id ? String(this.addTeamForm.value.reference_id) : null,
       country_id: String(this.addTeamForm.value.country_id),
       action_flag: this.Actionflag.Create,
       profile_img: this.filedata ? '' : this.profileImages
@@ -399,6 +401,7 @@ successToast(data: any) {
           if (res.status_code === this.statusConstants.success && res.status) {
 
             if (res.data !== null && this.filedata != null) {
+              console.log('filedata updated', this.filedata);
               this.profileImgAppend(params.team_id);
             } else {
               this.addCallBack(res)
@@ -413,6 +416,8 @@ successToast(data: any) {
       this.apiService.post(this.urlConstant.addTeam, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
+            console.log('filedata11111111', this.filedata);
+
             this.profileImgAppend(res.data.teams[0].team_id);
           } else {
             this.addCallBack(res)
@@ -475,12 +480,12 @@ successToast(data: any) {
   }
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridLoad();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
   }
   clear(table: Table) {
     table.clear();

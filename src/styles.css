@@ -1088,8 +1088,8 @@ main {
 }
 
 .action-icon:nth-child(2) {
-  border: 1px solid #4CAF50;
-  color: #4CAF50;
+  border: 1px solid #4c54af;
+  /* color: #4CAF50; */
 }
 
 .action-icon:nth-child(3) {

@@ -44,10 +44,9 @@ export class Client {
     mobile: number;
     website: string;
     description: string;
-    connection_id: string|number;
     profile_img_url:string;
+    app_con_id: string|number;
 
-  
     constructor(item: Partial<EditClient> = {}) {
       this.client_id = item.client_id || '';
       this.client_name = item.client_name ||'';
@@ -62,10 +61,9 @@ export class Client {
       this.email_id = item.email_id ||'';
       this.website = item.website ||'';
       this.description = item.description ||'';
-      this.connection_id = item.connection_id ||'';
       this.profile_img_url = item.profile_img_url ||'';
+      this.app_con_id = item.app_con_id || '';
 
-  
     }
   }
   export class UpdateClient {
