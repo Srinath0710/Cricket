@@ -34,17 +34,31 @@
             [globalFilterFields]="['country_name','iso_code_3','region_name','sub_region','record_status']">
             <ng-template pTemplate="header">
               <tr>
-                <th class="col-3" pSortableColumn="country_name">Country Name <p-sortIcon
-                    field="country_name"></p-sortIcon>
+                <th class="col-3">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Country Name
+                    <p-sortIcon field="country_name" pSortableColumn="country_name"></p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-2" pSortableColumn="iso_code_3">ISO Code 3 <p-sortIcon field="iso_code_3"></p-sortIcon>
+                <th class="col-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    ISO Code 3 <p-sortIcon field="iso_code_3" pSortableColumn="iso_code_3"></p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-2" pSortableColumn="region_name">Region Name <p-sortIcon
-                    field="region_name"></p-sortIcon>
+                <th class="col-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Region Name <p-sortIcon field="region_name" pSortableColumn="region_name"></p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-2" pSortableColumn="sub_region">Sub Region<p-sortIcon field="sub_region"></p-sortIcon>
+                <th class="col-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Sub Region<p-sortIcon field="sub_region" pSortableColumn="sub_region"></p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-1" pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                <th class="col-1">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Status <p-sortIcon field="record_status" pSortableColumn="record_status"></p-sortIcon>
+                  </div>
                 </th>
                 <th class="col-2" class="custom-header action-column-header">Actions</th>
               </tr>
@@ -105,8 +119,8 @@
     </main>
     <!-- STATUS Confirmation POPUP -->
 
-    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
-      [styleClass]="'p-confirm-dialog-custom'">
+    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
 
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
@@ -281,11 +295,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>

@@ -36,20 +36,35 @@
                         [globalFilterFields]="['Client','country','email_id','mobile','record_status']">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th class="col-3" pSortableColumn="Client">Client <p-sortIcon field="country_name">
-                                    </p-sortIcon>
+                                <th class="col-3" >
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <span>Client</span>
+                                        <p-sortIcon field="Client" pSortableColumn="Client"></p-sortIcon>
+                                    </div>
                                 </th>
-                                <th class="col-2" pSortableColumn="country">Country <p-sortIcon field="iso_code_3">
-                                    </p-sortIcon>
+                                <th class="col-2" >
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <span>Country</span>
+                                        <p-sortIcon field="country" pSortableColumn="country"></p-sortIcon>
+                                    </div>
                                 </th>
-                                <th class="col-2" pSortableColumn="email_id">Email Id<p-sortIcon field="region_name">
-                                    </p-sortIcon>
+                                <th class="col-2">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <span>Email Id</span>
+                                        <p-sortIcon field="email_id"  pSortableColumn="email_id"></p-sortIcon>
+                                    </div>
                                 </th>
-                                <th class="col-2" pSortableColumn="mobile">Mobile<p-sortIcon field="sub_region">
-                                    </p-sortIcon>
+                                <th class="col-2" >
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <span>Mobile</span>
+                                        <p-sortIcon field="mobile" pSortableColumn="mobile"></p-sortIcon>
+                                    </div>
                                 </th>
-                                <th class="col-1" pSortableColumn="record_status">Status <p-sortIcon
-                                        field="record_status"></p-sortIcon>
+                                <th class="col-1" >
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <span>Status</span>
+                                        <p-sortIcon field="record_status" pSortableColumn="record_status"></p-sortIcon>
+                                    </div>
                                 </th>
                                 <th class="col-2" class="custom-header action-column-header">Actions</th>
                             </tr>

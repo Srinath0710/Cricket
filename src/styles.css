@@ -629,6 +629,7 @@ label {
   min-width: 50rem;
   width: 100%;
   border-collapse: collapse;
+
 }
 
 .custom-table .p-datatable-tbody>tr:nth-child(even) {
@@ -780,6 +781,7 @@ tr:hover {
   border: none;
   height: 30px;
 }
+
 /* .child-cancel-button {
   background-color: #ee2c05;
   color: white;
@@ -908,6 +910,7 @@ tr:hover {
   width: 85px;
   font-size: 12px !important;
 }
+
 .cancel-button {
   background-color: #6c757d !important;
   border: none !important;
@@ -917,6 +920,7 @@ tr:hover {
   width: 85px;
   font-size: 12px !important;
 }
+
 .new-button:hover {
   background-color: #367039 !important;
   border-color: #367039 !important;
@@ -1003,13 +1007,13 @@ main {
 }
 
 .p-datatable .p-datatable-thead>tr>th {
-  background-color: #020425 !important;
-  color: white !important;
+  background-color: #dedede !important;
+  color: #505050 !important;
   /* border: 1px solid #B33DC6 !important; */
-  border: 0.5px solid #020425 !important;
+  border: 0px solid #020425 !important;
   padding: 2px 13px !important;
-  font-size: 11px !important;
-  height: 32px !important;
+  font-size: 12px !important;
+  height: 40px !important;
 }
 
 .p-datatable .p-datatable-tbody>tr>td {
@@ -1688,6 +1692,7 @@ input.form-control:focus {
 
 .card {
   overflow: visible !important;
+  padding: 0px !important;
 }
 
 
@@ -1861,6 +1866,10 @@ body.modal-open {
 
 .p-paginator {
   font-size: 12px;
+  background: #dedede !important;
+  border-radius: 0px !important;
+  padding: 2px !important;
+
 }
 
 
@@ -1970,16 +1979,16 @@ body.modal-open {
   display: flex !important;
   align-items: center;
   gap: 10px;
-  flex:auto !important;
+  flex: auto !important;
 }
 
 .p-toast-message-success {
-  background-color: #f6fff8 !important; 
+  background-color: #f6fff8 !important;
   border-color: #086bff !important;
 }
 
 .p-toast-message-error {
-  background-color: #ffe5e5 !important; 
+  background-color: #ffe5e5 !important;
   border-color: red !important;
 }
 
@@ -2066,7 +2075,7 @@ body.modal-open {
 .edit-button {
   position: absolute;
   right: 30px;
-  color:#020425 ;
+  color: #020425;
   /* color: rgb(24, 24, 218); */
   font-size: 14px;
 }

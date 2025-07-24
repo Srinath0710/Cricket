@@ -12,7 +12,7 @@
             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="countryData" optionLabel="country_name" optionValue="country_id"
                 [(ngModel)]="countryId" (ngModelChange)="getStates()" placeholder="Country" [filter]="true"
-                appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"  class="w-100 drop-error header-drop">
+                appendTo="body" [panelStyleClass]="'custom-dropdown-panel'" class="w-100 drop-error header-drop">
                 <ng-template let-country pTemplate="item">
                   <div class="country-item">
                     <div>{{ country.country_name }}</div>
@@ -23,10 +23,9 @@
             </div>
 
             <div class="col-md-2 d-flex align-items-center gap-2 dropdown-right me-2">
-              <p-dropdown [options]="statesList" class="w-100 drop-error header-drop"  [(ngModel)]="stateId" optionValue="state_id"
-                optionLabel="state_name" placeholder="Select State" (ngModelChange)="gridLoad()"
-                [panelStyleClass]="'custom-dropdown-panel'"[filter]="true" appendTo="body"
-                >
+              <p-dropdown [options]="statesList" class="w-100 drop-error header-drop" [(ngModel)]="stateId"
+                optionValue="state_id" optionLabel="state_name" placeholder="Select State" (ngModelChange)="gridLoad()"
+                [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" appendTo="body">
                 <ng-template let-state pTemplate="item">
                   <div class="flex align-items-center gap-2">
                     <div>{{ state.state_name }}</div>
@@ -35,48 +34,55 @@
               </p-dropdown>
 
             </div>
-    
+
             <div class="d-flex align-items-center">
               <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1 me-2">
-                  <input
-                    pInputText
-                    type="text"
-                    [(ngModel)]="searchKeyword"
-                    name="searchKeyword"
-                    class="width-search"
-                    placeholder="  Search"
-                    (input)="filterGlobal()"
-                  (keypress)="blockQuotesOnly($event)"
-                  (input)="sanitizeQuotesOnly('team_name', $event)">
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('team_name', $event)">
                 </div>
-              
-                 <button type="button"  class="clear-button"  (click)="clear()"> Clear </button>
-    
+
+                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+
               </form>
-    
+
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
                   (click)="showAddForm()">
                   <i class="fas fa-plus"></i> Create</button>
               </div>
             </div>
-          </div>  
+          </div>
 
           <p-table #dt [value]="cityData" [styleClass]="'custom-table'"
             [globalFilterFields]="['city_name','city_code','state_name','country_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
-                <th class="col-2" pSortableColumn="city_name">City Name <p-sortIcon field="city_name"></p-sortIcon>
+                <th class="col-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    City Name <p-sortIcon field="city_name" pSortableColumn="city_name"></p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-2" pSortableColumn="city_code">City Code <p-sortIcon field="city_code"></p-sortIcon>
+                <th class="col-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    City Code <p-sortIcon field="city_code" pSortableColumn="city_code"></p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-2" pSortableColumn="state_name">State Name <p-sortIcon field="state_name"></p-sortIcon>
+                <th class="col-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    State Name <p-sortIcon field="state_name" pSortableColumn="state_name"></p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-2" pSortableColumn="country_name">Country Name <p-sortIcon field="country_name">
+                <th class="col-2" pSortableColumn="country_name">
+                  <div class="d-flex justify-content-between align-items-center w-100"></div>
+                  Country Name <p-sortIcon field="country_name">
                   </p-sortIcon>
                 </th>
-                <th class="col-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                <th class="col-2">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Status <p-sortIcon field="record_status" pSortableColumn="record_status"></p-sortIcon>
+                  </div>
                 </th>
                 <th class="col-2" class="custom-header action-column-header">Actions</th>
               </tr>
@@ -117,8 +123,8 @@
               </tr>
             </ng-template>
           </p-table>
-   <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-      [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
+          <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
+            [rowsPerPageOptions]="[10, 25, 50,100]" (onPageChange)="onPageChange($event)">
           </p-paginator>
 
         </div>
@@ -127,13 +133,11 @@
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
       <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
         <div class="small-heading">
-          <div
-              *ngIf="addCityForm.get('city_id')?.value == '' || addCityForm.get('city_id')?.value == null">
-              Add City </div>
-          <div
-              *ngIf="addCityForm.get('city_id')?.value != null && addCityForm.get('city_id')?.value != ''">
-              Edit City</div>
-      </div>
+          <div *ngIf="addCityForm.get('city_id')?.value == '' || addCityForm.get('city_id')?.value == null">
+            Add City </div>
+          <div *ngIf="addCityForm.get('city_id')?.value != null && addCityForm.get('city_id')?.value != ''">
+            Edit City</div>
+        </div>
       </div>
       <form [formGroup]="addCityForm">
         <div class="row gy-3">
@@ -142,8 +146,8 @@
               <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="countryData" class="drop-error " formControlName="country_id"
-              (ngModelChange)="getFormStates()" optionValue="country_id"
-              optionLabel="country_name" placeholder="select Country" [filter]="true" >
+              (ngModelChange)="getFormStates()" optionValue="country_id" optionLabel="country_name"
+              placeholder="select Country" [filter]="true">
               <ng-template let-country pTemplate="item">
                 <div class="flex align-items-center gap-2">
                   <div>{{ country.country_name }}
@@ -178,9 +182,8 @@
 
           <div class="col-md-6">
             <label for="city_name">City Name <span class="text-danger">*</span></label>
-            <input id="city_name" type="text" class="form-control drop-error"
-              formControlName="city_name" maxlength="50"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('city_name', $event)">
+            <input id="city_name" type="text" class="form-control drop-error" formControlName="city_name" maxlength="50"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('city_name', $event)">
             <small *ngIf="addCityForm.get('city_name')?.invalid && (addCityForm.get('city_name')?.touched || submitted)"
               class="required-msg">City Name is required
             </small>
@@ -188,52 +191,43 @@
 
           <div class="col-md-6">
             <label for="city_code">City Code <span class="text-danger">*</span></label>
-            <input id="city_code" type="text" class="form-control drop-error" 
-              formControlName="city_code" maxlength="6"(keypress)="blockQuotesOnly($event)"
-              (input)="sanitizeQuotesOnly('city_code', $event)">
+            <input id="city_code" type="text" class="form-control drop-error" formControlName="city_code" maxlength="6"
+              (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('city_code', $event)">
 
             <small *ngIf="addCityForm.get('city_code')?.invalid && (addCityForm.get('city_code')?.touched || submitted)"
               class="required-msg">City Code is required
             </small>
           </div>
 
-            <div class="form-wrapper pb-5">
-          <div class="row mt-4 sticky-footer-buttons">
+          <div class="form-wrapper pb-5">
+            <div class="row mt-4 sticky-footer-buttons">
 
-            <div class="col-12 text-end">
-              <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
-                (click)="cancelForm()"></button>
+              <div class="col-12 text-end">
+                <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
+                  (click)="cancelForm()"></button>
 
-              <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
-                (click)="resetForm()"></button>
-              <button pButton  label="Save" class="save-button" (click)="onAddCity()"></button>
+                <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
+                  (click)="resetForm()"></button>
+                <button pButton label="Save" class="save-button" (click)="onAddCity()"></button>
+              </div>
             </div>
-          </div>
           </div>
 
 
         </div>
       </form>
     </p-drawer>
-      <p-confirmDialog 
-    [style]="{width: '300px', height: '200px'}"
-    [baseZIndex]="10000"
-    [draggable]="false"
-    [closable]="false"
-    [styleClass]="'p-confirm-dialog-custom'">
-  </p-confirmDialog>
-<p-toast position="center" [baseZIndex]="11000">
-  <ng-template let-message pTemplate="message">
-    <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
-      <div>
-        <div class="font-bold">{{ message.summary }}</div>
-        <div>{{ message.detail }}</div>
-      </div>
-    </div>
-  </ng-template>
-</p-toast>
+    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+    </p-confirmDialog>
+    <p-toast position="center" [baseZIndex]="11000">
+      <ng-template let-message pTemplate="message">
+        <div class="custom-toast-message">
+          <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
+          <div>
+            <div class="font-bold">{{ message.summary }}</div>
+            <div>{{ message.detail }}</div>
+          </div>
+        </div>
+      </ng-template>
+    </p-toast>

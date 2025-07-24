@@ -51,27 +51,43 @@
             [globalFilterFields]="['team_name','age_category','team_category','gender','record_status']">
             <ng-template pTemplate="header">
               <tr>
-                <th pSortableColumn="team_name">Team Name <p-sortIcon field="team_name"></p-sortIcon>
+                <th pSortableColumn="team_name">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Team Name
+                    <p-sortIcon field="team_name"></p-sortIcon>
+                  </div>
                 </th>
-                <th pSortableColumn="age_category">Age Group <p-sortIcon field="age_category"></p-sortIcon>
+                <th>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Age Group
+                    <p-sortIcon field="age_category" pSortableColumn="age_category"></p-sortIcon>
+                  </div>
                 </th>
-                <th pSortableColumn="team_category">Format <p-sortIcon field="team_category"></p-sortIcon>
+                <th>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Format
+                    <p-sortIcon field="team_category" pSortableColumn="team_category"></p-sortIcon>
+                  </div>
                 </th>
-                <th pSortableColumn="gender">Gender<p-sortIcon field="gender"></p-sortIcon>
+                <th>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Gender
+                    <p-sortIcon field="gender" pSortableColumn="gender"></p-sortIcon>
+                  </div>
                 </th>
-                <th pSortableColumn="record_status">Status <p-sortIcon field="record_status"></p-sortIcon>
+                <th>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    Status
+                    <p-sortIcon field="record_status" pSortableColumn="record_status"></p-sortIcon>
+                  </div>
                 </th>
                 <th class="custom-header action-column-header">Actions</th>
               </tr>
             </ng-template>
 
             <ng-template pTemplate="body" let-teams>
-
-
               <tr>
-
                 <td>
-
                   <span class="person-image-team-player">
                     <img class="player-img" *ngIf="teams.profile_img==null || teams.profile_img==''"
                       [src]="default_img">

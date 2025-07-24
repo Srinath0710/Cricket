@@ -66,7 +66,7 @@ export class ClubRegistrationComponent implements OnInit {
   Client: any;
   profileImages: any;
   url: any;
-  ClubData: any = [];
+  gridData: any = [];
   submitted: boolean = true;
   visible: boolean = false;
   envImagePath = environment.imagePath;
@@ -160,34 +160,32 @@ export class ClubRegistrationComponent implements OnInit {
     params.records = this.rows.toString();
     params.search_text = this.searchKeyword.toString();
     this.apiService.post(this.urlConstant.getClubList, params).subscribe((res) => {
-      if (res.data.clubs) {
-        this.ClubData = res.data.clubs ?? [];
-        this.totalData = res.data.clubs[0]?.total_records ?? this.ClubData.length;
+      if (res.data!=null) {
+        this.gridData = res.data.clubs ?? [];
+        this.totalData = res.data.clubs[0]?.total_records ?? this.gridData.length;
         this.spinnerService.raiseDataEmitterEvent('off');
 
       }
       else {
-        this.ClubData = [];
+        this.gridData = [];
         this.totalData = 0;
         this.spinnerService.raiseDataEmitterEvent('off')
 
       }
-      this.ClubData.forEach((val: any) => {
+      this.gridData.forEach((val: any) => {
         val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
+        // this.spinnerService.raiseDataEmitterEvent('off')
 
-    }
-      , (err: any) => {
+    }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message ===
           this.statusConstants.refresh_msg ? this.apiService.RefreshToken() :
-          (this.spinnerService.raiseDataEmitterEvent('off'),
-            this.ClubData = [], this.totalData = this.ClubData.length);
+          (
+          this.gridData = [], this.totalData = this.gridData.length);
       });
-    console.log("ClubData", this.ClubData);
-    this.spinnerService.raiseDataEmitterEvent('off')
+      this.spinnerService.raiseDataEmitterEvent('off')
   }
  
-
   blockQuotesOnly(event: KeyboardEvent) {
     if (event.key === '"' || event.key === "'") {
       event.preventDefault();
@@ -762,7 +760,7 @@ export class ClubRegistrationComponent implements OnInit {
     }
   }
   get visibleRecords(): number {
-    return this.ClubData?.length || 0;
+    return this.gridData?.length || 0;
   }
 }
 

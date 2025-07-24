@@ -1,7 +1,7 @@
 <div class="page-wrapper">
   <div class="content container-fluid">
     <main>
-     <div class="card margin-card">
+      <div class="card margin-card">
         <div class="card-body">
           <div class="page-header main-page-header d-flex align-items-center justify-content-between">
             <div class="main-page-title page-title playerbackground">
@@ -14,28 +14,28 @@
                 [(ngModel)]="countryID" (ngModelChange)="gridLoad()" placeholder="Country" [filter]="true"
                 appendTo="body" [panelStyleClass]="'custom-dropdown-panel'" class="w-100 drop-error header-drop">
                 <ng-template let-country pTemplate="item">
-                  <div >
+                  <div>
                     <div>{{ country.country_name }}</div>
                   </div>
                 </ng-template>
               </p-dropdown>
-
             </div>
 
             <div class="d-flex align-items-center">
-            <!-- Search Form -->
-            <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
+              <!-- Search Form -->
+              <form class="d-flex align-items-center  gap-2" (submit)="gridLoad()">
                 <div class="p-input-icon-right flex-grow-1 me-2">
-                <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
-                  placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
-                  (input)="sanitizeQuotesOnly('Search', $event)">
-              </div>
-              <button type="button" class="clear-button" (click)="clear()"> Clear </button>
-            </form>
+                  <input pInputText type="text" [(ngModel)]="searchKeyword" name="searchKeyword" class="width-search"
+                    placeholder="  Search" (input)="filterGlobal()" (keypress)="blockQuotesOnly($event)"
+                    (input)="sanitizeQuotesOnly('Search', $event)">
+                </div>
+                <button type="button" class="clear-button" (click)="clear()"> Clear </button>
+              </form>
               <div class="card flex justify-center">
-              <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()" (click)="showAddForm()">
-                <i class="fas fa-plus"></i> Create</button>
-            </div>
+                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="resetForm()"
+                  (click)="showAddForm()">
+                  <i class="fas fa-plus"></i> Create</button>
+              </div>
             </div>
           </div>
 
@@ -43,19 +43,34 @@
             [globalFilterFields]="['state_name', 'state_code','country_name','record_status']">
             <ng-template pTemplate="header">
               <tr>
-                <th class="col-3" pSortableColumn="state_name">State Name <p-sortIcon field="state_name">
-                  </p-sortIcon>
+                <th class="col-3">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    State Name
+                    <p-sortIcon field="state_name" pSortableColumn="state_name">
+                    </p-sortIcon>
+                  </div>
                 </th>
-                <th class="col-2" pSortableColumn="state_code">State Code <p-sortIcon field="state_code">
+                <th class="col-2" >
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                  State Code
+                   <p-sortIcon field="state_code" pSortableColumn="state_code">
                   </p-sortIcon>
+                  </div>
                 </th>
 
-                <th class="col-3" pSortableColumn="country_name"> Country Name <p-sortIcon field="country_name">
+                <th class="col-3" > 
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                  Country Name 
+                  <p-sortIcon field="country_name" pSortableColumn="country_name">
                   </p-sortIcon>
+                  </div>
                 </th>
 
-                <th class="col-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status">
+                <th class="col-2" >
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                  Status <p-sortIcon field="record_status" pSortableColumn="record_status">
                   </p-sortIcon>
+                  </div>
                 </th>
                 <th class="col-2" class="custom-header action-column-header">Actions</th>
               </tr>
@@ -191,11 +206,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>
