@@ -38,19 +38,27 @@
               [globalFilterFields]="['menu_name', 'module_name','menu_link','record_status']">
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="col-md-3" pSortableColumn="menu_name">Menu Name <p-sortIcon field="menu_name">
-                    </p-sortIcon>
+                  <th class="col-md-3">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      Menu Name <p-sortIcon field="menu_name" pSortableColumn="menu_name"></p-sortIcon>
+                    </div>
                   </th>
-                  <th class="col-md-2" pSortableColumn="module_name">Module name <p-sortIcon field="module_name">
-                    </p-sortIcon>
+                  <th class="col-md-3">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      Module Name <p-sortIcon field="module_name" pSortableColumn="module_name"></p-sortIcon>
+                    </div>
                   </th>
 
-                  <th class="col-md-3" pSortableColumn="menu_link"> Menu link <p-sortIcon field="menu_link">
-                    </p-sortIcon>
+                  <th class="col-md-3">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      Menu Link <p-sortIcon field="menu_link" SortableColumn="menu_link"></p-sortIcon>
+                    </div>
                   </th>
 
-                  <th class="col-md-2" pSortableColumn="record_status">Status <p-sortIcon field="record_status">
-                    </p-sortIcon>
+                  <th class="col-md-3">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      Status <p-sortIcon field="record_status" SortableColumn="record_status"></p-sortIcon>
+                    </div>
                   </th>
                   <th class="col-md-3" class="custom-header action-column-header">Actions</th>
                 </tr>
@@ -149,25 +157,37 @@
           <ng-template pTemplate="header">
 
             <tr>
-              <th class="col-md-2" pSortableColumn="api_group">Group <p-sortIcon field="api_group">
-                </p-sortIcon>
+              <th class="col-md-2">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  Api Group <p-sortIcon field="api_group" pSortableColumn="api_group"></p-sortIcon>
+                </div>
               </th>
-              <th class="col-md-2" pSortableColumn="api_endpoint_url">Url <p-sortIcon field="api_endpoint_url">
-                </p-sortIcon>
+              <th class="col-md-2">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  Url <p-sortIcon field="api_endpoint_url" pSortableColumn="api_endpoint_url"></p-sortIcon>
+                </div>
               </th>
-              <th class="col-md-2" pSortableColumn="api_desc">Desc <p-sortIcon field="api_desc">
-                </p-sortIcon>
+              <th class="col-md-2">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  Desc <p-sortIcon field="api_desc" pSortableColumn="api_desc"></p-sortIcon>
+                </div>
               </th>
-              <th class="col-md-2" pSortableColumn="api_method_type">Method type <p-sortIcon field="api_method_type">
-                </p-sortIcon>
+              <th class="col-md-2">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  Method Type <p-sortIcon field="api_method_type" pSortableColumn="api_method_type"></p-sortIcon>
+                </div>
               </th>
 
-              <th class="col-md-2" pSortableColumn="menu_name"> Menu name <p-sortIcon field="menu_name">
-                </p-sortIcon>
+              <th class="col-md-2">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  Menu Name <p-sortIcon field="menu_name" pSortableColumn="menu_name"></p-sortIcon>
+                </div>
               </th>
 
-              <th class="col-md-3" pSortableColumn="record_status">Status <p-sortIcon field="record_status">
-                </p-sortIcon>
+              <th class="col-md-3">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  Status <p-sortIcon field="record_status" pSortableColumn="record_status"></p-sortIcon>
+                </div>
               </th>
               <th class="col-md-2" class="custom-header action-column-header">Actions</th>
             </tr>
@@ -462,14 +482,14 @@
   </div>
 
 </div>
- <p-toast position="center" [baseZIndex]="11000">
-    <ng-template let-message pTemplate="message">
-        <div class="custom-toast-message">
-            <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
-            <div>
-                <div class="font-bold">{{ message.summary }}</div>
-                <div>{{ message.detail }}</div>
-            </div>
-        </div>
-    </ng-template>
+<p-toast position="center" [baseZIndex]="11000">
+  <ng-template let-message pTemplate="message">
+    <div class="custom-toast-message">
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
+      <div>
+        <div class="font-bold">{{ message.summary }}</div>
+        <div>{{ message.detail }}</div>
+      </div>
+    </div>
+  </ng-template>
 </p-toast>

@@ -39,15 +39,17 @@
                                 [globalFilterFields]="['role_name','record_status']">
                                 <ng-template pTemplate="header">
                                     <tr>
-                                        <th pSortableColumn="role_name">
-                                            Role Name
-                                            <p-sortIcon field="role_name">
-                                            </p-sortIcon>
+                                        <th>
+                                            <div class="d-flex justify-content-between align-items-center w-100">
+                                                Role Name <p-sortIcon field="role_name"
+                                                    pSortableColumn="role_name"></p-sortIcon>
+                                            </div>
                                         </th>
-                                        <th pSortableColumn="record_status">
-                                            Status
-                                            <p-sortIcon field="record_status">
-                                            </p-sortIcon>
+                                       <th>
+                                            <div class="d-flex justify-content-between align-items-center w-100">
+                                                Status <p-sortIcon field="record_status"
+                                                    pSortableColumn="record_status"></p-sortIcon>
+                                            </div>
                                         </th>
                                         <th class="custom-header action-column-header">
                                             Actions
