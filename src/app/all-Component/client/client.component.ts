@@ -118,7 +118,7 @@ export class ClientComponent implements OnInit {
       mobile: ['', [Validators.pattern(this.mobileRegex)]],
       website: [''],
       description: [''],
-      app_con_id: [''],
+      app_con_id: ['', []],
       country_id: ['', [Validators.required]],
       state_id: ['', [Validators.required]],
       city_id: ['', [Validators.required]],
@@ -180,6 +180,7 @@ export class ClientComponent implements OnInit {
 
   onAddClient() {
     this.submitted = true;
+    console.log(this.addClientForm);
     if (this.addClientForm.invalid) {
       this.addClientForm.markAllAsTouched();
       return
@@ -299,9 +300,18 @@ export class ClientComponent implements OnInit {
 
 
   }
-  showAddForm() {
-    this.ShowForm = true;
+showAddForm() {
+  this.ShowForm = true;
+  const app_con_id = this.addClientForm.get('app_con_id');
+  const client_id_value = this.addClientForm.get('client_id')?.value;
+  if (!client_id_value || client_id_value === '') {
+    app_con_id?.setValidators(Validators.required);
+  } else {
+    app_con_id?.clearValidators();
   }
+  app_con_id?.updateValueAndValidity();
+}
+
   dbserverLookup() {
     const params: any = {};
     params.user_id = this.user_id.toString();

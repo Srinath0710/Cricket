@@ -1008,7 +1008,8 @@ main {
 
 .p-datatable .p-datatable-thead>tr>th {
   background-color: #dedede !important;
-  color: #505050 !important;
+  /* color: #505050 !important; */
+  color: #2e2e2e !important;
   /* border: 1px solid #B33DC6 !important; */
   border: 0px solid #020425 !important;
   padding: 2px 13px !important;
