@@ -50,26 +50,26 @@
                     </p-sortIcon>
                   </div>
                 </th>
-                <th class="col-2" >
+                <th class="col-2">
                   <div class="d-flex justify-content-between align-items-center w-100">
-                  State Code
-                   <p-sortIcon field="state_code" pSortableColumn="state_code">
-                  </p-sortIcon>
+                    State Code
+                    <p-sortIcon field="state_code" pSortableColumn="state_code">
+                    </p-sortIcon>
                   </div>
                 </th>
 
-                <th class="col-3" > 
+                <th class="col-3">
                   <div class="d-flex justify-content-between align-items-center w-100">
-                  Country Name 
-                  <p-sortIcon field="country_name" pSortableColumn="country_name">
-                  </p-sortIcon>
+                    Country Name
+                    <p-sortIcon field="country_name" pSortableColumn="country_name">
+                    </p-sortIcon>
                   </div>
                 </th>
 
-                <th class="col-2" >
+                <th class="col-2">
                   <div class="d-flex justify-content-between align-items-center w-100">
-                  Status <p-sortIcon field="record_status" pSortableColumn="record_status">
-                  </p-sortIcon>
+                    Status <p-sortIcon field="record_status" pSortableColumn="record_status">
+                    </p-sortIcon>
                   </div>
                 </th>
                 <th class="col-2" class="custom-header action-column-header">Actions</th>
@@ -108,8 +108,13 @@
                 </td>
 
               </tr>
-            </ng-template>
 
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6" class="text-center">No Records Found</td>
+              </tr>
+            </ng-template>
           </p-table>
 
           <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"

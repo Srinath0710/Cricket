@@ -105,8 +105,7 @@
                                 <td>{{ club.country }}</td>
                                 <td>{{ club.state }}</td>
                                 <td>
-                                    <span [ngClass]="{ 
-                    ' bg-success': club.record_status === 'Active',
+                                    <span [ngClass]="{'bg-success': club.record_status === 'Active',
                     ' bg-danger': club.record_status === 'InActive'}">
                                         {{ club.record_status }}
                                     </span>
@@ -396,7 +395,6 @@
                     </div>
                 </div>
 
-
                 <div class="form-wrapper pb-5">
                     <div class="row mt-4 sticky-footer-buttons">
                         <div class="col-12 text-end">
@@ -404,7 +402,8 @@
                                 class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()">
                             </button>
 
-                            <button pButton type="text" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
+                            <button pButton type="button" label="Clear"
+                                class="p-button-secondary me-3 custom-cancel-btn"
                                 *ngIf="addClubForm.get('club_id')?.value == '' || addClubForm.get('club_id')?.value === null"
                                 (click)="clearForm()">
                             </button>
@@ -413,6 +412,9 @@
                         </div>
                     </div>
                 </div>
+
+
+
 
             </form>
         </p-drawer>

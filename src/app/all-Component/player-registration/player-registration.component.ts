@@ -87,7 +87,7 @@ export class PlayerRegistrationComponent implements OnInit {
   first: number = 1;
   oldfirst: number = 1;
   pageData: number = 0;
-  rows: number = 10; // Default records shown is 10
+  rows: number = 10;
   totalData: any = 0;
   previewUrl: string | ArrayBuffer | null = null;
   filedata: any;
@@ -101,7 +101,6 @@ export class PlayerRegistrationComponent implements OnInit {
   imageDefault: any;
   croppedImage: any;
   envImagePath = environment.imagePath;
-  default_flag_img = this.envImagePath + '/images/Default Flag.png';
 
   isEditMode: boolean = false;
   ispersonalupadate: boolean = false;
@@ -116,13 +115,13 @@ export class PlayerRegistrationComponent implements OnInit {
   playerRegistrationform!: FormGroup;
   addplayerpersonalform!: FormGroup;
   backScreen: any;
-  // selectedPlayer: any = null;
   visibleDialog: boolean = false;
   players: Players[] = [];
   playerList: any[] = [];
   showFilters: boolean = false;
   selectedplayer: any = null;
   configDataList: player[] = [];
+  clublist = [];
   NationalitydropdownData: any;
   genderSelect: player[] = [];
   playerrole: player[] = [];
@@ -136,7 +135,6 @@ export class PlayerRegistrationComponent implements OnInit {
   playerId: any;
   duplicatePlayers: any[] = [];
   countriesData: any;
-  countrydropdownData: any;
   loading = false;
   countriesList: player[] = [];
   country_id: any;
@@ -147,7 +145,6 @@ export class PlayerRegistrationComponent implements OnInit {
   mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   email = (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
   playerNamePattern = /^[^'"]+$/; //allstringonly allow value
-  // Filter options
   filterStatus: string = '';
   filterPlayerType: string = '';
   form: any;
@@ -175,11 +172,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
-    this.Clientdropdown();
-    this.Nationalitydropdown();
-    this.getCountries();
-    this.Natinalitydropdown();
-    this.getGlobalData();
+    this.dropdownapi();
     this.playerRegistrationform = this.formBuilder.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
@@ -248,6 +241,15 @@ export class PlayerRegistrationComponent implements OnInit {
     });
 
   }
+  dropdownapi() {
+    this.Clientdropdown();
+    this.Nationalitydropdown();
+    this.getCountries();
+    this.getGlobalData();
+    this.clubsdropdown();
+    this.dropdownplayer()
+  }
+
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
   }
@@ -259,14 +261,14 @@ export class PlayerRegistrationComponent implements OnInit {
     };
     this.apiService.post(this.urlConstant.teamclubdropdown, params).subscribe(
       (res) => {
-        this.configDataList = res.data?.clubs || [];
+        this.clublist = res.data?.clubs || [];
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message) {
           this.apiService.RefreshToken();
           this.failedToast(err.error)
         } else {
-          this.configDataList = [];
+          this.clublist = [];
           console.error("Error fetching clubs dropdown:", err);
         }
       }
@@ -295,13 +297,10 @@ export class PlayerRegistrationComponent implements OnInit {
 
   sanitizeQuotesOnly(controlName: string, event: Event) {
     const input = (event.target as HTMLInputElement).value;
-    const cleaned = input.replace(/['"]/g, ''); // remove both ' and "
-
-    // Set value in addplayerpersonalform if control exists
+    const cleaned = input.replace(/['"]/g, '');
     if (this.addplayerpersonalform?.get(controlName)) {
       this.addplayerpersonalform.get(controlName)?.setValue(cleaned, { emitEvent: false });
     }
-    // Else set value in playerRegistrationform if control exists
     else if (this.playerRegistrationform?.get(controlName)) {
       this.playerRegistrationform.get(controlName)?.setValue(cleaned, { emitEvent: false });
     }
@@ -316,8 +315,6 @@ export class PlayerRegistrationComponent implements OnInit {
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
       this.gridLoad();
-
-      this.dropdownplayer();
       this.radiobutton();
 
     }, (err) => {
@@ -341,7 +338,7 @@ export class PlayerRegistrationComponent implements OnInit {
           this.PlayerData = res.data.players;
           this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
           this.spinnerService.raiseDataEmitterEvent('off');
-          this.clubsdropdown();
+
         }
         else {
           this.PlayerData = [];
@@ -349,13 +346,13 @@ export class PlayerRegistrationComponent implements OnInit {
           this.spinnerService.raiseDataEmitterEvent('off');
 
         }
-          this.PlayerData.forEach((val: any) => {
-            val.country_image = `${val.country_image}?${Math.random()}`;
-          });
-        }, (err: any) => {
-          err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
-
+        this.PlayerData.forEach((val: any) => {
+          val.country_image = `${val.country_image}?${Math.random()}`;
         });
+      }, (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
+
+      });
   }
 
   calculateFirst(): number {
@@ -464,14 +461,6 @@ export class PlayerRegistrationComponent implements OnInit {
       const fastBowlerId = fastBowler.config_id;
       this.playerRegistrationform.patchValue({ bowling_type_id: fastBowlerId });
       this.onBowlingTypeChange(fastBowlerId);
-
-      // 🕒 Set default spec after filter
-      // setTimeout(() => {
-      //   const defaultSpec = this.filteredSpecs[0];
-      //   if (defaultSpec) {
-      //     this.playerRegistrationform.patchValue({ bowling_spec_id: defaultSpec.config_id });
-      //   }
-      // }, 0);
     }
   }
 
@@ -516,14 +505,12 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   showDuplicatePopup(response: any) {
-
-    this.duplicatePlayers = response.data.players; // assuming response.data is an array
-    this.showDialog();
+    this.duplicatePlayers = response.data.players;
+    this.viewshowDialog();
   }
-  showDialog() {
+  viewshowDialog() {
     this.position = 'center';
     this.visible = true;
-    // this.addplayerdata();
   }
   hideDialog() {
     this.visible = false;
@@ -564,6 +551,10 @@ export class PlayerRegistrationComponent implements OnInit {
       );
     }
   }
+
+
+
+
   addplayerdata() {
     this.submitted = true;
     this.isEditMode = false;
@@ -622,7 +613,6 @@ export class PlayerRegistrationComponent implements OnInit {
         });
     } else {
       this.apiService.post(this.urlConstant.addplayer, params).subscribe((res) => {
-        console.log('Player ID:', 'hi');
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
             this.profileImgAppend(res.data.players[0].player_id);
@@ -1080,20 +1070,20 @@ export class PlayerRegistrationComponent implements OnInit {
     );
   }
 
-  Natinalitydropdown() {
+  // Natinalitydropdown() {
 
-    const params: any = {};
-    params.action_flag = this.urlConstant.countryofficial.action_flag;
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
-    this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
-      this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
-    }, (err: any) => {
-      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-        this.apiService.RefreshToken();
-      }
-    })
-  }
+  //   const params: any = {};
+  //   params.action_flag = this.urlConstant.countryofficial.action_flag;
+  //   params.user_id = this.user_id.toString();
+  //   params.client_id = this.client_id.toString();
+  //   this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
+  //     this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
+  //   }, (err: any) => {
+  //     if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+  //       this.apiService.RefreshToken();
+  //     }
+  //   })
+  // }
 
   getCountries() {
     const params: any = {};
@@ -1104,7 +1094,6 @@ export class PlayerRegistrationComponent implements OnInit {
       this.countriesList = res.data.countries != undefined ? res.data.countries : [];
       this.loading = false;
       this.country_id = this.countriesList[0].country_id;
-      this.gridLoad();
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
@@ -1189,12 +1178,6 @@ export class PlayerRegistrationComponent implements OnInit {
       detail: 'Player list has been filtered'
     });
   }
-
-  // onPageChange(event: any) {
-  //   this.first = Math.floor(event.first / event.rows) + 1;
-  //   this.rows = event.rows;
-  //   this.gridLoad();
-  // }
 
   successToast(data: any) {
 

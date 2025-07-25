@@ -180,6 +180,7 @@
                       <div class="row gy-3">
                         <div class="col-md-6">
                           <label>First Name </label>
+                          <span class="text-danger">*</span>
                           <input class="form-control" type="text" maxlength="50" formControlName="first_name"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('first_name', $event)">
                           <small
@@ -270,7 +271,7 @@
 
                         <div class="col-md-6">
                           <label>Club ID</label>
-                          <p-dropdown [options]="configDataList" class="drop-error " formControlName="club_id"
+                          <p-dropdown [options]="clublist" class="drop-error " formControlName="club_id"
                             optionValue="club_id" optionLabel="club_name" placeholder="Select Club Id">
                             <ng-template let-club pTemplate="item">
                               <div class="flex align-items-center gap-2">
@@ -510,7 +511,9 @@
                         *ngIf="playerRegistrationform.get('player_id')?.value == '' || playerRegistrationform.get('player_id')?.value == null"
                         (click)="resetForm()"></button>
 
-                      <button pButton label="Save" class="save-button" (click)="duplicateChange()"></button>
+                      <button pButton label="Save" class="save-button"
+                        (click)="duplicateChange(playerRegistrationform.get('player_id')?.value != '' && playerRegistrationform.get('player_id')?.value != null)">
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -567,8 +570,6 @@
                   </div>
                 </ng-template>
               </p-dialog>
-              <!-- </div> -->
-              <!-- </p-sidebar> -->
             </p-drawer>
             <!-- Personal Update Form Page -->
             <p-drawer [(visible)]="personalShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false"
@@ -688,7 +689,7 @@
 
                         <div class="col-md-6">
                           <label>Nationality <span class="text-danger">*</span></label>
-                          <p-dropdown [options]="countrydropdownData" formControlName="nationality_id"
+                          <p-dropdown [options]="NationalitydropdownData" formControlName="nationality_id"
                             optionValue="region_id" optionLabel="region_name" placeholder="Select Nationality"
                             class="drop-error" [filter]="true" [panelStyleClass]="'custom-dropdown-panel'"
                             [readonly]="disableReadonly && isPersonalDataIntialized">

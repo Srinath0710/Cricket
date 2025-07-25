@@ -53,7 +53,7 @@
 }
 
 .table-counts {
-  color: #1100D1;
+  color: #5b6b8f;
 
 }
 
@@ -138,7 +138,7 @@ label {
 
 /* Button Styling */
 .btn-primary {
-  background-color: #2a4993;
+  background-color: #5b6b8f;
   border: none;
   /* border-radius: 7px; */
   padding: 12px;
@@ -149,7 +149,7 @@ label {
 }
 
 .btn-primary:hover {
-  background-color: #4c51bf;
+  background-color: rgb(40, 43, 105);
 }
 
 /* Responsive Design */
@@ -211,7 +211,7 @@ label {
   align-items: center;
   /* background: linear-gradient(to left, #ff88c8, #99fffd); */
   /* background: #d5fffe; */
-  background: #dafaff;
+  /* background: #dafaff; */
 }
 
 .main-page-title {
@@ -239,7 +239,7 @@ label {
 
 .main-page-title i {
   /* background: linear-gradient(to right, #60c3e4, #eabfff); */
-  color: #007bff !important;
+  color: #2a53ae !important;
   margin-right: 0.5rem !important;
   font-size: 1.4rem !important;
 
@@ -487,6 +487,7 @@ label {
   opacity: 0px;
   margin-right: 0px;
   object-fit: fill;
+  padding: 2px !important;
 }
 
 .player-verified-status {
@@ -775,12 +776,7 @@ tr:hover {
 }
 
 
-.new-button {
-  background-color: #3d513e;
-  color: white;
-  border: none;
-  height: 30px;
-}
+
 
 /* .child-cancel-button {
   background-color: #ee2c05;
@@ -826,14 +822,14 @@ tr:hover {
 }
 
 .p-dialog .add-button {
-  background-color: #367039 !important;
-  border-color: #367039 !important;
+  background-color: #5b6b8f !important;
+  border-color: #5b6b8f !important;
   color: white !important;
 }
 
 .p-dialog .add-button:hover {
-  background-color: #367039 !important;
-  border-color: #367039 !important;
+  background-color: #5b6b8f !important;
+  border-color: #5b6b8f !important;
 }
 
 .p-dialog .p-formgrid {
@@ -886,8 +882,8 @@ tr:hover {
 
 .p-dialog .p-dialog-footer button {
   margin-left: 1.5rem;
-  background-color: #3f51b5 !important;
-  border: blue !important;
+  background-color: #5b6b8f !important;
+  border: #193066 !important;
   border-radius: 1px;
 }
 
@@ -902,9 +898,9 @@ tr:hover {
 
 
 .new-button {
-  background-color: #367039 !important;
+  background-color: #5b6b8f !important;
   border: none !important;
-  border-color: #367039 !important;
+  border-color: #5b6b8f !important;
   color: white !important;
   height: 31px;
   width: 85px;
@@ -922,8 +918,8 @@ tr:hover {
 }
 
 .new-button:hover {
-  background-color: #367039 !important;
-  border-color: #367039 !important;
+  background-color: #5b6b8f !important;
+  border-color: #5b6b8f !important;
 }
 
 .icon-white {
@@ -1007,7 +1003,7 @@ main {
 }
 
 .p-datatable .p-datatable-thead>tr>th {
-  background-color: #dedede !important;
+  background-color: #fbfbfb !important;
   /* color: #505050 !important; */
   color: #2e2e2e !important;
   /* border: 1px solid #B33DC6 !important; */
@@ -1061,6 +1057,8 @@ main {
   background-color: #367039 !important;
   color: #FFF;
   padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 10px !important;
 
 }
 
@@ -1068,6 +1066,8 @@ main {
   background-color: #F44336 !important;
   padding: 2px 5px;
   color: #FFF;
+  border-radius: 4px;
+  font-size: 10px !important;
 }
 
 
@@ -1111,7 +1111,7 @@ main {
 .filter-icon-button {
   background: transparent;
   border: none;
-  color: #0084B1;
+  color: #5b6b8f;
   /* color: #020425; */
   font-size: 20px;
   cursor: pointer;
@@ -1297,7 +1297,7 @@ main {
 .clear-button {
   background: none;
   border: none;
-  color: #007bff;
+  color: #5b6b8f;
   padding: 0;
   font-size: 0.9rem;
   cursor: pointer;
@@ -1403,7 +1403,12 @@ input.form-control:focus {
 
 .groundnameover {
   cursor: pointer;
-  color: #3103e7;
+  color:   #31507e;
+  font-weight: 600 !important;
+}
+.groundnameover:hover {
+  cursor: pointer;
+  color:   #3572ff;
 }
 
 
@@ -1609,8 +1614,8 @@ input.form-control:focus {
 
 
 .save-button {
-  background-color: #3f51b5 !important;
-  border: blue !important;
+  background-color: #5b6b8f !important;
+  border: #274283 !important;
   color: white !important;
   border-radius: 0% !important;
   height: 35px !important;
@@ -1771,7 +1776,7 @@ body.modal-open {
   position: absolute;
   top: 2px;
   right: 2px;
-  padding: 2px 5px;
+  padding: 1px 2px;
   /* border: 1px solid black; */
   /* border-radius: 34%; */
   background-color: white;
@@ -1867,7 +1872,6 @@ body.modal-open {
 
 .p-paginator {
   font-size: 12px;
-  background: #dedede !important;
   border-radius: 0px !important;
   padding: 2px !important;
 
@@ -1937,7 +1941,7 @@ body.modal-open {
 }
 
 .p-paginator-page.p-paginator-page-selected {
-  background: #0084B1 !important;
+  background: #5b6b8f !important;
   color: white !important;
 }
 
