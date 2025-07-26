@@ -1403,12 +1403,13 @@ input.form-control:focus {
 
 .groundnameover {
   cursor: pointer;
-  color:   #31507e;
+  color: #31507e;
   font-weight: 600 !important;
 }
+
 .groundnameover:hover {
   cursor: pointer;
-  color:   #3572ff;
+  color: #3572ff;
 }
 
 
@@ -1712,16 +1713,16 @@ body.modal-open {
 .popup-container {
   max-height: 90vh;
   max-width: 600px;
-  margin: 8px auto;
+  margin: 0px auto;
   background: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 7px;
   position: relative;
   padding: 12px 16px;
   /* border: 4px solid #007BFF; */
-  border-top: 1px solid #007BFF;
+  /* border-top: 1px solid #007BFF;
   border-left: 1px solid #007BFF;
-  border-right: 1px solid #007BFF;
+  border-right: 1px solid #007BFF; */
   color: #222;
   max-height: calc(100vh - 40px);
 
@@ -1747,7 +1748,7 @@ body.modal-open {
 .top-bar {
   display: flex;
   align-items: center;
-  padding: 0px 6px;
+  padding: 0px;
   position: relative;
   background: linear-gradient(to right, #60c3e4, #eabfff);
 
@@ -1774,21 +1775,22 @@ body.modal-open {
 
 .popup-close {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  padding: 1px 2px;
+  top: 0px;
+  right: 0px;
+  padding: 0px 2px;
   /* border: 1px solid black; */
   /* border-radius: 34%; */
   background-color: white;
   font-size: 20px;
-  color: red;
+  color: #007BFF;
   cursor: pointer;
   line-height: 1;
   transition: color 0.3s ease, transform 0.3s ease;
+  outline: none;
 }
 
 .popup-close:hover {
-  color: #007BFF;
+  color: red;
   transform: rotate(90deg);
 }
 
@@ -1954,7 +1956,7 @@ body.modal-open {
   width: 285px !important;
   box-sizing: border-box;
   z-index: 9999 !important;
-  top: 14% !important;
+  top: 15% !important;
   transform: translate(-50%, -50%) !important;
 }
 

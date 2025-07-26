@@ -111,6 +111,7 @@ successToast(data: any) {
     summary: 'Success',
     detail: data.message,
     data: { image: 'assets/images/default-logo.png' },
+    life:800
   });
 }
   /* Failed Toast */
@@ -119,7 +120,8 @@ successToast(data: any) {
       data: { image: 'assets/images/default-logo.png' },
       severity: 'error',
       summary: 'Error',
-      detail: data.message
+      detail: data.message,
+      life:800
     });
   }
 

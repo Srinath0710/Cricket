@@ -359,6 +359,7 @@ showAddForm() {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
+      life: 800
     });
   }
   /* Failed Toast */
@@ -367,7 +368,8 @@ showAddForm() {
       data: { image: 'assets/images/default-logo.png' },
       severity: 'error',
       summary: 'Error',
-      detail: data.message
+      detail: data.message,
+      life: 800
     });
   }
 
@@ -434,7 +436,7 @@ StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
   const { active_status, deactive_status } = this.conditionConstants;
   const isActivating = actionObject.key === active_status.key;
   const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-  const message = `Are you sure you want to ${actionObject.label} this client?`;
+  const message = `Are you sure you want to proceed?`;
 
   this.confirmationService.confirm({
     header: '',

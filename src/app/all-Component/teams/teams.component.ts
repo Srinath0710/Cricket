@@ -263,6 +263,7 @@ export class TeamsComponent implements OnInit {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
+      life:800
     });
   }
   /* Failed Toast */
@@ -271,7 +272,8 @@ export class TeamsComponent implements OnInit {
       data: { image: 'assets/images/default-logo.png' },
       severity: 'error',
       summary: 'Error',
-      detail: data.message
+      detail: data.message,
+      life:800
     });
   }
 
@@ -290,35 +292,60 @@ export class TeamsComponent implements OnInit {
       }
     );
   }
-  StatusConfirm(team_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-    const { active_status, deactive_status } = this.conditionConstants;
-    const isSameStatus =
-      (actionObject.key === active_status.key && currentStatus === active_status.status) ||
-      (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
-    if (isSameStatus) return;
+  // StatusConfirm(team_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
+  //   const { active_status, deactive_status } = this.conditionConstants;
+  //   const isSameStatus =
+  //     (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+  //     (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+  //   if (isSameStatus) return;
+  //   const isActivating = actionObject.key === active_status.key;
+  //   const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+  //   const message = `Are you sure you want to proceed?`;
+
+  //   this.confirmationService.confirm({
+  //     header: ``,
+  //     message: `
+  //     <div class="custom-confirm-content">
+  //     <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+  //       <div class="warning">Warning</div>
+  //       <div class="message-text">${message}</div>
+  //     </div>
+  //   `,
+  //     acceptLabel: 'Yes',
+  //     rejectLabel: 'No',
+  //     styleClass: 'p-confirm-dialog-custom',
+  //     accept: () => {
+  //       const url = isActivating ? this.urlConstant.activeTeam : this.urlConstant.deactiveTeam;
+  //       this.status(team_id, url);
+  //       this.confirmationService.close();
+  //     },
+  //     reject: () => this.confirmationService.close()
+  //   } as any);
+  // }
+
+    StatusConfirm(team_id: number, actionObject: { key: string; label: string }) {
+    const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
     const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
     const message = `Are you sure you want to proceed?`;
 
     this.confirmationService.confirm({
-      header: ``,
+      header: '',
       message: `
       <div class="custom-confirm-content">
-      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
         <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
     `,
       acceptLabel: 'Yes',
       rejectLabel: 'No',
-      styleClass: 'p-confirm-dialog-custom',
       accept: () => {
         const url = isActivating ? this.urlConstant.activeTeam : this.urlConstant.deactiveTeam;
         this.status(team_id, url);
-        this.confirmationService.close();
       },
-      reject: () => this.confirmationService.close()
-    } as any);
+      reject: () => { }
+    });
   }
   addCallBack(res: any) {
     this.resetForm();

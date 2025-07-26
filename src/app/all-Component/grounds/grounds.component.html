@@ -126,7 +126,7 @@
                   <span class="icon-blue" (click)="EditGround(ground)" pTooltip="Edit" tooltipPosition="top">
                     <i class="fa-solid fa-user-pen"></i>
                   </span>
-
+<!-- 
                   <span class="icon-green"
                     (click)="StatusConfirm(ground.ground_id,conditionConstants.active_status,ground.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
@@ -136,6 +136,15 @@
                     (click)="StatusConfirm(ground.ground_id,conditionConstants.deactive_status,ground.record_status)"
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
+                  </span> -->
+                      <span (click)="StatusConfirm(ground.ground_id,
+                         ground.record_status === 'Active'? 
+                         { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
+                    [pTooltip]="ground.record_status === 'Active' ? 'Deactivate' : 'Activate'" tooltipPosition="top"
+                    style="cursor: pointer;" [ngClass]="ground.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                    <i class="fa" [ngClass]="ground.record_status ===
+                     'Active'? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'">
+                    </i>
                   </span>
 
 
@@ -223,7 +232,7 @@
 
     </p-dialog>
 
-    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+    <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
       [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">

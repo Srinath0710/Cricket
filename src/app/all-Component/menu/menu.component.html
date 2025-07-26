@@ -49,18 +49,18 @@
                     </div>
                   </th>
 
-                  <th class="col-md-3">
+                  <th class="col-md-2">
                     <div class="d-flex justify-content-between align-items-center w-100">
                       Menu Link <p-sortIcon field="menu_link" SortableColumn="menu_link"></p-sortIcon>
                     </div>
                   </th>
 
-                  <th class="col-md-3">
+                  <th class="col-md-2">
                     <div class="d-flex justify-content-between align-items-center w-100">
                       Status <p-sortIcon field="record_status" SortableColumn="record_status"></p-sortIcon>
                     </div>
                   </th>
-                  <th class="col-md-3" class="custom-header action-column-header">Actions</th>
+                  <th class="col-md-2" class="custom-header action-column-header">Actions</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-menu>
@@ -94,7 +94,7 @@
                       <i class="fa-solid fa-user-pen"></i>
                     </span>
 
-                    <span class="icon-green"
+                    <!-- <span class="icon-green"
                       (click)="StatusConfirm(menu.menu_id,conditionConstants.active_status, menu.record_status)"
                       pTooltip="Activate" tooltipPosition="top">
                       <i class="fa-solid fa-circle-check"></i>
@@ -104,7 +104,16 @@
                       (click)="StatusConfirm(menu.menu_id,conditionConstants.deactive_status, menu.record_status)"
                       pTooltip="Deactivate" tooltipPosition="top">
                       <i class="fa-solid fa-trash-can-arrow-up"></i>
-                    </span>
+                    </span> -->
+                           <span (click)="StatusConfirm(menu.menu_id,
+                         menu.record_status === 'Active'? 
+                         { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
+                    [pTooltip]="menu.record_status === 'Active' ? 'Deactivate' : 'Activate'" tooltipPosition="top"
+                    style="cursor: pointer;" [ngClass]="menu.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                    <i class="fa" [ngClass]="menu.record_status ===
+                     'Active'? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'">
+                    </i>
+                  </span>
                   </td>
 
                 </tr>
@@ -167,7 +176,7 @@
                   Url <p-sortIcon field="api_endpoint_url" pSortableColumn="api_endpoint_url"></p-sortIcon>
                 </div>
               </th>
-              <th class="col-md-2">
+              <th class="col-md-1">
                 <div class="d-flex justify-content-between align-items-center w-100">
                   Desc <p-sortIcon field="api_desc" pSortableColumn="api_desc"></p-sortIcon>
                 </div>
@@ -184,7 +193,7 @@
                 </div>
               </th>
 
-              <th class="col-md-3">
+              <th class="col-md-2">
                 <div class="d-flex justify-content-between align-items-center w-100">
                   Status <p-sortIcon field="record_status" pSortableColumn="record_status"></p-sortIcon>
                 </div>
@@ -215,7 +224,7 @@
                   <i class="fa-solid fa-user-pen"></i>
                 </span>
 
-                <span class="icon-green"
+                <!-- <span class="icon-green"
                   (click)="StatusConfirmendpoint(endpoint.api_id,conditionConstants.active_status, endpoint.record_status)"
                   pTooltip="Activate" tooltipPosition="top">
                   <i class="fa-solid fa-circle-check"></i>
@@ -225,7 +234,17 @@
                   (click)="StatusConfirmendpoint(endpoint.api_id,conditionConstants.deactive_status, endpoint.record_status)"
                   pTooltip="Deactivate" tooltipPosition="top">
                   <i class="fa-solid fa-trash-can-arrow-up"></i>
-                </span>
+                </span> -->
+
+                       <span (click)="StatusConfirmendpoint(endpoint.api_id,
+                         endpoint.record_status === 'Active'? 
+                         { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
+                    [pTooltip]="endpoint.record_status === 'Active' ? 'Deactivate' : 'Activate'" tooltipPosition="top"
+                    style="cursor: pointer;" [ngClass]="endpoint.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                    <i class="fa" [ngClass]="endpoint.record_status ===
+                     'Active'? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'">
+                    </i>
+                  </span>
               </td>
 
             </tr>
@@ -236,7 +255,7 @@
       </div>
 
 
-      <p-confirmDialog [style]="{ width: '300px' , height: '200px' }" [baseZIndex]="10000" [draggable]="false"
+      <p-confirmDialog [style]="{ width: '320px' }" [baseZIndex]="10000" [draggable]="false"
         [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
       </p-confirmDialog>
 

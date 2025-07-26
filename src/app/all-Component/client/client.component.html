@@ -118,26 +118,16 @@
                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
                                     </span> -->
 
-                                    <span 
-  (click)="StatusConfirm(
-    client.client_id,
-    client.record_status === 'Active' 
-      ? { key: 'inactive', label: 'deactivate' } 
-      : { key: 'active', label: 'activate' }
-  )"
-  [pTooltip]="client.record_status === 'Active' ? 'Deactivate' : 'Activate'" 
-  tooltipPosition="top"
-  style="cursor: pointer;"
-  [ngClass]="client.record_status === 'Active' ? 'icon-red' : 'icon-green'"
->
-  <i 
-    class="fa" 
-    [ngClass]="client.record_status === 'Active' 
-      ? 'fa-trash text-danger' 
-      : 'fa-check-square text-success'">
-  </i>
-</span>
-
+                                    <span (click)="StatusConfirm(client.client_id,
+                                     client.record_status === 'Active'? 
+                                     { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
+                                        [pTooltip]="client.record_status === 'Active' ? 'Deactivate' : 'Activate'"
+                                        tooltipPosition="top" style="cursor: pointer;"
+                                        [ngClass]="client.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                                        <i class="fa" [ngClass]="client.record_status === 'Active' 
+                                           ? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'">
+                                        </i>
+                                    </span>
 
                                 </td>
                             </tr>
@@ -460,8 +450,8 @@
                             </span>
                         </div>
                         <div class="popup-title">{{ client.client_name | uppercase }}</div>
-                        <button class="popup-close" (click)="viewDialogVisible = false"
-                            aria-label="Close popup">✖</button>
+                        <button class="popup-close" (click)="viewDialogVisible = false" pTooltip="Close popup"
+                            tooltipPosition="left">✖</button>
                     </div>
 
                     <section class="popup-section">

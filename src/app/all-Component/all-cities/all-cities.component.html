@@ -106,7 +106,7 @@
                   <span class="icon-blue" (click)="EditCity(cities)" pTooltip="Edit" tooltipPosition="top">
                     <i class="fa-solid fa-user-pen"></i>
                   </span>
-                  <span class="icon-green"
+                  <!-- <span class="icon-green"
                     (click)="StatusConfirm(cities.city_id,conditionConstants.active_status, cities.record_status)"
                     pTooltip="Activate" tooltipPosition="top">
                     <i class="fa-solid fa-circle-check"></i>
@@ -116,6 +116,16 @@
                     (click)="StatusConfirm(cities.city_id,conditionConstants.deactive_status, cities.record_status)"
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
+                  </span> -->
+
+                  <span (click)="StatusConfirm(cities.city_id,
+                         cities.record_status === 'Active'? 
+                         { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
+                    [pTooltip]="cities.record_status === 'Active' ? 'Deactivate' : 'Activate'" tooltipPosition="top"
+                    style="cursor: pointer;" [ngClass]="cities.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                    <i class="fa" [ngClass]="cities.record_status ===
+                     'Active'? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'">
+                    </i>
                   </span>
 
                 </td>
@@ -222,7 +232,7 @@
         </div>
       </form>
     </p-drawer>
-    <p-confirmDialog [style]="{width: '300px', height: '200px'}" [baseZIndex]="10000" [draggable]="false"
+    <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
       [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
     <p-toast position="center" [baseZIndex]="11000">

@@ -213,6 +213,7 @@ filterPlayersByTeam(teamId: number) {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
+      life:800
     });
   }
   /* Failed Toast */
@@ -221,7 +222,8 @@ filterPlayersByTeam(teamId: number) {
       data: { image: 'assets/images/default-logo.png' },
       severity: 'error',
       summary: 'Error',
-      detail: data.message
+      detail: data.message,
+      life:800
     });
   }
   updateplayer(): void {

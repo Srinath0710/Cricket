@@ -61,7 +61,7 @@
                                     </div>
                                 </th>
                                 <th class="col-md-2">
-                                    <div class="d-flex justify-content-between align-items-center w-100">  
+                                    <div class="d-flex justify-content-between align-items-center w-100">
                                         Start Date <p-sortIcon field="start_date"
                                             pSortableColumn="start_date"></p-sortIcon>
                                     </div>
@@ -107,7 +107,7 @@
                                         <i class="fa-solid fa-user-pen"></i>
                                     </span>
 
-                                    <span class="icon-green"
+                                    <!-- <span class="icon-green"
                                         (click)="StatusConfirm(season.season_id,conditionConstants.active_status,season.record_status)"
                                         pTooltip="Active" tooltipPosition="top">
                                         <i class="fa-solid fa-circle-check"></i>
@@ -117,7 +117,16 @@
                                         (click)="StatusConfirm(season.season_id,conditionConstants.deactive_status,season.record_status)"
                                         pTooltip="Deactivate" tooltipPosition="top">
                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
-                                    </span>
+                                    </span> -->
+                        <span (click)="StatusConfirm(season.season_id,
+                         season.record_status === 'Active'? 
+                         { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
+                                        [pTooltip]="season.record_status === 'Active' ? 'Deactivate' : 'Activate'"
+                                        tooltipPosition="top" style="cursor: pointer;"
+                                        [ngClass]="season.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                                        <i class="fa" [ngClass]="season.record_status ===
+                          'Active'? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'"></i>
+                        </span>
                                 </td>
                             </tr>
                         </ng-template>

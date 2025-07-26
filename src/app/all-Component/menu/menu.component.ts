@@ -189,12 +189,12 @@ export class MenuComponent implements OnInit {
       this.MenuData = res.data.menus ?? [];
       this.totalData = this.MenuData.length != 0 ? res.data.menus[0].total_records : 0
       this.spinnerService.raiseDataEmitterEvent('off');
-          this.MenuData.forEach((val: any) => {
-          val.menu_image = `${val.menu_image}?${Math.random()}`;
-        });
+      this.MenuData.forEach((val: any) => {
+        val.menu_image = `${val.menu_image}?${Math.random()}`;
+      });
     }, (err: any) => {
       err.status === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken()
-        : (this.spinnerService.raiseDataEmitterEvent('off'),this.MenuData = [], this.totalData = this.MenuData.length);
+        : (this.spinnerService.raiseDataEmitterEvent('off'), this.MenuData = [], this.totalData = this.MenuData.length);
 
     });
 
@@ -212,6 +212,7 @@ export class MenuComponent implements OnInit {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
+      life:800
     });
   }
   /* Failed Toast */
@@ -220,7 +221,8 @@ export class MenuComponent implements OnInit {
       data: { image: 'assets/images/default-logo.png' },
       severity: 'error',
       summary: 'Error',
-      detail: data.message
+      detail: data.message,
+      life:800
     });
   }
   status(menu_id: number, url: string) {
@@ -245,7 +247,7 @@ export class MenuComponent implements OnInit {
     };
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-       res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.viewEndpoints(this.currentMenu)) : this.failedToast(res);
+        res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.viewEndpoints(this.currentMenu)) : this.failedToast(res);
       },
       (err: any) => {
         error: (err: any) => {
@@ -253,36 +255,61 @@ export class MenuComponent implements OnInit {
         }
       });
   }
-    StatusConfirm(menu_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-        const { active_status, deactive_status } = this.conditionConstants;
-        const isSameStatus =
-            (actionObject.key === active_status.key && currentStatus === active_status.status) ||
-            (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
-        if (isSameStatus) return;
-        const isActivating = actionObject.key === active_status.key;
-        const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-        const message = `Are you sure you want to proceed?`;
+  // StatusConfirm(menu_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
+  //     const { active_status, deactive_status } = this.conditionConstants;
+  //     const isSameStatus =
+  //         (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+  //         (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+  //     if (isSameStatus) return;
+  //     const isActivating = actionObject.key === active_status.key;
+  //     const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+  //     const message = `Are you sure you want to proceed?`;
 
-        this.confirmationService.confirm({
-            header: ``,
-            message: `
+  //     this.confirmationService.confirm({
+  //         header: ``,
+  //         message: `
+  //   <div class="custom-confirm-content">
+  //   <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+  //     <div class="warning">Warning</div>
+  //     <div class="message-text">${message}</div>
+  //   </div>
+  // `,
+  //         acceptLabel: 'Yes',
+  //         rejectLabel: 'No',
+  //         styleClass: 'p-confirm-dialog-custom',
+  //         accept: () => {
+  //             const url = isActivating ? this.urlConstant.activateMenu : this.urlConstant.deactivateMenu;
+  //             this.status(menu_id, url);
+  //             this.confirmationService.close();
+  //         },
+  //         reject: () => this.confirmationService.close()
+  //     } as any);
+  // }
+
+  StatusConfirm(menu_id: number, actionObject: { key: string; label: string }) {
+    const { active_status } = this.conditionConstants;
+    const isActivating = actionObject.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+    const message = `Are you sure you want to proceed?`;
+
+    this.confirmationService.confirm({
+      header: '',
+      message: `
       <div class="custom-confirm-content">
-      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
         <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
     `,
-            acceptLabel: 'Yes',
-            rejectLabel: 'No',
-            styleClass: 'p-confirm-dialog-custom',
-            accept: () => {
-                const url = isActivating ? this.urlConstant.activateMenu : this.urlConstant.deactivateMenu;
-                this.status(menu_id, url);
-                this.confirmationService.close();
-            },
-            reject: () => this.confirmationService.close()
-        } as any);
-    }
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url = isActivating ? this.urlConstant.activateMenu : this.urlConstant.deactivateMenu;
+        this.status(menu_id, url);
+      },
+      reject: () => { }
+    });
+  }
   // StatusConfirmendpoint(api_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
   //   console.log('StatusConfirmendpoint called', { api_id, actionObject, currentStatus });
   //   const AlreadyStatestatus =
@@ -311,36 +338,60 @@ export class MenuComponent implements OnInit {
   //   });
   // }
 
-      StatusConfirmendpoint(api_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
-        const { active_status, deactive_status } = this.conditionConstants;
-        const isSameStatus =
-            (actionObject.key === active_status.key && currentStatus === active_status.status) ||
-            (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
-        if (isSameStatus) return;
-        const isActivating = actionObject.key === active_status.key;
-        const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-        const message = `Are you sure you want to proceed?`;
+  //   StatusConfirmendpoint(api_id: number, actionObject: { key: string, label: string }, currentStatus: string) {
+  //     const { active_status, deactive_status } = this.conditionConstants;
+  //     const isSameStatus =
+  //         (actionObject.key === active_status.key && currentStatus === active_status.status) ||
+  //         (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
+  //     if (isSameStatus) return;
+  //     const isActivating = actionObject.key === active_status.key;
+  //     const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+  //     const message = `Are you sure you want to proceed?`;
 
-        this.confirmationService.confirm({
-            header: ``,
-            message: `
+  //     this.confirmationService.confirm({
+  //         header: ``,
+  //         message: `
+  //   <div class="custom-confirm-content">
+  //   <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+  //     <div class="warning">Warning</div>
+  //     <div class="message-text">${message}</div>
+  //   </div>
+  // `,
+  //         acceptLabel: 'Yes',
+  //         rejectLabel: 'No',
+  //         styleClass: 'p-confirm-dialog-custom',
+  //         accept: () => {
+  //             const url = isActivating ? this.urlConstant.activateEndpoint : this.urlConstant.deactivateEndpoint;
+  //             this.statusconvert(api_id, url);
+  //             this.confirmationService.close();
+  //         },
+  //         reject: () => this.confirmationService.close()
+  //     } as any);
+  // }
+  StatusConfirmendpoint(api_id: number, actionObject: { key: string; label: string }) {
+    const { active_status } = this.conditionConstants;
+    const isActivating = actionObject.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+    const message = `Are you sure you want to proceed?`;
+
+    this.confirmationService.confirm({
+      header: '',
+      message: `
       <div class="custom-confirm-content">
-      <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
         <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
     `,
-            acceptLabel: 'Yes',
-            rejectLabel: 'No',
-            styleClass: 'p-confirm-dialog-custom',
-            accept: () => {
-                const url = isActivating ? this.urlConstant.activateEndpoint : this.urlConstant.deactivateEndpoint;
-                this.statusconvert(api_id, url);
-                this.confirmationService.close();
-            },
-            reject: () => this.confirmationService.close()
-        } as any);
-    }
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url = isActivating ? this.urlConstant.activateEndpoint : this.urlConstant.deactivateEndpoint;
+        this.status(api_id, url);
+      },
+      reject: () => { }
+    });
+  }
   addCallBack(res: any) {
     this.menuID = this.addMenuForm.value.menu_id;
     this.resetForm();
@@ -382,30 +433,31 @@ export class MenuComponent implements OnInit {
 
     if (this.addMenuForm.value.menu_id) {
       this.apiService.post(this.urlConstant.updateMenu, params).subscribe((res) => {
+        if (res.status_code === this.statusConstants.success && res.status) {
           if (res.status_code === this.statusConstants.success && res.status) {
-   if (res.status_code === this.statusConstants.success && res.status) {
-          if (res.data !== null && this.filedata != null) {
-            this.profileImgAppend(params.menu_id);
+            if (res.data !== null && this.filedata != null) {
+              this.profileImgAppend(params.menu_id);
+            } else {
+              this.addCallBack(res)
+            }
           } else {
-            this.addCallBack(res)
+            this.failedToast(res)
           }
-        } else {
-          this.failedToast(res)
+        } (err: any) => {
+          err.status_code === this.statusConstants.refresh &&
+            err.error.message === this.statusConstants.refresh_msg ?
+            this.apiService.RefreshToken() : this.failedToast(err.error);
         }
-      } (err: any) => {
-        err.status_code === this.statusConstants.refresh &&
-        err.error.message === this.statusConstants.refresh_msg ?
-         this.apiService.RefreshToken() : this.failedToast(err.error);
-    }});
-    } 
-    
+      });
+    }
+
     else {
       this.apiService.post(this.urlConstant.addMenus, params).subscribe((res) => {
         res.status_code === this.statusConstants.success && res.status ? this.addCallBack(res) : this.failedToast(res);
       }, (err: any) => {
-        err.status === this.statusConstants.refresh && 
-        err.error.message === this.statusConstants.refresh_msg ? 
-        this.apiService.RefreshToken() : this.failedToast(err.error);
+        err.status === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg ?
+          this.apiService.RefreshToken() : this.failedToast(err.error);
       });
     }
 
@@ -479,7 +531,7 @@ export class MenuComponent implements OnInit {
           res.status_code === this.statusConstants.success && res.status
             ? this.addCallBack(res)
             : this.failedToast(res);
-           this.viewEndpoints(this.currentMenu);
+          this.viewEndpoints(this.currentMenu);
         },
         (err: any) => {
           err.status === this.statusConstants.refresh &&
@@ -496,7 +548,7 @@ export class MenuComponent implements OnInit {
           res.status_code === this.statusConstants.success && res.status
             ? this.addCallBack(res)
             : this.failedToast(res);
-             this.viewEndpoints(this.currentMenu);
+          this.viewEndpoints(this.currentMenu);
         },
         (err: any) => {
           err.status === this.statusConstants.refresh &&
@@ -570,7 +622,7 @@ export class MenuComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-    profileImgAppend(menu_id: any) {
+  profileImgAppend(menu_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);
@@ -612,7 +664,7 @@ export class MenuComponent implements OnInit {
 
       };
       reader.readAsDataURL(file);
-    
+
 
     }
   }
@@ -651,25 +703,25 @@ export class MenuComponent implements OnInit {
 
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridLoad();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
   }
   clear() {
     this.searchKeyword = '';
     // this.dt.clear();          
     this.gridLoad();
   }
- cancelImage() {
+  cancelImage() {
     this.previewUrl = null;
     this.filedata = null;
 
     if (this.fileInput?.nativeElement) {
-      this.fileInput.nativeElement.value = ''; 
-      
+      this.fileInput.nativeElement.value = '';
+
     } else {
       console.warn('fileInput not ready yet');
     }
