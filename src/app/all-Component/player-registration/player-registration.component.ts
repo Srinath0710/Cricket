@@ -585,7 +585,6 @@ export class PlayerRegistrationComponent implements OnInit {
       jersey_no: this.playerRegistrationform.value.jersey_no != null ? this.playerRegistrationform.value.jersey_no.toString() : null,
       profile_image: this.playerRegistrationform.value.profile_image != null ? this.playerRegistrationform.value.profile_image.toString() : null,
       player_id: this.playerRegistrationform.value.player_id != null ? this.playerRegistrationform.value.player_id.toString() : null,
-      // team_represent: this.playerRegistrationform.value.team_represent != null ? this.playerRegistrationform.value.team_represent.toString() : null,
       club_id: this.playerRegistrationform.value.club_id != null ? this.playerRegistrationform.value.club_id.toString() : null,
       scorecard_name: this.playerRegistrationform.value.scorecard_name != null ? this.playerRegistrationform.value.scorecard_name.toString() : null,
       reference_id: this.playerRegistrationform.value.reference_id != null ? this.playerRegistrationform.value.reference_id.toString() : null,
@@ -725,7 +724,6 @@ export class PlayerRegistrationComponent implements OnInit {
           bowling_spec_id: editRecord.bowling_spec_id,
           remarks: editRecord.remarks,
           jersey_no: editRecord.jersey_no,
-          profile_image: null,
           player_id: editRecord.player_id,
           club_id: editRecord.club_id,
           scorecard_name: editRecord.scorecard_name,
@@ -739,30 +737,6 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     });
   }
-
-
-  //  first_name: editRecord.first_name,
-  //       middle_name: editRecord.middle_name,
-  //       sur_name: editRecord.sur_name,
-  //       display_name: editRecord.display_name,
-  //       nationality_id: editRecord.nationality_id,
-  //       player_dob: editRecord.player_dob ? editRecord.player_dob.split('T')[0] : null,
-  //       mobile_no: editRecord.mobile_no,
-  //       email: editRecord.email,
-  //       gender_id: editRecord.gender_id,
-  //       player_role_id: editRecord.player_role_id,
-  //       batting_style_id: editRecord.batting_style_id,
-  //       batting_order_id: editRecord.batting_order_id,
-  //       bowling_style_id: editRecord.bowling_style_id,
-  //       bowling_type_id: editRecord.bowling_type_id,
-  //       bowling_spec_id: editRecord.bowling_spec_id,
-  //       remarks: editRecord.remarks,
-  //       jersey_no: editRecord.jersey_no,
-  //       profile_image: null,
-  //       player_id: editRecord.player_id,
-  //       club_id: editRecord.club_id,
-  //       scorecard_name: editRecord.scorecard_name,
-  //       reference_id: editRecord.reference_id
 
   fileEvent(event: any) {
     if (this.playerRegistrationform.value.profile_image.value !== null &&

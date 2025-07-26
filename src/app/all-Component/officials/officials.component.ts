@@ -177,7 +177,7 @@ export class OfficialsComponent implements OnInit {
       sur_name: ['', [Validators.required]],
       display_name: ['', [Validators.required]],
       format_id: ['', [Validators.required]],
-      official_category_id: ['', [Validators.required]],
+      official_category_id: [''],
       official_type_id: ['', [Validators.required]],
       profile_img: [''],
       country_id: ['', [Validators.required]],
@@ -346,17 +346,11 @@ export class OfficialsComponent implements OnInit {
     }
   }
 
-
-  sanitizeQuotesOnly(controlName: string, event: Event): void {
+  sanitizeQuotesOnly(controlName: string, event: Event) {
     const input = (event.target as HTMLInputElement).value;
-    const cleaned = input.replace(/['"]/g, '').trim(); // remove ' and " and trim whitespace
-    const control = this.addOfficialForm.get(controlName);
-
-    if (control) {
-      control.setValue(cleaned, { emitEvent: false });
-    }
+    const cleaned = input.replace(/['"]/g, '');
+    this.addOfficialForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
-
 
   addOfficialdata() {
     this.submitted = true;
@@ -374,9 +368,9 @@ export class OfficialsComponent implements OnInit {
       display_name: String(this.addOfficialForm.value.display_name),
       format_id: String(this.addOfficialForm.value.format_id),
       official_type_id: String(this.addOfficialForm.value.official_type_id),
-      official_category_id: String(this.addOfficialForm.value.official_category_id),
+      official_category_id: this.addOfficialForm.value.official_category_id != null ? this.addOfficialForm.value.official_category_id.toString() : null,
       country_id: String(this.addOfficialForm.value.country_id),
-      reference_id: String(this.addOfficialForm.value.reference_id),
+      reference_id: this.addOfficialForm.value.reference_id,
       club_id: String(this.addOfficialForm.value.club_id),
       gender_id: String(this.addOfficialForm.value.gender_id),
       dob: this.addOfficialForm.value.dob,
@@ -527,14 +521,14 @@ export class OfficialsComponent implements OnInit {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
       official_id: String(this.personal_official_id),
-      nationality_id: String(this.addPersonalForm.value.nationality_id),
+      nationality_id: String(this.addPersonalForm.value.nationality_id?.region_id),
       country_of_birth: String(this.addPersonalForm.value.country_of_birth),
       residence_country_id: String(this.addPersonalForm.value.residence_country_id),
       primary_email_id: String(this.addPersonalForm.value.primary_email_id),
-      secondary_email_id: String(this.addPersonalForm.value.secondary_email_id),
+      secondary_email_id: this.addPersonalForm.value.secondary_email_id,
       primary_phone: String(this.addPersonalForm.value.primary_phone),
-      secondary_phone: String(this.addPersonalForm.value.secondary_phone),
-      blood_group_id: String(this.addPersonalForm.value.blood_group_id),
+      secondary_phone: this.addPersonalForm.value.secondary_phone,
+      blood_group_id: this.addPersonalForm.value.blood_group_id != null ? this.addPersonalForm.value.blood_group_id.toString() : null,
       father_name: this.addPersonalForm.value.father_name,
       mother_name: this.addPersonalForm.value.mother_name,
       guardian_name: this.addPersonalForm.value.guardian_name,
@@ -542,20 +536,20 @@ export class OfficialsComponent implements OnInit {
       address_2: this.addPersonalForm.value.address_2,
       country_id: String(this.addPersonalForm.value.country_id),
       state_id: String(this.addPersonalForm.value.state_id),
-      city_id: String(this.addPersonalForm.value.city_id),
-      post_code: String(this.addPersonalForm.value.post_code),
-      emergency_contact: String(this.addPersonalForm.value.emergency_contact),
-      emergency_type: String(this.addPersonalForm.value.emergency_type),
-      emergency_number: String(this.addPersonalForm.value.emergency_number),
-      emergency_email: String(this.addPersonalForm.value.emergency_email),
-      profile_status_id: String(this.addPersonalForm.value.profile_status_id),
-      accreditation_level_id: String(this.addPersonalForm.value.accreditation_level_id),
-      accreditation_id: String(this.addPersonalForm.value.accreditation_id),
-      accreditation_expiry_date: String(this.addPersonalForm.value.accreditation_expiry_date),
-      years_of_experience: String(this.addPersonalForm.value.years_of_experience),
-      twitter_handle: String(this.addPersonalForm.value.twitter_handle),
-      instagram_handle: String(this.addPersonalForm.value.instagram_handle),
-      facebook_url: String(this.addPersonalForm.value.facebook_url),
+      city_id: this.addPersonalForm.value.city_id != null ? this.addPersonalForm.value.city_id.toString() : null,
+      post_code: this.addPersonalForm.value.post_code,
+      emergency_contact: this.addPersonalForm.value.emergency_contact,
+      emergency_type: this.addPersonalForm.value.emergency_type != null ? this.addPersonalForm.value.emergency_type.toString() : null,
+      emergency_number: this.addPersonalForm.value.emergency_number,
+      emergency_email: this.addPersonalForm.value.emergency_email,
+      profile_status_id: this.addPersonalForm.value.profile_status_id != null ? this.addPersonalForm.value.profile_status_id.tostring() : null,
+      accreditation_level_id: this.addPersonalForm.value.accreditation_level_id != null ? this.addPersonalForm.value.accreditation_level_id.tostring() : null,
+      accreditation_id: this.addPersonalForm.value.accreditation_id,
+      accreditation_expiry_date: this.addPersonalForm.value.accreditation_expiry_date,
+      years_of_experience: this.addPersonalForm.value.years_of_experience,
+      twitter_handle: this.addPersonalForm.value.twitter_handle,
+      instagram_handle: this.addPersonalForm.value.instagram_handle,
+      facebook_url: this.addPersonalForm.value.facebook_url,
     };
 
     this.apiService.post(this.urlConstant.officialpersonalupadate, params).subscribe(
@@ -652,10 +646,6 @@ export class OfficialsComponent implements OnInit {
       }
     );
   }
-
-
-
-
 
   Natinalitydropdown() {
 
@@ -804,37 +794,6 @@ export class OfficialsComponent implements OnInit {
 
     }
   }
-
-  /*profile image update */
-
-  // profileImgUpdate(upload_profile_url: any, official_id: any) {
-
-  //   const params: any = {};
-  //   params.action_flag = 'update_profile_url';
-  //   params.profile_img = upload_profile_url.toString();
-  //   params.user_id = this.user_id.toString();
-  //   params.official_id = official_id.toString();
-  //   params.client_id = this.client_id.toString();
-
-  //   this.apiService.post(this.urlConstant.profileofficial, params).subscribe(
-  //     (res) => {
-  //       if (res.status_code == this.statusConstants.success && res.status) {
-  //         // this.filedata = null;
-  //         this.addCallBack(res)
-  //       } else {
-  //         this.failedToast(res);
-  //       }
-  //     },
-  //     (err: any) => {
-  //       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-  //         this.apiService.RefreshToken();
-
-  //       } else {
-  //         this.failedToast(err.error);
-  //       }
-  //     }
-  //   );
-  // }
   profileImgAppend(official_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
@@ -848,17 +807,13 @@ export class OfficialsComponent implements OnInit {
           if (res.status_code == this.statusConstants.success) {
             if (res.url != null && res.url != '') {
               this.addCallBack(res)
-            } else {
-              this.failedToast(res);
             }
-          } 
+          }
         },
         (err: any) => {
           if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
             this.apiService.RefreshToken();
 
-          } else {
-            this.failedToast(err.error);
           }
         }
       );

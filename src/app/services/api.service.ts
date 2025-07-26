@@ -65,11 +65,11 @@ export class ApiService {
     }
 
     RefreshToken() {
-        const params: any = { token: localStorage.getItem('token') };
-        this.post('Auth/log_out', params).subscribe(
-            () => this.clearSession(),
-            () => this.clearSession()
-        );
+        // const params: any = { token: localStorage.getItem('token') };
+        // this.post('Auth/log_out', params).subscribe(
+        //     () => this.clearSession(),
+        //     () => this.clearSession()
+        // );
     }
 
     private clearSession() {

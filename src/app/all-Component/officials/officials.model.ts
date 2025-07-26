@@ -219,7 +219,7 @@ export class offcialpersonaledit{
   user_id : string|number;
    client_id : string|number;
    official_id : string|number;
-  nationality_id: number|string;
+ nationality_id: number|string;
   country_of_birth: number|string;
   residence_country_id: number|string;
   primary_email_id: string;
@@ -255,7 +255,7 @@ export class offcialpersonaledit{
      this.user_id = item.user_id || 0;
       this.client_id = item.client_id || 0;
       this.official_id = item.official_id || 0;
-    this.nationality_id = item.nationality_id || '';
+    this.nationality_id = item.nationality_id|| '';
     this.country_of_birth = item.country_of_birth || '';
     this.residence_country_id = item.residence_country_id || '';
     this.primary_email_id = item.primary_email_id || '';

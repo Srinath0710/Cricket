@@ -219,6 +219,7 @@
 
             <div class="col-md-6">
               <label class="">Sur Name
+                <span class="text-danger">*</span>
               </label>
               <input class="form-control" maxlength="50" type="text" formControlName="sur_name"
                 (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('sur_name', $event)">
@@ -364,10 +365,7 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-              <small
-                *ngIf="addOfficialForm?.get('official_category_id')?.invalid &&(addOfficialForm?.get('official_category_id')?.touched) || (addOfficialForm.get('official_category_id')?.invalid && submitted)"
-                class="required-msg"> official type is Required
-              </small>
+            
             </div>
 
 

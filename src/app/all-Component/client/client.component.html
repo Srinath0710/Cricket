@@ -36,13 +36,13 @@
                         [globalFilterFields]="['Client','country','email_id','mobile','record_status']">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th class="col-3" >
+                                <th class="col-3">
                                     <div class="d-flex justify-content-between align-items-center w-100">
                                         <span>Client</span>
                                         <p-sortIcon field="Client" pSortableColumn="Client"></p-sortIcon>
                                     </div>
                                 </th>
-                                <th class="col-2" >
+                                <th class="col-2">
                                     <div class="d-flex justify-content-between align-items-center w-100">
                                         <span>Country</span>
                                         <p-sortIcon field="country" pSortableColumn="country"></p-sortIcon>
@@ -51,16 +51,16 @@
                                 <th class="col-2">
                                     <div class="d-flex justify-content-between align-items-center w-100">
                                         <span>Email Id</span>
-                                        <p-sortIcon field="email_id"  pSortableColumn="email_id"></p-sortIcon>
+                                        <p-sortIcon field="email_id" pSortableColumn="email_id"></p-sortIcon>
                                     </div>
                                 </th>
-                                <th class="col-2" >
+                                <th class="col-2">
                                     <div class="d-flex justify-content-between align-items-center w-100">
                                         <span>Mobile</span>
                                         <p-sortIcon field="mobile" pSortableColumn="mobile"></p-sortIcon>
                                     </div>
                                 </th>
-                                <th class="col-1" >
+                                <th class="col-1">
                                     <div class="d-flex justify-content-between align-items-center w-100">
                                         <span>Status</span>
                                         <p-sortIcon field="record_status" pSortableColumn="record_status"></p-sortIcon>
@@ -106,7 +106,7 @@
                                         <i class="fa-solid fa-user-pen"></i>
                                     </span>
 
-                                    <span class="icon-green"
+                                    <!-- <span class="icon-green"
                                         (click)="StatusConfirm(client.client_id,conditionConstants.active_status,client.record_status)"
                                         pTooltip="Activate" tooltipPosition="top">
                                         <i class="fa-solid fa-circle-check"></i>
@@ -116,7 +116,29 @@
                                         (click)="StatusConfirm(client.client_id,conditionConstants.deactive_status,client.record_status)"
                                         pTooltip="Deactivate" tooltipPosition="top">
                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
-                                    </span>
+                                    </span> -->
+
+                                    <span 
+  (click)="StatusConfirm(
+    client.client_id,
+    client.record_status === 'Active' 
+      ? { key: 'inactive', label: 'deactivate' } 
+      : { key: 'active', label: 'activate' }
+  )"
+  [pTooltip]="client.record_status === 'Active' ? 'Deactivate' : 'Activate'" 
+  tooltipPosition="top"
+  style="cursor: pointer;"
+  [ngClass]="client.record_status === 'Active' ? 'icon-red' : 'icon-green'"
+>
+  <i 
+    class="fa" 
+    [ngClass]="client.record_status === 'Active' 
+      ? 'fa-trash text-danger' 
+      : 'fa-check-square text-success'">
+  </i>
+</span>
+
+
                                 </td>
                             </tr>
                         </ng-template>
@@ -182,7 +204,7 @@
                         <label>Server
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown  [options]="lookupDataList" class="drop-error " formControlName="app_con_id"
+                        <p-dropdown [options]="lookupDataList" class="drop-error " formControlName="app_con_id"
                             optionValue="app_con_id" optionLabel="connection_name" placeholder="Select Server"
                             appendTo="self" [filter]="true" filterBy="connection_name" [showClear]="false"
                             [panelStyleClass]="'custom-dropdown-panel'">
