@@ -118,7 +118,7 @@ export class ClientComponent implements OnInit {
       mobile: ['', [Validators.pattern(this.mobileRegex)]],
       website: [''],
       description: [''],
-      app_con_id: ['', []],
+      app_con_id: ['', [Validators.required]],
       country_id: ['', [Validators.required]],
       state_id: ['', [Validators.required]],
       city_id: ['', [Validators.required]],
@@ -237,7 +237,6 @@ export class ClientComponent implements OnInit {
             this.profileImgAppend(res.data[0].client_id);
           } else {
             this.addCallBack(res);
-            this.showList();
           }
         } else {
           this.failedToast(res)
@@ -248,14 +247,10 @@ export class ClientComponent implements OnInit {
     }
 
   }
-  showList() {
-    // this.addClientForm.controls['app_con_id'].enable();
-    // this.ShowForm = false;
-  }
+
 
   EditClient(client_id: number) {
     this.showCropperModal = false;
-    // this.addClientForm.controls['app_con_id'].disable();
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = client_id?.toString();
@@ -379,12 +374,7 @@ showAddForm() {
     this.successToast(res);
     this.gridLoad();
   }
-  onPageChange(event: any) {
-    this.first = (event.page) + 1;
-    this.pageData = event.first;
-    this.rows = event.rows;
-    this.gridLoad();
-  }
+
   status(client_id: number, url: string) {
     const params: any = {
       user_id: this.user_id?.toString(),

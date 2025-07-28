@@ -601,7 +601,7 @@ label {
 }
 
 .p-datatable-tbody>tr:hover {
-  background-color: #d0d3e5 !important;
+  background-color: #e2e5f3 !important;
 }
 
 .margin-card {
@@ -1003,8 +1003,8 @@ main {
 }
 
 .p-datatable .p-datatable-thead>tr>th {
-  background-color: #fbfbfb !important;
-  /* color: #505050 !important; */
+  background-color: #bbbfdf !important;
+  /* background-color: #fbfbfb !important; */
   color: #2e2e2e !important;
   /* border: 1px solid #B33DC6 !important; */
   border: 0px solid #020425 !important;
@@ -1403,7 +1403,7 @@ input.form-control:focus {
 
 .groundnameover {
   cursor: pointer;
-  color: #31507e;
+  color: #1d7042;
   font-weight: 600 !important;
 }
 
@@ -1592,7 +1592,7 @@ input.form-control:focus {
 }
 
 .modal-content {
-  width: 90% !important;
+  width: 70% !important;
 }
 
 /* Footer screen Matches  */
@@ -1967,7 +1967,6 @@ body.modal-open {
   box-shadow: 0 0 10px rgba(0, 128, 0, 0.2);
   color: black;
   margin: 0 auto;
-  display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;

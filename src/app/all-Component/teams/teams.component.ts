@@ -164,6 +164,8 @@ export class TeamsComponent implements OnInit {
           this.totalData = this.teamData.length !== 0 ? res.data.teams[0].total_records : 0;
           this.SpinnerService.raiseDataEmitterEvent('off');
           this.countryDropdown();
+          this.getGlobalData();
+
         } else {
           this.teamData = [];
           this.totalData = 0;
@@ -263,7 +265,7 @@ export class TeamsComponent implements OnInit {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
-      life:800
+      life: 800
     });
   }
   /* Failed Toast */
@@ -273,7 +275,7 @@ export class TeamsComponent implements OnInit {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
 
@@ -323,7 +325,7 @@ export class TeamsComponent implements OnInit {
   //   } as any);
   // }
 
-    StatusConfirm(team_id: number, actionObject: { key: string; label: string }) {
+  StatusConfirm(team_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
     const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
@@ -443,8 +445,6 @@ export class TeamsComponent implements OnInit {
       this.apiService.post(this.urlConstant.addTeam, params).subscribe((res) => {
         if (res.status_code === this.statusConstants.success && res.status) {
           if (res.data !== null && this.filedata != null) {
-            console.log('filedata11111111', this.filedata);
-
             this.profileImgAppend(res.data.teams[0].team_id);
           } else {
             this.addCallBack(res)
@@ -532,7 +532,6 @@ export class TeamsComponent implements OnInit {
       this.client_id = this.clientData[0].client_id;
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridLoad();
-      this.getGlobalData();
 
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);

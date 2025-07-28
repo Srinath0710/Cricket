@@ -45,8 +45,9 @@
                         </div>
                     </div>
 
-                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
-                        [rowsPerPageOptions]="[10,25,50,100]" [styleClass]="'custom-table'"
+                    <p-table #dt [value]="gridData" [paginator]="true" 
+                        [rows]="rows"
+                        [rowsPerPageOptions]="[10, 25, 50, 100]" [loading]="false"
                         [globalFilterFields]="['club_name','parent_club_name','country','state','record_status']">
                         <ng-template pTemplate="header">
                             <tr>
@@ -127,7 +128,8 @@
                                         pTooltip="Deactivate" tooltipPosition="top">
                                         <i class="fa-solid fa-trash-can-arrow-up"></i>
                                     </span> -->
-                                    <span (click)="StatusConfirm(club.club_id,
+                                    <span
+                                        (click)="StatusConfirm(club.club_id,
                                         club.record_status === 'Active'? 
                                        { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
                                         [pTooltip]="club.record_status === 'Active' ? 'Deactivate' : 'Activate'"
@@ -147,16 +149,12 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <!-- <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
-                        [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="onPageChange($event)">
-                    </p-paginator> -->
-
                 </div>
             </div>
         </main>
 
-        <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
-            [closable]="false" [styleClass]="'p-confirm-dialog-custom'"></p-confirmDialog>
+        <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+            [styleClass]="'p-confirm-dialog-custom'"></p-confirmDialog>
 
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
             <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">

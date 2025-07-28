@@ -31,7 +31,7 @@
                     </div>
 
 
-                    <p-table #dt [value]="Clientdata" [paginator]="true" [rows]="10" [(first)]="first" [rows]="rows"
+                    <p-table #dt [value]="Clientdata" [paginator]="true" [rows]="rows"
                         [rowsPerPageOptions]="[10,25,50,100]" [styleClass]="'custom-table'"
                         [globalFilterFields]="['Client','country','email_id','mobile','record_status']">
                         <ng-template pTemplate="header">

@@ -521,7 +521,7 @@ export class OfficialsComponent implements OnInit {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
       official_id: String(this.personal_official_id),
-      nationality_id: String(this.addPersonalForm.value.nationality_id?.region_id),
+      nationality_id: String(this.addPersonalForm.value.nationality_id),
       country_of_birth: String(this.addPersonalForm.value.country_of_birth),
       residence_country_id: String(this.addPersonalForm.value.residence_country_id),
       primary_email_id: String(this.addPersonalForm.value.primary_email_id),

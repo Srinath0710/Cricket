@@ -410,7 +410,7 @@
               <div *ngIf="showCropperModal" class="modal img-croper-popup">
                 <div class="modal-content crop-image">
                   <div class="modal-header modal-header-img">
-                    <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+                    <div style="font-size: 20px;">Crop Image</div>
                   </div>
                   <div class="modal-body img-fix">
                     <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
@@ -602,7 +602,7 @@
                     <label>Nationality <span class="text-danger">*</span></label>
 
                     <p-dropdown [options]="countrydropdownData" formControlName="nationality_id"
-                      placeholder="Select Nationality" optionLabel="region_name" placeholder="Select Nationality"
+                      placeholder="Select Nationality" optionLabel="region_name"  optionValue="region_id" placeholder="Select Nationality"
                       class="drop-error" [filter]="true" [panelStyleClass]="'custom-dropdown-panel'"
                       [readonly]="disableReadonly && isPersonalDataIntialized">
                       <ng-template let-nationality pTemplate="item">

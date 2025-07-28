@@ -47,10 +47,10 @@
                     </div>
 
 
-                    <p-table #dt [value]="seasonsData" [paginator]="true" [rows]="rows" [(first)]="first"
+                    <p-table #dt [value]="seasonsData" [paginator]="true" [rows]="rows" 
                         [totalRecords]="totalData" [rowsPerPageOptions]="[10, 25, 50, 100]"
                         [styleClass]="'custom-table'" [globalFilterFields]="['season_name']"
-                        (onPageChange)="onPageChange($event)">
+                       >
 
                         <ng-template pTemplate="header">
                             <tr>

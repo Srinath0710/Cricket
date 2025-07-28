@@ -246,8 +246,7 @@ export class PlayerRegistrationComponent implements OnInit {
     this.Nationalitydropdown();
     this.getCountries();
     this.getGlobalData();
-    this.clubsdropdown();
-    this.dropdownplayer()
+    // this.dropdownplayer()
   }
 
   toggleFilters(): void {
@@ -317,6 +316,7 @@ export class PlayerRegistrationComponent implements OnInit {
       this.gridLoad();
       this.radiobutton();
 
+
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
@@ -338,6 +338,7 @@ export class PlayerRegistrationComponent implements OnInit {
           this.PlayerData = res.data.players;
           this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
           this.spinnerService.raiseDataEmitterEvent('off');
+          this.clubsdropdown();
 
         }
         else {
@@ -380,22 +381,22 @@ export class PlayerRegistrationComponent implements OnInit {
     })
   }
 
-  dropdownplayer() {
-    const params: any = {};
-    params.action_flag = this.Actionflag.Dropdown;
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
-    this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-      this.configDataList = res.data.clubs != undefined ? res.data.clubs : [];
-      this.genderSelect = res.data.clubs
-        .filter((item: any) => item.config_key == 'gender')
-      // console.log(this.genderSelect,res.data.teams);
-    }, (err: any) => {
-      if (err.status_code === this.statusConstants.refresh && err.error.message) {
-        this.apiService.RefreshToken();
-      }
-    })
-  }
+  // dropdownplayer() {
+  //   const params: any = {};
+  //   params.action_flag = this.Actionflag.Dropdown;
+  //   params.user_id = this.user_id.toString();
+  //   params.client_id = this.client_id.toString();
+  //   this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
+  //     this.configDataList = res.data.clubs != undefined ? res.data.clubs : [];
+  //     this.genderSelect = res.data.clubs
+  //       .filter((item: any) => item.config_key == 'gender')
+  //     // console.log(this.genderSelect,res.data.teams);
+  //   }, (err: any) => {
+  //     if (err.status_code === this.statusConstants.refresh && err.error.message) {
+  //       this.apiService.RefreshToken();
+  //     }
+  //   })
+  // }
 
   radiobutton() {
     const params: any = {};
@@ -404,6 +405,8 @@ export class PlayerRegistrationComponent implements OnInit {
     params.client_id = this.client_id.toString();
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
       this.configDataList = res.data.clubs ?? [];
+      this.genderSelect = res.data.clubs
+        .filter((item: any) => item.config_key == 'gender')
       this.playerrole = res.data.clubs
         .filter((item: any) => item.config_key == 'player_role')
 
@@ -1160,7 +1163,7 @@ export class PlayerRegistrationComponent implements OnInit {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
-      life:800
+      life: 800
     });
   }
   /* Failed Toast */
@@ -1170,7 +1173,7 @@ export class PlayerRegistrationComponent implements OnInit {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
 
@@ -1222,7 +1225,7 @@ export class PlayerRegistrationComponent implements OnInit {
   //     reject: () => this.confirmationService.close()
   //   } as any);
   // }
-    StatusConfirm(player_id: number, actionObject: { key: string; label: string }) {
+  StatusConfirm(player_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
     const iconColor = isActivating ? '#4CAF50' : '#d32f2f';

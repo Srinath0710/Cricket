@@ -667,4 +667,5 @@ onShowFormChange(isShown: boolean) {
     this.dt.clear();
     this.loadCompetitions();
   }
+  
 }
