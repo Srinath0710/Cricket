@@ -188,6 +188,8 @@ export class URLCONSTANT {
      endpointdropdown='Menu/get_endpoint_dropdown'
      
 
+     /* Users List */
+
      getUsersList = 'User/get_user_list'
      createUsers = 'User/create_user'
      updateUsers = 'User/update_user'

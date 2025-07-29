@@ -96,11 +96,11 @@ export class UpdateUser {
 export class getUserListCreation {
   user_id: number;
   client_id: number;
-  user_type: string | number;
+  user_type: string;
 
   constructor(item: Partial<getUserListCreation> = {}) {
     this.user_id = item.user_id || 0;
     this.client_id = item.client_id || 0;
-    this.user_type = item.user_type || 0;
+    this.user_type = item.user_type || '';
   }
 }

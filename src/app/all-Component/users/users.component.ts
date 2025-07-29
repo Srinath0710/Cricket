@@ -67,7 +67,7 @@ export class UsersComponent implements OnInit {
   userTypesDropdown: any[] = [];
   rolesDropdown: any[] = [];
   OfficialDropdown: any[] = [];
-  playerDropdown: any[] = [];
+  associationDropdown: any[] = [];
   showClientDropdown = false;
   showRolesDropdown = false;
   showAssociationsDropdown = false;
@@ -432,37 +432,70 @@ export class UsersComponent implements OnInit {
     }
 
 
-    if (userType === 'player' || userType === 'official') {
+    if (userType === 'Association') {
       this.spinnerService.raiseDataEmitterEvent('on');
       const params = {
-        user_id: this.user_id.toString(),
-        client_id: this.client_id.toString(),
-        user_type: userType.toString()
+        user_id: this.user_id?.toString(),
+        client_id: this.client_id?.toString(),
+        user_type: 'player'
       };
 
       this.apiService.post(this.urlConstant.getUserListCreation, params).subscribe({
         next: (res: any) => {
           this.spinnerService.raiseDataEmitterEvent('off');
           if (res.status_code === '200' && res.status !== false) {
-            if (userType === 'player') {
-              this.playerDropdown = res.data.user_details.map((item: any) => ({
-                label: item.user_id,
-                value: item.user_name
-              }));
-            } else if (userType === 'official') {
-              this.OfficialDropdown = res.data.official.map((item: any) => ({
-                label: item.official_name,
-                value: item.official_id
-              }));
-            }
+            this.associationDropdown = res.data.user_details.map((item: any) => ({
+              asslabel: item.user_name,
+              assvalue: item.user_id
+            }));
           } else {
             this.failedToast(res);
           }
         },
         error: (err: any) => {
           this.spinnerService.raiseDataEmitterEvent('off');
-          err.status_code === this.statusConstants.refresh &&
-            err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+          if (
+            err.status_code === this.statusConstants.refresh &&
+            err.error?.message === this.statusConstants.refresh_msg
+          ) {
+            this.apiService.RefreshToken();
+          } else {
+            this.failedToast(err.error);
+          }
+        }
+      });
+    }
+
+    if (userType === 'Official') {
+      this.spinnerService.raiseDataEmitterEvent('on');
+      const params = {
+        user_id: this.user_id?.toString(),
+        client_id: this.client_id?.toString(),
+        user_type: 'official'
+      };
+
+      this.apiService.post(this.urlConstant.getUserListCreation, params).subscribe({
+        next: (res: any) => {
+          this.spinnerService.raiseDataEmitterEvent('off');
+          if (res.status_code === '200' && res.status !== false) {
+            this.OfficialDropdown = res.data.user_details.map((item: any) => ({
+              label: item.user_name,
+              value: item.user_id
+            }));
+          } else {
+            this.failedToast(res);
+          }
+        },
+        error: (err: any) => {
+          this.spinnerService.raiseDataEmitterEvent('off');
+          if (
+            err.status_code === this.statusConstants.refresh &&
+            err.error?.message === this.statusConstants.refresh_msg
+          ) {
+            this.apiService.RefreshToken();
+          } else {
+            this.failedToast(err.error);
+          }
         }
       });
     }

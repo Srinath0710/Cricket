@@ -135,7 +135,7 @@
         </p-confirmDialog>
         <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 form-drawer-header">
                 <div class="small-heading">
                     <div *ngIf="addUsersForm.get('user_id')?.value == '' || addUsersForm.get('user_id')?.value == null">
                         Add Users
@@ -245,12 +245,12 @@
                         <label> Association
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown [options]="playerDropdown" formControlName="association"
-                            placeholder="Select Association" appendTo="body" class=" w-100 
+                        <p-dropdown [options]="associationDropdown" formControlName="Association" optionLabel="asslabel"
+                            optionValue="assvalue" placeholder="Select Association" appendTo="body" class=" w-100 
                            drop-error header-drop">
                         </p-dropdown>
                         <small
-                            *ngIf="addUsersForm?.get('association')?.invalid &&(addUsersForm?.get('association')?.touched) || (addUsersForm.get('association')?.invalid && submitted)"
+                            *ngIf="addUsersForm?.get('user_id')?.invalid &&(addUsersForm?.get('user_id')?.touched) || (addUsersForm.get('user_id')?.invalid && submitted)"
                             class="required-msg">
                             Association Is Required
                         </small>
@@ -260,8 +260,8 @@
                         <label> Ref ID
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown [options]="OfficialDropdown" formControlName="official"
-                            placeholder="Select Ref ID" appendTo="body" class=" w-100 
+                        <p-dropdown [options]="OfficialDropdown" formControlName="Official" optionLabel="label"
+                            optionValue="value" placeholder="Select Ref ID" appendTo="body" class=" w-100 
                            drop-error header-drop">
                         </p-dropdown>
                         <small
