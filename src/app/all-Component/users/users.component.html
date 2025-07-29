@@ -1,0 +1,317 @@
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <main>
+            <div class="card margin-card">
+                <div class="card-body">
+                    <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+                        <div class="main-page-title page-title background">
+                            <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                            Users
+                            <!-- <div class="totalrecord">: {{ totalData }}</div> -->
+                        </div>
+
+                        <!--- Client Dropdown -->
+
+                        <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
+                            <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
+                                optionValue="client_id" [(ngModel)]="client_id" (ngModelChange)="gridLoad()"
+                                placeholder="Client Id" [filter]="true" appendTo="body" class=" w-100 
+                           drop-error header-drop">
+                                <ng-template let-Client pTemplate="item">
+                                    <div class="country-item">
+                                        <div>{{ Client.client_name }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
+
+                        <!--- Search Box -->
+
+                        <div class="d-flex align-items-center">
+                            <form class="d-flex align-item-center gap-2" (submit)="gridLoad()">
+                                <div class="p-input-icon-right flex-grow-1">
+                                    <input pInputText type="text" [(ngModel)]="searchkeyword" name="searchKeyword"
+                                        class="width-search" placeholder="Search" (input)="filterGlobal()"
+                                        (keypress)="blockQuotesOnly($event)"
+                                        (input)="sanitizeQuotesOnly('team_name', $event)">
+                                </div>
+                                <button type="button" class="clear-button" (click)="clear()"> Clear</button>
+                            </form>
+
+                            <div class="card flex justify-center">
+                                <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="showAddForm()"><i
+                                        class="fas fa-plus"></i> Users</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <p-table #dt [value]="usersData" [paginator]="true" [(first)]="first" [rows]="rows"
+                        [rowsPerPageOptions]="[10,25,50,100]" [styleClass]="'custom-table'"
+                        [globalFilterFields]="['user_name','email','phone_no','role','created_on','record_status']">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="col2">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        User Name <p-sortIcon field="user_name"
+                                            pSortableColumn="user_name"></p-sortIcon>
+                                    </div>
+                                </th>
+                                <th class="col2">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        Email <p-sortIcon field="email" pSortableColumn="email"></p-sortIcon>
+                                    </div>
+                                </th>
+                                <th class="col2">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        User Type <p-sortIcon field="users_type"
+                                            pSortableColumn="users_type"></p-sortIcon>
+                                    </div>
+                                </th>
+                                <th class="col-2">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        Status <p-sortIcon field="record_status"
+                                            pSortableColumn="record_status"></p-sortIcon>
+                                    </div>
+                                </th>
+                                <th class="col-2" class="custom-header action-column-header">Actions</th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-users>
+                            <tr>
+                                <td>{{ users.user_name }}</td>
+                                <td>{{ users.email }}</td>
+                                <td>{{ users.user_type }}</td>
+                                <td>
+                                    <span [ngClass]="{
+                                    'bg-success' : users.record_status === 'Active',
+                                    'bg-danger' : users.record_status === 'InActive'
+                                    }">
+                                        {{ users.record_status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="icon-blue" pTooltip="Edit" (click)="EditUser(users)" pTooltip="Edit"
+                                        tooltipPosition="top">
+                                        <i class="fa-solid fa-user-pen"></i>
+                                    </span>
+
+                                    <!-- <span class="icon-green"
+                                        (click)="StatusConfirm(users.user_id,conditionConstants.active_status,users.record_status)"
+                                        pTooltip="Activate" tooltipPosition="top">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </span>
+
+                                    <span class="icon-red"
+                                        (click)="StatusConfirm(users.user_id,conditionConstants.deactive_status,users.record_status)"
+                                        pTooltip="Deactivate" tooltipPosition="top">
+                                        <i class="fa-solid fa-trash-can-arrow-up"></i>
+                                    </span> -->
+                                    <span (click)="StatusConfirm(users.user_id,
+                         users.record_status === 'Active'? 
+                         { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
+                                        [pTooltip]="users.record_status === 'Active' ? 'Deactivate' : 'Activate'"
+                                        tooltipPosition="top" style="cursor: pointer;"
+                                        [ngClass]="users.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                                        <i class="fa" [ngClass]="users.record_status ===
+                     'Active'? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'">
+                                        </i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6" class="text-center">No Records Found</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </main>
+        <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+            [styleClass]="'p-confirm-dialog-custom'">
+        </p-confirmDialog>
+        <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="small-heading">
+                    <div *ngIf="addUsersForm.get('user_id')?.value == '' || addUsersForm.get('user_id')?.value == null">
+                        Add Users
+                    </div>
+                    <div *ngIf="addUsersForm.get('user_id')?.value != null && addUsersForm.get('user_id')?.value != ''">
+                        Edit Users
+                    </div>
+
+                </div>
+            </div>
+
+            <form [formGroup]="addUsersForm">
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <label> User Name
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="50" type="text" formControlName="user_name"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('user_name',$event)">
+                        <small
+                            *ngIf="addUsersForm?.get('user_name')?.invalid &&(addUsersForm?.get('user_name')?.touched) || (addUsersForm.get('user_name')?.invalid && submitted)"
+                            class="required-msg">
+                            User Name Is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>Email ID
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="email" formControlName="email" class="form-control" placeholder="Enter Email">
+                        <div *ngIf="addUsersForm.get('email')?.touched && addUsersForm.get('email')?.invalid">
+                            <small *ngIf="addUsersForm.get('email')?.errors?.['required']" class="required-msg">
+                                Email ID is required
+                            </small>
+                            <small *ngIf="addUsersForm.get('email')?.errors?.['pattern']" class="required-msg">
+                                Invalid Email: abcd&#64;example.com
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6" *ngIf="!isEditMode">
+                        <label>User Password
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="50" type="text" formControlName="u_password"
+                            (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('u_password',$event)">
+                        <small
+                            *ngIf="addUsersForm?.get('u_password')?.invalid &&(addUsersForm?.get('u_password')?.touched) || (addUsersForm.get('u_password')?.invalid && submitted)"
+                            class="required-msg">
+                            Password Is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-6" *ngIf="!isEditMode">
+                        <label>Confirm Password<span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control" maxlength="50" type="text" formControlName="confirm_password"
+                            (keypress)="blockQuotesOnly($event)"
+                            (input)="sanitizeQuotesOnly('confirm_password',$event)">
+                        <small
+                            *ngIf="addUsersForm.get('confirm_password')?.errors?.['required'] && (addUsersForm.get('confirm_password')?.touched || submitted)"
+                            class="required-msg">
+                            Confirm Password is required
+                        </small>
+                        <small
+                            *ngIf="addUsersForm.get('confirm_password')?.errors?.['mismatch'] && (addUsersForm.get('confirm_password')?.touched || submitted)"
+                            class="required-msg">
+                            Confirm Password does not match User Password
+                        </small>
+
+                    </div>
+
+                    <div class="col-md-6" *ngIf="!isEditMode">
+                        <label>User Type
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown formControlName="user_type" [options]="userTypesDropdown" optionLabel="label"
+                            optionValue="value" placeholder="Select User Type" appendTo="body"
+                            class="w-100 drop-error header-drop" (onChange)="onUserTypeChange($event.value)">
+                        </p-dropdown>
+
+                        <small
+                            *ngIf="addUsersForm?.get('user_type')?.invalid &&(addUsersForm?.get('user_type')?.touched) || (addUsersForm.get('user_type')?.invalid && submitted)"
+                            class="required-msg">
+                            User Type Is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-6" *ngIf="!isEditMode && showClientDropdown">
+                        <label>Client
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown *ngIf="isClientShow" [options]="clientData" optionLabel="client_name"
+                            optionValue="client_id" formControlName="client_id" placeholder="Select Client"
+                            [filter]="true" appendTo="body" class="w-100 drop-error header-drop">
+                        </p-dropdown>
+                        <small
+                            *ngIf="addUsersForm?.get('client_id')?.invalid &&(addUsersForm?.get('client_id')?.touched) || (addUsersForm.get('client_id')?.invalid && submitted)"
+                            class="required-msg">
+                            Client Is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-6" *ngIf="!isEditMode && showAssociationsDropdown">
+                        <label> Association
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="associationDropdown" formControlName="association"
+                            placeholder="Select Association" appendTo="body" class=" w-100 
+                           drop-error header-drop">
+                        </p-dropdown>
+                        <small
+                            *ngIf="addUsersForm?.get('association')?.invalid &&(addUsersForm?.get('association')?.touched) || (addUsersForm.get('association')?.invalid && submitted)"
+                            class="required-msg">
+                            Association Is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-6" *ngIf="!isEditMode && showOfficialDropdown">
+                        <label> Ref ID
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="OfficialDropdown" formControlName="association"
+                            placeholder="Select Association" appendTo="body" class=" w-100 
+                           drop-error header-drop">
+                        </p-dropdown>
+                        <small
+                            *ngIf="addUsersForm?.get('ref_id')?.invalid &&(addUsersForm?.get('ref_id')?.touched) || (addUsersForm.get('ref_id')?.invalid && submitted)"
+                            class="required-msg">
+                            Ref ID Is Required
+                        </small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>Role
+                            <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="rolesDropdown" formControlName="role_id" placeholder="Select Role"
+                            optionValue="role_id" optionLabel="role_name" appendTo="body" class=" w-100 
+                           drop-error header-drop">
+                        </p-dropdown>
+                        <small
+                            *ngIf="addUsersForm?.get('role_id')?.invalid &&(addUsersForm?.get('role_id')?.touched) || (addUsersForm.get('role_id')?.invalid && submitted)"
+                            class="required-msg">
+                            Role is Required
+                        </small>
+                    </div>
+
+                    <div class="form-wrapper pb-5">
+                        <div class="row mt-4 sticky-footer-buttons">
+                            <div class="col-12 text-end">
+                                <button pButton type="button" label="Cancel"
+                                    class="p-button-secondary me-3 custom-cancel-btn" (click)="cancelForm()">
+                                </button>
+                                <button pButton type="button" label="Clear"
+                                    class="p-button-secondary me-3 custom-cancel-btn"
+                                    *ngIf="addUsersForm.get('login_user_id')?.value == '' || addUsersForm.get('login_user_id')?.value == null"
+                                    (click)="resetForm()"></button>
+                                <button pButton label="Save" class="save-button" (click)="onAddUser()"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </p-drawer>
+    </div>
+</div>
+<p-toast position="center" [baseZIndex]="11000">
+    <ng-template let-message pTemplate="message">
+        <div class="custom-toast-message">
+            <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
+            <div>
+                <div class="font-bold">{{ message.summary }}</div>
+                <div>{{ message.detail }}</div>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>

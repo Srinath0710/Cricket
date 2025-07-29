@@ -15,12 +15,13 @@ import { ScoreEngineComponent } from "../score-engine/score-engine.component";
 import { ClientComponent } from "./client/client.component";
 import { ClubRegistrationComponent } from "./club-registration/club-registration.component";
 import { MenuComponent } from "./menu/menu.component";
+import { UsersComponent } from "./users/users.component";
 
 export const AllComponentRoutes: Route[] = [
     {
         path: '',
         component: AllComponentComponent,
-        children:[
+        children: [
             {
                 path: '',
                 redirectTo: 'client',
@@ -71,7 +72,7 @@ export const AllComponentRoutes: Route[] = [
             //     component: ScoreEnginesComponent
 
             // },
-         
+
             {
                 path: 'score-card',
                 component: ScoreEngineComponent
@@ -87,10 +88,14 @@ export const AllComponentRoutes: Route[] = [
                 component: ClubRegistrationComponent
             },
             {
-            path: 'permissions',
-            component:MenuComponent
-            }
-         
+                path: 'permissions',
+                component: MenuComponent
+            },
+            {
+                path: 'users',
+                component: UsersComponent
+            },
+
         ]
 
     },

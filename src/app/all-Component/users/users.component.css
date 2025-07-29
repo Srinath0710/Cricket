@@ -1,0 +1,79 @@
+/* .card.margin-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible !important;
+  padding-bottom: 20px;
+}
+
+::ng-deep .custom-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  
+  .p-datatable-wrapper {
+    flex: 1;
+    min-height: 300px;
+  }
+  
+  .p-paginator {
+    position: relative;
+    margin-top: auto;
+    padding: 1rem;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: center;
+  }
+} */
+
+
+/* Active/Inactive POP UP Message */
+
+::ng-deep .p-confirm-dialog-custom .p-dialog-content,
+.p-confirm-dialog-footer {
+  text-align: center;
+  justify-content: center;
+}
+
+::ng-deep .p-confirm-dialog-custom .icon-wrapper i {
+  font-size: 5rem;
+  color: #120b01;
+}
+
+::ng-deep .p-confirm-dialog-custom .action-heading {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #070501;
+  margin-top: 0.5rem;
+  margin-left: -18px;
+}
+
+::ng-deep .warning {
+  font-family: "emoji";
+  font-size: x-large;
+}
+
+::ng-deep .p-confirm-dialog-custom .logo-img {
+  width: 257px;
+  height: auto;
+  margin-bottom: 2px;
+  padding-right: 171px;
+  margin-top: -22px;
+  border-top: 1px solid #dee2e6;
+}
+
+::ng-deep .p-confirm-dialog-custom .warning-icon {
+  font-size: 50px;
+}
+
+::ng-deep .message-text{
+      margin-top: 14px !important;
+    font-size: 14px !important;
+}
