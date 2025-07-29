@@ -347,8 +347,10 @@ export class UsersComponent implements OnInit {
   }
 
   filterGlobal() {
-    if (this.searchkeyword.trim().length >= 3 || this.searchkeyword === '') {
-      this.first = 0;
+    if (this.searchkeyword.length >= 3 || this.searchkeyword.length === 0) {
+
+      this.dt()?.filterGlobal(this.searchkeyword, 'contains');
+      this.first = 1;
       this.gridLoad();
     }
   }
@@ -499,5 +501,9 @@ export class UsersComponent implements OnInit {
         }
       });
     }
+  }
+
+  get visibleRecords(): number {
+    return this.usersData?.length || 0;
   }
 }
