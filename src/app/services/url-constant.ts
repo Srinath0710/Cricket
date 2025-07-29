@@ -188,5 +188,14 @@ export class URLCONSTANT {
      endpointdropdown='Menu/get_endpoint_dropdown'
      
 
+     getUsersList = 'User/get_user_list'
+     createUsers = 'User/create_user'
+     updateUsers = 'User/update_user'
+     editUsers = 'User/edit_user'
+     activateUsers = 'User/activate_user'
+     deactivateUsers = 'User/deactivate_user'
+     getUserDropdown = 'User/get_user_dropdown'
+     getUserClientList = 'User/get_user_client_list'
+     getUserListCreation = 'User/get_user_list_for_creation'
 
 } 

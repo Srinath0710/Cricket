@@ -15,6 +15,7 @@ import { ScoreEngineComponent } from "../score-engine/score-engine.component";
 import { ClientComponent } from "./client/client.component";
 import { ClubRegistrationComponent } from "./club-registration/club-registration.component";
 import { MenuComponent } from "./menu/menu.component";
+import { UsersComponent } from "./users/users.component";
 
 export const AllComponentRoutes: Route[] = [
     {
@@ -89,7 +90,11 @@ export const AllComponentRoutes: Route[] = [
             {
             path: 'permissions',
             component:MenuComponent
-            }
+            },
+            {
+                path: 'users',
+                component: UsersComponent
+            },
          
         ]
 
