@@ -154,11 +154,6 @@ body.modal-open {
   vertical-align: middle;
 }
 
-/* .modal-content {
-    height: 310px;
-    width: 38% !important;
-} */
-
 .img-croper-popup .modal-content.crop-image {
   width: auto;
   max-width: 360px;
@@ -168,5 +163,5 @@ body.modal-open {
 
 .image-upload-container {
   display: block;
-  margin-top: 8px; /* Adds spacing between label and container */
-}
+  margin-top: 8px; 
+} 

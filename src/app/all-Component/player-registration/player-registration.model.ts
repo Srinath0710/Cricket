@@ -136,7 +136,7 @@ export class playeredit {
   }
 }
 
-export class playerspersonalupadate {
+export class playerspersonalupdate {
   user_id: string | number;
   client_id: string | number;
   player_id: string | number;
@@ -176,7 +176,7 @@ export class playerspersonalupadate {
   policy_expiry_date: string;
   additional_notes: string;
 
-  constructor(item: Partial<playerspersonalupadate> = {}) {
+  constructor(item: Partial<playerspersonalupdate> = {}) {
     this.user_id = item.user_id || 0;
     this.client_id = item.client_id || 0;
     this.player_id = item.player_id || 0;

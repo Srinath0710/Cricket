@@ -52,8 +52,8 @@
               </div>
             </div>
             <!-- STATUS Confirmation POPUP -->
-            <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
-              [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+            <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+              [styleClass]="'p-confirm-dialog-custom'">
             </p-confirmDialog>
 
             <p-table #dt [value]="PlayerData" [styleClass]="'custom-table'"
@@ -141,12 +141,13 @@
                       <span (click)="StatusConfirm(player.player_id,
                          player.record_status === 'Active'? 
                          { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
-                    [pTooltip]="player.record_status === 'Active' ? 'Deactivate' : 'Activate'" tooltipPosition="top"
-                    style="cursor: pointer;" [ngClass]="player.record_status === 'Active' ? 'icon-red' : 'icon-green'">
-                    <i class="fa" [ngClass]="player.record_status ===
+                        [pTooltip]="player.record_status === 'Active' ? 'Deactivate' : 'Activate'" tooltipPosition="top"
+                        style="cursor: pointer;"
+                        [ngClass]="player.record_status === 'Active' ? 'icon-red' : 'icon-green'">
+                        <i class="fa" [ngClass]="player.record_status ===
                      'Active'? 'fa-solid fa-trash-arrow-up': 'fa-check-square text-success'">
-                    </i>
-                  </span>
+                        </i>
+                      </span>
 
                       <span class="icon-rose" pTooltip="Personal Info" tooltipPosition="top"
                         (click)="EditpersonalPlayers(player)">
@@ -204,7 +205,7 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Sure Name</label>
+                          <label>Sur Name</label>
                           <span class="text-danger">*</span>
                           <input class="form-control" type="text" maxlength="50" formControlName="sur_name"
                             (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('sur_name', $event)">
@@ -261,16 +262,10 @@
 
                         <div class="col-md-6">
                           <label>Email Id
-                            <span class="text-danger">*</span>
                           </label>
                           <input type="email" formControlName="email" class="form-control" placeholder="Enter Email">
 
-                          <div
-                            *ngIf="playerRegistrationform.get('email')?.touched && playerRegistrationform.get('email')?.invalid">
-                            <small *ngIf="playerRegistrationform.get('email')?.errors?.['required']"
-                              class="required-msg">
-                              Email ID is Required
-                            </small>
+                          <div>
                             <small *ngIf="playerRegistrationform.get('email')?.errors?.['pattern']"
                               class="required-msg">
                               Invalid email: abcd&#64;example.com
@@ -279,7 +274,8 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Club ID</label>
+                          <label>Club</label>
+                          <span class="text-danger">*</span>
                           <p-dropdown [options]="clublist" class="drop-error " formControlName="club_id"
                             optionValue="club_id" optionLabel="club_name" placeholder="Select Club Id">
                             <ng-template let-club pTemplate="item">
@@ -289,17 +285,21 @@
                               </div>
                             </ng-template>
                           </p-dropdown>
+                          <small *ngIf="playerRegistrationform.get('club_id')?.invalid && 
+                              (playerRegistrationform.get('club_id')?.touched || submitted)" class="required-msg">
+                            Club is Required
+                          </small>
                         </div>
 
                         <div class="col-md-6">
                           <label>Nationality</label>
                           <span class="text-danger">*</span>
-                          <p-dropdown [options]="NationalitydropdownData" formControlName="nationality_id"
-                            optionValue="region_id" optionLabel="region_name" placeholder="Select Nationality Country"
-                            class="drop-error" [panelStyleClass]="'custom-dropdown-panel'">
+                          <p-dropdown [options]="countriesList" formControlName="nationality_id" optionValue="country_id"
+                            optionLabel="country_name" placeholder="Select Nationality Country" class="drop-error"
+                            [panelStyleClass]="'custom-dropdown-panel'" appendTo="self" [filter]="true">
                             <ng-template let-nationality pTemplate="item">
                               <div class="flex align-items-center gap-2">
-                                <div>{{ nationality.region_name }}</div>
+                                <div>{{ nationality.country_name }}</div>
                               </div>
                             </ng-template>
                           </p-dropdown>
@@ -358,7 +358,7 @@
                             <div class="split-button-wrapper">
                               <label for="profileImageInput" class="split-button upload-half">
                                 <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)"
-                                  hidden hidden formControlName="profile_image" />
+                                  hidden formControlName="profile_image" />
                                 Upload
                               </label>
                               <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
@@ -622,10 +622,10 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Country Of Birth <span class="text-danger">*</span></label>
+                          <label>Country of Birth <span class="text-danger">*</span></label>
                           <p-dropdown [options]="countriesList" formControlName="country_of_birth"
                             optionValue="country_id" optionLabel="country_name" placeholder="Select Country"
-                            class="drop-error" [panelStyleClass]="'custom-dropdown-panel'"
+                           filter="true" class="drop-error" [panelStyleClass]="'custom-dropdown-panel'"
                             [readonly]="disableReadonly && isPersonalDataIntialized"
                             (ngModelChange)="getStates(addplayerpersonalform.get('country_id')?.value)">
                             <ng-template let-country pTemplate="item">
@@ -660,7 +660,7 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Secondary Phone NO</label>
+                          <label>Secondary Phone No</label>
                           <input class="form-control" type="text" maxlength="10" formControlName="secondary_phone"
                             (input)="onPhoneNumberInput($event, 'secondary_phone')"
                             [readonly]="disableReadonly&&isPersonalDataIntialized" />
@@ -697,7 +697,7 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Nationality <span class="text-danger">*</span></label>
+                          <label>Region <span class="text-danger">*</span></label>
                           <p-dropdown [options]="NationalitydropdownData" formControlName="nationality_id"
                             optionValue="region_id" optionLabel="region_name" placeholder="Select Nationality"
                             class="drop-error" [filter]="true" [panelStyleClass]="'custom-dropdown-panel'"
@@ -811,7 +811,7 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Emergency Phone NO</label>
+                          <label>Emergency Phone No</label>
                           <input class="form-control" type="text" maxlength="10" formControlName="emergency_number"
                             (input)="onPhoneNumberInput($event, 'emergency_number')"
                             [readonly]="disableReadonly&&isPersonalDataIntialized" />

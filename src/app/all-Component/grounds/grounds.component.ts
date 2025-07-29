@@ -52,7 +52,7 @@ export class GroundsComponent implements OnInit {
 
   public addGroundForm!: FormGroup<any>;
   user_id: number = Number(localStorage.getItem('user_id'));
-  client_id: number = Number(localStorage.getItem('client_id'));
+  client_id: number = 0;
   public ShowForm: any = false;
   isEditMode: boolean = false;
   ViewMode: boolean = false;
@@ -139,7 +139,7 @@ export class GroundsComponent implements OnInit {
       south: [null, [Validators.pattern(this.decimalPattern)]],
       east: [null, [Validators.pattern(this.decimalPattern)]],
       west: [null, [Validators.pattern(this.decimalPattern)]],
-      club_id: ['', []],
+      club_id: ['', [Validators.required]],
       latitude: [''],
       longitude: [''],
       capacity: [''],
@@ -272,6 +272,9 @@ export class GroundsComponent implements OnInit {
             this.totalData = 0;
             this.spinnerService.raiseDataEmitterEvent('off');
           }
+          this.groundsData.forEach((val: any) => {
+            val.profile_img = `${val.profile_img}?${Math.random()}`;
+          });
         },
       });
 
@@ -329,6 +332,8 @@ export class GroundsComponent implements OnInit {
 
   showAddForm() {
     this.ShowForm = true;
+    this.showCropperModal = false;
+
   }
 
   cancelForm() {
@@ -354,117 +359,26 @@ export class GroundsComponent implements OnInit {
     this.imageCropAlter = null;
     this.imageDefault = null;
   }
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-    life:800
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+      life: 800
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
-    data: { image: 'assets/images/default-logo.png' },
-    severity: 'error',
-    summary: 'Error',
-    detail: data.message,
-    life:800
-   });
+      data: { image: 'assets/images/default-logo.png' },
+      severity: 'error',
+      summary: 'Error',
+      detail: data.message,
+      life: 800
+    });
   }
-
-  // onAddGround() {
-  //   this.submitted = true;
-  //   this.isEditMode = false;
-  //   if (this.addGroundForm.invalid) {
-
-  //     this.addGroundForm.markAllAsTouched();
-  //     return;
-  //   }
-
-  //   const isEdit = !!this.addGroundForm.value.ground_id;
-
-  //   const params: UpdateGround = {
-
-  //     user_id: String(this.user_id),
-  //     client_id: String(this.ClientID),
-  //     ground_id: this.addGroundForm.value.ground_id != null ? String(this.addGroundForm.value.ground_id) : null,
-  //     ground_name: this.addGroundForm.value.ground_name,
-  //     display_name: this.addGroundForm.value.display_name,
-  //     country_id: String(this.addGroundForm.value.country_id),
-  //     state_id: String(this.addGroundForm.value.state_id),
-  //     city_id: String(this.addGroundForm.value.city_id),
-  //     address_1: this.addGroundForm.value.address_1,
-  //     address_2: this.addGroundForm.value.address_2,
-  //     post_code: this.addGroundForm.value.post_code,
-  //     northern_end: this.addGroundForm.value.northern_end,
-  //     sourthern_end: this.addGroundForm.value.sourthern_end,
-  //     north: this.addGroundForm.value.north,
-  //     south: this.addGroundForm.value.south,
-  //     east: this.addGroundForm.value.east,
-  //     west: this.addGroundForm.value.west,
-  //     club_id: String(this.addGroundForm.value.club_id),
-  //     latitude: this.addGroundForm.value.latitude,
-  //     longitude: this.addGroundForm.value.longitude,
-  //     capacity: String(this.addGroundForm.value.capacity),
-  //     profile: this.addGroundForm.value.profile,
-  //     action_flag: isEdit ? 'update' : 'create',
-  //     ground_photo: this.addGroundForm.value.ground_photo,
-  //     reference_id: this.addGroundForm.value.reference_id,
-  //   };
-
-  //   const apiUrl = isEdit ? this.urlConstant.updateGround : this.urlConstant.addGround;
-
-  //   this.apiService.post(apiUrl, params).subscribe(
-  //     (res) => {
-  //       if (res.status_code === this.statusConstants.success && res.status) {
-  //         const groundId = isEdit ? params.ground_id : res.data?.grounds?.[0]?.ground_id;
-  //         if (this.filedata instanceof Blob && groundId) {
-  //           this.profileImgAppend(groundId, res);
-  //         } else {
-  //           this.addCallBack(res);
-  //         }
-  //       } else {
-  //         this.failedToast(res);
-  // user_id: String(this.user_id),
-  //     client_id: String(this.ClientID),
-  //     ground_id: this.addGroundForm.value.ground_id != null ? String(this.addGroundForm.value.ground_id) : null,
-  //     ground_name: this.addGroundForm.value.ground_name,
-  //     display_name: this.addGroundForm.value.display_name,
-  //     country_id: String(this.addGroundForm.value.country_id),
-  //     state_id: String(this.addGroundForm.value.state_id),
-  //     city_id: String(this.addGroundForm.value.city_id),
-  //     address_1: this.addGroundForm.value.address_1,
-  //     address_2: this.addGroundForm.value.address_2,
-  //     post_code: this.addGroundForm.value.post_code,
-  //     northern_end: this.addGroundForm.value.northern_end,
-  //     sourthern_end: this.addGroundForm.value.sourthern_end,
-  //     north: this.addGroundForm.value.north,
-  //     south: this.addGroundForm.value.south,
-  //     east: this.addGroundForm.value.east,
-  //     west: this.addGroundForm.value.west,
-  //     club_id: String(this.addGroundForm.value.club_id),
-  //     latitude: this.addGroundForm.value.latitude,
-  //     longitude: this.addGroundForm.value.longitude,
-  //     capacity: String(this.addGroundForm.value.capacity),
-  //     profile: this.addGroundForm.value.profile,
-  //     action_flag: this.isEditMode ? 'update' : 'create',
-  //     ground_photo: this.addGroundForm.value.ground_photo,
-  //     reference_id: this.addGroundForm.value.reference_id,
-  //       }
-  //     },
-  //     (err: any) => {
-  //       if (err.status_code === this.statusConstants.refresh &&
-  //           err.error.message === this.statusConstants.refresh_msg) {
-  //         this.apiService.RefreshToken();
-  //       } else {
-  //         this.failedToast(err.error);
-  //       }
-  //     }
-  //   );
-  // }
 
   onAddGround() {
     this.submitted = true;
@@ -496,9 +410,9 @@ successToast(data: any) {
       capacity: this.addGroundForm.value.capacity,
       profile: this.addGroundForm.value.profile,
       action_flag: this.isEditMode ? this.Actionflag.Update : this.Actionflag.Create,
-      ground_photo: this.filedata ? this.addGroundForm.value.ground_photo : '',
       reference_id: this.addGroundForm.value.reference_id,
-
+      ground_photo: this.filedata ? '' : this.profileImages
+      
     };
     if (this.addGroundForm.value.ground_id) {
       params.action_flag = this.Actionflag.Update;
@@ -542,8 +456,6 @@ successToast(data: any) {
   }
 
   EditGround(ground: any) {
-    this.showCropperModal = false;
-    this.isEditMode = true;
     const params: any = {};
     params.user_id = this.user_id?.toString();
     params.client_id = this.ClientID?.toString();
@@ -554,7 +466,7 @@ successToast(data: any) {
         const editRecord: EditGround = res.data.grounds[0] ?? {};
 
         if (editRecord != null) {
-          this.addGroundForm.setValue({
+          this.addGroundForm.patchValue({
             ground_id: editRecord.ground_id,
             ground_name: editRecord.ground_name,
             display_name: editRecord.display_name,
@@ -576,14 +488,7 @@ successToast(data: any) {
             capacity: editRecord.capacity,
             reference_id: editRecord.reference_id,
             profile: null,
-            ground_photo: editRecord.ground_photo
           });
-          if (editRecord.ground_photo) {
-            this.previewUrl = this.envImagePath + editRecord.ground_photo;
-            this.url = this.previewUrl;
-            this.imageBase64 = this.previewUrl;
-          }
-
           this.showAddForm();
           this.filedata = null;
           this.profileImages = editRecord.ground_photo + '?' + Math.random();
@@ -610,29 +515,10 @@ successToast(data: any) {
     reader.readAsDataURL(file);
   }
 
-  onProfileImageSelected(event: Event) {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      this.filedata = file;
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewUrl = e.target.result;
-        this.imageDefault = e.target.result;
-      };
-      reader.readAsDataURL(file);
-
-      this.addGroundForm.patchValue({
-        ground_photo: file
-      });
-    }
-
-  }
-
   status(ground_id: number, url: string) {
     const params: any = {
       user_id: this.user_id?.toString(),
-      client_id: this.client_id?.toString(),
+      client_id: this.ClientID?.toString(),
       ground_id: ground_id?.toString()
     };
 
@@ -651,37 +537,6 @@ successToast(data: any) {
     );
   }
 
-
-  // StatusConfirm(ground_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-  //    const { active_status, deactive_status } = this.conditionConstants;
-  //   const isSameStatus =
-  //     (actionObject.key === active_status.key && currentStatus === active_status.status) ||
-  //     (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
-  //   if (isSameStatus) return;
-  //   const isActivating = actionObject.key === active_status.key;
-  //   const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-  //   const message = `Are you sure you want to proceed?`;
-
-  //   this.confirmationService.confirm({
-  //     header: ``,
-  //     message: `
-  //     <div class="custom-confirm-content">
-  //     <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
-  //       <div class="warning">Warning</div>
-  //       <div class="message-text">${message}</div>
-  //     </div>
-  //   `,
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     styleClass: 'p-confirm-dialog-custom',
-  //     accept: () => {
-  //       const url = isActivating ? this.urlConstant.activateGround : this.urlConstant.deactivateGround;
-  //       this.status(ground_id, url);
-  //       this.confirmationService.close();
-  //     },
-  //     reject: () => this.confirmationService.close()
-  //   } as any);
-  // }
   StatusConfirm(ground_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
@@ -768,12 +623,12 @@ successToast(data: any) {
   }
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridload();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridload();
+    }
   }
 
   clear() {
@@ -800,26 +655,11 @@ successToast(data: any) {
     this.showCropperModal = false;
   }
 
-  // cancelCropping(): void {
-  //   this.showCropperModal = false;
-  // }
-
-  // clearImage(): void {
-  //   this.previewUrl = null;
-  //   this.filedata = null;
-  //   this.addGroundForm.patchValue({ ground_photo: null });
-  //   const fileInput = document.getElementById('groundPhotoInput') as HTMLInputElement;
-  //   if (fileInput) {
-  //     fileInput.value = '';
-  //   }
-  // }
-
   cancel() {
     this.filedata = null;
     this.url = null;
     this.profileImages = null;
     this.previewUrl = null;
-
     this.croppedImage = null;
   }
 
@@ -842,29 +682,6 @@ successToast(data: any) {
     console.error('Image loading failed');
   }
 
-  // fileEvent(event: any) {
-  //   if (this.addGroundForm.value.profile_img.value !== null &&
-  //     this.addGroundForm.value.profile_img.value !== '') {
-  //     this.profileImages = null;
-  //   }
-  //   if (event && event.target && event.target.files && event.target.files.length > 0) {
-  //     this.filedata = event.target.files[0];
-  //     var reader = new FileReader();
-  //     reader.readAsDataURL(event.target.files[0]);
-  //     reader.onload = (event: any) => {
-  //       var img = new Image;
-  //       this.url = event.target.result;
-  //       this.imageCropAlter = event.target.result
-  //       this.imageDefault = event.target.result
-  //     }
-  //   } else {
-  //     this.filedata = null;
-  //     this.url = this.imageDefault
-  //     this.filedata = this.base64ToBinary(this.imageDefault);
-
-  //   }
-  // }
-
   imageCropped(event: ImageCroppedEvent) {
     const blob = event.blob;
     if (blob) {
@@ -877,40 +694,12 @@ successToast(data: any) {
       });
     }
   }
-  //  profileImgUpdate(upload_profile_url: any, ground_id: any) {
-  //     const params: any = {
-  //       action_flag: 'update_profile_url',
-  //       ground_photo: upload_profile_url.toString(),
-  //       user_id: this.user_id.toString(),
-  //       client_id: this.client_id.toString(),
-  //       ground_id: ground_id?.toString() 
-  //     };
-
-  //     this.apiService.post(this.urlConstant.profileGround, params).subscribe(
-  //       (res) => {
-  //         if (res.status_code == this.statusConstants.success && res.status) {
-  //           this.filedata = null;
-  //           this.addCallBack(res)
-  //         } else {
-  //           this.failedToast(res);
-  //         }
-  //       },
-  //       (err: any) => {
-  //         if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-  //           this.apiService.RefreshToken();
-
-  //         } else {
-  //           this.failedToast(err.error);
-  //         }
-  //       }
-  //     );
-  //   }
 
   profileImgAppend(ground_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);
-      myFormData.append('client_id', this.client_id.toString());
+      myFormData.append('client_id', this.ClientID);
       myFormData.append('file_id', ground_id);
       myFormData.append('upload_type', 'ground');
       myFormData.append('user_id', this.user_id?.toString());
@@ -918,9 +707,6 @@ successToast(data: any) {
         (res) => {
           if (res.status_code == this.statusConstants.success) {
             if (res.url != null && res.url != '') {
-              console.log('Image uploaded successfully:', res.url);
-
-              // this.filedata = null;
               this.addCallBack(res)
             } else {
               this.failedToast(res);
@@ -980,51 +766,9 @@ successToast(data: any) {
     });
   }
 
-  //   onImageSelected(event: any): void {
-  //   const fileInput = event.target as HTMLInputElement;
-  //   if (!fileInput.files || fileInput.files.length === 0) return;
-
-  //   const file = fileInput.files[0];
-
-  //   // Validation
-  //   const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-  //   if (!validTypes.includes(file.type)) {
-  //     this.msgService.add({
-  //       severity: 'error',
-  //       summary: 'Invalid File',
-  //       detail: 'Only JPG/PNG images are allowed'
-  //     });
-  //     fileInput.value = '';
-  //     return;
-  //   }
-
-  //   const maxSize = 2 * 1024 * 1024; // 2MB
-  //   if (file.size > maxSize) {
-  //     this.msgService.add({
-  //       severity: 'error',
-  //       summary: 'File Too Large',
-  //       detail: 'Maximum image size is 2MB'
-  //     });
-  //     fileInput.value = '';
-  //     return;
-  //   }
-
-  //   // Store the original file
-  //   this.uploadedImageFile = file;
-
-  //   // Create preview
-  //   const reader = new FileReader();
-  //   reader.onload = (e: any) => {
-  //     this.previewUrl = e.target.result;
-  //     this.imageBase64 = e.target.result; // For cropper
-  //     this.showCropperModal = true; // Open cropper immediately
-  //   };
-  //   reader.readAsDataURL(file);
-  // }
-
   fileEvent(event: any) {
-    if (this.addGroundForm.value.profile_img !== null &&
-      this.addGroundForm.value.profile_img !== '') {
+    if (this.addGroundForm.value.ground_photo !== null &&
+      this.addGroundForm.value.ground_photo !== '') {
       this.profileImages = null;
     }
     if (event && event.target && event.target.files && event.target.files.length > 0) {
@@ -1058,39 +802,6 @@ successToast(data: any) {
       fileInput.value = '';
     }
   }
-
-  // private dataURItoBlob(dataURI: string): Blob {
-  //   const byteString = atob(dataURI.split(',')[1]);
-  //   const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-  //   const ab = new ArrayBuffer(byteString.length);
-  //   const ia = new Uint8Array(ab);
-
-  //   for (let i = 0; i < byteString.length; i++) {
-  //     ia[i] = byteString.charCodeAt(i);
-  //   }
-
-  //   return new Blob([ab], { type: mimeString });
-  // }
-
-  //   private handleUploadError(error: any): void {
-  //   let errorMessage = 'Failed to upload image';
-
-  //   if (error.status === 400) {
-  //     errorMessage = 'Invalid request format. Please check the image and try again.';
-  //   } else if (error.status === 413) {
-  //     errorMessage = 'File size too large. Maximum size is 2MB.';
-  //   } else if (error.status === 415) {
-  //     errorMessage = 'Unsupported media type. Only JPG/PNG images are allowed.';
-  //   } else if (error.error?.message) {
-  //     errorMessage = error.error.message;
-  //   }
-
-  //   this.msgService.add({
-  //     severity: 'error',
-  //     summary: 'Upload Failed',
-  //     detail: errorMessage
-  //   });
-  // }
 
   convertUrlToBase64(imageUrl: string): void {
     fetch(imageUrl)

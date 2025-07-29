@@ -428,7 +428,7 @@
               <div class="popup-container">
                 <div class="top-bar" style="    padding: 6px 50px;">
                   <div class="view-name">{{ selectedcompitition?.competition_name | uppercase }}</div>
-                  <button class="popup-close" (click)="visibleDialog = false" aria-label="Close popup">✖</button>
+                  <button class="popup-close" pTooltip="Close popup" tooltipPosition="right" (click)="visibleDialog = false" aria-label="Close popup">✖</button>
                 </div>
                 <section class="popup-section">
                   <h2 class="section-title">Competition Details</h2>

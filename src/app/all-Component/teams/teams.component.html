@@ -126,7 +126,7 @@
                     pTooltip="Deactivate" tooltipPosition="top">
                     <i class="fa-solid fa-trash-can-arrow-up"></i>
                   </span> -->
-                    <span (click)="StatusConfirm(teams.team_id,
+                  <span (click)="StatusConfirm(teams.team_id,
                          teams.record_status === 'Active'? 
                          { key: 'inactive', label: 'deactivate' }: { key: 'active', label: 'activate' } )"
                     [pTooltip]="teams.record_status === 'Active' ? 'Deactivate' : 'Activate'" tooltipPosition="top"
@@ -164,7 +164,8 @@
                     <br>
                     <span style="font-weight: normal;">{{ getTeamNameParts(teams['team name']).category }}</span>
                   </div>
-                  <button class="popup-close" (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
+                  <button class="popup-close" pTooltip="Close popup" tooltipPosition="left"
+                    (click)="viewDialogVisible = false" aria-label="Close popup">✖</button>
                 </div>
 
                 <section class="popup-section">
@@ -190,8 +191,8 @@
       </div>
     </main>
     <!-- STATUS Confirmation POPUP -->
-    <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
-      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+    <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+      [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
 
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">

@@ -11,7 +11,7 @@ import { DialogModule } from 'primeng/dialog';
 import { CalendarModule } from 'primeng/calendar';
 import { PaginatorModule } from 'primeng/paginator';
 import { HttpClientModule } from '@angular/common/http';
-import { playeredit, Players, playerupdate, playerspersonalupadate, playersPersonalEdit } from './player-registration.model';
+import { playeredit, Players, playerupdate, playersPersonalEdit, playerspersonalupdate } from './player-registration.model';
 import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -105,7 +105,6 @@ export class PlayerRegistrationComponent implements OnInit {
   isEditMode: boolean = false;
   ispersonalupadate: boolean = false;
   isEditPersonal: boolean = false;
-  officialId: any;
   searchKeyword: string = '';
   visible: boolean = false;
   isEditing: boolean = false;
@@ -182,7 +181,6 @@ export class PlayerRegistrationComponent implements OnInit {
       player_dob: ['',],
       mobile_no: ['', [Validators.pattern(this.mobileRegex)]],
       email: ['', [
-        Validators.required,
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
       gender_id: ['', [Validators.required]],
@@ -197,7 +195,7 @@ export class PlayerRegistrationComponent implements OnInit {
       profile_image: [''],
       // team_represent: [''],
       player_id: [''],
-      club_id: ['', []],
+      club_id: ['', [Validators.required]],
       scorecard_name: ['', []],
       reference_id: ['', []],
 
@@ -348,7 +346,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
         }
         this.PlayerData.forEach((val: any) => {
-          val.country_image = `${val.country_image}?${Math.random()}`;
+          val.profile_image = `${val.profile_image}?${Math.random()}`;
         });
       }, (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
@@ -380,23 +378,6 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     })
   }
-
-  // dropdownplayer() {
-  //   const params: any = {};
-  //   params.action_flag = this.Actionflag.Dropdown;
-  //   params.user_id = this.user_id.toString();
-  //   params.client_id = this.client_id.toString();
-  //   this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-  //     this.configDataList = res.data.clubs != undefined ? res.data.clubs : [];
-  //     this.genderSelect = res.data.clubs
-  //       .filter((item: any) => item.config_key == 'gender')
-  //     // console.log(this.genderSelect,res.data.teams);
-  //   }, (err: any) => {
-  //     if (err.status_code === this.statusConstants.refresh && err.error.message) {
-  //       this.apiService.RefreshToken();
-  //     }
-  //   })
-  // }
 
   radiobutton() {
     const params: any = {};
@@ -457,14 +438,15 @@ export class PlayerRegistrationComponent implements OnInit {
     // 🏏 Set defaults using helper
     setDefaultValue(this.playerrole, 'player_role_id', 'batsman');
     setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
-    setDefaultValue(this.bowlingstyle, 'bowling_style_id', 'right');
+    setDefaultValue(this.bowlingstyle, 'bowling_style_id', '');
+    setDefaultValue(this.bowlingtype, 'bowling_type_id', '');
 
-    const fastBowler = this.bowlingtype.find(type => type.config_name?.toLowerCase().includes('fast'));
-    if (fastBowler) {
-      const fastBowlerId = fastBowler.config_id;
-      this.playerRegistrationform.patchValue({ bowling_type_id: fastBowlerId });
-      this.onBowlingTypeChange(fastBowlerId);
-    }
+    // const fastBowler = this.bowlingtype.find(type => type.config_name?.toLowerCase().includes('fast'));
+    // if (fastBowler) {
+    //   const fastBowlerId = fastBowler.config_id;
+    //   this.playerRegistrationform.patchValue({ bowling_type_id: fastBowlerId });
+    //   this.onBowlingTypeChange(fastBowlerId);
+    // }
   }
 
   duplicateChange(isEditMode: boolean = false) {
@@ -555,9 +537,6 @@ export class PlayerRegistrationComponent implements OnInit {
     }
   }
 
-
-
-
   addplayerdata() {
     this.submitted = true;
     this.isEditMode = false;
@@ -586,17 +565,16 @@ export class PlayerRegistrationComponent implements OnInit {
       bowling_spec_id: this.playerRegistrationform.value.bowling_spec_id != null ? this.playerRegistrationform.value.bowling_spec_id.toString() : null,
       remarks: this.playerRegistrationform.value.remarks != null ? this.playerRegistrationform.value.remarks.toString() : null,
       jersey_no: this.playerRegistrationform.value.jersey_no != null ? this.playerRegistrationform.value.jersey_no.toString() : null,
-      profile_image: this.playerRegistrationform.value.profile_image != null ? this.playerRegistrationform.value.profile_image.toString() : null,
       player_id: this.playerRegistrationform.value.player_id != null ? this.playerRegistrationform.value.player_id.toString() : null,
       club_id: this.playerRegistrationform.value.club_id != null ? this.playerRegistrationform.value.club_id.toString() : null,
       scorecard_name: this.playerRegistrationform.value.scorecard_name != null ? this.playerRegistrationform.value.scorecard_name.toString() : null,
       reference_id: this.playerRegistrationform.value.reference_id != null ? this.playerRegistrationform.value.reference_id.toString() : null,
-      action_flag: this.Actionflag.Create
+      action_flag: this.Actionflag.Create,
+      profile_image: this.filedata ? '' : this.profileImages
+
     };
 
     if (this.playerRegistrationform.value.player_id) {
-
-
       params.action_flag = this.Actionflag.Update;
       params.player_id = String(this.playerRegistrationform.value.player_id),
         this.apiService.post(this.urlConstant.updateplayer, params).subscribe((res) => {
@@ -664,16 +642,21 @@ export class PlayerRegistrationComponent implements OnInit {
 
   resetForm() {
     this.playerRegistrationform.reset();
-    this.formSetValue();  // reload and set defaults
+    this.formSetValue();
     this.addplayerpersonalform.reset();
     this.submitted = false;
+    this.previewUrl = null;
+    this.filedata = null;
+    this.profileImages = null;
+    this.url = null;
+    this.imageBase64 = null;
+    this.imageCropAlter = null;
+    this.imageDefault = null;
   }
   showAddForm() {
     this.ShowForm = true;
+    this.showCropperModal = false;
   }
-
-
-
   cancelForm() {
     this.ShowForm = false;
     this.personalShowForm = false;
@@ -690,24 +673,15 @@ export class PlayerRegistrationComponent implements OnInit {
       client_id: this.client_id.toString(),
       player_id: player.player_id.toString()
     };
-
     this.visible = false;
-
     this.apiService.post(this.urlConstant.editplayer, params).subscribe((res) => {
       if (res.status_code === this.statusConstants.success && res.status) {
         const editRecord = res.data.players[0] || {};
-
-        // First reset the form
         this.playerRegistrationform.reset();
-
-        // Manually filter specs based on the player's bowling type
         const bowlingId = editRecord.bowling_type_id ?? 0;
         this.filteredSpecs = this.bowlingspec.filter(
           spec => spec.parent_config_id === Number(bowlingId)
         );
-
-        // console.log(this.filteredSpecs,'filteredSpecs')
-
         // Then patch all values
         this.playerRegistrationform.patchValue({
           first_name: editRecord.first_name,
@@ -912,18 +886,18 @@ export class PlayerRegistrationComponent implements OnInit {
       return;
     }
 
-    const params: playerspersonalupadate = {
+    const params: playerspersonalupdate = {
       user_id: String(this.user_id),
       client_id: String(this.client_id),
       player_id: String(this.personal_player_id),
       nationality_id: String(this.addplayerpersonalform.value.nationality_id),
       country_of_birth: String(this.addplayerpersonalform.value.country_of_birth),
       residence_country_id: String(this.addplayerpersonalform.value.residence_country_id),
-      primary_email_id: String(this.addplayerpersonalform.value.primary_email_id),
-      secondary_email_id: String(this.addplayerpersonalform.value.secondary_email_id),
-      primary_phone: String(this.addplayerpersonalform.value.primary_phone),
-      secondary_phone: String(this.addplayerpersonalform.value.secondary_phone),
-      blood_group_id: String(this.addplayerpersonalform.value.blood_group_id),
+      primary_email_id: this.addplayerpersonalform.value.primary_email_id,
+      secondary_email_id: this.addplayerpersonalform.value.secondary_email_id,
+      primary_phone: this.addplayerpersonalform.value.primary_phone,
+      secondary_phone: this.addplayerpersonalform.value.secondary_phone,
+      blood_group_id: this.addplayerpersonalform.value.blood_group_id != null ? this.addplayerpersonalform.value.blood_group_id.toString() : null,
       father_name: this.addplayerpersonalform.value.father_name,
       mother_name: this.addplayerpersonalform.value.mother_name,
       guardian_name: this.addplayerpersonalform.value.guardian_name,
@@ -931,26 +905,26 @@ export class PlayerRegistrationComponent implements OnInit {
       address_2: this.addplayerpersonalform.value.address_2,
       country_id: String(this.addplayerpersonalform.value.country_id),
       state_id: String(this.addplayerpersonalform.value.state_id),
-      city_id: String(this.addplayerpersonalform.value.city_id),
-      post_code: String(this.addplayerpersonalform.value.post_code),
-      emergency_contact: String(this.addplayerpersonalform.value.emergency_contact),
-      emergency_type: String(this.addplayerpersonalform.value.emergency_type),
-      emergency_number: String(this.addplayerpersonalform.value.emergency_number),
-      emergency_email: String(this.addplayerpersonalform.value.emergency_email),
-      twitter_handle: String(this.addplayerpersonalform.value.twitter_handle),
-      instagram_handle: String(this.addplayerpersonalform.value.instagram_handle),
-      facebook_url: String(this.addplayerpersonalform.value.facebook_url),
-      player_height: String(this.addplayerpersonalform.value.player_height),
-      player_weight: String(this.addplayerpersonalform.value.player_weight),
-      medical_conditions: String(this.addplayerpersonalform.value.medical_conditions),
-      allergies: String(this.addplayerpersonalform.value.allergies),
-      medications: String(this.addplayerpersonalform.value.medications),
-      doctor_name: String(this.addplayerpersonalform.value.doctor_name),
-      doctor_phone: String(this.addplayerpersonalform.value.doctor_phone),
-      insurance_provider: String(this.addplayerpersonalform.value.insurance_provider),
-      policy_number: String(this.addplayerpersonalform.value.policy_number),
+      city_id: this.addplayerpersonalform.value.city_id != null ? this.addplayerpersonalform.value.city_id.toString() : null,
+      post_code: this.addplayerpersonalform.value.post_code,
+      emergency_contact: this.addplayerpersonalform.value.emergency_contact,
+      emergency_type: this.addplayerpersonalform.value.emergency_type,
+      emergency_number: this.addplayerpersonalform.value.emergency_number,
+      emergency_email: this.addplayerpersonalform.value.emergency_email,
+      twitter_handle: this.addplayerpersonalform.value.twitter_handle,
+      instagram_handle: this.addplayerpersonalform.value.instagram_handle,
+      facebook_url: this.addplayerpersonalform.value.facebook_url,
+      player_height: this.addplayerpersonalform.value.player_height,
+      player_weight: this.addplayerpersonalform.value.player_weight,
+      medical_conditions: this.addplayerpersonalform.value.medical_conditions,
+      allergies: this.addplayerpersonalform.value.allergies,
+      medications: this.addplayerpersonalform.value.medications,
+      doctor_name: this.addplayerpersonalform.value.doctor_name,
+      doctor_phone: this.addplayerpersonalform.value.doctor_phone,
+      insurance_provider: this.addplayerpersonalform.value.insurance_provider,
+      policy_number: this.addplayerpersonalform.value.policy_number,
       policy_expiry_date: this.addplayerpersonalform.value.policy_expiry_date,
-      additional_notes: String(this.addplayerpersonalform.value.additional_notes),
+      additional_notes: this.addplayerpersonalform.value.additional_notes,
 
     };
     console.log(params);
@@ -1033,7 +1007,6 @@ export class PlayerRegistrationComponent implements OnInit {
         } else {
           this.isEditPersonal = false;
           this.isPersonalDataIntialized = false;
-          // this.addplayerpersonalform.reset();
           this.resetForm();
         }
       },
@@ -1046,22 +1019,6 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     );
   }
-
-  // Natinalitydropdown() {
-
-  //   const params: any = {};
-  //   params.action_flag = this.urlConstant.countryofficial.action_flag;
-  //   params.user_id = this.user_id.toString();
-  //   params.client_id = this.client_id.toString();
-  //   this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
-  //     this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
-  //   }, (err: any) => {
-  //     if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-  //       this.apiService.RefreshToken();
-  //     }
-  //   })
-  // }
-
   getCountries() {
     const params: any = {};
     params.action_flag = this.Actionflag.Country;
@@ -1132,11 +1089,11 @@ export class PlayerRegistrationComponent implements OnInit {
       this.emergencyTypeList = dropdowns.filter((d: any) => d.config_key === 'emergency_type');
       this.bloodgroup = dropdowns.filter((d: any) => d.config_key === 'blood_group');
       // Pre-fill values if necessary
-      setTimeout(() => {
-        const teamId = this.addplayerpersonalform.get('official_id')?.value;
-        if (!teamId) {
-        }
-      }, 100);
+      // setTimeout(() => {
+      //   const teamId = this.addplayerpersonalform.get('official_id')?.value;
+      //   if (!teamId) {
+      //   }
+      // }, 100);
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
@@ -1195,36 +1152,7 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     );
   }
-  // StatusConfirm(player_id: number, actionObject: { key: string; label: string }, currentStatus: string) {
-  //   const { active_status, deactive_status } = this.conditionConstants;
-  //   const isSameStatus =
-  //     (actionObject.key === active_status.key && currentStatus === active_status.status) ||
-  //     (actionObject.key === deactive_status.key && currentStatus === deactive_status.status);
-  //   if (isSameStatus) return;
-  //   const isActivating = actionObject.key === active_status.key;
-  //   const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-  //   const message = `Are you sure you want to proceed?`;
 
-  //   this.confirmationService.confirm({
-  //     header: ``,
-  //     message: `
-  //     <div class="custom-confirm-content">
-  //     <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
-  //       <div class="warning">Warning</div>
-  //       <div class="message-text">${message}</div>
-  //     </div>
-  //   `,
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     styleClass: 'p-confirm-dialog-custom',
-  //     accept: () => {
-  //       const url = isActivating ? this.urlConstant.activeplayer : this.urlConstant.deactiveplayer;
-  //       this.status(player_id, url);
-  //       this.confirmationService.close();
-  //     },
-  //     reject: () => this.confirmationService.close()
-  //   } as any);
-  // }
   StatusConfirm(player_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
