@@ -134,8 +134,8 @@
     </main>
     <!-- STATUS Confirmation POPUP -->
 
-    <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
-      [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+    <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+      [styleClass]="'p-confirm-dialog-custom'">
     </p-confirmDialog>
 
     <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
@@ -156,7 +156,7 @@
             <label> Region <span class="text-danger">*</span>
             </label>
             <p-dropdown [options]="regionsData" formControlName="region_id" optionValue="region_id"
-              optionLabel="region_name" placeholder="Select Region" class="drop-error">
+              optionLabel="region_name" placeholder="Select Region" class="drop-error" [filter]="true">
 
               <ng-template let-region1 pTemplate="item">
                 <div class="flex align-items-center gap-2">
@@ -265,7 +265,9 @@
                   Crop
                 </button>
               </div>
-
+              <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'70%'}">
+                {{ imageSizeError }}
+              </div>
             </div>
             <small class="text-danger" *ngIf="addCountryForm.get('country_image')?.errors">
               * Only PNG,JPEG, or JPG files are allowed
