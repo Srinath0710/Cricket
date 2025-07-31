@@ -92,6 +92,9 @@ export class ClubRegistrationComponent implements OnInit {
   imageCropAlter: any;
   imageDefault: any;
   croppedImage: any;
+  imagePreview: string | ArrayBuffer | null = null;
+  imageSizeError: string = '';
+  selectedImage: File | null = null;
 
   constructor(private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -212,6 +215,9 @@ export class ClubRegistrationComponent implements OnInit {
   }
   cancelForm() {
     this.ShowForm = false;
+    this.imageDefault = null;
+    this.croppedImage = null;
+    this.imageSizeError = '';
   }
 
   resetForm() {
@@ -226,6 +232,9 @@ export class ClubRegistrationComponent implements OnInit {
     this.imageBase64 = null;
     this.imageCropAlter = null;
     this.imageDefault = null;
+    this.selectedImage = null;
+    this.imagePreview = null;
+    this.imageSizeError = '';
   }
   clearForm() {
     this.addClubForm.reset();
@@ -237,7 +246,7 @@ export class ClubRegistrationComponent implements OnInit {
     this.showCropperModal = false;
     this.stateList = [];
     this.citiesList = [];
-
+    this.imageSizeError = '';
   }
 
 
@@ -692,26 +701,43 @@ export class ClubRegistrationComponent implements OnInit {
       });
   }
 
-  fileEvent(event: any) {
-    if (this.addClubForm.value.profile_img.value !== null &&
-      this.addClubForm.value.profile_img.value !== '') {
+  fileEvent(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    const maxSizeKB = 500;
+
+    if (this.addClubForm.value.profile_img !== null && this.addClubForm.value.profile_img !== '') {
       this.profileImages = null;
     }
-    if (event && event.target && event.target.files && event.target.files.length > 0) {
-      this.filedata = event.target.files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        var img = new Image;
-        this.url = event.target.result;
-        this.imageCropAlter = event.target.result
-        this.imageDefault = event.target.result
+
+    if (file) {
+      const fileSizeKB = file.size / 500;
+      if (fileSizeKB > maxSizeKB) {
+        this.imageSizeError = 'Max.allowed size is 500KB';
+        this.imagePreview = null;
+        this.selectedImage = null;
+        this.filedata = null;
+        this.addClubForm.get('profile_img')?.reset();
+        return;
       }
+
+      this.imageSizeError = '';
+      this.filedata = file;
+      this.selectedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const result = e.target.result;
+        this.url = result;
+        this.imageCropAlter = result;
+        this.imageDefault = result;
+        this.imagePreview = result;
+      };
+      reader.readAsDataURL(file);
     } else {
       this.filedata = null;
-      this.url = this.imageDefault
+      this.url = this.imageDefault;
+      this.imagePreview = this.imageDefault;
       this.filedata = this.base64ToBinary(this.imageDefault);
-
     }
   }
 

@@ -108,6 +108,9 @@ export class TeamsComponent implements OnInit {
   default_img = CricketKeyConstant.default_image_url.teamimage;
   Actionflag = CricketKeyConstant.action_flag;
   croppedImage: any;
+  imagePreview: string | ArrayBuffer | null = null;
+  imageSizeError: string = '';
+  selectedImage: File | null = null;
 
   constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
     private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant,
@@ -257,6 +260,9 @@ export class TeamsComponent implements OnInit {
     this.imageBase64 = null;
     this.imageCropAlter = null;
     this.imageDefault = null;
+    this.selectedImage = null;
+    this.imagePreview = null;
+    this.imageSizeError = '';
   }
   successToast(data: any) {
 
@@ -537,26 +543,43 @@ export class TeamsComponent implements OnInit {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
   }
-  fileEvent(event: any) {
-    if (this.addTeamForm.value.profile_img !== null &&
-      this.addTeamForm.value.profile_img !== '') {
+  fileEvent(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    const maxSizeKB = 500;
+
+    if (this.addTeamForm.value.team_profile !== null && this.addTeamForm.value.team_profile !== '') {
       this.profileImages = null;
     }
-    if (event && event.target && event.target.files && event.target.files.length > 0) {
-      this.filedata = event.target.files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        var img = new Image;
-        this.url = event.target.result;
-        this.imageCropAlter = event.target.result
-        this.imageDefault = event.target.result
+
+    if (file) {
+      const fileSizeKB = file.size / 500;
+      if (fileSizeKB > maxSizeKB) {
+        this.imageSizeError = 'Image size should be 500 KB';
+        this.imagePreview = null;
+        this.selectedImage = null;
+        this.filedata = null;
+        this.addTeamForm.get('team_profile')?.reset();
+        return;
       }
+
+      this.imageSizeError = '';
+      this.filedata = file;
+      this.selectedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const result = e.target.result;
+        this.url = result;
+        this.imageCropAlter = result;
+        this.imageDefault = result;
+        this.imagePreview = result;
+      };
+      reader.readAsDataURL(file);
     } else {
       this.filedata = null;
-      this.url = this.imageDefault
+      this.url = this.imageDefault;
+      this.imagePreview = this.imageDefault;
       this.filedata = this.base64ToBinary(this.imageDefault);
-
     }
   }
 

@@ -45,8 +45,7 @@
                         </div>
                     </div>
 
-                    <p-table #dt [value]="gridData" [paginator]="true" 
-                        [rows]="rows"
+                    <p-table #dt [value]="gridData" [paginator]="true" [rows]="rows"
                         [rowsPerPageOptions]="[10, 25, 50, 100]" [loading]="false"
                         [globalFilterFields]="['club_name','parent_club_name','country','state','record_status']">
                         <ng-template pTemplate="header">
@@ -373,6 +372,9 @@
                                 <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
                                     Crop
                                 </button>
+                            </div>
+                            <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'120px'}">
+                                {{ imageSizeError }}
                             </div>
 
                         </div>

@@ -400,6 +400,10 @@
                   </button>
                 </div>
 
+                <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'120px'}">
+                  {{ imageSizeError }}
+                </div>
+
                 <div>
                   <small class="text-danger" *ngIf="addOfficialForm.get('profile_img')?.errors">
                     * Only PNG, JPEG, or JPG files are allowed

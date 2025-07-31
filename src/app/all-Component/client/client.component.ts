@@ -94,6 +94,10 @@ export class ClientComponent implements OnInit {
   croppedImage: any;
   lookupDataList = [];
 
+  imagePreview: string | ArrayBuffer | null = null;
+  imageSizeError: string = '';
+  selectedImage: File | null = null;
+
 
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
@@ -175,9 +179,9 @@ export class ClientComponent implements OnInit {
             this.spinnerService.raiseDataEmitterEvent('off'),
             this.totalData = this.Clientdata.length);
       });
-      // (err: any) => {
-      //   err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      // }
+    // (err: any) => {
+    //   err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+    // }
   }
 
   onAddClient() {
@@ -296,17 +300,17 @@ export class ClientComponent implements OnInit {
 
 
   }
-showAddForm() {
-  this.ShowForm = true;
-  const app_con_id = this.addClientForm.get('app_con_id');
-  const client_id_value = this.addClientForm.get('client_id')?.value;
-  if (!client_id_value || client_id_value === '') {
-    app_con_id?.setValidators(Validators.required);
-  } else {
-    app_con_id?.clearValidators();
+  showAddForm() {
+    this.ShowForm = true;
+    const app_con_id = this.addClientForm.get('app_con_id');
+    const client_id_value = this.addClientForm.get('client_id')?.value;
+    if (!client_id_value || client_id_value === '') {
+      app_con_id?.setValidators(Validators.required);
+    } else {
+      app_con_id?.clearValidators();
+    }
+    app_con_id?.updateValueAndValidity();
   }
-  app_con_id?.updateValueAndValidity();
-}
 
   dbserverLookup() {
     const params: any = {};
@@ -335,6 +339,8 @@ showAddForm() {
     this.imageBase64 = null;
     this.imageDefault = null;
     this.croppedImage = null;
+    this.imageSizeError = '';
+
   }
 
   resetForm() {
@@ -347,6 +353,9 @@ showAddForm() {
     this.imageBase64 = null;
     this.imageCropAlter = null;
     this.imageDefault = null;
+    this.selectedImage = null;
+    this.imagePreview = null;
+    this.imageSizeError = '';
   }
   successToast(data: any) {
 
@@ -423,30 +432,30 @@ showAddForm() {
   //   } as any);
   // }
 
-StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
-  const { active_status, deactive_status } = this.conditionConstants;
-  const isActivating = actionObject.key === active_status.key;
-  const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-  const message = `Are you sure you want to proceed?`;
+  StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
+    const { active_status, deactive_status } = this.conditionConstants;
+    const isActivating = actionObject.key === active_status.key;
+    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+    const message = `Are you sure you want to proceed?`;
 
-  this.confirmationService.confirm({
-    header: '',
-    message: `
+    this.confirmationService.confirm({
+      header: '',
+      message: `
       <div class="custom-confirm-content">
         <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
         <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
     `,
-    acceptLabel: 'Yes',
-    rejectLabel: 'No',
-    accept: () => {
-      const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
-      this.status(client_id, url);
-    },
-    reject: () => {}
-  });
-}
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
+        this.status(client_id, url);
+      },
+      reject: () => { }
+    });
+  }
 
   filterGlobal() {
     if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
@@ -552,24 +561,42 @@ StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
     target.src = fallbackUrl;
   }
 
-  fileEvent(event: any) {
-    if (this.addClientForm.value.profile_img_url.value !== null &&
-      this.addClientForm.value.profile_img_url.value !== '') {
+fileEvent(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    const maxSizeKB = 500;
+
+    if (this.addClientForm.value.profile_img_url !== null && this.addClientForm.value.profile_img_url !== '') {
       this.profileImages = null;
     }
-    if (event && event.target && event.target.files && event.target.files.length > 0) {
-      this.filedata = event.target.files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        var img = new Image;
-        this.url = event.target.result;
-        this.imageCropAlter = event.target.result
-        this.imageDefault = event.target.result
+
+    if (file) {
+      const fileSizeKB = file.size / 500;
+      if (fileSizeKB > maxSizeKB) {
+        this.imageSizeError = 'Image size should be 500 KB';
+        this.imagePreview = null;
+        this.selectedImage = null;
+        this.filedata = null;
+        this.addClientForm.get('profile_img_url')?.reset();
+        return;
       }
+
+      this.imageSizeError = '';
+      this.filedata = file;
+      this.selectedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const result = e.target.result;
+        this.url = result;
+        this.imageCropAlter = result;
+        this.imageDefault = result;
+        this.imagePreview = result;
+      };
+      reader.readAsDataURL(file);
     } else {
       this.filedata = null;
-      this.url = this.imageDefault
+      this.url = this.imageDefault;
+      this.imagePreview = this.imageDefault;
       this.filedata = this.base64ToBinary(this.imageDefault);
     }
   }
@@ -717,7 +744,7 @@ StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
   }
 
   get visibleRecords(): number {
-  return this.Clientdata?.length || 0;
-}
+    return this.Clientdata?.length || 0;
+  }
 }
 

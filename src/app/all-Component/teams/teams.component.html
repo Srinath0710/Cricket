@@ -377,6 +377,10 @@
                   Crop
                 </button>
               </div>
+              
+              <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'120px'}">
+                {{ imageSizeError }}
+              </div>
 
             </div>
             <small class="text-danger" *ngIf="addTeamForm.get('profile_img')?.errors">

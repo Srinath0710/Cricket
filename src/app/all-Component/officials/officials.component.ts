@@ -153,6 +153,11 @@ export class OfficialsComponent implements OnInit {
   imageDefault: any;
   imageChangedEvent: any = '';
   croppedImage: any;
+
+  imagePreview: string | ArrayBuffer | null = null;
+  imageSizeError: string = '';
+  selectedImage: File | null = null;
+
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
   }
@@ -767,26 +772,43 @@ export class OfficialsComponent implements OnInit {
   }
 
 
-  fileEvent(event: any) {
-    if (this.addOfficialForm.value.profile_img.value !== null &&
-      this.addOfficialForm.value.profile_img.value !== '') {
+  fileEvent(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    const maxSizeKB = 500;
+
+    if (this.addOfficialForm.value.profile_img !== null && this.addOfficialForm.value.profile_img !== '') {
       this.profileImages = null;
     }
-    if (event && event.target && event.target.files && event.target.files.length > 0) {
-      this.filedata = event.target.files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        var img = new Image;
-        this.url = event.target.result;
-        this.imageCropAlter = event.target.result
-        this.imageDefault = event.target.result
+
+    if (file) {
+      const fileSizeKB = file.size / 500;
+      if (fileSizeKB > maxSizeKB) {
+        this.imageSizeError = 'Image size should be 500 KB';
+        this.imagePreview = null;
+        this.selectedImage = null;
+        this.filedata = null;
+        this.addOfficialForm.get('profile_img')?.reset();
+        return;
       }
+
+      this.imageSizeError = '';
+      this.filedata = file;
+      this.selectedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const result = e.target.result;
+        this.url = result;
+        this.imageCropAlter = result;
+        this.imageDefault = result;
+        this.imagePreview = result;
+      };
+      reader.readAsDataURL(file);
     } else {
       this.filedata = null;
-      this.url = this.imageDefault
+      this.url = this.imageDefault;
+      this.imagePreview = this.imageDefault;
       this.filedata = this.base64ToBinary(this.imageDefault);
-
     }
   }
   profileImgAppend(official_id: any) {
@@ -844,7 +866,7 @@ export class OfficialsComponent implements OnInit {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
-      life:800
+      life: 800
     });
   }
   /* Failed Toast */
@@ -854,7 +876,7 @@ export class OfficialsComponent implements OnInit {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
 
@@ -959,6 +981,9 @@ export class OfficialsComponent implements OnInit {
     this.imageBase64 = null;
     this.imageCropAlter = null;
     this.imageDefault = null;
+    this.selectedImage = null;
+    this.imagePreview = null;
+    this.imageSizeError = '';
   }
   cancel() {
     this.filedata = null;

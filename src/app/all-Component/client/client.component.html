@@ -382,6 +382,9 @@
                                     Crop
                                 </button>
                             </div>
+                            <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'120px'}">
+                                {{ imageSizeError}}
+                            </div>
                             <div>
                                 <small class="text-danger" *ngIf="addClientForm.get('profile_img_url')?.errors">
                                     * Only PNG, JPEG, or JPG files are allowed
@@ -450,7 +453,7 @@
                             </span>
                         </div>
                         <div class="popup-title">{{ client.client_name | uppercase }}</div>
-                        <button class="popup-close" (click)="viewDialogVisible = false" pTooltip="Close popup"
+                        <button class="popup-close" (click)="viewDialogVisible = false" pTooltip="Close"
                             tooltipPosition="left">✖</button>
                     </div>
 

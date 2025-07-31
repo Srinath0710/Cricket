@@ -495,6 +495,10 @@
                   Crop
                 </button>
               </div>
+
+              <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'120px'}">
+                {{ imageSizeError }}
+              </div>
             </div>
             <small class="text-danger" *ngIf="addGroundForm.get('ground_photo')?.errors">
               Only PNG,JPEG and JPG files are allowed.

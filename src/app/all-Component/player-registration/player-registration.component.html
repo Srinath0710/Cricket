@@ -366,6 +366,10 @@
                               </button>
                             </div>
 
+                            <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'120px'}">
+                              {{ imageSizeError }}
+                            </div>
+
                           </div>
                           <small class="text-danger" *ngIf="playerRegistrationform.get('profile_image')?.errors">
                             * Only PNG,JPEG, or JPG files are allowed

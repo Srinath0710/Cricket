@@ -206,6 +206,7 @@ export class CountryComponent implements OnInit {
     this.imageBase64 = null;
     this.imageDefault = null;
     this.croppedImage = null;
+    this.imageSizeError = '';
   }
 
   resetForm() {

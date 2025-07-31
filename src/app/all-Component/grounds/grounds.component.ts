@@ -107,6 +107,10 @@ export class GroundsComponent implements OnInit {
   croppedFile: File | null = null;
   // croppedImageBlob: Blob | null = null;
 
+  imagePreview: string | ArrayBuffer | null = null;
+  imageSizeError: string = '';
+  selectedImage: File | null = null;
+
   constructor(private formBuilder: FormBuilder,
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
@@ -358,6 +362,9 @@ export class GroundsComponent implements OnInit {
 
     this.imageCropAlter = null;
     this.imageDefault = null;
+    this.selectedImage = null;
+    this.imagePreview = null;
+    this.imageSizeError = '';
   }
   successToast(data: any) {
 
@@ -412,7 +419,7 @@ export class GroundsComponent implements OnInit {
       action_flag: this.isEditMode ? this.Actionflag.Update : this.Actionflag.Create,
       reference_id: this.addGroundForm.value.reference_id,
       ground_photo: this.filedata ? '' : this.profileImages
-      
+
     };
     if (this.addGroundForm.value.ground_id) {
       params.action_flag = this.Actionflag.Update;
@@ -766,26 +773,43 @@ export class GroundsComponent implements OnInit {
     });
   }
 
-  fileEvent(event: any) {
-    if (this.addGroundForm.value.ground_photo !== null &&
-      this.addGroundForm.value.ground_photo !== '') {
+  fileEvent(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    const maxSizeKB = 500;
+
+    if (this.addGroundForm.value.ground_photo !== null && this.addGroundForm.value.ground_photo !== '') {
       this.profileImages = null;
     }
-    if (event && event.target && event.target.files && event.target.files.length > 0) {
-      this.filedata = event.target.files[0];
-      var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        var img = new Image;
-        this.url = event.target.result;
-        this.imageCropAlter = event.target.result
-        this.imageDefault = event.target.result
+
+    if (file) {
+      const fileSizeKB = file.size / 500;
+      if (fileSizeKB > maxSizeKB) {
+        this.imageSizeError = 'Image size should be 500 KB';
+        this.imagePreview = null;
+        this.selectedImage = null;
+        this.filedata = null;
+        this.addGroundForm.get('ground_photo')?.reset();
+        return;
       }
+
+      this.imageSizeError = '';
+      this.filedata = file;
+      this.selectedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const result = e.target.result;
+        this.url = result;
+        this.imageCropAlter = result;
+        this.imageDefault = result;
+        this.imagePreview = result;
+      };
+      reader.readAsDataURL(file);
     } else {
       this.filedata = null;
-      this.url = this.imageDefault
+      this.url = this.imageDefault;
+      this.imagePreview = this.imageDefault;
       this.filedata = this.base64ToBinary(this.imageDefault);
-
     }
   }
 
