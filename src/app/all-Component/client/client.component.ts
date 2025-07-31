@@ -19,6 +19,7 @@ import { Client, EditClient, UpdateClient } from './client.model';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { HttpClientModule } from '@angular/common/http';
 interface Country {
   country_id: number;
   country_name: string;
@@ -40,7 +41,8 @@ interface Country {
     Drawer,
     ReactiveFormsModule,
     DropdownModule,
-    ImageCropperComponent
+    ImageCropperComponent,
+    HttpClientModule
 
   ],
 
@@ -221,7 +223,6 @@ export class ClientComponent implements OnInit {
             this.profileImgAppend(params.client_id);
           } else {
             this.addCallBack(res);
-
           }
         } else {
           this.failedToast(res)

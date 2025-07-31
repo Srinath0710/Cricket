@@ -369,7 +369,7 @@
 .logo_item {
   display: flex;
   align-items: center;
-  column-gap: 10px;
+  /* column-gap: 10px; */
   font-size: 22px;
   font-weight: 500;
   color: var(--blue-color);

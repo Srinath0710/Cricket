@@ -64,7 +64,8 @@ export interface ManageDataItem {
   start_date: string,
   end_date: string,
   tour_type: string,
-  trophy_name: string
+  trophy_name: string,
+  client_id: number
 }
 
 @Component({
@@ -141,7 +142,7 @@ export class CompetitionComponent implements OnInit {
   teamdropList: MetaDataItem[] = [];
   clientData: any[] = [];
   isEditDisabled: boolean = false;
- showNewMatchForm: boolean = false; // defaul
+  showNewMatchForm: boolean = false; // defaul
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
@@ -153,7 +154,7 @@ export class CompetitionComponent implements OnInit {
   filterStatus: string = '';
   filterMatchType: string = '';
   filterCategory: string = '';
-  manageData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
+  manageData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
   competitionData: Competition = {
     competition_id: 0,
     client_id: '',
@@ -175,7 +176,8 @@ export class CompetitionComponent implements OnInit {
     name: '',
     match_type: '',
     status: '',
-    imageUrl: ''
+    imageUrl: '',
+
   };
   isClientShow: boolean = false;
   constructor(
@@ -210,13 +212,13 @@ export class CompetitionComponent implements OnInit {
       start_date: ['', Validators.required],
       end_date: ['', Validators.required],
       video_path: [''],
-      overs_per_innings: [''],
-      overs_per_bowler: [''],
-      points_abandoned: [''],
-      points_draw: [''],
-      points_win: [''],
-      points_lead: [''],
-      points_tie: [''],
+      overs_per_innings: ['', Validators.required],
+      overs_per_bowler: ['', Validators.required],
+      points_abandoned: ['', Validators.required],
+      points_draw: ['', Validators.required],
+      points_win: ['', Validators.required],
+      points_lead: ['', Validators.required],
+      points_tie: ['', Validators.required],
       calculation: [''],
       competition_image: [null],
       distrib_id: [null],
@@ -275,19 +277,19 @@ export class CompetitionComponent implements OnInit {
             this.spinnerService.raiseDataEmitterEvent('off');
 
           }
-      else {
-          console.log("ewe",res);
-          this.compititionList = [];
-          this.filteredCompititionList = [];
-          this.totalRecords = 0;
+          else {
+            console.log("ewe", res);
+            this.compititionList = [];
+            this.filteredCompititionList = [];
+            this.totalRecords = 0;
+            this.spinnerService.raiseDataEmitterEvent('off');
+
+          }
+          this.getGlobalData();
+
+        }
+        else {
           this.spinnerService.raiseDataEmitterEvent('off');
-
-        }
-         this.getGlobalData();
-
-        }
-        else{
-              this.spinnerService.raiseDataEmitterEvent('off');
 
         }
 
@@ -301,7 +303,7 @@ export class CompetitionComponent implements OnInit {
           this.compititionList = [];
           this.filteredCompititionList = [];
           this.totalRecords = 0;
-         this.spinnerService.raiseDataEmitterEvent('off');
+          this.spinnerService.raiseDataEmitterEvent('off');
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -413,7 +415,8 @@ export class CompetitionComponent implements OnInit {
       start_date: competition.start_date,
       end_date: competition.end_date,
       tour_type: competition.tour_type,
-      trophy_name: competition.trophy_name
+      trophy_name: competition.trophy_name,
+      client_id: this.client_id
 
     }
 
@@ -432,16 +435,16 @@ export class CompetitionComponent implements OnInit {
     this.addCompetitionForm.reset();
     this.submitted = false;
   }
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.messageService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-    life:800
-  });
-}
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+      life: 800
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.messageService.add({
@@ -449,7 +452,7 @@ successToast(data: any) {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
   addCallBack(res: any) {
@@ -491,8 +494,10 @@ successToast(data: any) {
       points_win: String(this.addCompetitionForm.value.points_win),
       points_lead: String(this.addCompetitionForm.value.points_lead),
       points_tie: String(this.addCompetitionForm.value.points_tie),
+
       calculation: String(this.addCompetitionForm.value.calculation),
-      competition_id: String(this.addCompetitionForm.value.competition_id),
+      // competition_id: String(this.addCompetitionForm.value.competition_id),
+      competition_id: this.addCompetitionForm.value.competition_id != null ? this.addCompetitionForm.value.competition_id.toString() : null,
       action_flag: this.Actionflag.Create,
     };
     if (this.addCompetitionForm.value.competition_id) {
@@ -522,7 +527,6 @@ successToast(data: any) {
     this.apiService.post(this.urlConstant.dropdownlookups, params).subscribe((res: any) => {
       this.seasonList = res.data?.seasons ?? [];
       this.metaDataList = res.data?.metadata ?? [];
-      // this.metaDataList = res.data["metadata"] != undefined ? res.data["metadata"] : [];
       this.tourtypeList = this.metaDataList.filter(temp => temp.config_key === 'comp_type');
       this.filterTourformatList = this.metaDataList.filter(temp => temp.config_key === 'team_format');
       this.genderList = this.metaDataList.filter(temp => temp.config_key === 'gender');
@@ -636,36 +640,36 @@ successToast(data: any) {
   /* Child Update Method*/
 
   UpdateFromParent() {
-  if (this.activeTab === 'ground') {
-    this.compGround.updateGround(); // existing
-  } else if (this.activeTab === 'officials') {
-    this.compOfficial.updateOfficial();
-  } else if (this.activeTab === 'teams') {
-    this.compTeam.AddTeam();
-  } else if (this.activeTab === 'squads') {
-    this.compPlayer.addplayer();
-  } else if (this.activeTab === 'matches') {
-    this.CompMatch.newmatch();
-      this.showNewMatchForm = true;  
+    if (this.activeTab === 'ground') {
+      this.compGround.updateGround(); // existing
+    } else if (this.activeTab === 'officials') {
+      this.compOfficial.updateOfficial();
+    } else if (this.activeTab === 'teams') {
+      this.compTeam.AddTeam();
+    } else if (this.activeTab === 'squads') {
+      this.compPlayer.addplayer();
+    } else if (this.activeTab === 'matches') {
+      this.CompMatch.newmatch();
+      this.showNewMatchForm = true;
 
+    }
   }
-}
-onShowFormChange(isShown: boolean) {
-  this.showNewMatchForm = isShown;
-}
+  onShowFormChange(isShown: boolean) {
+    this.showNewMatchForm = isShown;
+  }
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.loadCompetitions();
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.loadCompetitions();
+    }
   }
-  }
-    clear() {
+  clear() {
     this.searchKeyword = '';
     this.dt.clear();
     this.loadCompetitions();
   }
-  
+
 }

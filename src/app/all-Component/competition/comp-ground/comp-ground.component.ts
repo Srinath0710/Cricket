@@ -14,14 +14,14 @@ import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-comp-ground',
-  imports: [PickListModule, 
+  imports: [PickListModule,
     CommonModule,
-     FormsModule,
-      ReactiveFormsModule,
-      ToastModule,
-      TableModule,
-      Tooltip,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    ToastModule,
+    TableModule,
+    Tooltip,
+  ],
   templateUrl: './comp-ground.component.html',
   styleUrl: './comp-ground.component.css',
   providers: [
@@ -35,13 +35,13 @@ import { Tooltip } from 'primeng/tooltip';
 export class CompGroundComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
-  @Input() CompetitionData: any;
+  @Input() CompetitionData: any= {};
   @Output() groundUpdated = new EventEmitter<void>();
-  client_id: number = Number(localStorage.getItem('client_id'));
+  client_id: number=0;
   movedToTarget: any[] = [];
   user_id: number = Number(localStorage.getItem('user_id'));
   movedToTargetIds = new Set<number>();
-  statusConstants= CricketKeyConstant.status_code;
+  statusConstants = CricketKeyConstant.status_code;
   default_img = CricketKeyConstant.default_image_url.grounds;
   targetGround: any[] = [];
   sourceGround: any[] = [];
@@ -64,14 +64,13 @@ export class CompGroundComponent implements OnInit {
   gridLoad() {
     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {}
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compgroundList, params).subscribe((res: any) => {
-      const allItems =res.data.all_grounds;
+      const allItems = res.data.all_grounds;
       const mappedIds = res.data.selected_grounds.map((value: any) => value.ground_id);
       this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
-      // this.targetGround = res.data.all_grounds
       this.targetGround = res.data.selected_grounds
       this.spinnerService.raiseDataEmitterEvent('off');
 
@@ -82,12 +81,13 @@ export class CompGroundComponent implements OnInit {
       ) {
         this.apiService.RefreshToken();
       }
-
+      this.spinnerService.raiseDataEmitterEvent('off');
+      this.failedToast(err.error);
     })
   }
   updateGround() {
     const params: any = {}
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.ground_list = this.targetGround.map((p: any) => p.ground_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
@@ -102,18 +102,21 @@ export class CompGroundComponent implements OnInit {
       ) {
         this.apiService.RefreshToken();
       }
+
+
+
     })
   }
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-    life:800
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+      life: 800
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
@@ -121,12 +124,12 @@ successToast(data: any) {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
 
 
-  
+
   moveToSource(ground: any) {
     this.targetGround = this.targetGround.filter((t: any) => t.ground_id !== ground.ground_id);
     this.sourceGround.push(ground);

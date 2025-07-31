@@ -36,9 +36,9 @@ import { Tooltip } from 'primeng/tooltip';
 export class CompOfficialComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '',client_id:0 };
   @Output() UpdateOfficial = new EventEmitter<void>();
-  client_id: number = Number(localStorage.getItem('client_id'));
+  client_id: number = 0;
 
   user_id: number = Number(localStorage.getItem('user_id'));
   statusConstants = CricketKeyConstant.status_code;
@@ -66,7 +66,7 @@ export class CompOfficialComponent implements OnInit {
   gridLoad() {
     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {}
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compOfficialList, params).subscribe((res: any) => {
@@ -82,7 +82,7 @@ export class CompOfficialComponent implements OnInit {
   }
   updateOfficial() {
     const params: any = {}
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.official_list = this.targetOfficial.map((p: any) => p.official_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();

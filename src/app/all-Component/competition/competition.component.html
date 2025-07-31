@@ -343,54 +343,91 @@
 
 
                         <div class="col-md-4">
-                          <label class="">overs_per_innings
+                          <label class="">Overs Per Innings
                             <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="overs_per_innings">
+                          <small *ngIf="
+                              addCompetitionForm.get('overs_per_innings')?.invalid &&
+                              (addCompetitionForm.get('overs_per_innings')?.touched || submitted)"
+                            class="required-msg">
+                            Overs Per Innings is required
+                          </small>
                         </div>
 
                         <div class="col-md-4">
-                          <label class="">overs_per_bowler
+                          <label class="">Overs Per Bowler
                             <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="overs_per_bowler">
+                          <small *ngIf="
+                              addCompetitionForm.get('overs_per_bowler')?.invalid &&
+                              (addCompetitionForm.get('overs_per_bowler')?.touched || submitted)" class="required-msg">
+                            Overs Per Bowler is required
+                          </small>
                         </div>
                         <div class="col-md-4">
-                          <label class="">points_abandoned
+                          <label class="">Points Abandoned
                             <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="points_abandoned">
+                          <small
+                            *ngIf="addCompetitionForm.get('points_abandoned')?.invalid && (addCompetitionForm.get('points_abandoned')?.touched ||submitted)"
+                            class="required-msg">
+                            Points Abandoned is required </small>
                         </div>
 
                         <div class="col-md-4">
-                          <label class="">points_draw
+                          <label class="">Points Draw
                             <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="points_draw">
+                          <small
+                            *ngIf="addCompetitionForm.get('points_draw')?.invalid && (addCompetitionForm.get('points_draw')?.touched || submitted)"
+                            class="required-msg">
+                            Points Draw is required
+
+                          </small>
                         </div>
 
-                        <div class="col-md-4">
-                          <label class="">points_win
+                        <div class=" col-md-4">
+                          <label class="">Points Win
                             <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="points_win">
+                          <small
+                            *ngIf="addCompetitionForm.get('points_win')?.invalid && (addCompetitionForm.get('points_win')?.touched || submitted)"
+                            class="required-msg">
+                            Points Win is required
+
+                          </small>
                         </div>
 
                         <div class="col-md-4">
-                          <label class="">points_lead
+                          <label class="">Points Lead
                             <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="points_lead">
+                          <small
+                            *ngIf="addCompetitionForm.get('points_lead')?.invalid && (addCompetitionForm.get('points_lead')?.touched || submitted)"
+                            class="required-msg">
+                            Points Lead is required
+
+                          </small>
                         </div>
-                        <div class="col-md-4">
+                        <div class=" col-md-4">
                           <label class="">points_tie
                             <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="points_tie">
+                          <small
+                            *ngIf="addCompetitionForm.get('points_tie')?.invalid && (addCompetitionForm.get('points_tie')?.touched || submitted)"
+                            class="required-msg">
+                            Points Tie is required
+                          </small>
                         </div>
                         <div class="col-md-4">
                           <label class="">calculation
-                            <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="number" formControlName="calculation">
                         </div>
@@ -398,7 +435,6 @@
 
                         <div class="col-md-4">
                           <label class="">video_path
-                            <span class="text-danger">*</span>
                           </label>
                           <input class="form-control" maxlength="50" type="text" formControlName="video_path">
                         </div>
@@ -428,7 +464,8 @@
               <div class="popup-container">
                 <div class="top-bar" style="    padding: 6px 50px;">
                   <div class="view-name">{{ selectedcompitition?.competition_name | uppercase }}</div>
-                  <button class="popup-close" pTooltip="Close popup" tooltipPosition="right" (click)="visibleDialog = false" aria-label="Close popup">✖</button>
+                  <button class="popup-close" pTooltip="Close popup" tooltipPosition="right"
+                    (click)="visibleDialog = false" aria-label="Close popup">✖</button>
                 </div>
                 <section class="popup-section">
                   <h2 class="section-title">Competition Details</h2>
@@ -527,7 +564,7 @@
               <!-- Empty state message -->
               <div class="empty-message" *ngIf="compititionList.length === 0">
 
-                
+
               </div>
             </div>
 
@@ -554,8 +591,7 @@
                       class="btn btn-primary btn-sm new-buttons  " (click)="UpdateFromParent()">
                       + New Match
                     </button>
-                    <button class="cancel-button p-button-text" 
-                     *ngIf="!showNewMatchForm" (click)="goBack()"
+                    <button class="cancel-button p-button-text" *ngIf="!showNewMatchForm" (click)="goBack()"
                       [disabled]="isEditDisabled">Back</button>
                   </div>
                 </div>
@@ -589,8 +625,8 @@
   </div>
 </div>
 <!-- Toast for notifications -->
-<p-confirmDialog [style]="{ width: '320px'}" [baseZIndex]="10000" [draggable]="false"
-  [closable]="false" [styleClass]="'p-confirm-dialog-custom'">
+<p-confirmDialog [style]="{ width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
+  [styleClass]="'p-confirm-dialog-custom'">
 </p-confirmDialog>
 
 <p-toast position="center" [baseZIndex]="11000">

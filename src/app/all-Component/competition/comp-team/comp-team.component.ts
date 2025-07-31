@@ -33,10 +33,10 @@ import { TooltipModule } from 'primeng/tooltip';
 export class CompTeamComponent implements OnInit {
   [x: string]: any;
   @ViewChild('dt1') dt1: Table | undefined;
- @ViewChild('dt2') dt2: Table  | undefined;
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
+  @ViewChild('dt2') dt2: Table | undefined;
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
   @Output() TeamUpdate = new EventEmitter<void>();
-  client_id: number = Number(localStorage.getItem('client_id'));
+  client_id: number = 0;
   user_id: number = Number(localStorage.getItem('user_id'));
   team_id: any;
   public compTeamsList = [];
@@ -51,7 +51,7 @@ export class CompTeamComponent implements OnInit {
   sourceTeams: any[] = [];
   searchText: string = '';
   filteredTeams: any[] = [];
- sourceSearchKeyword: string = '';
+  sourceSearchKeyword: string = '';
   targetSearchKeyword: string = '';
 
   constructor(
@@ -82,7 +82,7 @@ export class CompTeamComponent implements OnInit {
   gridLoad() {
     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compTeamsList, params).subscribe(
@@ -127,7 +127,7 @@ export class CompTeamComponent implements OnInit {
 
   AddTeam() {
     const params: any = {}
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.team_list = this.targetTeams.map((p: any) => p.team_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
@@ -144,7 +144,7 @@ export class CompTeamComponent implements OnInit {
       return;
     }
     const params: any = {
-      client_id: this.client_id.toString(),
+      client_id: this.CompetitionData.client_id.toString(),
       user_id: this.user_id.toString(),
       competition_id: this.CompetitionData.competition_id.toString(),
       team_id: this.selectedTeam.team_id?.toString(),
@@ -160,16 +160,16 @@ export class CompTeamComponent implements OnInit {
       }
     );
   }
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-    life:800
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+      life: 800
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
@@ -177,7 +177,7 @@ successToast(data: any) {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
   onMoveToTarget(event: any) {
@@ -222,7 +222,7 @@ successToast(data: any) {
     this.targetTeams.push(team);
   }
 
-filterGlobalSource($event: any, stringVal: string) {
+  filterGlobalSource($event: any, stringVal: string) {
     this.dt1?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
@@ -230,13 +230,13 @@ filterGlobalSource($event: any, stringVal: string) {
     this.dt2?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
- clearSource(table: Table) {
+  clearSource(table: Table) {
     table.clear();
-    this.sourceSearchKeyword = ''; 
+    this.sourceSearchKeyword = '';
   }
 
   clearTarget(table: Table) {
     table.clear();
-    this.targetSearchKeyword = ''; 
+    this.targetSearchKeyword = '';
   }
 }

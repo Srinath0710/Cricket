@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   /* gap: 16px; */
-  min-width: 200px;
+  /* min-width: 200px; */
 }
 
 .sidebar-toggle {
@@ -112,7 +112,7 @@
   height: 40px;
   display: flex;
   align-items: center;
-  margin-left: -30px;
+  /* margin-left: -30px; */
 }
 
 .client_logo img {
@@ -160,6 +160,7 @@
   align-items: center;
   gap: 16px;
   min-width: fit-content;
+  margin-right: 2px;
 }
 
 

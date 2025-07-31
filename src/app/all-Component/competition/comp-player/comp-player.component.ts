@@ -17,7 +17,7 @@ interface Team {
   team_id: number;
   team_name: string;
   // other fields...
-}   
+}
 @Component({
   selector: 'app-comp-player',
   imports: [
@@ -29,7 +29,7 @@ interface Team {
     TableModule,
     ToastModule,
     Tooltip
-    ],
+  ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
   providers: [
@@ -44,9 +44,9 @@ interface Team {
 export class CompPlayerComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
   @Output() PlayerUpdated = new EventEmitter<void>();
-  client_id: number = Number(localStorage.getItem('client_id'));
+  client_id: number = 0;
   default_img = CricketKeyConstant.default_image_url.players;
   teamsDropDown: any;
   initilized: boolean = false;
@@ -75,14 +75,14 @@ export class CompPlayerComponent implements OnInit {
   ImportMappingData: any;
   targetProducts: any;
   ImportData: any;
-  
+
 
   // ... (existing properties)
 
-allPlayersRaw: any[] = []; // To store all players fetched from the API
-selectedPlayersRaw: any[] = []; // To store all selected players fetched from the API
+  allPlayersRaw: any[] = []; // To store all players fetched from the API
+  selectedPlayersRaw: any[] = []; // To store all selected players fetched from the API
 
-// ... (rest of your component)
+  // ... (rest of your component)
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
@@ -119,76 +119,76 @@ selectedPlayersRaw: any[] = []; // To store all selected players fetched from th
   //     this.targetPlayer = [];
   //   }
   // }
-chooseTeam(team_id: any) {
-  if (this.teamID === team_id) {
-    return; 
-  }
+  chooseTeam(team_id: any) {
+    if (this.teamID === team_id) {
+      return;
+    }
 
-  this.teamID = team_id;
-  this.spinnerService.raiseDataEmitterEvent('on'); 
-  this.filterPlayersByTeam(this.teamID);
-  this.spinnerService.raiseDataEmitterEvent('off');
-}
+    this.teamID = team_id;
+    this.spinnerService.raiseDataEmitterEvent('on');
+    this.filterPlayersByTeam(this.teamID);
+    this.spinnerService.raiseDataEmitterEvent('off');
+  }
 
   gridLoad() {
-  this.spinnerService.raiseDataEmitterEvent('on');
-  const params: any = {};
-  params.client_id = this.client_id.toString();
-  params.user_id = this.user_id.toString();
-  params.competition_id = this.CompetitionData.competition_id.toString();
+    this.spinnerService.raiseDataEmitterEvent('on');
+    const params: any = {};
+    params.client_id = this.CompetitionData.client_id.toString();
+    params.user_id = this.user_id.toString();
+    params.competition_id = this.CompetitionData.competition_id.toString();
 
-  this.apiService.post(this.urlConstant.compplayerlist, params).subscribe(
-    (res: any) => {
-      this.teamsDropDown = res.data.teams ?? [];
-      this.teamsData = res.data.teams != undefined ? res.data.teams : [];
-      this.allPlayersRaw = res.data.all_players ?? [];
-      this.selectedPlayersRaw = res.data.selected_players ?? [];
-      if ( this.teamsData.length > 0) {
-        this.teamID = this.teamsData[0].team_id;
+    this.apiService.post(this.urlConstant.compplayerlist, params).subscribe(
+      (res: any) => {
+        this.teamsDropDown = res.data.teams ?? [];
+        this.teamsData = res.data.teams != undefined ? res.data.teams : [];
+        this.allPlayersRaw = res.data.all_players ?? [];
+        this.selectedPlayersRaw = res.data.selected_players ?? [];
+        if (this.teamsData.length > 0) {
+          this.teamID = this.teamsData[0].team_id;
+        }
+        this.filterPlayersByTeam(this.teamID);
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.log('All Items Raw:', this.allPlayersRaw);
+        console.log('Selected Players Raw:', this.selectedPlayersRaw);
+      },
+      (err: any) => {
+        console.error('Error loading player list:', err);
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.sourcePlayer = [];
+        this.targetPlayer = [];
       }
-      this.filterPlayersByTeam(this.teamID);
-      this.spinnerService.raiseDataEmitterEvent('off');
-      console.log('All Items Raw:', this.allPlayersRaw); 
-      console.log('Selected Players Raw:', this.selectedPlayersRaw); 
-    },
-    (err: any) => {
-      console.error('Error loading player list:', err);
-      this.spinnerService.raiseDataEmitterEvent('off');
-      this.sourcePlayer = [];
-      this.targetPlayer = [];
-    }
-  );
-}
-filterPlayersByTeam(teamId: number) {
-  if (!teamId) {
-    this.sourcePlayer = [];
-    this.targetPlayer = [];
-    return;
+    );
   }
-  const allItemsForTeam = this.allPlayersRaw
-  const selectedPlayersForTeam = this.selectedPlayersRaw.filter(
-    (item: any) => item.team_id == teamId
-  );
-  const selectedPlayerIdsForTeam = new Set(this.selectedPlayersRaw.map((players: any) => players.player_id));
-  this.sourcePlayer = allItemsForTeam.filter(
-    (item: any) => !selectedPlayerIdsForTeam.has(item.player_id)
-  );
-  this.targetPlayer = selectedPlayersForTeam;
-  const selectedTeam = this.teamsData.find(team => team.team_id === teamId);
-  this.teamname = selectedTeam ? selectedTeam.team_name : '';
-  this.sourceSearchKeyword = '';
-  this.targetSearchKeyword = '';
-  if (this.dt1) this.dt1.filterGlobal('', 'contains');
-  if (this.dt2) this.dt2.filterGlobal('', 'contains');
-  console.log('Source Players (filtered):', this.sourcePlayer);
-  console.log('Target Players (filtered):', this.targetPlayer);
-}
+  filterPlayersByTeam(teamId: number) {
+    if (!teamId) {
+      this.sourcePlayer = this.allPlayersRaw;
+      this.targetPlayer = [];
+      return;
+    }
+    const allItemsForTeam = this.allPlayersRaw
+    const selectedPlayersForTeam = this.selectedPlayersRaw.filter(
+      (item: any) => item.team_id == teamId
+    );
+    const selectedPlayerIdsForTeam = new Set(this.selectedPlayersRaw.map((players: any) => players.player_id));
+    this.sourcePlayer = allItemsForTeam.filter(
+      (item: any) => !selectedPlayerIdsForTeam.has(item.player_id)
+    );
+    this.targetPlayer = selectedPlayersForTeam;
+    const selectedTeam = this.teamsData.find(team => team.team_id === teamId);
+    this.teamname = selectedTeam ? selectedTeam.team_name : '';
+    this.sourceSearchKeyword = '';
+    this.targetSearchKeyword = '';
+    if (this.dt1) this.dt1.filterGlobal('', 'contains');
+    if (this.dt2) this.dt2.filterGlobal('', 'contains');
+    console.log('Source Players (filtered):', this.sourcePlayer);
+    console.log('Target Players (filtered):', this.targetPlayer);
+  }
   public singleFilterFunction(arrayFilter: Array<any>, filterKey: string, byFilterValue: any) {
     return arrayFilter.filter((data: any) => data[filterKey] == byFilterValue)
   }
   addplayer() {
     const params: any = {};
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     params.team_id = this.teamID?.toString();
@@ -213,7 +213,7 @@ filterPlayersByTeam(teamId: number) {
       summary: 'Success',
       detail: data.message,
       data: { image: 'assets/images/default-logo.png' },
-      life:800
+      life: 800
     });
   }
   /* Failed Toast */
@@ -223,7 +223,7 @@ filterPlayersByTeam(teamId: number) {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
   updateplayer(): void {
@@ -232,7 +232,7 @@ filterPlayersByTeam(teamId: number) {
       return;
     }
     const params: any = {
-      client_id: this.client_id.toString(),
+      client_id: this.CompetitionData.client_id.toString(),
       user_id: this.user_id.toString(),
       team_id: this.teamID?.toString(),
       competition_id: this.CompetitionData.competition_id.toString(),
@@ -287,10 +287,10 @@ filterPlayersByTeam(teamId: number) {
 
   moveToTarget(player: any) {
     this.sourcePlayer = this.sourcePlayer.filter(t => t !== player);
-    player.player_name= player.player_name || player.display_name; // Ensure player_name is set
+    player.player_name = player.player_name || player.display_name; // Ensure player_name is set
     this.targetPlayer.push(player);
-    const targetplayer=this.targetPlayer;
-    this.targetPlayer=targetplayer
+    const targetplayer = this.targetPlayer;
+    this.targetPlayer = targetplayer
   }
 
   filterGlobalSource($event: any, stringVal: string) {

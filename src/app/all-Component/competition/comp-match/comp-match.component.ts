@@ -38,12 +38,12 @@ interface MetaInfo {
   ]
 })
 export class CompMatchComponent implements OnInit {
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '' };
- @Output() Newmatch= new EventEmitter<void>();
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
+  @Output() Newmatch = new EventEmitter<void>();
   public ShowForm: any = false;
   public competitionFixturesForm !: FormGroup<any>;
   user_id: number = Number(localStorage.getItem('user_id'));
-  client_id: number = Number(localStorage.getItem('client_id'));
+  client_id: number = 0;
   submitted: boolean = false
   configDataList: MetaInfo[] = [];
   timezonetype = [];
@@ -92,7 +92,7 @@ export class CompMatchComponent implements OnInit {
   }
 
   initForm() {
-    
+
     this.competitionFixturesForm = this.formbuilder.group({
 
       sequence_no: ['', [Validators.required]],
@@ -127,7 +127,7 @@ export class CompMatchComponent implements OnInit {
     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {}
     params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
+    params.client_id = this.CompetitionData.client_id?.toString();
     params.competition_id = String(this.CompetitionData?.competition_id),
 
       this.apiService.post(this.urlConstant.getfixture, params).subscribe((res) => {
@@ -137,9 +137,10 @@ export class CompMatchComponent implements OnInit {
           this.spinnerService.raiseDataEmitterEvent('off');
         } else {
           this.MatchData = [];
+          this.spinnerService.raiseDataEmitterEvent('off');
         }
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'),this.MatchData = []);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.MatchData = []);
 
       });
   }
@@ -178,7 +179,7 @@ export class CompMatchComponent implements OnInit {
     const params: any = {}
     params.action_flag = "drop_down"
     params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
+    params.client_id = this.CompetitionData.client_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.fixturedropdown, params).subscribe(
       (res: any) => {
@@ -220,19 +221,19 @@ export class CompMatchComponent implements OnInit {
   }
 
   hideDialog() {
-this.hideNewMatchForm();
+    this.hideNewMatchForm();
   }
   /* Failed Toast */
-successToast(data: any) {
+  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-    life:800
-  });
-}
+    this.msgService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: data.message,
+      data: { image: 'assets/images/default-logo.png' },
+      life: 800
+    });
+  }
   /* Failed Toast */
   failedToast(data: any) {
     this.msgService.add({
@@ -240,7 +241,7 @@ successToast(data: any) {
       severity: 'error',
       summary: 'Error',
       detail: data.message,
-      life:800
+      life: 800
     });
   }
 
@@ -261,7 +262,7 @@ successToast(data: any) {
 
     const params: any = {
       user_id: String(this.user_id),
-      client_id: String(this.client_id),
+      client_id: String(this.CompetitionData.client_id),
       competition_id: this.CompetitionData?.competition_id != null ? String(this.CompetitionData.competition_id) : null,
       match_id: this.competitionFixturesForm.value.match_id != null ? String(this.competitionFixturesForm.value.match_id) : null,
 
@@ -348,7 +349,7 @@ successToast(data: any) {
   editCardData(match_id: number) {
     const params: any = {};
     params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
+    params.client_id = this.CompetitionData.client_id?.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     params.match_id = match_id.toString(),
       this.apiService.post(this.urlConstant.editfixture, params).subscribe((res) => {
@@ -419,7 +420,7 @@ successToast(data: any) {
   status(match_id: number, url: string) {
     const params: any = {
       user_id: this.user_id?.toString(),
-      client_id: this.client_id?.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
       match_id: match_id?.toString(),
       competition_id: String(this.CompetitionData?.competition_id)
     };
@@ -453,10 +454,10 @@ successToast(data: any) {
   }
   showNewMatchForm() {
     this.ShowForm = true;
-    this.showFormChange.emit(true); 
+    this.showFormChange.emit(true);
   }
   hideNewMatchForm() {
     this.ShowForm = false;
-    this.showFormChange.emit(false); 
+    this.showFormChange.emit(false);
   }
 }
