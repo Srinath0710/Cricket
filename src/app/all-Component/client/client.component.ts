@@ -572,7 +572,7 @@ fileEvent(event: Event): void {
     if (file) {
       const fileSizeKB = file.size / 500;
       if (fileSizeKB > maxSizeKB) {
-        this.imageSizeError = 'Image size should be 500 KB';
+        this.imageSizeError = 'Max allowed is 500KB.';
         this.imagePreview = null;
         this.selectedImage = null;
         this.filedata = null;

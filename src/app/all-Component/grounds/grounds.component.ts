@@ -784,7 +784,7 @@ export class GroundsComponent implements OnInit {
     if (file) {
       const fileSizeKB = file.size / 500;
       if (fileSizeKB > maxSizeKB) {
-        this.imageSizeError = 'Image size should be 500 KB';
+        this.imageSizeError = 'Max.allowed size is 500KB';
         this.imagePreview = null;
         this.selectedImage = null;
         this.filedata = null;
