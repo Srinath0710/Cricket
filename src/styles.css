@@ -2119,3 +2119,11 @@ body.modal-open {
   font-size: larger !important;
   color: #fff !important;
 }
+ 
+.p-confirm-dialog-custom .icon-success {
+  color: #4CAF50;
+}
+
+.p-confirm-dialog-custom .icon-danger {
+  color: #d32f2f;
+}

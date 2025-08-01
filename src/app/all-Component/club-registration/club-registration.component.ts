@@ -443,14 +443,14 @@ export class ClubRegistrationComponent implements OnInit {
   StatusConfirm(club_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
-    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
+  const iconClass = isActivating ? 'icon-success' : 'icon-danger';
     const message = `Are you sure you want to proceed?`;
 
     this.confirmationService.confirm({
       header: '',
       message: `
       <div class="custom-confirm-content">
-        <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <i class="fa-solid fa-triangle-exclamation warning-icon ${iconClass}"></i>
         <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
@@ -712,7 +712,7 @@ export class ClubRegistrationComponent implements OnInit {
     if (file) {
       const fileSizeKB = file.size / 500;
       if (fileSizeKB > maxSizeKB) {
-        this.imageSizeError = 'Max.allowed size is 500KB';
+        this.imageSizeError = 'Max.size is 500KB';
         this.imagePreview = null;
         this.selectedImage = null;
         this.filedata = null;

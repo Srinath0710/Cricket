@@ -432,30 +432,31 @@ export class ClientComponent implements OnInit {
   //   } as any);
   // }
 
-  StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
-    const { active_status, deactive_status } = this.conditionConstants;
-    const isActivating = actionObject.key === active_status.key;
-    const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-    const message = `Are you sure you want to proceed?`;
+StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
+  const { active_status, deactive_status } = this.conditionConstants;
+  const isActivating = actionObject.key === active_status.key;
+  const iconClass = isActivating ? 'icon-success' : 'icon-danger';
+  const message = `Are you sure you want to proceed?`;
 
-    this.confirmationService.confirm({
-      header: '',
-      message: `
+  this.confirmationService.confirm({
+    header: '',
+    message: `
       <div class="custom-confirm-content">
-        <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
+        <i class="fa-solid fa-triangle-exclamation warning-icon ${iconClass}"></i>
         <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
     `,
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
-        this.status(client_id, url);
-      },
-      reject: () => { }
-    });
-  }
+    acceptLabel: 'Yes',
+    rejectLabel: 'No',
+    accept: () => {
+      const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
+      this.status(client_id, url);
+    },
+    reject: () => { }
+  });
+}
+
 
   filterGlobal() {
     if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
@@ -572,7 +573,7 @@ fileEvent(event: Event): void {
     if (file) {
       const fileSizeKB = file.size / 500;
       if (fileSizeKB > maxSizeKB) {
-        this.imageSizeError = 'Max allowed is 500KB.';
+        this.imageSizeError = 'Max.size is 500KB';
         this.imagePreview = null;
         this.selectedImage = null;
         this.filedata = null;
