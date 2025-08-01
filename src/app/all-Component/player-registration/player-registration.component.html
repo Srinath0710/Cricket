@@ -58,7 +58,7 @@
 
             <p-table #dt [value]="PlayerData" [styleClass]="'custom-table'"
               [globalFilterFields]="['display_name','player_dob','mobile_no','email','record_status']">
-              <ng-template pTemplate="header">
+                <ng-template pTemplate="header">
 
                 <tr>
                   <th>
@@ -67,12 +67,19 @@
                       <p-sortIcon field="display_name" pSortableColumn="display_name"></p-sortIcon>
                     </div>
                   </th>
-                  <th>
+                  
+                     <th>
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      Gender
+                      <p-sortIcon field="gender" pSortableColumn="gender"></p-sortIcon>
+                    </div>
+                  </th>
+                   <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
                       DOB
                       <p-sortIcon field="player_dob" pSortableColumn="player_dob"></p-sortIcon>
                     </div>
-                  </th>
+                  </th> 
                   <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
                       Mobile Number
@@ -81,10 +88,23 @@
                   </th>
                   <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
-                      Email
-                      <p-sortIcon field="email" pSortableColumn="email"></p-sortIcon>
+                      Player Role
+                      <p-sortIcon field="player_role" pSortableColumn="player_role"></p-sortIcon>
                     </div>
                   </th>
+                  <th>
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      Batting Style
+                      <p-sortIcon field="batting_style" pSortableColumn="batting_style"></p-sortIcon>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      Bowling Style
+                      <p-sortIcon field="bowling_style" pSortableColumn="bowling_style"></p-sortIcon>
+                    </div>
+                  </th>
+                 
                   <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
                       Status
@@ -109,9 +129,13 @@
 
                     </div>
                   </td>
+                  <td>{{ player.gender }}</td>
                   <td>{{ player.player_dob }}</td>
                   <td>{{ player.mobile_no }}</td>
-                  <td>{{ player.email }}</td>
+                  <td>{{ player.player_role }}</td>
+                  <td>{{ player.batting_style }}</td>
+                  <td>{{ player.bowling_style }}</td>
+                  
                   <td>
                     <span [ngClass]="{
                         ' bg-success': player.record_status === 'Active',

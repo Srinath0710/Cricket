@@ -671,5 +671,23 @@ export class CompetitionComponent implements OnInit {
     this.dt.clear();
     this.loadCompetitions();
   }
+  //mobileno enter the only number alowed
+  onPhoneNumberInput(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10);
+    this.addCompetitionForm.get('mobile')?.setValue(phoneNumber, { emitEvent: false });
+  }
+  //single quotes and doble quotes remove all label box 
+  blockQuotesOnly(event: KeyboardEvent) {
+    if (event.key === '"' || event.key === "'") {
+      event.preventDefault();
+    }
+  }
 
+
+  sanitizeQuotesOnly(controlName: string, event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    const cleaned = input.replace(/['"]/g, '');
+    this.addCompetitionForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
 }

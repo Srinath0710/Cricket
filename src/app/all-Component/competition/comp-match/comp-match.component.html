@@ -6,12 +6,12 @@
         <strong>Match:{{ Fixtures.match_id }}</strong>
         <div class="gap-2">
           <span class="p-button-sm status-color">{{ Fixtures.match_status }}</span>
-          <button pButton type="button" class="p-button-sm p-button-info background-edit"
-           pTooltip="Edit" tooltipPosition="top" (click)="editCardData(Fixtures.match_id)">
+          <button pButton type="button" class="p-button-sm p-button-info background-edit" pTooltip="Edit"
+            tooltipPosition="top" (click)="editCardData(Fixtures.match_id)">
             <i class="fa fa-pencil me-2"></i>
           </button>
-          <button pButton type="button" class="p-button-sm p-button-danger background-delete"
-             pTooltip="Delete" tooltipPosition="top" (click)="StatusConfirm(Fixtures.match_id)">
+          <button pButton type="button" class="p-button-sm p-button-danger background-delete" pTooltip="Delete"
+            tooltipPosition="top" (click)="StatusConfirm(Fixtures.match_id)">
             <i class="fa fa-trash me-2"></i>
           </button>
 
@@ -21,31 +21,33 @@
       {{ Fixtures.ground_name.split(',')[0] }}
     </span> -->
       <span>
-        {{ Fixtures.ground_name}}
+        {{ Fixtures.ground_name }}
       </span>
-      <p class="text-muted">{{ Fixtures.match_date }}</p>
-      <div class="d-flex justify-content-around align-items-center my-3">
-        <div class="text-center">
-          <span class="person-image-team-player">
+      <span class="text-muted">{{ Fixtures.match_date }}</span>
+      <span><span style="font-weight: bold;">Toss </span>: Australia (Batting)</span>
+<div class="d-flex justify-content-around align-items-center my-3">
+  <div class="text-center">
+    <span class="person-image-team-player">
             <img class="player-img" *ngIf="Fixtures.team_a_image==null || Fixtures.team_a_image==''"
               [src]="default_img">
             <img class="player-img " *ngIf="Fixtures.team_a_image !=null && Fixtures.team_a_image !=''"
               [src]="Fixtures.team_a_image " (error)="handleImageError($event,default_img)">
-          </span>
+    </span>
           <p class="mb-0">{{ Fixtures.team_a_full_name }}</p>
-        </div>
+  </div>
         <strong>VS</strong>
-        <div class="text-center">
-          <span class="person-image-team-player">
+  <div class="text-center">
+    <span class="person-image-team-player">
             <img class="player-img" *ngIf="Fixtures.team_a_image1==null || Fixtures.team_a_image1==''"
               [src]="default_img">
             <img class="player-img " *ngIf="Fixtures.team_a_image1 !=null && Fixtures.team_a_image1 !=''"
               [src]="Fixtures.team_a_image1 " (error)="handleImageError($event,default_img)">
-          </span>
+    </span>
           <p class="mb-0">{{ Fixtures.team_a_full_name1 }}</p>
-        </div>
+  </div>
+</div>
 
-      </div>
+      <div style="text-align: center;color: blue;"> Aus won by 159 runs</div>
 
     </div>
   </div>
@@ -57,16 +59,16 @@
 
   <!-- Form -->
   <p-drawer [(visible)]="ShowForm" [baseZIndex]="10000" position="right" [showCloseIcon]="false">
-     <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="small-heading">
-                    <div
-                        *ngIf="competitionFixturesForm.get('match_id')?.value == '' || competitionFixturesForm.get('match_id')?.value == null">
-                        Add Match </div>
-                    <div
-                        *ngIf="competitionFixturesForm.get('match_id')?.value != null && competitionFixturesForm.get('match_id')?.value != ''">
-                        Edit Match</div>
-                </div>
-            </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="small-heading">
+        <div
+          *ngIf="competitionFixturesForm.get('match_id')?.value == '' || competitionFixturesForm.get('match_id')?.value == null">
+          Add Match </div>
+        <div
+          *ngIf="competitionFixturesForm.get('match_id')?.value != null && competitionFixturesForm.get('match_id')?.value != ''">
+          Edit Match</div>
+      </div>
+    </div>
 
     <form [formGroup]="competitionFixturesForm">
       <div class="row">
@@ -340,11 +342,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>

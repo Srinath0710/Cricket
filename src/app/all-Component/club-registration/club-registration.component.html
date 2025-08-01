@@ -206,7 +206,7 @@
                         <label>Country
                             <span class="text-danger">*</span>
                         </label>
-                        <p-dropdown formControlName="country_id" [options]="countriesList" optionLabel="country_name"
+                        <p-dropdown formControlName="country_id"  class="drop-error " [options]="countriesList" optionLabel="country_name"
                             (ngModelChange)="getStates()" optionValue="country_id" placeholder="Select Country"
                             [panelStyleClass]="'custom-dropdown-panel'" [filter]="true" filterBy="country_name"
                             [showClear]="false" appendTo="self">

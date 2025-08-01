@@ -1193,7 +1193,7 @@ option {
 
 main {
   width: 100% !important;
-  height: 100% !important;
+  /* height: 100% !important; */
   padding: 0 0px !important;
   overflow: auto;
 }
@@ -1953,7 +1953,7 @@ body.modal-open {
   position: fixed !important;
   width: 285px !important;
   box-sizing: border-box;
-  z-index: 9999 !important;
+  z-index: 10010  !important;
   top: 15% !important;
   transform: translate(-50%, -50%) !important;
 }

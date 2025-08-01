@@ -363,7 +363,7 @@ export class CompMatchComponent implements OnInit {
               match_start_date: editRecord.match_start_date != null ? editRecord.match_start_date.split('T')[0] : null,
               match_end_date: editRecord.match_end_date != null ? editRecord.match_end_date.split('T')[0] : null,
               time_zone_id: editRecord.time_zone_id,
-              day_type: editRecord.day_type,
+              day_type: Number(editRecord.day_type),
               is_neutral_venue: editRecord.is_neutral_venue,
               team_1_code: editRecord.team_1_code,
               team_2_code: editRecord.team_2_code,
@@ -389,7 +389,7 @@ export class CompMatchComponent implements OnInit {
           this.failedToast(res);
         }
       }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       });
 
 
