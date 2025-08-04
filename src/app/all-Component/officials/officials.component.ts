@@ -30,6 +30,7 @@ import { environment } from '../../environments/environment';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
 interface official {
   config_id: string;
   country_id: number;
@@ -65,7 +66,8 @@ interface official {
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
 
   ],
 })
@@ -163,8 +165,16 @@ export class OfficialsComponent implements OnInit {
   }
 
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private httpClient: HttpClient, private urlConstant: URLCONSTANT,
-    private msgService: MessageService, private confirmationService: ConfirmationService, private uploadImgService: UploadImgService, private spinnerService: SpinnerService,
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private httpClient: HttpClient,
+    private urlConstant: URLCONSTANT,
+    private msgService: MessageService,
+    private confirmationService: ConfirmationService,
+    private uploadImgService: UploadImgService,
+    private spinnerService: SpinnerService,
+    private toastService:ToastService
   ) {
 
   }
@@ -859,25 +869,13 @@ export class OfficialsComponent implements OnInit {
 
     this.visible = false;
   }
-  successToast(data: any) {
 
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+  successToast(data: any) {
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message })
   }
 
   status(official_id: number, url: string) {

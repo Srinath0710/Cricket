@@ -22,14 +22,28 @@ import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { Drawer } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-seasons',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule,
-    BadgeModule, DialogModule, FormsModule,
-    DropdownModule, FileUploadModule, InputTextModule,
-    PaginatorModule, TagModule, ReactiveFormsModule,
-    ConfirmDialogModule, Drawer, TooltipModule, CalendarModule, ToastModule
+  imports: [
+    CommonModule,
+    TableModule,
+    ButtonModule,
+    BadgeModule,
+    DialogModule,
+    FormsModule,
+    DropdownModule,
+    FileUploadModule,
+    InputTextModule,
+    PaginatorModule,
+    TagModule,
+    ReactiveFormsModule,
+    ConfirmDialogModule,
+    Drawer,
+    TooltipModule,
+    CalendarModule,
+    ToastModule
 
   ],
   templateUrl: './seasons.component.html',
@@ -38,7 +52,8 @@ import { SpinnerService } from '../../services/Spinner/spinner.service';
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
   ],
 })
 export class SeasonsComponent implements OnInit {
@@ -78,12 +93,16 @@ export class SeasonsComponent implements OnInit {
   dropDownConstants = CricketKeyConstant.dropdown_keys;
   Actionflag = CricketKeyConstant.action_flag;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
+  constructor(
+    private formBuilder: FormBuilder,
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private msgService: MessageService,
     private confirmationService: ConfirmationService,
     public cricketKeyConstant: CricketKeyConstant,
-    public spinnerService: SpinnerService) {
-
-  }
+    public spinnerService: SpinnerService,
+    public toastService: ToastService
+  ) { }
 
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -168,24 +187,11 @@ export class SeasonsComponent implements OnInit {
   }
 
   successToast(data: any) {
-
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life:800
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life:800
-    });
+    this.toastService.failedToast({ message: data.message })
   }
   onAddSeason() {
     this.submitted = true;
@@ -310,7 +316,7 @@ export class SeasonsComponent implements OnInit {
   //   } as any);
   // }
 
-    StatusConfirm(season_id: number, actionObject: { key: string; label: string }) {
+  StatusConfirm(season_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
     const iconClass = isActivating ? 'icon-success' : 'icon-danger';

@@ -17,7 +17,7 @@ import { CricketKeyConstant } from '../../services/cricket-key-constant';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
-
+import { ToastService } from '../../services/toast.service';
 @Component({
     selector: 'app-role-menu',
     standalone: true,
@@ -39,7 +39,9 @@ import { SpinnerService } from '../../services/Spinner/spinner.service';
         { provide: URLCONSTANT },
         { provide: CricketKeyConstant },
         { provide: MessageService },
-        { provide: ConfirmationService }
+        { provide: ConfirmationService },
+        { provide: ToastService },
+
     ],
 
 })
@@ -86,7 +88,10 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
         private urlConstant: URLCONSTANT,
         private confirmationService: ConfirmationService,
         public cricketKeyConstant: CricketKeyConstant,
-        public SpinnerService: SpinnerService) {
+        public SpinnerService: SpinnerService,
+        private toastService:ToastService
+    
+    ) {
         this.roleMenuForm = this.formBuilder.group({
             role_id: [''],
             role_name: ['', [Validators.required]],
@@ -254,7 +259,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
                         severity: 'success',
                         summary: 'Success',
                         detail: 'Permissions updated successfully',
-                        life: 3000
+                        life: 800
                     });
                     this.hidePermisssionTab();
                     this.gridLoad();
@@ -266,7 +271,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
                         severity: 'error',
                         summary: 'Error',
                         detail: 'Failed to update permissions',
-                        life: 3000
+                        life: 800
                     });
                 }
             },
@@ -281,7 +286,7 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
                         severity: 'error',
                         summary: 'Error',
                         detail: 'Error updating permissions',
-                        life: 3000
+                        life: 800
                     });
                 }
             },
@@ -316,24 +321,11 @@ export class RoleMenuComponent implements OnInit, AfterViewInit {
     }
 
   successToast(data: any) {
-
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life:800
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life:800
-    });
+    this.toastService.failedToast({ message: data.message  })
   }
 
     status(role_id: number, url: string) {

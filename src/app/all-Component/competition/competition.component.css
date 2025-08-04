@@ -161,9 +161,9 @@
   background: transparent;
   border: none;
   color: #3F51B5;
-  font-size: 14px;
+  font-size: 20px;
   cursor: pointer;
-  padding: 4px;
+  /* padding: 4px; */
 }
 
 
@@ -280,7 +280,8 @@
   display: flex;
   gap: 5px;
 }
-.card-status{
+
+.card-status {
   position: absolute;
   top: 8px;
   display: flex;
@@ -300,7 +301,7 @@
 }
 
 .action-icon:nth-child(1) {
-  color: #4CAF50;
+  color: #007bff;
 }
 
 .action-icon:nth-child(2) {
@@ -436,4 +437,3 @@
   color: #222;
   max-height: calc(100vh - 40px);
 }
-

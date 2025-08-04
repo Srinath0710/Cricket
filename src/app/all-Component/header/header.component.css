@@ -525,12 +525,12 @@
 }
 
 .modal-content {
-  padding: 0px 29px 0px;
+  /* padding: 0px 29px 0px; */
   text-align: center;
 }
 
 .modal-header {
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
   justify-content: center;
   font-size: 25px;
 
@@ -882,4 +882,7 @@ body.dark-theme .timmer-clock,
 
 .dark-theme .debug-theme-indicator {
   background: green;
+}
+.log-redirect{
+  font-size: 15px;
 }

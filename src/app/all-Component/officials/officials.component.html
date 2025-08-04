@@ -308,7 +308,7 @@
               <label>Country</label>
               <span class="text-danger">*</span>
               <p-dropdown [options]="countrydropdownData " class="drop-error " formControlName="country_id"
-                optionValue="region_id" optionLabel="region_name" placeholder="Select Official Country">
+                optionValue="region_id" optionLabel="region_name" placeholder="Select Country">
                 <ng-template let-gender pTemplate="item">
                   <div class="flex align-items-center gap-2">
                     <div>{{ gender.region_name }}
@@ -318,7 +318,7 @@
               </p-dropdown>
               <small
                 *ngIf="addOfficialForm?.get('country_id')?.invalid &&(addOfficialForm?.get('country_id')?.touched) || (addOfficialForm.get('country_id')?.invalid && submitted)"
-                class="required-msg"> country is Required
+                class="required-msg"> Country is Required
               </small>
             </div>
 
@@ -337,11 +337,9 @@
               </p-dropdown>
               <small
                 *ngIf="addOfficialForm?.get('format_id')?.invalid &&(addOfficialForm?.get('format_id')?.touched) || (addOfficialForm.get('format_id')?.invalid && submitted)"
-                class="required-msg"> format is Required
+                class="required-msg"> Format is Required
               </small>
             </div>
-
-
 
             <div class="col-md-6">
               <label>Official Type</label>
@@ -357,7 +355,7 @@
               </p-dropdown>
               <small
                 *ngIf="addOfficialForm?.get('official_type_id')?.invalid &&(addOfficialForm?.get('official_type_id')?.touched) || (addOfficialForm.get('official_type_id')?.invalid && submitted)"
-                class="required-msg"> official type is Required
+                class="required-msg"> Official type is Required
               </small>
 
             </div>
@@ -374,7 +372,6 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-            
             </div>
 
 
@@ -430,15 +427,11 @@
             </div>
           </div>
 
-
-
           <div class="form-wrapper pb-5">
-
             <div class="row mt-4 sticky-footer-buttons">
               <div class="col-12 text-end">
                 <button pButton type="button" label="Cancel" class="p-button-secondary me-3 custom-cancel-btn"
                   (click)="cancelForm()"></button>
-
                 <button pButton type="button" label="Clear" class="p-button-secondary me-3 custom-cancel-btn"
                   *ngIf="addOfficialForm.get('official_id')?.value == '' || addOfficialForm.get('official_id')?.value == null"
                   (click)="resetForm()">

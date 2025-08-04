@@ -20,6 +20,7 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
 import { HttpClientModule } from '@angular/common/http';
+import { ToastService } from '../../services/toast.service';
 interface Country {
   country_id: number;
   country_name: string;
@@ -50,7 +51,8 @@ interface Country {
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService },
   ],
 })
 export class ClientComponent implements OnInit {
@@ -103,9 +105,16 @@ export class ClientComponent implements OnInit {
   statusConstants = CricketKeyConstant.status_code;
   actionflags = CricketKeyConstant.action_flag;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, private uploadImgService: UploadImgService,
-    public cricketKeyConstant: CricketKeyConstant, public spinnerService: SpinnerService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private msgService: MessageService,
+    private confirmationService: ConfirmationService,
+    private uploadImgService: UploadImgService,
+    public cricketKeyConstant: CricketKeyConstant,
+    public spinnerService: SpinnerService,
+    private toastService: ToastService) {
 
   }
 
@@ -340,7 +349,6 @@ export class ClientComponent implements OnInit {
     this.imageDefault = null;
     this.croppedImage = null;
     this.imageSizeError = '';
-
   }
 
   resetForm() {
@@ -359,23 +367,11 @@ export class ClientComponent implements OnInit {
   }
   successToast(data: any) {
 
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message  })
   }
 
   addCallBack(res: any) {
@@ -399,63 +395,32 @@ export class ClientComponent implements OnInit {
       }
     );
   }
-  // StatusConfirm(client_id: number, action: { key: string, label: string }, currentStatus: string) {
-  //   const { active_status, deactive_status } = this.conditionConstants;
-  //   const isSameStatus =
-  //     (action.key === active_status.key && currentStatus === active_status.status) ||
-  //     (action.key === deactive_status.key && currentStatus === deactive_status.status);
 
-  //   if (isSameStatus) return;
 
-  //   const isActivating = action.key === active_status.key;
-  //   const iconColor = isActivating ? '#4CAF50' : '#d32f2f';
-  //   const message = `Are you sure you want to proceed?`;
+  StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
+    const { active_status, deactive_status } = this.conditionConstants;
+    const isActivating = actionObject.key === active_status.key;
+    const iconClass = isActivating ? 'icon-success' : 'icon-danger';
+    const message = `Are you sure you want to proceed?`;
 
-  //   this.confirmationService.confirm({
-  //     header: ``,
-  //     message: `
-  //     <div class="custom-confirm-content">
-  //     <i class="fa-solid fa-triangle-exclamation warning-icon" style="color: ${iconColor};"></i>
-  //       <div class="warning">Warning</div>
-  //       <div class="message-text">${message}</div>
-  //     </div>
-  //   `,
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     styleClass: 'p-confirm-dialog-custom',
-  //     accept: () => {
-  //       const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
-  //       this.status(client_id, url);
-  //       this.confirmationService.close();
-  //     },
-  //     reject: () => this.confirmationService.close()
-  //   } as any);
-  // }
-
-StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
-  const { active_status, deactive_status } = this.conditionConstants;
-  const isActivating = actionObject.key === active_status.key;
-  const iconClass = isActivating ? 'icon-success' : 'icon-danger';
-  const message = `Are you sure you want to proceed?`;
-
-  this.confirmationService.confirm({
-    header: '',
-    message: `
+    this.confirmationService.confirm({
+      header: '',
+      message: `
       <div class="custom-confirm-content">
         <i class="fa-solid fa-triangle-exclamation warning-icon ${iconClass}"></i>
         <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
     `,
-    acceptLabel: 'Yes',
-    rejectLabel: 'No',
-    accept: () => {
-      const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
-      this.status(client_id, url);
-    },
-    reject: () => { }
-  });
-}
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        const url = isActivating ? this.urlConstant.activeClient : this.urlConstant.deactiveClient;
+        this.status(client_id, url);
+      },
+      reject: () => { }
+    });
+  }
 
 
   filterGlobal() {
@@ -562,7 +527,7 @@ StatusConfirm(client_id: number, actionObject: { key: string; label: string }) {
     target.src = fallbackUrl;
   }
 
-fileEvent(event: Event): void {
+  fileEvent(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     const maxSizeKB = 500;
 
@@ -714,7 +679,6 @@ fileEvent(event: Event): void {
     });
   }
   profileImgAppend(client_id: any) {
-
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);

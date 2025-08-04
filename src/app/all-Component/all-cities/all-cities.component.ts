@@ -20,6 +20,7 @@ import { Drawer } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
 interface City {
   name: string;
   code: string;
@@ -54,7 +55,8 @@ interface City {
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
   ],
 })
 export class AllCitiesComponent implements OnInit {
@@ -90,11 +92,15 @@ export class AllCitiesComponent implements OnInit {
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService,
-    private urlConstant: URLCONSTANT, private msgService: MessageService,
+  constructor(
+    private formBuilder: FormBuilder,
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private msgService: MessageService,
     private confirmationService: ConfirmationService,
     public cricketKeyConstant: CricketKeyConstant,
-    public spinnerService: SpinnerService
+    public spinnerService: SpinnerService,
+    public toastService: ToastService
   ) {
 
   }
@@ -254,25 +260,12 @@ export class AllCitiesComponent implements OnInit {
   }
   successToast(data: any) {
 
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life:800
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life:800
-    });
+    this.toastService.failedToast({ message: data.message  })
   }
-
 
   status(city_id: number, url: string) {
     const params: any = {
@@ -386,7 +379,7 @@ export class AllCitiesComponent implements OnInit {
   //   } as any);
   // }
 
-StatusConfirm(city_id: number, actionObject: { key: string; label: string }) {
+  StatusConfirm(city_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
     const iconClass = isActivating ? 'icon-success' : 'icon-danger';
@@ -413,12 +406,12 @@ StatusConfirm(city_id: number, actionObject: { key: string; label: string }) {
 
 
   filterGlobal() {
-  if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0){
+    if (this.searchKeyword.length >= 3 || this.searchKeyword.length === 0) {
 
-    this.dt?.filterGlobal(this.searchKeyword, 'contains');
-    this.first = 1;
-    this.gridLoad();
-  }
+      this.dt?.filterGlobal(this.searchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
   }
   clear() {
     this.searchKeyword = '';

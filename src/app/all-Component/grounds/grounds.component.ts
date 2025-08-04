@@ -23,6 +23,7 @@ import { environment } from '../../environments/environment';
 import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
 interface Country {
   country_id: number;
   country_name: string;
@@ -31,17 +32,33 @@ interface Country {
 @Component({
   selector: 'app-grounds',
   standalone: true,
-  imports: [CommonModule, TableModule, BadgeModule, ButtonModule,
-    DialogModule, ReactiveFormsModule, DropdownModule,
-    FormsModule, FileUploadModule, InputTextModule, Drawer,
-    ConfirmDialogModule, ToastModule, TagModule, PaginatorModule, TooltipModule, ImageCropperComponent],
+  imports: [
+    CommonModule,
+    TableModule,
+    BadgeModule,
+    ButtonModule,
+    DialogModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    FormsModule,
+    FileUploadModule,
+    InputTextModule,
+    Drawer,
+    ConfirmDialogModule,
+    ToastModule,
+    TagModule,
+    PaginatorModule,
+    TooltipModule,
+    ImageCropperComponent
+  ],
   templateUrl: './grounds.component.html',
   styleUrls: ['./grounds.component.css'],
   providers: [
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService },
   ],
 })
 export class GroundsComponent implements OnInit {
@@ -118,7 +135,8 @@ export class GroundsComponent implements OnInit {
     private confirmationService: ConfirmationService,
     public cricketKeyConstant: CricketKeyConstant,
     private uploadImgService: UploadImgService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private toastService: ToastService,
   ) {
   }
 
@@ -366,25 +384,13 @@ export class GroundsComponent implements OnInit {
     this.imagePreview = null;
     this.imageSizeError = '';
   }
-  successToast(data: any) {
 
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+  successToast(data: any) {
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message })
   }
 
   onAddGround() {

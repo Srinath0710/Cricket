@@ -24,6 +24,8 @@ import { CompMatchComponent } from './comp-match/comp-match.component';
 import { Drawer } from 'primeng/drawer';
 import { TooltipModule } from 'primeng/tooltip';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
+
 interface Competition {
   competition_id: number;
   client_id: string;
@@ -99,7 +101,8 @@ export interface ManageDataItem {
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
   ],
   standalone: true
 })
@@ -188,6 +191,7 @@ export class CompetitionComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
+    private toastService:ToastService
   ) { }
 
   ngOnInit() {
@@ -278,7 +282,6 @@ export class CompetitionComponent implements OnInit {
 
           }
           else {
-            console.log("ewe", res);
             this.compititionList = [];
             this.filteredCompititionList = [];
             this.totalRecords = 0;
@@ -386,8 +389,6 @@ export class CompetitionComponent implements OnInit {
 
   toggleStatus(competition: any) {
     const newStatus = competition.status === 'Active' ? 'InActive' : 'Active';
-
-
     const params = {
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString(),
@@ -436,25 +437,13 @@ export class CompetitionComponent implements OnInit {
     this.submitted = false;
   }
   successToast(data: any) {
-
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.messageService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message  })
   }
+
   addCallBack(res: any) {
     this.resetForm();
     this.cancelForm();
@@ -674,8 +663,14 @@ export class CompetitionComponent implements OnInit {
   //mobileno enter the only number alowed
   onPhoneNumberInput(event: Event) {
     const inputElement = event.target as HTMLInputElement;
-    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10);
-    this.addCompetitionForm.get('mobile')?.setValue(phoneNumber, { emitEvent: false });
+    const phoneNumber = inputElement.value.replace(/\D/g, '');
+    this.addCompetitionForm.get('overs_per_innings')?.setValue(phoneNumber, { emitEvent: false });
+    this.addCompetitionForm.get('overs_per_bowler')?.setValue(phoneNumber, { emitEvent: false });
+    this.addCompetitionForm.get('points_abandoned')?.setValue(phoneNumber, { emitEvent: false });
+    this.addCompetitionForm.get('points_draw')?.setValue(phoneNumber, { emitEvent: false });
+    this.addCompetitionForm.get('points_win')?.setValue(phoneNumber, { emitEvent: false });
+    this.addCompetitionForm.get('points_lead')?.setValue(phoneNumber, { emitEvent: false });
+    this.addCompetitionForm.get('points_tie')?.setValue(phoneNumber, { emitEvent: false });
   }
   //single quotes and doble quotes remove all label box 
   blockQuotesOnly(event: KeyboardEvent) {

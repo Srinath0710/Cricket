@@ -11,6 +11,7 @@ import { Output, EventEmitter } from '@angular/core';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
 import { Table, TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-comp-ground',
@@ -28,16 +29,17 @@ import { Tooltip } from 'primeng/tooltip';
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
   ],
   standalone: true
 })
 export class CompGroundComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
-  @Input() CompetitionData: any= {};
+  @Input() CompetitionData: any = {};
   @Output() groundUpdated = new EventEmitter<void>();
-  client_id: number=0;
+  client_id: number = 0;
   movedToTarget: any[] = [];
   user_id: number = Number(localStorage.getItem('user_id'));
   movedToTargetIds = new Set<number>();
@@ -55,6 +57,7 @@ export class CompGroundComponent implements OnInit {
     private urlConstant: URLCONSTANT,
     private msgService: MessageService,
     private spinnerService: SpinnerService,
+    private toastService: ToastService,
   ) { }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -107,25 +110,13 @@ export class CompGroundComponent implements OnInit {
 
     })
   }
-  successToast(data: any) {
 
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+  successToast(data: any) {
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message })
   }
 
 

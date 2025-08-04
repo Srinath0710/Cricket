@@ -21,14 +21,28 @@ import { ApiService } from '../../services/api.service';
 import { URLCONSTANT } from '../../services/url-constant';
 import { UpdateUser, CreateUser } from './users.model';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
-
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, TableModule, PaginatorModule, ButtonModule, InputTextModule,
-    DropdownModule, Drawer, DialogModule, DrawerModule, ConfirmDialogModule,
-    ToastModule, FormsModule, ReactiveFormsModule, BadgeModule, TagModule, CalendarModule,
+  imports: [
+    CommonModule,
+    TableModule,
+    PaginatorModule,
+    ButtonModule,
+    InputTextModule,
+    DropdownModule,
+    Drawer,
+    DialogModule,
+    DrawerModule,
+    ConfirmDialogModule,
+    ToastModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BadgeModule,
+    TagModule,
+    CalendarModule,
     TooltipModule
   ],
   templateUrl: './users.component.html',
@@ -37,7 +51,8 @@ import { SpinnerService } from '../../services/Spinner/spinner.service';
     { provide: URLCONSTANT },
     { provide: MessageService },
     { provide: ConfirmationService },
-    { provide: CricketKeyConstant }
+    { provide: CricketKeyConstant },
+    { provide: ToastService }
   ],
 })
 export class UsersComponent implements OnInit {
@@ -78,8 +93,14 @@ export class UsersComponent implements OnInit {
   Actionflag = CricketKeyConstant.action_flag;
   statusConstants = CricketKeyConstant.status_code;
 
-  constructor(private formBuilder: FormBuilder, private msgService: MessageService, private apiService: ApiService,
-    private confirmationService: ConfirmationService, private urlConstant: URLCONSTANT, public spinnerService: SpinnerService
+  constructor(
+    private formBuilder: FormBuilder,
+    private msgService: MessageService,
+    private apiService: ApiService,
+    private confirmationService: ConfirmationService,
+    private urlConstant: URLCONSTANT,
+    public spinnerService: SpinnerService,
+    public toastService: ToastService
   ) {
   }
 
@@ -139,11 +160,11 @@ export class UsersComponent implements OnInit {
   }
 
   successToast(data: any) {
-    this.msgService.add({ severity: 'success', summary: 'Success', detail: data.message, data: { image: 'assets/images/default-logo.png' }, life: 800 });
+    this.toastService.successToast({ message: data.message })
   }
 
   failedToast(data: any) {
-    this.msgService.add({ severity: 'error', summary: 'error', detail: data.message, data: { image: 'assets/images/default-logo.png' }, life: 800 });
+    this.toastService.failedToast({ message: data.message })
   }
 
   calculateFirst(): number {

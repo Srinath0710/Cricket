@@ -25,27 +25,27 @@
       </span>
       <span class="text-muted">{{ Fixtures.match_date }}</span>
       <span><span style="font-weight: bold;">Toss </span>: Australia (Batting)</span>
-<div class="d-flex justify-content-around align-items-center my-3">
-  <div class="text-center">
-    <span class="person-image-team-player">
+      <div class="d-flex justify-content-around align-items-center my-3">
+        <div class="text-center">
+          <span class="person-image-team-player">
             <img class="player-img" *ngIf="Fixtures.team_a_image==null || Fixtures.team_a_image==''"
               [src]="default_img">
             <img class="player-img " *ngIf="Fixtures.team_a_image !=null && Fixtures.team_a_image !=''"
               [src]="Fixtures.team_a_image " (error)="handleImageError($event,default_img)">
-    </span>
+          </span>
           <p class="mb-0">{{ Fixtures.team_a_full_name }}</p>
-  </div>
+        </div>
         <strong>VS</strong>
-  <div class="text-center">
-    <span class="person-image-team-player">
+        <div class="text-center">
+          <span class="person-image-team-player">
             <img class="player-img" *ngIf="Fixtures.team_a_image1==null || Fixtures.team_a_image1==''"
               [src]="default_img">
             <img class="player-img " *ngIf="Fixtures.team_a_image1 !=null && Fixtures.team_a_image1 !=''"
               [src]="Fixtures.team_a_image1 " (error)="handleImageError($event,default_img)">
-    </span>
+          </span>
           <p class="mb-0">{{ Fixtures.team_a_full_name1 }}</p>
-  </div>
-</div>
+        </div>
+      </div>
 
       <div style="text-align: center;color: blue;"> Aus won by 159 runs</div>
 
@@ -153,24 +153,33 @@
         <div class="col-md-3">
           <label>Home Team</label>
           <p-dropdown [options]="teamlist" class="drop-error" formControlName="team_1_code" optionValue="team_id"
-            optionLabel="team_name" placeholder="Select Team">
+            optionLabel="team_name" placeholder="Select Team" (ngModelChange)="getHomeTeam()" [filter]="true"
+            filterBy="team_name">
             <ng-template let-hometeam pTemplate="item">
               <div class="flex align-items-center gap-2">
                 <div>{{ hometeam.team_name }}</div>
               </div>
             </ng-template>
           </p-dropdown>
+          <small *ngIf=" competitionFixturesForm.get('team_1_code')?.invalid &&
+          (competitionFixturesForm.get('team_1_code')?.touched || submitted)" class="required-msg">
+              Match Name is required
+            </small>
         </div>
         <div class="col-md-3">
           <label>Away Team</label>
-          <p-dropdown [options]="teamlist" class="drop-error" formControlName="team_2_code" optionValue="team_id"
-            optionLabel="team_name" placeholder="Select Team">
+          <p-dropdown [options]="away_team_list" class="drop-error" formControlName="team_2_code" optionValue="team_id"
+            optionLabel="team_name" placeholder="Select Team" [filter]="true"   filterBy="team_name">
             <ng-template let-away pTemplate="item">
               <div class="flex align-items-center gap-2">
                 <div>{{ away.team_name }}</div>
               </div>
             </ng-template>
           </p-dropdown>
+          <small *ngIf=" competitionFixturesForm.get('team_2_code')?.invalid &&
+          (competitionFixturesForm.get('team_2_code')?.touched || submitted)" class="required-msg">
+              Match Name is required
+            </small>
         </div>
         <div class="col-md-3">
           <label>Ground</label>
@@ -325,7 +334,7 @@
               (click)="cancelForm()">Cancel</button>
 
             <button pButton type="button" class="p-button-secondary me-3 custom-cancel-btn"
-              *ngIf="competitionFixturesForm.get('team_id')?.value == '' || competitionFixturesForm.get('team_id')?.value == null"
+              *ngIf="competitionFixturesForm.get('match_id')?.value == '' || competitionFixturesForm.get('match_id')?.value == null"
               (click)="resetForm()">Clear</button>
 
             <button pButton type="button" class="p-button-secondary me-3 footer-button save-button"

@@ -12,6 +12,7 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
 import { Drawer } from 'primeng/drawer';
+import { ToastService } from '../../../services/toast.service';
 
 interface MetaInfo {
   config_key: string;
@@ -35,6 +36,7 @@ interface MetaInfo {
   styleUrl: './comp-match.component.css',
   providers: [
     { provide: CricketKeyConstant },
+    { provide: ToastService }
   ]
 })
 export class CompMatchComponent implements OnInit {
@@ -81,6 +83,7 @@ export class CompMatchComponent implements OnInit {
     public cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
+    private toastService: ToastService,
   ) { }
   ngOnInit(): void {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -103,8 +106,8 @@ export class CompMatchComponent implements OnInit {
       time_zone_id: ['', []],
       day_type: ['', []],
       is_neutral_venue: ['', []],
-      team_1_code: ['', []],
-      team_2_code: ['', []],
+      team_1_code: ['', [Validators.required]],
+      team_2_code: ['', [Validators.required]],
       ground_id: ['', []],
       match_group_id: ['', []],
       match_phase_id: ['', []],
@@ -134,6 +137,10 @@ export class CompMatchComponent implements OnInit {
 
         if (res.data && res.data.fixtures) {
           this.MatchData = res.data.fixtures;
+          this.MatchData.forEach((val: any) => {
+            val.team_a_image = `${val.team_a_image}?${Math.random()}`;
+            val.team_a_image1 = `${val.team_a_image1}?${Math.random()}`;
+          });
           this.spinnerService.raiseDataEmitterEvent('off');
         } else {
           this.MatchData = [];
@@ -223,26 +230,13 @@ export class CompMatchComponent implements OnInit {
   hideDialog() {
     this.hideNewMatchForm();
   }
-  /* Failed Toast */
-  successToast(data: any) {
 
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+  successToast(data: any) {
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message })
   }
 
   addCallBack(res: any) {
@@ -460,4 +454,10 @@ export class CompMatchComponent implements OnInit {
     this.ShowForm = false;
     this.showFormChange.emit(false);
   }
+  getHomeTeam() {
+    const homeTeam = this.competitionFixturesForm.value.team_1_code;
+    this.away_team_list = this.teamlist.filter((team: any) => team.team_id !== homeTeam);
+  }
+
+
 }

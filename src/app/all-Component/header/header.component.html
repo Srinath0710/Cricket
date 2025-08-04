@@ -1,23 +1,19 @@
-
-
 <nav class="navbar" id="navbar">
     <div class="logo_item">
-      <i class="la la-user" id="sidebarOpen">
-      </i>
-      <span class="expand_sidebar bar-side-menu">
-        <img *ngIf="sidebarOpen" [src]="envImagePath+'/images/ic_baseline-menu.png'" alt="">
-  
-      </span>
-     <span class="collapse_sidebar bar-side-menu">
-      <img *ngIf="!sidebarOpen" [src]="envImagePath+'/images/ic_baseline-menu.png'" alt="">
-     </span>
-     <div class="client_logo header-client-logo">
-      <img [src]="envImagePath+'/images/default-logo.png'" 
-           alt="Company Logo"
-           (error)="onImageError($event)">
-  </div>
+        <i class="la la-user" id="sidebarOpen">
+        </i>
+        <span class="expand_sidebar bar-side-menu">
+            <img *ngIf="sidebarOpen" [src]="envImagePath+'/images/ic_baseline-menu.png'" alt="">
+
+        </span>
+        <span class="collapse_sidebar bar-side-menu">
+            <img *ngIf="!sidebarOpen" [src]="envImagePath+'/images/ic_baseline-menu.png'" alt="">
+        </span>
+        <div class="client_logo header-client-logo">
+            <img [src]="envImagePath+'/images/default-logo.png'" alt="Company Logo" (error)="onImageError($event)">
+        </div>
     </div>
-  
+
 
     <!-- <button class="theme-toggle" 
     (click)="toggleTheme()" 
@@ -25,33 +21,34 @@
     [attr.aria-label]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
 <i class="fas" [ngClass]="isDarkMode ? 'fa-sun' : 'fa-moon'"></i>
 </button> -->
-  
+
     <div class="navbar_content">
-      <span  *ngIf="itealTimeoutEnable==1"class="timmer-clock">{{remainingTime}}</span>
-      <span class="user_name">{{userData.user_name | uppercase}}</span>
-      <i class="pi pi-power-off"  id="darkLight" data-bs-toggle="modal" data-bs-target="#logout_pop_up"></i> 
-      <!-- <i class='fa fa-bell'></i> -->
-      <img [src]="envImagePath+'/images/default-logo.png'" alt=""  class="profile" />
+        <span *ngIf="itealTimeoutEnable==1" class="timmer-clock">{{remainingTime}}</span>
+        <span class="user_name">{{userData.user_name | uppercase}}</span>
+        <i class="pi pi-power-off" id="darkLight" data-bs-toggle="modal" data-bs-target="#logout_pop_up"></i>
+        <!-- <i class='fa fa-bell'></i> -->
+        <img [src]="envImagePath+'/images/default-logo.png'" alt="" class="profile" />
     </div>
-  </nav>
+</nav>
 <div class="modal custom-modal fade" id="logout_pop_up" role="dialog">
     <div class="modal-dialog-centered modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-body ">
-             <div class="modal-header" >
-                <div class="logout-icon" >
-                    <i class="fas fa-power-off" (click)="logOut()" data-bs-dismiss="modal"></i>
+            <div class="modal-body">
+                 <div class="modal-header">
+                    <div class="logout-icon">
+                        <i class="fas fa-power-off" (click)="logOut()" data-bs-dismiss="modal"></i>
+                    </div>
                 </div>
-            </div>
-                <div class="login-name" >{{userData.user_name | uppercase}}</div>
+                <div class="login-name">{{userData.user_name | uppercase}}</div>
                 <div class="form-header ">
-                    <h5>Confirm logout your account</h5>
-                    <span>You will be redirected to the login page</span>
+                    <h6>Ready to leave the Cricket zone?</h6>
+                    <span class="log-redirect">Redirecting to the login screen</span>
                 </div>
                 <div class="modal-btn delete-action">
                     <div class="row">
                         <div class="col-6">
-                            <a  class="btn btn-primary continue-btn" (click)="logOut()" data-bs-dismiss="modal" >Log Out</a>
+                            <a class="btn btn-primary continue-btn" (click)="logOut()" data-bs-dismiss="modal">Log
+                                Out</a>
                         </div>
                         <div class="col-6">
                             <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary ">Cancel</a>
@@ -61,4 +58,4 @@
             </div>
         </div>
     </div>
-  </div> 
+</div>

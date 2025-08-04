@@ -21,10 +21,7 @@ import { Drawer } from 'primeng/drawer';
 import { Menu, addMenu, getMenudropdown, editMenu, endpointMenulist } from './menu.model';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
-
-
-
-
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-menu',
@@ -37,7 +34,8 @@ import { SpinnerService } from '../../services/Spinner/spinner.service';
     { provide: URLCONSTANT },
     { provide: MessageService },
     { provide: CricketKeyConstant },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService },
   ],
 })
 export class MenuComponent implements OnInit {
@@ -100,6 +98,7 @@ export class MenuComponent implements OnInit {
     public cricketKeyConstant: CricketKeyConstant,
     private uploadImgService: UploadImgService,
     public spinnerService: SpinnerService,
+    private toastService: ToastService,
   ) { }
 
   ngOnInit() {
@@ -205,25 +204,13 @@ export class MenuComponent implements OnInit {
     this.rows = event.rows;
     this.gridLoad();
   }
-  successToast(data: any) {
 
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life:800
-    });
+  successToast(data: any) {
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life:800
-    });
+    this.toastService.failedToast({ message: data.message })
   }
   status(menu_id: number, url: string) {
     const params: any = {

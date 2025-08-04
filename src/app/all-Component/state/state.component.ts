@@ -20,6 +20,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-state',
   standalone: true,
@@ -32,7 +33,8 @@ import { SpinnerService } from '../../services/Spinner/spinner.service';
     { provide: URLCONSTANT },
     { provide: MessageService },
     { provide: CricketKeyConstant },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
   ],
 })
 export class StateComponent implements OnInit {
@@ -68,6 +70,7 @@ export class StateComponent implements OnInit {
     private confirmationService: ConfirmationService,
     public cricketKeyConstant: CricketKeyConstant,
     public spinnerService: SpinnerService,
+    public toastService: ToastService,
   ) { }
 
   ngOnInit() {
@@ -185,26 +188,11 @@ export class StateComponent implements OnInit {
   }
 
   successToast(data: any) {
-
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-
-    });
+    this.toastService.failedToast({ message: data.message })
   }
   status(state_id: number, url: string) {
     const params: any = {

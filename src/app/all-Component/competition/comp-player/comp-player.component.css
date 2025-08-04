@@ -64,6 +64,7 @@
   align-items: center;
   z-index: 999;
 }
+
 .select-team {
   text-align: center;
   font-weight: bold;
@@ -72,21 +73,25 @@
   margin-bottom: 10px;
   color: white;
 }
-.comp-grid{
+
+.comp-grid {
   background: linear-gradient(to right, #ba4cbb, #99fffd)
 }
+
 .team-container {
   display: flex;
   background-color: white;
   padding: 6px;
-  border-radius: 3px;
+  /* border-radius: 3px; */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 17px;
 }
-.team-body{
+
+.team-body {
   display: flex;
   gap: 2rem;
 }
-.team-list{
+
+.team-list {
   width: 200px;
 }
-

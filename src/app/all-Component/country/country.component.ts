@@ -22,6 +22,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-country',
   standalone: true,
@@ -51,7 +52,8 @@ import { SpinnerService } from '../../services/Spinner/spinner.service';
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
   ],
 })
 
@@ -95,10 +97,16 @@ export class CountryComponent implements OnInit {
   imageSizeError: string = '';
   selectedImage: File | null = null;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
+  constructor(
+    private formBuilder: FormBuilder,
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private msgService: MessageService,
     private confirmationService: ConfirmationService,
-    public cricketKeyConstant: CricketKeyConstant, private uploadImgService: UploadImgService,
-    public spinnerService: SpinnerService
+    public cricketKeyConstant: CricketKeyConstant,
+    private uploadImgService: UploadImgService,
+    public spinnerService: SpinnerService,
+    private toastService:ToastService
   ) {
 
   }
@@ -342,26 +350,11 @@ export class CountryComponent implements OnInit {
   }
 
   successToast(data: any) {
-
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-
-    });
+    this.toastService.failedToast({ message: data.message })
   }
 
   onAddCountry() {
@@ -578,7 +571,7 @@ export class CountryComponent implements OnInit {
   StatusConfirm(country_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
-     const iconClass = isActivating ? 'icon-success' : 'icon-danger';
+    const iconClass = isActivating ? 'icon-success' : 'icon-danger';
     const message = `Are you sure you want to proceed?`;
 
     this.confirmationService.confirm({

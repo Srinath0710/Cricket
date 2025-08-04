@@ -23,6 +23,7 @@ import { Drawer } from 'primeng/drawer';
 import { environment } from '../../environments/environment';
 import { UploadImgService } from '../../Profile_Img_service/upload-img.service';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
+import { ToastService } from '../../services/toast.service';
 interface Team {
   config_id: string;
 }
@@ -55,7 +56,8 @@ interface Team {
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService }
   ],
 })
 export class TeamsComponent implements OnInit {
@@ -112,10 +114,17 @@ export class TeamsComponent implements OnInit {
   imageSizeError: string = '';
   selectedImage: File | null = null;
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService, private urlConstant: URLCONSTANT, private msgService: MessageService,
-    private confirmationService: ConfirmationService, public cricketKeyConstant: CricketKeyConstant,
+  constructor(
+    private formBuilder: FormBuilder,
+    private apiService: ApiService,
+    private urlConstant: URLCONSTANT,
+    private msgService: MessageService,
+    private confirmationService: ConfirmationService,
+    public cricketKeyConstant: CricketKeyConstant,
     private uploadImgService: UploadImgService,
-    private SpinnerService: SpinnerService) {
+    private SpinnerService: SpinnerService,
+    private toastService: ToastService
+  ) {
 
   }
   ngOnInit(): void {
@@ -265,24 +274,11 @@ export class TeamsComponent implements OnInit {
     this.imageSizeError = '';
   }
   successToast(data: any) {
-
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message })
   }
 
   status(team_id: number, url: string) {
@@ -334,7 +330,7 @@ export class TeamsComponent implements OnInit {
   StatusConfirm(team_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
     const isActivating = actionObject.key === active_status.key;
-     const iconClass = isActivating ? 'icon-success' : 'icon-danger';
+    const iconClass = isActivating ? 'icon-success' : 'icon-danger';
     const message = `Are you sure you want to proceed?`;
 
     this.confirmationService.confirm({

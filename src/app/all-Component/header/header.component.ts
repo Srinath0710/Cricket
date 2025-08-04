@@ -35,8 +35,8 @@ export class HeaderComponent implements OnInit {
   timeoutInSeconds = Number(localStorage.getItem('idle_timeout') != null ? localStorage.getItem('idle_timeout') : null);
   // 150 seconds (2.5 minutes)
   remainingTime: number = this.timeoutInSeconds;
-  countdownInterval$ = interval(1000); // 1-second interval
-  timerSubscription: Subscription | null = null; // Hold the subscription to cancel previous timers
+  countdownInterval$ = interval(1000);
+  timerSubscription: Subscription | null = null;
   themeSubscription: Subscription | null = null;
   isDarkMode = false;
 
@@ -65,7 +65,7 @@ export class HeaderComponent implements OnInit {
     this.userData.profile_img_url = localStorage.getItem('profile_img_url') != null &&
       localStorage.getItem('profile_img_url') != '' &&
       localStorage.getItem('profile_img_url') != 'null' ?
-      localStorage.getItem('profile_img_url') : 
+      localStorage.getItem('profile_img_url') :
       this.envImagePath + "/images/Logo sportalytics.png";
 
     this.userData.header_color = localStorage.getItem('header_color')

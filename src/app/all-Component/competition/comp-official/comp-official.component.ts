@@ -12,7 +12,7 @@ import { EventEmitter } from '@angular/core';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
 import { Table, TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
-
+import { ToastService } from '../../../services/toast.service';
 @Component({
   selector: 'app-comp-official',
   imports: [
@@ -29,7 +29,8 @@ import { Tooltip } from 'primeng/tooltip';
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService },
   ],
   standalone: true
 })
@@ -57,6 +58,7 @@ export class CompOfficialComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
+    private toastService:ToastService
   ) { }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -126,25 +128,13 @@ export class CompOfficialComponent implements OnInit {
     table.clear();
     this.targetSearchKeyword = '';
   }
-  successToast(data: any) {
 
-  this.msgService.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: data.message,
-    data: { image: 'assets/images/default-logo.png' },
-    life:800
-  });
-}
+    successToast(data: any) {
+    this.toastService.successToast({ message: data.message })
+  }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life:800
-    });
+    this.toastService.failedToast({ message: data.message  })
   }
 }
 

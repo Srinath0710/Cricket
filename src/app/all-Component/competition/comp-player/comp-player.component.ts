@@ -11,12 +11,11 @@ import { Table, TableModule } from 'primeng/table';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
-import { Tooltip, TooltipModule } from 'primeng/tooltip';
-
+import { Tooltip} from 'primeng/tooltip';
+import { ToastService } from '../../../services/toast.service';
 interface Team {
   team_id: number;
   team_name: string;
-  // other fields...
 }
 @Component({
   selector: 'app-comp-player',
@@ -36,7 +35,8 @@ interface Team {
     { provide: URLCONSTANT },
     { provide: CricketKeyConstant },
     { provide: MessageService },
-    { provide: ConfirmationService }
+    { provide: ConfirmationService },
+    { provide: ToastService },
   ],
   standalone: true
 })
@@ -91,6 +91,7 @@ export class CompPlayerComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
+    private toastService:ToastService
 
   ) { }
   ngOnInit() {
@@ -109,16 +110,6 @@ export class CompPlayerComponent implements OnInit {
       team_name: ['', []]
     });
   }
-
-  // chooseTeam(teamId: any) {
-  //   // Only proceed if a different team is selected
-  //   if (this.team_id !== teamId) {
-  //     this.team_id = teamId;
-  //   } else {
-  //     this.sourcePlayer = [];
-  //     this.targetPlayer = [];
-  //   }
-  // }
   chooseTeam(team_id: any) {
     if (this.teamID === team_id) {
       return;
@@ -148,11 +139,8 @@ export class CompPlayerComponent implements OnInit {
         }
         this.filterPlayersByTeam(this.teamID);
         this.spinnerService.raiseDataEmitterEvent('off');
-        console.log('All Items Raw:', this.allPlayersRaw);
-        console.log('Selected Players Raw:', this.selectedPlayersRaw);
       },
       (err: any) => {
-        console.error('Error loading player list:', err);
         this.spinnerService.raiseDataEmitterEvent('off');
         this.sourcePlayer = [];
         this.targetPlayer = [];
@@ -180,8 +168,6 @@ export class CompPlayerComponent implements OnInit {
     this.targetSearchKeyword = '';
     if (this.dt1) this.dt1.filterGlobal('', 'contains');
     if (this.dt2) this.dt2.filterGlobal('', 'contains');
-    console.log('Source Players (filtered):', this.sourcePlayer);
-    console.log('Target Players (filtered):', this.targetPlayer);
   }
   public singleFilterFunction(arrayFilter: Array<any>, filterKey: string, byFilterValue: any) {
     return arrayFilter.filter((data: any) => data[filterKey] == byFilterValue)
@@ -208,23 +194,11 @@ export class CompPlayerComponent implements OnInit {
   }
 
   successToast(data: any) {
-    this.msgService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: data.message,
-      data: { image: 'assets/images/default-logo.png' },
-      life: 800
-    });
+    this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.msgService.add({
-      data: { image: 'assets/images/default-logo.png' },
-      severity: 'error',
-      summary: 'Error',
-      detail: data.message,
-      life: 800
-    });
+    this.toastService.failedToast({ message: data.message  })
   }
   updateplayer(): void {
     if (!this.selectedPlayer) {
@@ -310,5 +284,6 @@ export class CompPlayerComponent implements OnInit {
     table.clear();
     this.targetSearchKeyword = '';
   }
+  
 
 }
