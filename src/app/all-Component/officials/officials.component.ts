@@ -888,11 +888,10 @@ export class OfficialsComponent implements OnInit {
       (res: any) => {
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
       },
-      (err: any) => {
-        error: (err: any) => {
-          console.error('Error loading official list:', err);
-        }
-      });
+   (err: any) => {
+        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
+      }
+    );
   }
 
   // StatusConfirm(official_id: number, actionObject: { key: string; label: string }, currentStatus: string) {

@@ -612,8 +612,8 @@
                   <button *ngIf="activeTab !== 'matches'" class="new-button p-button-text"
                     (click)="UpdateFromParent()">Update</button>
                   <button *ngIf="activeTab === 'matches' && !showNewMatchForm"
-                    class="btn btn-primary btn-sm new-buttons  " (click)="UpdateFromParent()">
-                    + New Match
+                    class="new-button p-button-text new-button  " (click)="UpdateFromParent()">
+                    + Match
                   </button>
                   <button class="cancel-button p-button-text" *ngIf="!showNewMatchForm" (click)="goBack()"
                     [disabled]="isEditDisabled">Back</button>

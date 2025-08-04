@@ -11,7 +11,7 @@ import { Table, TableModule } from 'primeng/table';
 import { ManageDataItem } from '../competition.component';
 import { ToastModule } from 'primeng/toast';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
-import { Tooltip} from 'primeng/tooltip';
+import { Tooltip } from 'primeng/tooltip';
 import { ToastService } from '../../../services/toast.service';
 interface Team {
   team_id: number;
@@ -91,7 +91,7 @@ export class CompPlayerComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
-    private toastService:ToastService
+    private toastService: ToastService
 
   ) { }
   ngOnInit() {
@@ -143,7 +143,8 @@ export class CompPlayerComponent implements OnInit {
       (err: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         this.sourcePlayer = [];
-        this.targetPlayer = [];
+        this.targetPlayer = []
+        this.failedToast(err.error);
       }
     );
   }
@@ -182,7 +183,8 @@ export class CompPlayerComponent implements OnInit {
     params.player_list = this.targetPlayer.map((players: any) => players.player_id).join(',');
     this.apiService.post(this.urlConstant.compplayeradd, params).subscribe(
       (res: any) => {
-        this.PlayerUpdated.emit();
+        // this.PlayerUpdated.emit();
+        this.gridLoad();
         this.successToast(res);
       },
       (err: any) => {
@@ -198,7 +200,7 @@ export class CompPlayerComponent implements OnInit {
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.toastService.failedToast({ message: data.message  })
+    this.toastService.failedToast({ message: data.message })
   }
   updateplayer(): void {
     if (!this.selectedPlayer) {
@@ -222,9 +224,15 @@ export class CompPlayerComponent implements OnInit {
         this.closeEditPopup();
       },
       (err: any) => {
-        console.error('Error updating player:', err);
-      }
-    );
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
   }
   showEditPopup(player: any) {
     this.selectedPlayer = player;
@@ -246,6 +254,7 @@ export class CompPlayerComponent implements OnInit {
   }
   moveToSource(player: any) {
     this.targetPlayer = this.targetPlayer.filter((t: any) => t.player_id !== player.player_id);
+    player.display_name = player.player_name || player.display_name;
     this.sourcePlayer.push(player);
   }
 
@@ -261,7 +270,7 @@ export class CompPlayerComponent implements OnInit {
 
   moveToTarget(player: any) {
     this.sourcePlayer = this.sourcePlayer.filter(t => t !== player);
-    player.player_name = player.player_name || player.display_name; // Ensure player_name is set
+    player.player_name = player.player_name || player.display_name;
     this.targetPlayer.push(player);
     const targetplayer = this.targetPlayer;
     this.targetPlayer = targetplayer
@@ -284,6 +293,6 @@ export class CompPlayerComponent implements OnInit {
     table.clear();
     this.targetSearchKeyword = '';
   }
-  
+
 
 }

@@ -139,10 +139,20 @@ export class CompTeamComponent implements OnInit {
     params.team_list = this.targetTeams.map((p: any) => p.team_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compTeamadd, params).subscribe((res: any) => {
-      this.TeamUpdate.emit();
-    }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-    });
+      // this.TeamUpdate.emit();
+      this.gridLoad();
+      this.successToast(res);
+    }, 
+    (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
   }
 
   updateTeam(): void {
@@ -162,10 +172,16 @@ export class CompTeamComponent implements OnInit {
       (res: any) => {
         this.closeEditPopup();
       },
-      (err: any) => {
-        console.error('Error updating team:', err);
-      }
-    );
+     (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
   }
 
   successToast(data: any) {

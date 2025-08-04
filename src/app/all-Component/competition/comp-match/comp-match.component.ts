@@ -146,10 +146,17 @@ export class CompMatchComponent implements OnInit {
           this.MatchData = [];
           this.spinnerService.raiseDataEmitterEvent('off');
         }
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.MatchData = []);
-
-      });
+      },
+       (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
   }
   newmatch() {
     this.ShowForm = true;
@@ -219,11 +226,16 @@ export class CompMatchComponent implements OnInit {
         this.resetForm();
 
 
-      }, (err: any) => {
-        if (err.status_code === 401 && err.error.message === "Expired") {
+      }, 
+     (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
           this.apiService.RefreshToken();
-
         }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
       })
   }
 
@@ -322,13 +334,17 @@ export class CompMatchComponent implements OnInit {
             }
           }
 
-        }, (err: any) => {
-          if (err.status_code === this.statusConstants.refresh && err.error.message === "Expired") {
-            this.apiService.RefreshToken();
-
-          }
-
-        })
+        }, 
+     (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
     }
 
     else {
@@ -382,10 +398,17 @@ export class CompMatchComponent implements OnInit {
         } else {
           this.failedToast(res);
         }
-      }, (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-      });
-
+      }, 
+     (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
 
   }
   handleImageError(event: Event, fallbackUrl: string): void {

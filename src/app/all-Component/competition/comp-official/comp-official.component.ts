@@ -37,7 +37,7 @@ import { ToastService } from '../../../services/toast.service';
 export class CompOfficialComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '',client_id:0 };
+  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
   @Output() UpdateOfficial = new EventEmitter<void>();
   client_id: number = 0;
 
@@ -58,7 +58,7 @@ export class CompOfficialComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
-    private toastService:ToastService
+    private toastService: ToastService
   ) { }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -72,15 +72,23 @@ export class CompOfficialComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compOfficialList, params).subscribe((res: any) => {
-      console.log(res);
       const allItems = res.data.all_officials;
       const mappedIds = res.data.selected_officials.map((value: any) => value.official_id);
       this.sourceOfficial = allItems.filter((item: any) => !mappedIds.includes(item.official_id));
       this.targetOfficial = res.data.selected_officials
       this.spinnerService.raiseDataEmitterEvent('off');
-    }, (err: any) => {
 
-    })
+    },
+      (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
   }
   updateOfficial() {
     const params: any = {}
@@ -89,10 +97,20 @@ export class CompOfficialComponent implements OnInit {
     params.official_list = this.targetOfficial.map((p: any) => p.official_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     this.apiService.post(this.urlConstant.compOfficialupdate, params).subscribe((res: any) => {
-      this.UpdateOfficial.emit();
-    }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-    });
+      // this.UpdateOfficial.emit();
+      this.gridLoad();
+      this.successToast(res);
+    },
+      (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
   }
 
 
@@ -129,12 +147,12 @@ export class CompOfficialComponent implements OnInit {
     this.targetSearchKeyword = '';
   }
 
-    successToast(data: any) {
+  successToast(data: any) {
     this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.toastService.failedToast({ message: data.message  })
+    this.toastService.failedToast({ message: data.message })
   }
 }
 

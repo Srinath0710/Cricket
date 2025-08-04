@@ -96,7 +96,8 @@ export class CompGroundComponent implements OnInit {
     params.competition_id = this.CompetitionData.competition_id.toString();
 
     this.apiService.post(this.urlConstant.compgroundupdate, params).subscribe((res: any) => {
-      this.groundUpdated.emit();
+      // this.groundUpdated.emit();
+      this.gridLoad();
       this.successToast(res);
     }, (err: any) => {
       if (
@@ -105,9 +106,8 @@ export class CompGroundComponent implements OnInit {
       ) {
         this.apiService.RefreshToken();
       }
-
-
-
+      this.spinnerService.raiseDataEmitterEvent('off');
+      this.failedToast(err.error);
     })
   }
 
