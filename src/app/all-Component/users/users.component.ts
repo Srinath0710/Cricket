@@ -200,52 +200,59 @@ export class UsersComponent implements OnInit {
     this.addUsersForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
 
+  //  status(user_id: number, url: string) {
+  //   const params: any = {
+  //     user_id: user_id?.toString(),
+  //     login_user_id: 0
+  //   };
+
+  //   this.apiService.post(url, params).subscribe(
+  //     (res: any) => {
+  //       if (res.status_code === this.statusConstants.success && res.status) {
+  //         this.successToast(res);
+  //         this.usersData = this.usersData.map((user: any) => {
+  //           if (user.user_id === user_id) {
+  //             return {
+  //               ...user, record_status: url === this.urlConstant.activateUsers
+  //                 ? 'Active'
+  //                 : 'InActive'
+  //             };
+  //           }
+  //           return user;
+  //         });
+  //       } else {
+  //         this.failedToast(res);
+  //       }
+  //     },
+  //     (err: any) => {
+  //       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg
+  //         ? this.apiService.RefreshToken()
+  //         : this.failedToast(err.error);
+  //     }
+  //   );
+  // }
+
   status(user_id: number, url: string) {
     const params: any = {
       user_id: user_id?.toString(),
-      login_user_id: 0
+      login_user_id: user_id?.toString()
     };
+
 
     this.apiService.post(url, params).subscribe(
       (res: any) => {
-        if (res.status_code === this.statusConstants.success && res.status) {
-          this.successToast(res);
-          this.usersData = this.usersData.map((user: any) => {
-            if (user.user_id === user_id) {
-              return {
-                ...user, record_status: url === this.urlConstant.activateUsers
-                  ? 'Active'
-                  : 'InActive'
-              };
-            }
-            return user;
-          });
-        } else {
-          this.failedToast(res);
-        }
+        res.status_code === this.statusConstants.success && res.status
+          ? (this.successToast(res), this.gridLoad())
+          : this.failedToast(res);
       },
       (err: any) => {
-        err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg
+        err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
           ? this.apiService.RefreshToken()
           : this.failedToast(err.error);
       }
     );
   }
-
-  //   status(user_id: number, url: string) {
-  //   const params: any = {
-  //     user_id: this.user_id?.toString(),
-  //     login_user_id: 0
-  //   };
-  //   this.apiService.post(url, params).subscribe(
-  //     (res: any) => {
-  //       res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridLoad()) : this.failedToast(res);
-  //     },
-  //     (err: any) => {
-  //       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-  //     }
-  //   );
-  // }
 
   StatusConfirm(user_id: number, actionObject: { key: string; label: string }) {
     const { active_status } = this.conditionConstants;
