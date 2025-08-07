@@ -150,6 +150,7 @@ export class CompetitionComponent implements OnInit {
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
   default_img = CricketKeyConstant.default_image_url.teamimage;
+  isEditOnce = false;
 
 
   // Filter properties
@@ -191,7 +192,7 @@ export class CompetitionComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
-    private toastService:ToastService
+    private toastService: ToastService
   ) { }
 
   ngOnInit() {
@@ -441,7 +442,7 @@ export class CompetitionComponent implements OnInit {
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.toastService.failedToast({ message: data.message  })
+    this.toastService.failedToast({ message: data.message })
   }
 
   addCallBack(res: any) {
@@ -521,6 +522,10 @@ export class CompetitionComponent implements OnInit {
       this.genderList = this.metaDataList.filter(temp => temp.config_key === 'gender');
       this.ageGroupList = this.metaDataList.filter(temp => temp.config_key === 'age_category');
       this.tourlevelList = this.metaDataList.filter(temp => temp.config_key === 'comp_level');
+      const selectedTypeId = this.addCompetitionForm.get('competition_type_id')?.value;
+      if (selectedTypeId) {
+        this.onMatchTypeChange(selectedTypeId);
+      }
 
 
     }, (err: any) => {
@@ -557,26 +562,6 @@ export class CompetitionComponent implements OnInit {
       }
     });
   }
-  // StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
-  //   this.confirmationService.confirm({
-  //     message: `Are you sure you want to ${actionObject.label} this Competition?`,
-  //     header: 'Confirmation',
-  //     icon: 'pi pi-question-circle',
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     accept: () => {
-  //       const url: string = this.conditionConstants.active_status.key === actionObject.key
-  //         ? this.urlConstant.activecompetition
-  //         : this.urlConstant.deactivecompetition;
-  //       this.status(competition_id, url);
-  //       this.confirmationService.close();
-  //     },
-  //     reject: () => {
-  //       this.confirmationService.close();
-  //     }
-  //   });
-  // }
-
 
   StatusConfirm(competition_id: number, actionObject: { key: string; label: string }) {
     const { active_status, deactive_status } = this.conditionConstants;
@@ -630,7 +615,7 @@ export class CompetitionComponent implements OnInit {
 
   UpdateFromParent() {
     if (this.activeTab === 'ground') {
-      this.compGround.updateGround(); // existing
+      this.compGround.updateGround();
     } else if (this.activeTab === 'officials') {
       this.compOfficial.updateOfficial();
     } else if (this.activeTab === 'teams') {
@@ -684,5 +669,14 @@ export class CompetitionComponent implements OnInit {
     const input = (event.target as HTMLInputElement).value;
     const cleaned = input.replace(/['"]/g, '');
     this.addCompetitionForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
+  }
+  allFormatList = [];  // original unfiltered list
+  onMatchTypeChange(typeId: number) {
+    this.tourtypeList = this.allFormatList.filter((format: any) =>
+      format.parent_config_id === typeId
+    );
+
+    // Optionally reset format control
+    this.addCompetitionForm.get('competition_format_id')?.reset();
   }
 }

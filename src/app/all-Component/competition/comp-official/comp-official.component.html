@@ -45,9 +45,8 @@
                   <strong>{{ official.official_name }}</strong>
                 </span>
                 <span>
-                  <button class="clear-width edit-button" pTooltip="Add official" tooltipPosition="top"
-                    (click)="moveToTarget(official)">
-                    <i class="fa-solid fa-user-plus"></i> &raquo;
+                  <button class="comp-chid-add-btn" (click)="moveToTarget(official)">
+                    Add 
                   </button>
                 </span>
               </div>
@@ -107,8 +106,8 @@
                   <strong>{{ official.official_name }}</strong>
                 </span>
                 <span>
-                  <button class="clear-width delete-button" (click)="moveToSource(official)">
-                    <i class="fa-solid fa-reply-all" pTooltip="Remove" tooltipPosition="top"></i>
+                  <button class="comp-chid-remove-btn" (click)="moveToSource(official)">
+                    Remove
                   </button>
                 </span>
               </div>
@@ -127,11 +126,7 @@
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>

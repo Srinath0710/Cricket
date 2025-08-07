@@ -12,6 +12,7 @@ import { SpinnerService } from '../../../services/Spinner/spinner.service';
 import { Table, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToastService } from '../../../services/toast.service';
+import { DialogModule } from 'primeng/dialog';
 @Component({
   selector: 'app-comp-team',
   imports: [
@@ -21,7 +22,8 @@ import { ToastService } from '../../../services/toast.service';
     ReactiveFormsModule,
     ToastModule,
     TableModule,
-    TooltipModule
+    TooltipModule,
+    DialogModule
 
   ],
   templateUrl: './comp-team.component.html',
@@ -59,6 +61,8 @@ export class CompTeamComponent implements OnInit {
   filteredTeams: any[] = [];
   sourceSearchKeyword: string = '';
   targetSearchKeyword: string = '';
+  selectedTeams: any = [];
+  viewDialogVisible: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -68,7 +72,7 @@ export class CompTeamComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
-    private toastService:ToastService
+    private toastService: ToastService
   ) { }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -104,6 +108,7 @@ export class CompTeamComponent implements OnInit {
           ...val,
           scorecard: val.team_name || ''
         }));
+
         this.spinnerService.raiseDataEmitterEvent('off');
       },
 
@@ -142,8 +147,8 @@ export class CompTeamComponent implements OnInit {
       // this.TeamUpdate.emit();
       this.gridLoad();
       this.successToast(res);
-    }, 
-    (err: any) => {
+    },
+      (err: any) => {
         if (
           err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
@@ -172,7 +177,7 @@ export class CompTeamComponent implements OnInit {
       (res: any) => {
         this.closeEditPopup();
       },
-     (err: any) => {
+      (err: any) => {
         if (
           err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
@@ -250,4 +255,34 @@ export class CompTeamComponent implements OnInit {
     table.clear();
     this.targetSearchKeyword = '';
   }
+    onViewteam(teamsid: number) {
+    const params = {
+      team_id: teamsid.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
+      user_id: String(this.user_id)
+    };
+
+    this.apiService.post(this.urlConstant.viewgroundTeams, params).subscribe({
+      next: (res) => {
+        if (res.status_code && res.data) {
+          this.selectedTeams = res.data.teams;
+          this.selectedTeams.forEach((teams: any) => {
+            teams.profile_img = teams.profile_img + '?' + Math.random();
+          });
+          this.viewDialogVisible = true;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch ground details', err);
+      }
+    });
+  }
+    getTeamNameParts(fullName: string): { name: string, category: string } {
+    const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
+    return {
+      name: match?.[1]?.trim() || '',
+      category: match?.[2] || ''
+    };
+  }
+
 }

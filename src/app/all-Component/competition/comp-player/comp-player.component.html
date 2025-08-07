@@ -4,7 +4,15 @@
       <div class="select-team">Select Team</div>
       <div *ngFor="let team of teamsDropDown" class="team-card" [ngClass]="{ 'selected': team.team_id === teamID }"
         (click)="chooseTeam(team.team_id)">
-        {{ team.team_name }}
+        <div class="team-name">
+          {{ team.team_name }}
+        </div>
+        <div>
+
+          {{ team.player_count }}
+
+
+        </div>
       </div>
     </div>
   </div>
@@ -59,9 +67,9 @@
                     <strong>{{ player.display_name }}</strong>
                   </span>
                   <span>
-                    <button class="clear-width edit-button" pTooltip="Add Player" tooltipPosition="top"
+                    <button class="comp-chid-add-btn"
                       (click)="moveToTarget(player)">
-                      <i class="fa-solid fa-user-plus"></i> &raquo;
+                      Add
                     </button>
                   </span>
                 </div>
@@ -121,15 +129,14 @@
                     <strong>{{ player.player_name }}</strong>
                   </span>
                   <span *ngIf="TeamInTarget(player)">
-                    <button class="clear-width edit-button" pTooltip="Edit" tooltipPosition="top"
+                    <button class="comp-chid-edit-button"
                       (click)="showEditPopup(player)">
-                      <i class="fas fa-edit"></i>
+                      Edit
                     </button>
                   </span>
                   <span>
-                    <button class="clear-width delete-button" pTooltip="Remove" tooltipPosition="top"
-                      (click)="moveToSource(player)">
-                      <i class="fa-solid fa-reply-all"></i>
+                    <button class="comp-chid-remove-btn" (click)="moveToSource(player)">
+                      Remove
                     </button>
                   </span>
                 </div>

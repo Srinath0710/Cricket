@@ -12,6 +12,8 @@ import { SpinnerService } from '../../../services/Spinner/spinner.service';
 import { Table, TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 import { ToastService } from '../../../services/toast.service';
+import { PaginatorModule } from 'primeng/paginator';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-comp-ground',
@@ -21,7 +23,9 @@ import { ToastService } from '../../../services/toast.service';
     ReactiveFormsModule,
     ToastModule,
     TableModule,
-    Tooltip,
+    PaginatorModule,
+    DialogModule,
+    Tooltip
   ],
   templateUrl: './comp-ground.component.html',
   styleUrl: './comp-ground.component.css',
@@ -51,6 +55,14 @@ export class CompGroundComponent implements OnInit {
   filteredTeams: any[] = [];
   sourceSearchKeyword: string = '';
   targetSearchKeyword: string = '';
+  rows: number = 10;
+  totalData: any = 0;
+  pageData: number = 0;
+  first: number = 1;
+  groundData = []
+  selectedGround: any = [];
+  viewDialogVisible: boolean = false;
+
 
   constructor(
     private apiService: ApiService,
@@ -69,24 +81,30 @@ export class CompGroundComponent implements OnInit {
     const params: any = {}
     params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
+    params.records = this.rows.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-    this.apiService.post(this.urlConstant.compgroundList, params).subscribe((res: any) => {
-      const allItems = res.data.all_grounds;
-      const mappedIds = res.data.selected_grounds.map((value: any) => value.ground_id);
-      this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
-      this.targetGround = res.data.selected_grounds
-      this.spinnerService.raiseDataEmitterEvent('off');
+    params.search_text = this.sourceSearchKeyword.toString(),
+    params.page_no = this.first.toString();
+      this.apiService.post(this.urlConstant.compgroundList, params).subscribe((res: any) => {
+        this.groundData = res.data.all_grounds ?? [];
+        const allItems = res.data.all_grounds;
+        const mappedIds = res.data.selected_grounds.map((value: any) => value.ground_id);
+        this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
+        this.targetGround = res.data.selected_grounds
+        this.totalData = res.data.all_grounds[0].total_records
+        this.spinnerService.raiseDataEmitterEvent('off');
 
-    }, (err: any) => {
-      if (
-        err.status_code === this.statusConstants.refresh &&
-        err.error.message === this.statusConstants.refresh_msg
-      ) {
-        this.apiService.RefreshToken();
-      }
-      this.spinnerService.raiseDataEmitterEvent('off');
-      this.failedToast(err.error);
-    })
+      }, (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error);
+      })
+    this.spinnerService.raiseDataEmitterEvent('off');
   }
   updateGround() {
     const params: any = {}
@@ -136,23 +154,62 @@ export class CompGroundComponent implements OnInit {
     this.targetGround.push(ground);
   }
 
-  filterGlobalSource($event: any, stringVal: string) {
-    this.dt1?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-  }
+  // filterGlobalSource($event: any, stringVal: string) {
+  //   this.dt1?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  // }
 
   filterGlobalTarget($event: any, stringVal: string) {
     this.dt2?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
+  filterGlobalSource() {
+    if (this.sourceSearchKeyword.length >= 3 || this.sourceSearchKeyword.length === 0) {
 
+      this.dt1?.filterGlobal(this.sourceSearchKeyword, 'contains');
+      this.first = 1;
+      this.gridLoad();
+    }
+  }
   clearSource(table: Table) {
     table.clear();
     this.sourceSearchKeyword = '';
+    this.gridLoad();
+
   }
 
   clearTarget(table: Table) {
     table.clear();
     this.targetSearchKeyword = '';
+    this.gridLoad();
+  }
+  onPageChange(event: any) {
+    this.first = (event.page) + 1;
+    this.pageData = event.first;
+    this.rows = event.rows;
+    this.gridLoad();
   }
 
+  onViewGroundDetails(groundId: any) {
+    const params = {
+      ground_id: groundId.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
+      user_id: String(this.user_id)
+    };
+
+
+    this.apiService.post(this.urlConstant.viewGround, params).subscribe({
+      next: (res) => {
+        if (res.status && res.data) {
+          this.selectedGround = res.data.grounds;
+          this.selectedGround.forEach((grounds: any) => {
+            grounds.profile_img = grounds.profile_img + '?' + Math.random();
+          });
+          this.viewDialogVisible = true;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch ground details', err);
+      }
+    });
+  }
 }
 

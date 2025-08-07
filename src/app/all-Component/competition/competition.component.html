@@ -168,6 +168,31 @@
                           Season Name is required
                         </small>
                       </div>
+                      <div class="col-md-4">
+                        <label>Competition Format
+                          <span class="text-danger">*</span>
+                        </label>
+                        <p-dropdown [options]="filterTourformatList" class="drop-error "
+                          formControlName="competition_format_id" optionValue="config_id" optionLabel="config_name"
+                          [ngModel]="addCompetitionForm.get('competition_format_id')?.value" placeholder="Select Format"
+                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"
+                        (onChange)="onMatchTypeChange($event.value)" >
+
+                          <ng-template let-Format pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+
+                              <div>{{ Format.config_name }}
+                              </div>
+                            </div>
+                          </ng-template>
+                        </p-dropdown>
+                        <small *ngIf="
+                            addCompetitionForm.get('competition_format_id')?.invalid &&
+                            (addCompetitionForm.get('competition_format_id')?.touched || submitted)"
+                          class="required-msg">
+                          Competition Format is required
+                        </small>
+                      </div>
 
                       <div class="col-md-4">
                         <label>Match Type
@@ -175,7 +200,8 @@
                         </label>
                         <p-dropdown [options]="tourtypeList" class="drop-error" formControlName="competition_type_id"
                           optionValue="config_id" optionLabel="config_name" placeholder="Select Match Type "
-                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"
+                           >
                           <ng-template let-comptype pTemplate="item">
                             <div class="flex align-items-center gap-2">
                               <div>{{ comptype.config_name }}</div>
@@ -276,30 +302,7 @@
                           Tour Level is required
                         </small>
                       </div>
-                      <div class="col-md-4">
-                        <label>Competition Format
-                          <span class="text-danger">*</span>
-                        </label>
-                        <p-dropdown [options]="filterTourformatList" class="drop-error "
-                          formControlName="competition_format_id" optionValue="config_id" optionLabel="config_name"
-                          [ngModel]="addCompetitionForm.get('competition_format_id')?.value" placeholder="Select Format"
-                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
-                          <ng-template let-Format pTemplate="item">
-                            <div class="flex align-items-center gap-2">
-
-                              <div>{{ Format.config_name }}
-                              </div>
-                            </div>
-                          </ng-template>
-                        </p-dropdown>
-                        <small *ngIf="
-                            addCompetitionForm.get('competition_format_id')?.invalid &&
-                            (addCompetitionForm.get('competition_format_id')?.touched || submitted)"
-                          class="required-msg">
-                          Competition Format is required
-                        </small>
-                      </div>
                       <div class="col-md-4">
                         <label>Is Practice
                           <span class="text-danger">*</span>

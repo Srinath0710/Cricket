@@ -75,7 +75,7 @@
 }
 
 :host ::ng-deep .p-dialog .p-dialog-content {
-  padding: 0 0.5rem 0.5rem 0.5rem;
+  padding: 3px 0.5rem 0.5rem 0.5rem;
 }
 
 :host ::ng-deep select,
@@ -424,7 +424,6 @@
 .popup-container {
   max-height: 90vh;
   max-width: 600px;
-  margin: 8px auto;
   background: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 7px;

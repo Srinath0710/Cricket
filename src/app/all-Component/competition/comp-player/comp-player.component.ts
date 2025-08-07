@@ -27,7 +27,7 @@ interface Team {
     DropdownModule,
     TableModule,
     ToastModule,
-    Tooltip
+    // Tooltip
   ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',

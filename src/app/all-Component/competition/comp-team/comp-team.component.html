@@ -3,7 +3,7 @@
     <div class="col-6">
       <p-table #dt1 [value]="sourceTeams" [paginator]="true" selectionMode="multiple"
         [globalFilterFields]="['team_name']" [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines"
-        [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" >
+        [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]">
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
             <div class="p-1 Child-header text-center">Available Teams</div>
@@ -40,13 +40,12 @@
                   <img *ngIf="team.profile_img" [src]="team.profile_img" class="player-img image-border"
                     (error)="handleImageError($event, default_img)" />
                 </span>
-                <span class="person-name padding-grid-center">
+                <span class="person-name padding-grid-center groundnameover" (click)="onViewteam(team.team_id)">
                   <strong>{{ team.team_name }}</strong>
                 </span>
                 <span>
-                  <button class="clear-width edit-button" pTooltip="Add Team" tooltipPosition="top"
-                    (click)="moveToTarget(team)">
-                    <i class="fa-solid fa-user-plus"></i> &raquo;
+                  <button class="comp-chid-add-btn" (click)="moveToTarget(team)">
+                    Add
                   </button>
                 </span>
               </div>
@@ -62,9 +61,9 @@
     </div>
 
     <div class="col-md-6">
-      <p-table #dt2 [value]="targetTeams" selectionMode="multiple"
-        [globalFilterFields]="['team_name']" [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines"
-        [rows]="10" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
+      <p-table #dt2 [value]="targetTeams" selectionMode="multiple" [globalFilterFields]="['team_name']"
+        [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" [rows]="10"
+        [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
             <div class="p-1 Child-header text-center">Selected Teams</div>
@@ -105,14 +104,13 @@
                   <strong>{{ team.team_name }}</strong>
                 </span>
                 <span *ngIf="TeamInTarget(team)">
-                  <button class="clear-width edit-button" pTooltip="Edit" tooltipPosition="top"
-                    (click)="showEditPopup(team)">
-                    <i class="fas fa-edit"></i>
+                  <button class="comp-chid-edit-button" (click)="showEditPopup(team)">
+                    Edit
                   </button>
                 </span>
                 <span>
-                  <button class="clear-width delete-button" >
-                    <i class="fa-solid fa-reply-all" (click)="moveToSource(team)" pTooltip="Remove" tooltipPosition="top"></i>
+                  <button class="comp-chid-remove-btn" (click)="moveToSource(team)">
+                    Remove
                   </button>
                 </span>
               </div>
@@ -179,14 +177,46 @@
     </div>
   </div>
 </div>
+<p-dialog header="Teams Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
+  <div class="popup-container">
+    <div *ngFor="let teams of selectedTeams" class="popup-content">
+      <div class="top-bar">
+        <div class="profile-image-wrapper">
+          <span class="person-image-team-player">
+            <img class="player-img Viewimg" *ngIf="teams.profile_img==null || teams.profile_img==''"
+              [src]="default_img">
+
+            <img class="player-img viewimg" *ngIf="teams.profile_img!=null  && teams.profile_img!=''"
+              [src]="teams.profile_img" (error)="handleImageError($event, default_img)">
+          </span>
+        </div>
+        <div class="popup-title">
+          {{ getTeamNameParts(teams['team name']).name | uppercase }}
+          <br>
+          <span style="font-weight: normal;">{{ getTeamNameParts(teams['team name']).category }}</span>
+        </div>
+        <button class="popup-close" pTooltip="Close popup" tooltipPosition="left" (click)="viewDialogVisible = false"
+          aria-label="Close popup">✖</button>
+      </div>
+
+      <section class="popup-section">
+        <h2 class="section-title"> Teams Details</h2>
+        <div class="info-row"><span class="info-label">Gender</span>
+          <span class="separator">|</span><span class="info-value">{{ teams['gender'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Age Group</span><span class="separator">|</span><span
+            class="info-value">{{ teams['age group'] }}</span></div>
+        <div class="info-row"><span class="info-label">Team Category</span><span class="separator">|</span><span
+            class="info-value">{{ teams['team category'] }}</span></div>
+
+      </section>
+    </div>
+  </div>
+</p-dialog>
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>

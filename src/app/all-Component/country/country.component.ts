@@ -69,7 +69,6 @@ export class CountryComponent implements OnInit {
   timezoneData = [];
   countriesData: Country[] = [];
   first: number = 1;
-  oldfirst: number = 1;
   pageData: number = 0;
   rows: number = 10;
   totalData: any = 0;
@@ -190,9 +189,7 @@ export class CountryComponent implements OnInit {
     const cleaned = input.replace(/['"]/g, '');
     this.addCountryForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
-  calculateFirst(): number {
-    return (this.first - 1) * this.rows;
-  }
+
   onPageChange(event: any) {
     this.first = (event.page) + 1;
     this.pageData = event.first;

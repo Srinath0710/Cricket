@@ -1194,7 +1194,7 @@ option {
 main {
   width: 100% !important;
   height: 100% !important;
-  padding:  0px !important;
+  padding: 0px !important;
   /* overflow: auto; */
 }
 
@@ -1775,9 +1775,9 @@ body.modal-open {
 
 .popup-close {
   position: absolute;
-  top: 0px;
+  top: 1px;
   right: 2px;
-  padding: 0px 2px;
+  padding: 0px 1px;
   background-color: white;
   font-size: 20px;
   color: #007BFF;
@@ -1785,6 +1785,7 @@ body.modal-open {
   line-height: 1;
   transition: color 0.3s ease, transform 0.3s ease;
   outline: none;
+  border: 1px solid;
 }
 
 .popup-close:hover {
@@ -1875,7 +1876,8 @@ body.modal-open {
   border-radius: 0px !important;
   padding: 2px !important;
   border-color: #d5d5d5 !important;
-  border: 1px solid ;
+  border: 1px solid;
+  flex-wrap: inherit;
 
 }
 
@@ -1955,7 +1957,7 @@ body.modal-open {
   position: fixed !important;
   width: 285px !important;
   box-sizing: border-box;
-  z-index: 10010  !important;
+  z-index: 10010 !important;
   top: 15% !important;
   transform: translate(-50%, -50%) !important;
 }
@@ -2078,13 +2080,7 @@ body.modal-open {
 }
 
 
-.edit-button {
-  position: absolute;
-  right: 30px;
-  color: #5b6b8f;
-  /* color: rgb(24, 24, 218); */
-  font-size: 14px;
-}
+
 
 .delete-button {
   position: absolute;
@@ -2121,11 +2117,54 @@ body.modal-open {
   font-size: larger !important;
   color: #fff !important;
 }
- 
+
 .p-confirm-dialog-custom .icon-success {
   color: #4CAF50;
 }
 
 .p-confirm-dialog-custom .icon-danger {
   color: #d32f2f;
+}
+
+.comp-chid-add-btn {
+  font-size: 12px;
+  background-color: #5b6b8f;
+  color: #fff;
+  border-radius: 1px;
+  cursor: pointer;
+  line-height: 1.5;
+  transition: background-color 0.2s ease-in-out;
+  vertical-align: middle;
+  width: 44px;
+  height: 26px;
+  border: none !important;
+}
+
+.comp-chid-remove-btn {
+  font-size: 12px;
+  background-color: rgb(181 13 0);
+  color: #fff;
+  border-radius: 1px;
+  cursor: pointer;
+  line-height: 1.5;
+  transition: background-color 0.2s ease-in-out;
+  vertical-align: middle;
+  width: 55px;
+  height: 26px;
+  border: none !important;
+}
+
+.comp-chid-edit-button {
+  margin-right: 6px;
+  font-size: 12px;
+  background-color:#367039;
+  color: #fff;
+  border-radius: 1px;
+  cursor: pointer;
+  line-height: 1.5;
+  transition: background-color 0.2s ease-in-out;
+  vertical-align: middle;
+  width: 55px;
+  height: 26px;
+  border: none !important;
 }
