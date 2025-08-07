@@ -1877,7 +1877,7 @@ body.modal-open {
   padding: 2px !important;
   border-color: #d5d5d5 !important;
   border: 1px solid;
-  flex-wrap: inherit;
+  flex-wrap: inherit !important;
 
 }
 
@@ -2142,7 +2142,8 @@ body.modal-open {
 
 .comp-chid-remove-btn {
   font-size: 12px;
-  background-color: rgb(181 13 0);
+  /* background-color: #dc3545; */
+  background-color: #dc3545;
   color: #fff;
   border-radius: 1px;
   cursor: pointer;

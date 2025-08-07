@@ -12,7 +12,7 @@
           </button>
           <button pButton type="button" class="p-button-sm p-button-danger background-delete" pTooltip="Delete"
             tooltipPosition="top" (click)="StatusConfirm(Fixtures.match_id)">
-            <i class="fa fa-trash me-2"></i>
+            <i class="fa-solid fa-trash-arrow-up"></i>
           </button>
 
         </div>
@@ -208,7 +208,7 @@
         </p-dropdown>
       </div>
       <div class="col-md-3">
-        <label>Umpire 1</label>
+        <label>On-field Umpire 1</label>
         <p-dropdown [options]="filteredUmpireList1" class="drop-error" formControlName="umpire_1"
           optionValue="official_id" optionLabel="official_name" [filter]="true"
           [ngModel]="competitionFixturesForm.get('umpire_1')?.value" (ngModelChange)="updateFilteredLists()"
@@ -221,7 +221,7 @@
         </p-dropdown>
       </div>
       <div class="col-md-3">
-        <label>Umpire 2</label>
+        <label>On-field Umpire 2</label>
         <p-dropdown [options]="filteredUmpireList2" [ngModel]="competitionFixturesForm.get('umpire_2')?.value"
           (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_2"
           optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
@@ -234,7 +234,7 @@
         </p-dropdown>
       </div>
       <div class="col-md-3">
-        <label>Umpire 3</label>
+        <label>TV Umpire </label>
         <p-dropdown [options]="filteredUmpireList3" [ngModel]="competitionFixturesForm.get('umpire_3')?.value"
           (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_3"
           optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
@@ -247,7 +247,7 @@
         </p-dropdown>
       </div>
       <div class="col-md-3">
-        <label>Umpire 4</label>
+        <label>Off-field Umpire</label>
         <p-dropdown [options]="filteredUmpireList4" [ngModel]="competitionFixturesForm.get('umpire_4')?.value"
           (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_4"
           optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
@@ -261,7 +261,7 @@
       </div>
 
       <div class="col-md-3">
-        <label>Sr.Video Analyst</label>
+        <label>Sr Video Analyst</label>
         <p-dropdown [options]="video_analyst_list" class="drop-error" formControlName="sr_video"
           optionValue="official_id" optionLabel="official_name" placeholder="Select Sr Video Analyst">
           <ng-template let-videoAnalyst pTemplate="item">

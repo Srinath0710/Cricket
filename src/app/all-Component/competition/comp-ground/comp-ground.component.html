@@ -1,12 +1,20 @@
 <div class="container">
   <div class="row mb-3">
     <div class="col-6">
-      <p-table #dt1 [value]="sourceGround" [paginator]="true"
-        [globalFilterFields]="['ground_name']" [tableStyle]="{ 'min-width': '20rem' }"
-        styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
-        [rowsPerPageOptions]="[10, 25, 50]"  responsiveLayout="scroll"
-         [first]="(first - 1) * rows" [totalRecords]="totalData"
-        (onPageChange)="onPageChange($event)">
+      <p-table #dt1
+    [value]="sourceGround"
+    [paginator]="true"
+    [globalFilterFields]="['ground_name']"
+    [tableStyle]="{ 'min-width': '20rem' }"
+    styleClass="p-datatable-gridlines"
+    [rows]="rows"
+    [first]="first"
+    [totalRecords]="totalData"
+    [showCurrentPageReport]="false"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true"
+    (onLazyLoad)="onPageChange($event)"
+    responsiveLayout="scroll">
 
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">

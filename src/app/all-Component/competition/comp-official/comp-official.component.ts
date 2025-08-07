@@ -22,7 +22,7 @@ import { ToastService } from '../../../services/toast.service';
     ReactiveFormsModule,
     ToastModule,
     TableModule,
-    Tooltip
+    // Tooltip
   ], templateUrl: './comp-official.component.html',
   styleUrl: './comp-official.component.css',
   providers: [
@@ -50,6 +50,10 @@ export class CompOfficialComponent implements OnInit {
   filteredTeams: any[] = [];
   sourceSearchKeyword: string = '';
   targetSearchKeyword: string = '';
+  rows: number = 10;
+  totalData: any = 0;
+  pageData: number = 0;
+  first: number = 0;
 
   constructor(
     private apiService: ApiService,
@@ -71,11 +75,15 @@ export class CompOfficialComponent implements OnInit {
     params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
+    params.records = this.rows.toString();
+    params.search_text = this.sourceSearchKeyword.toString(),
+    params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
     this.apiService.post(this.urlConstant.compOfficialList, params).subscribe((res: any) => {
       const allItems = res.data.all_officials;
       const mappedIds = res.data.selected_officials.map((value: any) => value.official_id);
       this.sourceOfficial = allItems.filter((item: any) => !mappedIds.includes(item.official_id));
       this.targetOfficial = res.data.selected_officials
+      this.totalData = res.data.all_officials[0].total_records
       this.spinnerService.raiseDataEmitterEvent('off');
 
     },
@@ -153,6 +161,11 @@ export class CompOfficialComponent implements OnInit {
   /* Failed Toast */
   failedToast(data: any) {
     this.toastService.failedToast({ message: data.message })
+  }
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.gridLoad();
   }
 }
 

@@ -176,7 +176,7 @@
                           formControlName="competition_format_id" optionValue="config_id" optionLabel="config_name"
                           [ngModel]="addCompetitionForm.get('competition_format_id')?.value" placeholder="Select Format"
                           appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"
-                        (onChange)="onMatchTypeChange($event.value)" >
+                         >
 
                           <ng-template let-Format pTemplate="item">
                             <div class="flex align-items-center gap-2">
@@ -580,7 +580,7 @@
                     ? { key: 'inactive', label: 'deactivate' } : { key: 'active', label: 'activate' })">
                   <span>
                     <i class="fa"
-                      [ngClass]="competition.status === 'Active' ? 'fa-trash text-danger' : 'fa-check-square text-success'">
+                      [ngClass]="competition.status === 'Active' ? 'fa-solid fa-trash-arrow-up' : 'fa-check-square text-success'">
                     </i>
                   </span>
                 </div>

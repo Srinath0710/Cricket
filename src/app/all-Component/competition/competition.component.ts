@@ -523,10 +523,7 @@ export class CompetitionComponent implements OnInit {
       this.ageGroupList = this.metaDataList.filter(temp => temp.config_key === 'age_category');
       this.tourlevelList = this.metaDataList.filter(temp => temp.config_key === 'comp_level');
       const selectedTypeId = this.addCompetitionForm.get('competition_type_id')?.value;
-      if (selectedTypeId) {
-        this.onMatchTypeChange(selectedTypeId);
-      }
-
+ 
 
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -671,12 +668,5 @@ export class CompetitionComponent implements OnInit {
     this.addCompetitionForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
   allFormatList = [];  // original unfiltered list
-  onMatchTypeChange(typeId: number) {
-    this.tourtypeList = this.allFormatList.filter((format: any) =>
-      format.parent_config_id === typeId
-    );
 
-    // Optionally reset format control
-    this.addCompetitionForm.get('competition_format_id')?.reset();
-  }
 }

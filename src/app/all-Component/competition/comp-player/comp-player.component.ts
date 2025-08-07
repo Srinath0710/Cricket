@@ -75,14 +75,14 @@ export class CompPlayerComponent implements OnInit {
   ImportMappingData: any;
   targetProducts: any;
   ImportData: any;
+  rows: number = 10;
+  totalData: any = 0;
+  pageData: number = 0;
+  first: number = 0;
+  groundData = []
+  allPlayersRaw: any[] = [];
+  selectedPlayersRaw: any[] = [];
 
-
-  // ... (existing properties)
-
-  allPlayersRaw: any[] = []; // To store all players fetched from the API
-  selectedPlayersRaw: any[] = []; // To store all selected players fetched from the API
-
-  // ... (rest of your component)
   constructor(
     private apiService: ApiService,
     private urlConstant: URLCONSTANT,
@@ -127,13 +127,16 @@ export class CompPlayerComponent implements OnInit {
     params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
-
+    params.search_text = this.sourceSearchKeyword.toString(),
+    params.records = this.rows.toString();
+      params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
     this.apiService.post(this.urlConstant.compplayerlist, params).subscribe(
       (res: any) => {
         this.teamsDropDown = res.data.teams ?? [];
         this.teamsData = res.data.teams != undefined ? res.data.teams : [];
         this.allPlayersRaw = res.data.all_players ?? [];
         this.selectedPlayersRaw = res.data.selected_players ?? [];
+        this.totalData = res.data.all_players[0].total_records
         if (this.teamsData.length > 0) {
           this.teamID = this.teamsData[0].team_id;
         }
@@ -293,6 +296,10 @@ export class CompPlayerComponent implements OnInit {
     table.clear();
     this.targetSearchKeyword = '';
   }
-
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.gridLoad();
+  }
 
 }

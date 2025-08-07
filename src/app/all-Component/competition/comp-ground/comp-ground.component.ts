@@ -58,7 +58,7 @@ export class CompGroundComponent implements OnInit {
   rows: number = 10;
   totalData: any = 0;
   pageData: number = 0;
-  first: number = 1;
+  first: number = 0;
   groundData = []
   selectedGround: any = [];
   viewDialogVisible: boolean = false;
@@ -73,7 +73,7 @@ export class CompGroundComponent implements OnInit {
   ) { }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
-    this.gridLoad();
+
   }
 
   gridLoad() {
@@ -84,26 +84,26 @@ export class CompGroundComponent implements OnInit {
     params.records = this.rows.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     params.search_text = this.sourceSearchKeyword.toString(),
-    params.page_no = this.first.toString();
-      this.apiService.post(this.urlConstant.compgroundList, params).subscribe((res: any) => {
-        this.groundData = res.data.all_grounds ?? [];
-        const allItems = res.data.all_grounds;
-        const mappedIds = res.data.selected_grounds.map((value: any) => value.ground_id);
-        this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
-        this.targetGround = res.data.selected_grounds
-        this.totalData = res.data.all_grounds[0].total_records
-        this.spinnerService.raiseDataEmitterEvent('off');
+      params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
+    this.apiService.post(this.urlConstant.compgroundList, params).subscribe((res: any) => {
+      this.groundData = res.data.all_grounds ?? [];
+      const allItems = res.data.all_grounds;
+      const mappedIds = res.data.selected_grounds.map((value: any) => value.ground_id);
+      this.sourceGround = allItems.filter((item: any) => !mappedIds.includes(item.ground_id));
+      this.targetGround = res.data.selected_grounds
+      this.totalData = res.data.all_grounds[0].total_records
+      this.spinnerService.raiseDataEmitterEvent('off');
 
-      }, (err: any) => {
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        }
-        this.spinnerService.raiseDataEmitterEvent('off');
-        this.failedToast(err.error);
-      })
+    }, (err: any) => {
+      if (
+        err.status_code === this.statusConstants.refresh &&
+        err.error.message === this.statusConstants.refresh_msg
+      ) {
+        this.apiService.RefreshToken();
+      }
+      this.spinnerService.raiseDataEmitterEvent('off');
+      this.failedToast(err.error);
+    })
     this.spinnerService.raiseDataEmitterEvent('off');
   }
   updateGround() {
@@ -165,7 +165,7 @@ export class CompGroundComponent implements OnInit {
     if (this.sourceSearchKeyword.length >= 3 || this.sourceSearchKeyword.length === 0) {
 
       this.dt1?.filterGlobal(this.sourceSearchKeyword, 'contains');
-      this.first = 1;
+      this.first = 0;
       this.gridLoad();
     }
   }
@@ -181,12 +181,13 @@ export class CompGroundComponent implements OnInit {
     this.targetSearchKeyword = '';
     this.gridLoad();
   }
+
   onPageChange(event: any) {
-    this.first = (event.page) + 1;
-    this.pageData = event.first;
-    this.rows = event.rows;
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
     this.gridLoad();
   }
+
 
   onViewGroundDetails(groundId: any) {
     const params = {
@@ -211,5 +212,9 @@ export class CompGroundComponent implements OnInit {
       }
     });
   }
+  // onpageCall(){
+  //   this.first=1;
+  //   this.rows=10;
+  // }
 }
 

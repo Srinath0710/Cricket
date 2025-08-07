@@ -63,6 +63,10 @@ export class CompTeamComponent implements OnInit {
   targetSearchKeyword: string = '';
   selectedTeams: any = [];
   viewDialogVisible: boolean = false;
+  rows: number = 10;
+  totalData: any = 0;
+  pageData: number = 0;
+  first: number = 0;
 
   constructor(
     private apiService: ApiService,
@@ -96,6 +100,9 @@ export class CompTeamComponent implements OnInit {
     params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
+    params.search_text = this.sourceSearchKeyword.toString(),
+      params.records = this.rows.toString();
+    params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
     this.apiService.post(this.urlConstant.compTeamsList, params).subscribe(
       (res: any) => {
         const allItems = res.data.all_teams.map((val: any) => ({
@@ -108,7 +115,7 @@ export class CompTeamComponent implements OnInit {
           ...val,
           scorecard: val.team_name || ''
         }));
-
+        this.totalData = res.data.all_teams[0].total_records
         this.spinnerService.raiseDataEmitterEvent('off');
       },
 
@@ -255,7 +262,7 @@ export class CompTeamComponent implements OnInit {
     table.clear();
     this.targetSearchKeyword = '';
   }
-    onViewteam(teamsid: number) {
+  onViewteam(teamsid: number) {
     const params = {
       team_id: teamsid.toString(),
       client_id: this.CompetitionData.client_id?.toString(),
@@ -277,12 +284,16 @@ export class CompTeamComponent implements OnInit {
       }
     });
   }
-    getTeamNameParts(fullName: string): { name: string, category: string } {
+  getTeamNameParts(fullName: string): { name: string, category: string } {
     const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
     return {
       name: match?.[1]?.trim() || '',
       category: match?.[2] || ''
     };
   }
-
+  onPageChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    this.gridLoad();
+  }
 }

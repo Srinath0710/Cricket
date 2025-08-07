@@ -27,22 +27,27 @@
           [globalFilterFields]="['display_name']" [tableStyle]="{ 'min-width': '20rem' }"
           styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
           [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true">
-          <ng-template pTemplate="caption">
-            <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
-              <div class="p-1 Child-header text-center">Available Players</div>
-              <div class="d-flex align-items-center gap-2 ms-auto">
-                <div class="p-input-icon-left">
-                  <span class="p-input-icon-right input-icons search-padding">
-                    <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
-                      placeholder="Search" filterBy="display_name" [(ngModel)]="sourceSearchKeyword"
-                      (input)="filterGlobalSource($event, 'contains')" />
-                  </span>
-                </div>
-                <button class="clear-width table-counts" style="background: aliceblue" (click)="clearSource(dt1)">
-                  Clear
-                </button>
+
+        <!-- <p-table #dt1 [value]="sourcePlayer" [paginator]="true" [globalFilterFields]="['display_name']"
+          [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" [rows]="rows" [first]="first"
+          [totalRecords]="totalData" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true"
+          (onLazyLoad)="onPageChange($event)" responsiveLayout="scroll"> -->
+         <ng-template pTemplate="caption">
+          <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
+            <div class="p-1 Child-header text-center">Available Players</div>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="p-input-icon-left">
+                <span class="p-input-icon-right input-icons search-padding">
+                  <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
+                    placeholder="Search" filterBy="display_name" [(ngModel)]="sourceSearchKeyword"
+                    (input)="filterGlobalSource($event, 'contains')" />
+                </span>
               </div>
+              <button class="clear-width table-counts" style="background: aliceblue" (click)="clearSource(dt1)">
+                Clear
+              </button>
             </div>
+          </div>
           </ng-template>
 
           <ng-template pTemplate="header">
@@ -67,8 +72,7 @@
                     <strong>{{ player.display_name }}</strong>
                   </span>
                   <span>
-                    <button class="comp-chid-add-btn"
-                      (click)="moveToTarget(player)">
+                    <button class="comp-chid-add-btn" (click)="moveToTarget(player)">
                       Add
                     </button>
                   </span>
@@ -129,8 +133,7 @@
                     <strong>{{ player.player_name }}</strong>
                   </span>
                   <span *ngIf="TeamInTarget(player)">
-                    <button class="comp-chid-edit-button"
-                      (click)="showEditPopup(player)">
+                    <button class="comp-chid-edit-button" (click)="showEditPopup(player)">
                       Edit
                     </button>
                   </span>
