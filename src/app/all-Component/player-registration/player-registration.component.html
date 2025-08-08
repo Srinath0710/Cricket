@@ -50,6 +50,82 @@
                     (click)="showAddForm();editLabel()"> <i class="fas fa-plus"></i> Create</button>
                 </div>
               </div>
+
+              <!-- Filter Sections -->
+
+            </div>
+            <div class="filter-panel" [ngClass]="{'show-filters': showFilters}">
+              <div class="filter-row">
+                <div class="filter-item">
+                  <label>Club</label>
+                  <p-dropdown [options]="clublist" class="drop-error " formControlName="club_id" optionValue="club_id"
+                    optionLabel="club_name" placeholder="Select Club Id">
+                    <ng-template let-club pTemplate="item">
+                      <div class="flex align-items-center gap-2">
+                        <div>{{ club.club_name }}
+                        </div>
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                </div>
+                <div class="filter-item">
+                  <label>Gender</label>
+                  <select class="filter-select" [(ngModel)]="filterGenderType">
+                    <option value="">All</option>
+                    <option value="Men">Men</option>
+                    <option value="Women">Women</option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Nationality</label>
+                  <select class="filter-select" [(ngModel)]="filterNationality">
+                    <option value="">All</option>
+                    <option *ngFor="let nationality of NationalitydropdownData" [value]="nationality.regionvalue">
+                      {{ nationality.regionlabel }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="filter-item">
+                  <label>Player Role</label>
+                  <select class="filter-select" [(ngModel)]="filterPlayerType">
+                    <option value="">All</option>
+                    <option value="Batsman">Batsman</option>
+                    <option value="Bowler">Bowler</option>
+                    <option value="WK">Wicket-Keeper-(WK)</option>
+                    <option value="All-Rounder">All-Rounder</option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Batting Style</label>
+                  <select class="filter-select" [(ngModel)]="filterBatType">
+                    <option value="">All</option>
+                    <option value="LHB">Left Hander-(LH)</option>
+                    <option value="RHB">Right Hander-(RH)</option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Batting Order</label>
+                  <select class="filter-select" [(ngModel)]="filterBowlType">
+                    <option value="">All</option>
+                    <option value="LHB">Left Arm Bowler-(LAB)</option>
+                    <option value="RHB">Right Arm Bowler-(RAB)</option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Batting Spec</label>
+                  <select class="filter-select" [(ngModel)]="filterBowlType">
+                    <option value="">All</option>
+                    <option value="LHB">Left Arm Bowler-(LAB)</option>
+                    <option value="RHB">Right Arm Bowler-(RAB)</option>
+                  </select>
+                </div>
+                <div class="filter-actions">
+                  <button class="filter-apply-btn" (click)="applyFilters()">Apply</button>
+
+                  <button type="button" class="clear-apply-btn" (click)="clearFilters()"> Clear </button>
+                </div>
+              </div>
             </div>
             <!-- STATUS Confirmation POPUP -->
             <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false" [closable]="false"
@@ -58,7 +134,7 @@
 
             <p-table #dt [value]="PlayerData" [styleClass]="'custom-table'"
               [globalFilterFields]="['display_name','player_dob','mobile_no','email','record_status']">
-                <ng-template pTemplate="header">
+              <ng-template pTemplate="header">
 
                 <tr>
                   <th>
@@ -67,19 +143,19 @@
                       <p-sortIcon field="display_name" pSortableColumn="display_name"></p-sortIcon>
                     </div>
                   </th>
-                  
-                     <th>
+
+                  <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
                       Gender
                       <p-sortIcon field="gender" pSortableColumn="gender"></p-sortIcon>
                     </div>
                   </th>
-                   <th>
+                  <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
                       DOB
                       <p-sortIcon field="player_dob" pSortableColumn="player_dob"></p-sortIcon>
                     </div>
-                  </th> 
+                  </th>
                   <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
                       Mobile Number
@@ -104,7 +180,7 @@
                       <p-sortIcon field="bowling_style" pSortableColumn="bowling_style"></p-sortIcon>
                     </div>
                   </th>
-                 
+
                   <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
                       Status
@@ -125,7 +201,10 @@
                         <img class="player-img" *ngIf="player.profile_image!=null  && player.profile_image!=''"
                           [src]="player.profile_image" (error)="handleImageError($event, default_img)">
                       </span>
-                      <span class="name-space">{{ player.display_name }}</span>
+                      <!-- <span class="name-space">{{ player.display_name }}</span> -->
+                      <span class="groundnameover name-space" (click)="onViewPlayer(player.player_id)">
+                        {{ player.display_name }}
+                      </span>
 
                     </div>
                   </td>
@@ -135,7 +214,7 @@
                   <td>{{ player.player_role }}</td>
                   <td>{{ player.batting_style }}</td>
                   <td>{{ player.bowling_style }}</td>
-                  
+
                   <td>
                     <span [ngClass]="{
                         ' bg-success': player.record_status === 'Active',
@@ -188,6 +267,79 @@
                 </tr>
               </ng-template>
             </p-table>
+
+            <p-dialog header="Players Details" [(visible)]="viewDialogVisible" [modal]="true"
+              [style]="{ width: '320px' }" [draggable]="false" [resizable]="false" header="Player Details">
+              <div class="popup-container">
+                <div *ngFor="let player of selectedPlayers" class="popup-container">
+                  <div class="top-bar">
+                    <div class="profile_image-wrapper">
+                      <span class="profile-image-team-player">
+                        <img class="player-img Viewimg" *ngIf="!player.profile_image" [src]="profileImages">
+                        <img class="player-img Viewimg" *ngIf="player.profile_image" [src]="player.profile_image"
+                          (error)="handleImageError($event, profileImages)">
+
+                      </span>
+                    </div>
+                    <div class="popup-title">
+                      {{ getPlayersParts(player['display_name']).name | uppercase }}
+                      <br>
+                      <!-- <span style="font-weight: normal;">{{ getPlayersParts(player['display_name']) }}</span> -->
+                    </div>
+                    <button class="popup-close" pTooltip="Close" tooltipPosition="left"
+                      (click)="viewDialogVisible = false" aria-label="Close">✖</button>
+                  </div>
+
+                  <section class="popup-section">
+                    <h2 class="section-title"> Players Details</h2>
+                    <div class="info-row"><span class="info-label">Display Name</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['display_name'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Email</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['email'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Gender</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['gender'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Player Role</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['player_role'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Batting Style</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['batting_style'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Bowling Style</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['bowling_style'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Bowling Type</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['bowling_type'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Bowling Spec</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['bowling_specialization']
+                        }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Batting Order</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['batting_order'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Status</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['record_status'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">DOB</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['player_dob'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Nationality</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['nationality'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Jersey NO</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['jersey_no'] }}</span>
+                    </div>
+                    <div class="info-row"><span class="info-label">Ref ID</span>
+                      <span class="seperator">|</span><span class="info-value">{{ player['reference_source_id']
+                        }}</span>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </p-dialog>
 
             <p-paginator [rows]="rows" [totalRecords]="totalData" [first]="(first - 1) * rows"
               [rowsPerPageOptions]="[10, 25,50,100]" (onPageChange)="onPageChange($event)">
@@ -318,9 +470,10 @@
                         <div class="col-md-6">
                           <label>Nationality</label>
                           <span class="text-danger">*</span>
-                          <p-dropdown [options]="countriesList" formControlName="nationality_id" optionValue="country_id"
-                            optionLabel="country_name" placeholder="Select Nationality Country" class="drop-error"
-                            [panelStyleClass]="'custom-dropdown-panel'" appendTo="self" [filter]="true">
+                          <p-dropdown [options]="countriesList" formControlName="nationality_id"
+                            optionValue="country_id" optionLabel="country_name" placeholder="Select Nationality Country"
+                            class="drop-error" [panelStyleClass]="'custom-dropdown-panel'" appendTo="self"
+                            [filter]="true">
                             <ng-template let-nationality pTemplate="item">
                               <div class="flex align-items-center gap-2">
                                 <div>{{ nationality.country_name }}</div>
@@ -653,7 +806,7 @@
                           <label>Country of Birth <span class="text-danger">*</span></label>
                           <p-dropdown [options]="countriesList" formControlName="country_of_birth"
                             optionValue="country_id" optionLabel="country_name" placeholder="Select Country"
-                           filter="true" class="drop-error" [panelStyleClass]="'custom-dropdown-panel'"
+                            filter="true" class="drop-error" [panelStyleClass]="'custom-dropdown-panel'"
                             [readonly]="disableReadonly && isPersonalDataIntialized"
                             (ngModelChange)="getStates(addplayerpersonalform.get('country_id')?.value)">
                             <ng-template let-country pTemplate="item">

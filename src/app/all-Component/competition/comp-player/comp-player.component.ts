@@ -82,6 +82,20 @@ export class CompPlayerComponent implements OnInit {
   groundData = []
   allPlayersRaw: any[] = [];
   selectedPlayersRaw: any[] = [];
+  showFilters: boolean = false;
+
+  searchKeyword: string = '';
+  filterStatus: string = '';
+  filterPlayerType: string = '';
+  filterGenderType: string = '';
+  filterBatType: string = '';
+  filterBowlType: string = '';
+  filterClubType: string = '';
+  filterBattingOrder: string = '';
+
+  showSourceFilters: boolean = false;
+  showTargetFilters: boolean = false;
+
 
   constructor(
     private apiService: ApiService,
@@ -121,15 +135,40 @@ export class CompPlayerComponent implements OnInit {
     this.spinnerService.raiseDataEmitterEvent('off');
   }
 
-  gridLoad() {
+  gridLoad(applyFilters: boolean = false) {
     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
     params.client_id = this.CompetitionData.client_id.toString();
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     params.search_text = this.sourceSearchKeyword.toString(),
-    params.records = this.rows.toString();
-      params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
+      params.records = this.rows.toString();
+    params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
+
+    if (applyFilters) {
+      if (this.filterStatus) {
+        params.status = this.filterStatus;
+      }
+      if (this.filterPlayerType) {
+        params.player_type = this.filterPlayerType;
+      }
+      if (this.filterGenderType) {
+        params.gender_type = this.filterGenderType;
+      }
+      if (this.filterBatType) {
+        params.bat_type = this.filterBatType;
+      }
+      if (this.filterBowlType) {
+        params.bowl_type = this.filterBowlType;
+      }
+      if (this.filterClubType) {
+        params.club_type = this.filterClubType;
+      }
+      if (this.filterBattingOrder) {
+        params.batting_order = this.filterBattingOrder;
+      }
+    }
+
     this.apiService.post(this.urlConstant.compplayerlist, params).subscribe(
       (res: any) => {
         this.teamsDropDown = res.data.teams ?? [];
@@ -301,5 +340,54 @@ export class CompPlayerComponent implements OnInit {
     this.rows = event.rows ?? 10;
     this.gridLoad();
   }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+    // this.showFilters = false;
+  }
+  applyFilters() {
+    this.first = 1;
+    this.gridLoad();
+    this.showFilters = false;
+    this.msgService.add({
+      severity: 'info',
+      summary: 'Filters Applied',
+      data: { image: 'assets/images/default-logo.png' },
+      detail: 'Player list has been filtered'
+    });
+  }
+
+  clearFilters() {
+    this.filterStatus = '';
+    this.filterPlayerType = '';
+    this.filterGenderType = '';
+    this.filterBatType = '';
+    this.filterBowlType = '';
+    this.searchKeyword = '';
+    this.first = 1;
+    // this.gridLoad();
+    // this.msgService.add({
+    //   severity: 'info',
+    //   summary: 'Filters Cleared',
+    //   data: { image: 'assets/images/default-logo.png' },
+    //   detail: 'Filters has been Cleared'
+    // });
+  }
+
+CancelFilters() {
+  this.showSourceFilters = false;
+  this.showTargetFilters = false;
+}
+
+  toggleSourceFilters() {
+    this.showSourceFilters = !this.showSourceFilters;
+    this.showTargetFilters = false; // Close the other filter
+  }
+
+  toggleTargetFilters() {
+    this.showTargetFilters = !this.showTargetFilters;
+    this.showSourceFilters = false; // Close the other filter
+  }
+
 
 }

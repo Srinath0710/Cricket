@@ -43,6 +43,7 @@ export class URLCONSTANT {
       playersPersonalEdit = "Player/edit_player_personal"
       playerspersonaldropdown = "Official/get_official_dropdown"
       playersprofile='Player/player_profile_update'
+      viewgroundPlayers = "Player/view_player"
 
 
       // Official  List 
