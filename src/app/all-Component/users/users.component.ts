@@ -126,8 +126,9 @@ export class UsersComponent implements OnInit {
         user_type: ['', Validators.required],
         ref_id: [''],
         role_id: ['', Validators.required],
-        // association: [''],
-        login_user_id: [''],
+         login_user_id: [''],
+        Association: ['', Validators.required],
+        Official: ['', Validators.required]
       },
       {
         validator: this.matchPasswords('u_password', 'confirm_password'),
@@ -461,7 +462,6 @@ export class UsersComponent implements OnInit {
       this.showOfficialDropdown = true;
     }
 
-
     if (userType === 'Association') {
       this.spinnerService.raiseDataEmitterEvent('on');
       const params = {
@@ -509,8 +509,8 @@ export class UsersComponent implements OnInit {
           this.spinnerService.raiseDataEmitterEvent('off');
           if (res.status_code === '200' && res.status !== false) {
             this.OfficialDropdown = res.data.user_details.map((item: any) => ({
-              label: item.user_name,
-              value: item.user_id
+              value: item.user_id,
+              label: item.user_name
             }));
           } else {
             this.failedToast(res);
@@ -534,4 +534,8 @@ export class UsersComponent implements OnInit {
   get visibleRecords(): number {
     return this.usersData?.length || 0;
   }
+
+
+
+
 }

@@ -205,7 +205,7 @@
                         <small
                             *ngIf="addUsersForm.get('confirm_password')?.errors?.['mismatch'] && (addUsersForm.get('confirm_password')?.touched || submitted)"
                             class="required-msg">
-                            Confirm Password does not match User Password
+                            Confirm Password doesn't match User Password
                         </small>
 
                     </div>
@@ -252,7 +252,7 @@
                         <small
                             *ngIf="addUsersForm?.get('user_id')?.invalid &&(addUsersForm?.get('user_id')?.touched) || (addUsersForm.get('user_id')?.invalid && submitted)"
                             class="required-msg">
-                            Association Is Required
+                        Association Is Required
                         </small>
                     </div>
 
