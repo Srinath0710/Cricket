@@ -27,7 +27,7 @@ interface Team {
     DropdownModule,
     TableModule,
     ToastModule,
-    // Tooltip
+    Tooltip
   ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
@@ -92,6 +92,7 @@ export class CompPlayerComponent implements OnInit {
   filterBowlType: string = '';
   filterClubType: string = '';
   filterBattingOrder: string = '';
+  filterBowlStyle: string = '';
 
   showSourceFilters: boolean = false;
   showTargetFilters: boolean = false;
@@ -166,6 +167,9 @@ export class CompPlayerComponent implements OnInit {
       }
       if (this.filterBattingOrder) {
         params.batting_order = this.filterBattingOrder;
+      }
+      if (this.filterBowlStyle) {
+        params.bowl_style = this.filterBowlStyle;
       }
     }
 
@@ -374,10 +378,10 @@ export class CompPlayerComponent implements OnInit {
     // });
   }
 
-CancelFilters() {
-  this.showSourceFilters = false;
-  this.showTargetFilters = false;
-}
+  CancelFilters() {
+    this.showSourceFilters = false;
+    this.showTargetFilters = false;
+  }
 
   toggleSourceFilters() {
     this.showSourceFilters = !this.showSourceFilters;

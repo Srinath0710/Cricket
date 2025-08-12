@@ -152,6 +152,7 @@ export class PlayerRegistrationComponent implements OnInit {
   filterBatType: string = '';
   filterBowlType: string = '';
   filterClubType: string = '';
+  filterBowlStyle: string = '';
   form: any;
   personal_player_id: any;
   isPersonalDataIntialized: boolean = false;
@@ -363,9 +364,6 @@ export class PlayerRegistrationComponent implements OnInit {
     params.search_text = this.searchKeyword.toString()
 
     if (applyFilters) {
-      if (this.filterStatus) {
-        params.status = this.filterStatus;
-      }
       if (this.filterPlayerType) {
         params.player_type = this.filterPlayerType;
       }
@@ -378,8 +376,11 @@ export class PlayerRegistrationComponent implements OnInit {
       if (this.filterBowlType) {
         params.bowl_type = this.filterBowlType;
       }
-      if (this.filterClubType){
+      if (this.filterClubType) {
         params.club_id = this.filterClubType;
+      }
+      if (this.filterBowlStyle) {
+        params.bowling_style_id = this.filterBowlStyle;
       }
     }
 
@@ -1170,7 +1171,7 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     });
   }
- 
+
   successToast(data: any) {
     this.toastService.successToast({ message: data.message })
   }
@@ -1255,42 +1256,42 @@ export class PlayerRegistrationComponent implements OnInit {
     // });
   }
 
-onViewPlayer(playersid: number) {
-  const params = {
-    player_id: playersid.toString(),
-    client_id: this.client_id?.toString(),
-    user_id: String(this.user_id)
-  };
-  
-  this.apiService.post(this.urlConstant.viewgroundPlayers, params).subscribe({
-    next: (res) => {
-      if (res.status_code === this.statusConstants.success && res.data) {
-        this.selectedPlayers = res.data.players;
-        // Update profile image URLs with cache-busting parameter
-        this.selectedPlayers.forEach((player: any) => {
-          player.profileImages = player.profileImages ? `${player.profileImages}?${Math.random()}` : this.profileImages;
-        });
-        this.viewDialogVisible = true;
-      } else {
-        this.failedToast(res);
+  onViewPlayer(playersid: number) {
+    const params = {
+      player_id: playersid.toString(),
+      client_id: this.client_id?.toString(),
+      user_id: String(this.user_id)
+    };
+
+    this.apiService.post(this.urlConstant.viewgroundPlayers, params).subscribe({
+      next: (res) => {
+        if (res.status_code === this.statusConstants.success && res.data) {
+          this.selectedPlayers = res.data.players;
+          // Update profile image URLs with cache-busting parameter
+          this.selectedPlayers.forEach((player: any) => {
+            player.profileImages = player.profileImages ? `${player.profileImages}?${Math.random()}` : this.profileImages;
+          });
+          this.viewDialogVisible = true;
+        } else {
+          this.failedToast(res);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch player details', err);
+        this.failedToast(err.error);
       }
-    },
-    error: (err) => {
-      console.error('Failed to fetch player details', err);
-      this.failedToast(err.error);
-    }
-  });
-}
- 
-getPlayersParts(fullName: string | undefined | null): {name: string} {
-  if (!fullName) {
-    return { name: '' }; // Return empty object if no name
+    });
   }
-  
-  const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
-  return {
-    name: match?.[1]?.trim() || fullName // Fallback to original name if regex fails
-  };
-}
+
+  getPlayersParts(fullName: string | undefined | null): { name: string } {
+    if (!fullName) {
+      return { name: '' }; // Return empty object if no name
+    }
+
+    const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
+    return {
+      name: match?.[1]?.trim() || fullName // Fallback to original name if regex fails
+    };
+  }
 
 }

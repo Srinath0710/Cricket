@@ -135,7 +135,7 @@
   display: flex;
   justify-content: flex-end; /* Keep all buttons grouped to the right */
   gap: 8px; /* Space between buttons */
-  padding: 10px 16px;
+  padding: 10px 36px;
   border-top: 1px solid #eee;
   background-color: #f9f9f9;
 }

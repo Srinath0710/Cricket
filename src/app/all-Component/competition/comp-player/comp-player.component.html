@@ -46,23 +46,16 @@
                 <button class="clear-width table-counts" style="background: aliceblue" (click)="clearSource(dt1)">
                   Clear
                 </button>
-                <button class="filter-icon-button" (click)="toggleSourceFilters()">
+                <button class="filter-icon-button" (click)="toggleSourceFilters()" pTooltip="Filter"
+                  tooltipPosition="top">
                   <i class="fa fa-filter"></i>
                 </button>
               </div>
               <div class="custom-filter-panel" *ngIf="showSourceFilters">
                 <div class="filter-content">
                   <div class="filter-group">
-                    <label>Status</label>
-                    <select [(ngModel)]="filterStatus" class="form-select">
-                      <option value="">All</option>
-                      <option value="Active">Active</option>
-                      <option value="InActive">InActive</option>
-                    </select>
-                  </div>
-                  <div class="filter-group">
-                    <label>Gender</label>
-                    <select [(ngModel)]="filterGenderType" class="form-select">
+                    <label>Club</label>
+                    <select [(ngModel)]="filterClubType" class="form-select">
                       <option value="">All</option>
                       <option value="Men">Men</option>
                       <option value="Women">Women</option>
@@ -79,28 +72,39 @@
                     </select>
                   </div>
                   <div class="filter-group">
+                    <label>Batting Style</label>
+                    <select [(ngModel)]="filterBatType" class="form-select">
+                      <option value="">All</option>
+                      <option value="Right Hand Batsman">Right Hand Batsman</option>
+                      <option value="Left Hand Batsman">Left Hand Batsman</option>
+                    </select>
+                  </div>
+                  <div class="filter-group">
                     <label>Batting Order</label>
                     <select [(ngModel)]="filterBattingOrder" class="form-select">
                       <option value="">All</option>
                       <option value="Top">Top</option>
                       <option value="Middle">Middle</option>
                       <option value="Lower">Lower</option>
-                    </select>
-                  </div>
-                  <div class="filter-group">
-                    <label>Batting Style</label>
-                    <select [(ngModel)]="filterBatType" class="form-select">
-                      <option value="">All</option>
-                      <option value="LHB">Left Hand Batter</option>
-                      <option value="RHB">Right Hand Batter</option>
+                      <option value="Tail Ender">Tail Ender</option>
                     </select>
                   </div>
                   <div class="filter-group">
                     <label>Bowling Style</label>
+                    <select [(ngModel)]="filterBowlStyle" class="form-select">
+                      <option value="">All</option>
+                      <option value="Right Hand Batsman">Right Hand Batsman</option>
+                      <option value="Left Hand Batsman">Left Hand Batsman</option>
+                    </select>
+                  </div>
+                  <div class="filter-group">
+                    <label>Bowling Spec</label>
                     <select [(ngModel)]="filterBowlType" class="form-select">
                       <option value="">All</option>
-                      <option value="LHB">Left Arm Bowler</option>
-                      <option value="RHB">Right Arm Bowler</option>
+                      <option value="Fast Bowler">Fast Bowler</option>
+                      <option value="Medium-Fast Bowler">Medium-Fast Bowler</option>
+                      <option value="Off Spin">Off Spin</option>
+                      <option value="Leg Spin">Leg Spin</option>
                     </select>
                   </div>
                 </div>
@@ -157,7 +161,7 @@
 
       <div class="col-md-6">
         <p-table #dt2 [value]="targetPlayer" [paginator]="true" selectionMode="multiple"
-          [globalFilterFields]="['display_name']" [tableStyle]="{ 'min-width': '20rem' }"
+          [globalFilterFields]="['player_name']" [tableStyle]="{ 'min-width': '20rem' }"
           styleClass="p-datatable-gridlines" [rows]="10" [showCurrentPageReport]="false"
           [rowsPerPageOptions]="[10, 25, 50]">
           <ng-template pTemplate="caption">
@@ -167,30 +171,23 @@
                 <div class="p-input-icon-left">
                   <span class="p-input-icon-right input-icons search-padding">
                     <input pInputText type="text" class="form-control width-search-check-box-grid p-input-icon-right"
-                      placeholder="Search" filterBy="display_name" [(ngModel)]="targetSearchKeyword"
+                      placeholder="Search" filterBy="player_name" [(ngModel)]="targetSearchKeyword"
                       (input)="filterGlobalTarget($event, 'contains')" />
                   </span>
                 </div>
                 <button class="clear-width table-counts" style="background: aliceblue" (click)="clearTarget(dt2)">
                   Clear
                 </button>
-                <button class="filter-icon-button" (click)="toggleTargetFilters()">
+                <button class="filter-icon-button" (click)="toggleTargetFilters()" pTooltip="Filter"
+                  tooltipPosition="top">
                   <i class="fa fa-filter"></i>
                 </button>
               </div>
               <div class="custom-filter-panel" *ngIf="showTargetFilters">
                 <div class="filter-content">
                   <div class="filter-group">
-                    <label>Status</label>
-                    <select [(ngModel)]="filterStatus" class="form-select">
-                      <option value="">All</option>
-                      <option value="Active">Active</option>
-                      <option value="InActive">InActive</option>
-                    </select>
-                  </div>
-                  <div class="filter-group">
                     <label>Gender</label>
-                    <select [(ngModel)]="filterGenderType" class="form-select">
+                    <select [(ngModel)]="filterGenderType" class="filter-select">
                       <option value="">All</option>
                       <option value="Men">Men</option>
                       <option value="Women">Women</option>
@@ -198,7 +195,7 @@
                   </div>
                   <div class="filter-group">
                     <label>Player Role</label>
-                    <select [(ngModel)]="filterPlayerType" class="form-select">
+                    <select [(ngModel)]="filterPlayerType" class="filter-select">
                       <option value="">All</option>
                       <option value="Batsman">Batter</option>
                       <option value="Bowler">Bowler</option>
@@ -208,7 +205,7 @@
                   </div>
                   <div class="filter-group">
                     <label>Batting Order</label>
-                    <select [(ngModel)]="filterBattingOrder" class="form-select">
+                    <select [(ngModel)]="filterBattingOrder" class="filter-select">
                       <option value="">All</option>
                       <option value="Top">Top</option>
                       <option value="Middle">Middle</option>
@@ -217,7 +214,7 @@
                   </div>
                   <div class="filter-group">
                     <label>Batting Style</label>
-                    <select [(ngModel)]="filterBatType" class="form-select">
+                    <select [(ngModel)]="filterBatType" class="filter-select">
                       <option value="">All</option>
                       <option value="LHB">Left Hand Batter</option>
                       <option value="RHB">Right Hand Batter</option>
@@ -225,7 +222,7 @@
                   </div>
                   <div class="filter-group">
                     <label>Bowling Style</label>
-                    <select [(ngModel)]="filterBowlType" class="form-select">
+                    <select [(ngModel)]="filterBowlType" class="filter-select">
                       <option value="">All</option>
                       <option value="LHB">Left Arm Bowler</option>
                       <option value="RHB">Right Arm Bowler</option>
