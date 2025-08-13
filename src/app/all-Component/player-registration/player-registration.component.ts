@@ -261,9 +261,9 @@ export class PlayerRegistrationComponent implements OnInit {
   }
   dropdownapi() {
     this.Clientdropdown();
-    this.Nationalitydropdown();
     this.getCountries();
     this.getGlobalData();
+    this.radiobutton();
 
   }
 
@@ -359,10 +359,7 @@ export class PlayerRegistrationComponent implements OnInit {
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
       this.gridLoad();
-      // this.showFilters = false;
-      this.radiobutton();
-
-
+      this.clubsdropdown();
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
@@ -387,7 +384,7 @@ export class PlayerRegistrationComponent implements OnInit {
         this.PlayerData = res.data.players;
         this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0;
         this.spinnerService.raiseDataEmitterEvent('off');
-        this.clubsdropdown();
+        
       } else {
         this.PlayerData = [];
         this.totalData = 0;
