@@ -71,16 +71,12 @@
                 </div>
                 <div class="filter-item">
                   <label>Gender</label>
-                  <p-dropdown [options]="genderSelect" class="drop-error " formControlName="gender_id"
-                    optionValue="config_id" optionLabel="config_name" placeholder="Select Gender"
-                    [panelStyleClass]="'custom-dropdown-panel'">
-                    <ng-template let-gender pTemplate="item">
-                      <div class="flex align-items-center gap-2">
-                        <div>{{ gender.config_name }}
-                        </div>
-                      </div>
-                    </ng-template>
-                  </p-dropdown>
+                  <select class="filter-select" [(ngModel)]="filterGenderType">
+                    <option value="">All</option>
+                    <option *ngFor="let gender of genderSelect" [value]="gender.config_id">
+                      {{ gender.config_name }}
+                    </option>
+                  </select>
                 </div>
                 <div class="filter-item">
                   <label>Nationality</label>
@@ -99,18 +95,18 @@
                   <label>Player Role</label>
                   <select class="filter-select" [(ngModel)]="filterPlayerType">
                     <option value="">All</option>
-                    <option value="Batsman">Batsman</option>
-                    <option value="Bowler">Bowler</option>
-                    <option value="WK">Wicket-Keeper-(WK)</option>
-                    <option value="All-Rounder">All-Rounder</option>
+                    <option *ngFor="let role of playerrole" [value]="role.config_id">
+                      {{ role.config_name }}
+                    </option>
                   </select>
                 </div>
                 <div class="filter-item">
                   <label>Batting Style</label>
                   <select class="filter-select" [(ngModel)]="filterBatType">
                     <option value="">All</option>
-                    <option value="LHB">Left Hander-(LH)</option>
-                    <option value="RHB">Right Hander-(RH)</option>
+                    <option *ngFor="let style of battingstyle" [value]="style.config_id">
+                      {{ style.config_name }}
+                    </option>
                   </select>
                 </div>
                 <div class="filter-item">

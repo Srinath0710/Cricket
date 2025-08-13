@@ -33,6 +33,8 @@ export class CricketKeyConstant {
         teamimage: 'assets/images/team.jpg',
         clubs: 'assets/images/Club.jpg',
         countryimg: 'assets/images/flag.jpg',
+        menimg: 'assets/images/men-default.png',
+        womenimg: 'assets/images/women-default.png'
     }
     static action_flag={
         Create:'create',

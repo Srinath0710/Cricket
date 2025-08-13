@@ -165,11 +165,14 @@ export class PlayerRegistrationComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
   imageSizeError: string = '';
   selectedImage: File | null = null;
+  activeFilters: any;
 
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
   }
   default_img = CricketKeyConstant.default_image_url.players;
+  men_img = CricketKeyConstant.default_image_url.menimg;
+  women_img = CricketKeyConstant.default_image_url.womenimg;
   conditionConstants = CricketKeyConstant.condition_key;
   statusConstants = CricketKeyConstant.status_code;
   Actionflag = CricketKeyConstant.action_flag;
@@ -261,17 +264,30 @@ export class PlayerRegistrationComponent implements OnInit {
     this.Nationalitydropdown();
     this.getCountries();
     this.getGlobalData();
-    // this.dropdownplayer()
+
   }
 
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
-    // this.showFilters = false;
+
   }
 
   applyFilters() {
+    const filters = {
+      player_type: this.filterPlayerType,
+      gender_id: this.filterGenderType,
+      batting_style_id: this.filterBatType,
+      bowling_type_id: this.filterBowlType,
+      club_id: this.filterClubType,
+      bowling_style_id: this.filterBowlStyle,
+      nationality_id: this.filterNationality
+    };
+
+    // Reset to first page and load data with filters
     this.first = 1;
-    this.gridLoad();
+    this.gridLoad(filters);
+
+    // Close filter panel and show notification
     this.showFilters = false;
     this.msgService.add({
       severity: 'info',
@@ -354,44 +370,25 @@ export class PlayerRegistrationComponent implements OnInit {
     });
   }
 
-  gridLoad(applyFilters: boolean = false) {
+  gridLoad(filters: any = {}) {
     this.spinnerService.raiseDataEmitterEvent('on');
-    const params: any = {};
-    params.user_id = this.user_id?.toString();
-    params.client_id = this.client_id?.toString();
-    params.page_no = this.first.toString();
-    params.records = this.rows.toString();
-    params.search_text = this.searchKeyword.toString()
 
-    if (applyFilters) {
-      if (this.filterPlayerType) {
-        params.player_type = this.filterPlayerType;
-      }
-      if (this.filterGenderType) {
-        params.gender_type = this.filterGenderType;
-      }
-      if (this.filterBatType) {
-        params.bat_type = this.filterBatType;
-      }
-      if (this.filterBowlType) {
-        params.bowl_type = this.filterBowlType;
-      }
-      if (this.filterClubType) {
-        params.club_id = this.filterClubType;
-      }
-      if (this.filterBowlStyle) {
-        params.bowling_style_id = this.filterBowlStyle;
-      }
-    }
+    // Base params
+    const params: any = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      page_no: this.first.toString(),
+      records: this.rows.toString(),
+      search_text: this.searchKeyword.toString()
+    };
 
     this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
       if (res.data?.players) {
         this.PlayerData = res.data.players;
-        this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0
+        this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0;
         this.spinnerService.raiseDataEmitterEvent('off');
         this.clubsdropdown();
-      }
-      else {
+      } else {
         this.PlayerData = [];
         this.totalData = 0;
         this.spinnerService.raiseDataEmitterEvent('off');
@@ -400,7 +397,9 @@ export class PlayerRegistrationComponent implements OnInit {
         val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
     }, (err: any) => {
-      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
+      err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg
+        ? this.apiService.RefreshToken()
+        : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
     });
   }
 
@@ -434,32 +433,36 @@ export class PlayerRegistrationComponent implements OnInit {
     params.action_flag = this.Actionflag.Dropdown;
     params.user_id = this.user_id.toString();
     params.client_id = this.client_id.toString();
+
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
       this.configDataList = res.data.clubs ?? [];
-      this.genderSelect = res.data.clubs
-        .filter((item: any) => item.config_key == 'gender')
-      this.playerrole = res.data.clubs
-        .filter((item: any) => item.config_key == 'player_role')
+      this.genderSelect = res.data.clubs.filter((item: any) => item.config_key == 'gender');
+      this.playerrole = res.data.clubs.filter((item: any) => item.config_key == 'player_role');
+      this.battingstyle = res.data.clubs.filter((item: any) => item.config_key == 'batting_style');
+      this.battingorder = res.data.clubs.filter((item: any) => item.config_key == 'batting_order');
+      this.bowlingstyle = res.data.clubs.filter((item: any) => item.config_key == 'bowling_style');
+      this.bowlingtype = this.configDataList.filter((item: any) => item.config_key === 'bowling_type');
+      this.bowlingspec = this.configDataList.filter((item: any) => item.config_key === 'bowling_spec');
 
-      this.battingstyle = res.data.clubs
-        .filter((item: any) => item.config_key == 'batting_style')
+      this.playerRegistrationform.get('gender_id')?.valueChanges.subscribe((selectedGenderId) => {
+        const gender = this.genderSelect.find((g: any) => g.config_id === selectedGenderId);
 
-      this.battingorder = res.data.clubs
-        .filter((item: any) => item.config_key == 'batting_order')
-
-      this.bowlingstyle = res.data.clubs
-        .filter((item: any) => item.config_key == 'bowling_style')
-
-      this.bowlingtype = this.configDataList.
-        filter((item: any) => item.config_key === 'bowling_type')
-
-      this.bowlingspec = this.configDataList.
-        filter((item: any) => item.config_key === 'bowling_spec')
+        if (gender) {
+          if (gender.config_name.toLowerCase() === 'men' || gender.config_name.toLowerCase() === 'male') {
+            this.default_img = this.men_img;
+          } else if (gender.config_name.toLowerCase() === 'women' || gender.config_name.toLowerCase() === 'female') {
+            this.default_img = this.women_img;
+          } else {
+            this.default_img = CricketKeyConstant.default_image_url.players;
+          }
+        }
+      });
 
       this.filteredSpecs = [];
       this.formSetValue();
     });
   }
+
   onBowlingTypeChange(selectedBowlingTypeId: number): void {
     if (!selectedBowlingTypeId) {
       this.filteredSpecs = [];
@@ -705,6 +708,7 @@ export class PlayerRegistrationComponent implements OnInit {
     this.selectedImage = null;
     this.imagePreview = null;
     this.imageSizeError = '';
+    this.default_img = CricketKeyConstant.default_image_url.players;
     // this.applyFilters();
   }
   showAddForm() {
@@ -762,9 +766,25 @@ export class PlayerRegistrationComponent implements OnInit {
         });
 
         this.showAddForm();
+
+        // Clear file data first
         this.filedata = null;
-        this.profileImages = editRecord.profile_image + '?' + Math.random();
-        this.convertUrlToBase64(editRecord.profile_image + '?' + Math.random());
+
+        // If uploaded image exists, use it
+        if (editRecord.profile_image && editRecord.profile_image.trim() !== '') {
+          this.profileImages = editRecord.profile_image + '?' + Math.random();
+          this.convertUrlToBase64(this.profileImages);
+        } else {
+          // No image → set gender-based default immediately
+          if (editRecord.gender_name?.toLowerCase() === 'men' || editRecord.gender_name?.toLowerCase() === 'male') {
+            this.default_img = this.men_img;
+          } else if (editRecord.gender_name?.toLowerCase() === 'women' || editRecord.gender_name?.toLowerCase() === 'female') {
+            this.default_img = this.women_img;
+          // } else {
+          //   this.default_img = CricketKeyConstant.default_image_url.players;
+          }
+          this.profileImages = null;
+        }
       }
     });
   }
@@ -1239,21 +1259,16 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   clearFilters() {
-    this.filterStatus = '';
+
     this.filterPlayerType = '';
     this.filterGenderType = '';
     this.filterBatType = '';
     this.filterBowlType = '';
     this.filterClubType = '';
-    this.searchKeyword = '';
+    this.filterBowlStyle = '';
+    this.filterNationality = '';
     this.first = 1;
-    // this.gridLoad();
-    // this.msgService.add({
-    //   severity: 'info',
-    //   summary: 'Filters Cleared',
-    //   data: { image: 'assets/images/default-logo.png' },
-    //   detail: 'Filters has been Cleared'
-    // });
+    this.gridLoad();
   }
 
   onViewPlayer(playersid: number) {
@@ -1267,7 +1282,7 @@ export class PlayerRegistrationComponent implements OnInit {
       next: (res) => {
         if (res.status_code === this.statusConstants.success && res.data) {
           this.selectedPlayers = res.data.players;
-          // Update profile image URLs with cache-busting parameter
+
           this.selectedPlayers.forEach((player: any) => {
             player.profileImages = player.profileImages ? `${player.profileImages}?${Math.random()}` : this.profileImages;
           });
@@ -1285,13 +1300,40 @@ export class PlayerRegistrationComponent implements OnInit {
 
   getPlayersParts(fullName: string | undefined | null): { name: string } {
     if (!fullName) {
-      return { name: '' }; // Return empty object if no name
+      return { name: '' };
     }
 
     const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
     return {
-      name: match?.[1]?.trim() || fullName // Fallback to original name if regex fails
+      name: match?.[1]?.trim() || fullName
     };
+  }
+
+  onGenderChange(selectedGenderId: number): void {
+    if (!selectedGenderId) {
+      this.setDefaultImage(this.profileImages);
+      return;
+    }
+    const selectedGender = this.genderSelect.find(g => g.config_id === selectedGenderId);
+
+    if (selectedGender) {
+      const genderName = selectedGender.config_name.toLowerCase();
+
+      if (genderName.includes('male') || genderName.includes('man') || genderName.includes('boy')) {
+        this.setDefaultImage(this.profileImages);
+      } else if (genderName.includes('female') || genderName.includes('woman') || genderName.includes('girl')) {
+        this.setDefaultImage(this.profileImages);
+      } else {
+        this.setDefaultImage(this.profileImages);
+      }
+    }
+  }
+
+  private setDefaultImage(imageUrl: string): void {
+    if (!this.filedata && !this.profileImages) {
+      this.previewUrl = imageUrl;
+      this.profileImages = imageUrl;
+    }
   }
 
 }
