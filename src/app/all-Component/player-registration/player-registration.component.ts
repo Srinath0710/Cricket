@@ -367,7 +367,7 @@ export class PlayerRegistrationComponent implements OnInit {
     });
   }
   callclientbased() {
-    
+
     this.gridLoad();
   }
 
@@ -395,8 +395,20 @@ export class PlayerRegistrationComponent implements OnInit {
         this.totalData = 0;
         this.spinnerService.raiseDataEmitterEvent('off');
       }
-      this.PlayerData.forEach((val: any) => {
-        val.profile_image = `${val.profile_image}?${Math.random()}`;
+      // this.PlayerData.forEach((val: any) => {
+      //   val.profile_image = `${val.profile_image}?${Math.random()}`;
+      // });
+    this.PlayerData.forEach((val: any) => {
+        if (!val.profile_image) {
+          if (val.gender === 'Men') {
+            val.profile_image =  this.men_img;
+          } else if (val.gender === 'Women') {
+            val.profile_image = this.women_img;
+          } else {
+            val.profile_image = 'assets/images/player.jpg';
+          }
+        }
+        // val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg
