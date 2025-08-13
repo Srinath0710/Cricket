@@ -248,21 +248,22 @@ export class CompetitionComponent implements OnInit {
       page_no: this.first.toString(),
       records: this.rows.toString()
     };
+
+    // Add filters if they have values
     if (this.filterStatus) {
-      params.status = this.filterStatus;
+      params.record_status = this.filterStatus; // Changed from 'status' to 'record_status' to match your data
     }
     if (this.filterMatchType) {
-      params.match_type = this.filterMatchType;
+      params.competition_type_id = this.filterMatchType; // Make sure this matches your API expectations
     }
     if (this.filterCategory) {
-      params.category = this.filterCategory;
+      params.competition_level = this.filterCategory; // Adjust based on your API
     }
 
     this.apiService.post(this.urlConstant.getCompetitionList, params).subscribe(
       (res) => {
         if (res.data && res.data.competitions) {
           this.compititionList = res.data.competitions.map((comp: any) => {
-
             return {
               ...comp,
               competition_id: comp.competition_id,
@@ -275,29 +276,13 @@ export class CompetitionComponent implements OnInit {
             };
           });
 
-          this.filteredCompititionList = [...this.compititionList];
-
-          if (this.compititionList.length > 0 && this.compititionList[0].total_records) {
-            this.totalRecords = this.compititionList[0].total_records;
-            this.spinnerService.raiseDataEmitterEvent('off');
-
-          }
-          else {
-            this.compititionList = [];
-            this.filteredCompititionList = [];
-            this.totalRecords = 0;
-            this.spinnerService.raiseDataEmitterEvent('off');
-
-          }
-          this.getGlobalData();
-
-        }
-        else {
+          this.totalRecords = this.compititionList.length > 0 ? this.compititionList[0].total_records : 0;
           this.spinnerService.raiseDataEmitterEvent('off');
-
+        } else {
+          this.compititionList = [];
+          this.totalRecords = 0;
+          this.spinnerService.raiseDataEmitterEvent('off');
         }
-
-
       },
       (err) => {
         if (err.status_code === this.statusConstants.refresh &&
@@ -326,11 +311,13 @@ export class CompetitionComponent implements OnInit {
 
     this.first = 1;
     this.loadCompetitions();
-    this.showFilters = false;
+    this.showFilters = true;
+
     this.messageService.add({
       severity: 'info',
       summary: 'Filters Applied',
-      detail: 'Competition list has been filtered'
+      detail: 'Competition list has been filtered',
+      data: { image: 'assets/images/default-logo.png' }
     });
   }
 
@@ -523,7 +510,7 @@ export class CompetitionComponent implements OnInit {
       this.ageGroupList = this.metaDataList.filter(temp => temp.config_key === 'age_category');
       this.tourlevelList = this.metaDataList.filter(temp => temp.config_key === 'comp_level');
       const selectedTypeId = this.addCompetitionForm.get('competition_type_id')?.value;
- 
+
 
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -661,7 +648,7 @@ export class CompetitionComponent implements OnInit {
     }
   }
 
-
+  //single quotes and doble quotes remove all label box
   sanitizeQuotesOnly(controlName: string, event: Event) {
     const input = (event.target as HTMLInputElement).value;
     const cleaned = input.replace(/['"]/g, '');
