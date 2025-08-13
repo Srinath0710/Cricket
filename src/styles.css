@@ -1098,8 +1098,8 @@ main {
 }
 
 .action-icon:nth-child(3) {
-  border: 1px solid #F44336;
-  color: #F44336;
+  border: 1px solid #4c54af;
+  /* color: #F44336; */
 }
 
 .search-width {
