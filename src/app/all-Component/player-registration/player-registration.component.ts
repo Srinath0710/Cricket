@@ -149,7 +149,7 @@ export class PlayerRegistrationComponent implements OnInit {
   filterStatus: string = '';
   filterPlayerType: string = '';
   filterGenderType: string = '';
-  filterBatType: string = '';
+  filterBatType: any;
   filterBowlType: string = '';
   filterClubType: string = '';
   filterBowlStyle: string = '';
@@ -394,13 +394,24 @@ export class PlayerRegistrationComponent implements OnInit {
         this.spinnerService.raiseDataEmitterEvent('off');
       }
       this.PlayerData.forEach((val: any) => {
-        val.profile_image = `${val.profile_image}?${Math.random()}`;
+        if (!val.profile_image) {
+          if (val.gender === 'Men') {
+            val.profile_image = 'assets/images/men-default.png';
+          } else if (val.gender === 'Women') {
+            val.profile_image = 'assets/images/women-default.png';
+          } else {
+            val.profile_image = 'assets/images/player.jpg';
+          }
+        }
+        // val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
+
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg
         ? this.apiService.RefreshToken()
         : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
     });
+
   }
 
   calculateFirst(): number {
@@ -767,21 +778,21 @@ export class PlayerRegistrationComponent implements OnInit {
 
         this.showAddForm();
 
-        // Clear file data first
+
         this.filedata = null;
 
-        // If uploaded image exists, use it
+
         if (editRecord.profile_image && editRecord.profile_image.trim() !== '') {
           this.profileImages = editRecord.profile_image + '?' + Math.random();
           this.convertUrlToBase64(this.profileImages);
         } else {
-          // No image → set gender-based default immediately
+
           if (editRecord.gender_name?.toLowerCase() === 'men' || editRecord.gender_name?.toLowerCase() === 'male') {
             this.default_img = this.men_img;
           } else if (editRecord.gender_name?.toLowerCase() === 'women' || editRecord.gender_name?.toLowerCase() === 'female') {
             this.default_img = this.women_img;
-          // } else {
-          //   this.default_img = CricketKeyConstant.default_image_url.players;
+            // } else {
+            //   this.default_img = CricketKeyConstant.default_image_url.players;
           }
           this.profileImages = null;
         }
