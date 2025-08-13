@@ -303,9 +303,9 @@ export class PlayerRegistrationComponent implements OnInit {
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
-    this.apiService.post(this.urlConstant.teamclubdropdown, params).subscribe(
+    this.apiService.post(this.urlConstant.playerdropdown, params).subscribe(
       (res) => {
-        this.clublist = res.data?.clubs || [];
+        this.clublist = res.data?.Table1 || [];
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -358,14 +358,19 @@ export class PlayerRegistrationComponent implements OnInit {
       this.clientData = res.data ?? [];
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
-      this.gridLoad();
-      this.clubsdropdown();
+      this.callclientbased();
+
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
       }
     });
   }
+  callclientbased() {
+    
+    this.gridLoad();
+  }
+
 
   gridLoad(filters: any = {}) {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -384,7 +389,7 @@ export class PlayerRegistrationComponent implements OnInit {
         this.PlayerData = res.data.players;
         this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0;
         this.spinnerService.raiseDataEmitterEvent('off');
-        
+
       } else {
         this.PlayerData = [];
         this.totalData = 0;
@@ -398,6 +403,7 @@ export class PlayerRegistrationComponent implements OnInit {
         ? this.apiService.RefreshToken()
         : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
     });
+    this.clubsdropdown();
   }
 
   calculateFirst(): number {
@@ -777,8 +783,8 @@ export class PlayerRegistrationComponent implements OnInit {
             this.default_img = this.men_img;
           } else if (editRecord.gender_name?.toLowerCase() === 'women' || editRecord.gender_name?.toLowerCase() === 'female') {
             this.default_img = this.women_img;
-          // } else {
-          //   this.default_img = CricketKeyConstant.default_image_url.players;
+            // } else {
+            //   this.default_img = CricketKeyConstant.default_image_url.players;
           }
           this.profileImages = null;
         }

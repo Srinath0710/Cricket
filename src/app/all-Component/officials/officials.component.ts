@@ -249,9 +249,6 @@ export class OfficialsComponent implements OnInit {
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
       this.callBackClientChange();
-
-
-
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
         this.apiService.RefreshToken();
@@ -262,7 +259,6 @@ export class OfficialsComponent implements OnInit {
   callBackClientChange() {
     this.dropdown();
     this.gridload();
-
   }
 
   dropdown() {
