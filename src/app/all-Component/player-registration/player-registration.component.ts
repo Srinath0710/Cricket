@@ -273,28 +273,34 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   applyFilters() {
-    const filters = {
-      player_type: this.filterPlayerType,
-      gender_id: this.filterGenderType,
-      batting_style_id: this.filterBatType,
-      bowling_type_id: this.filterBowlType,
-      club_id: this.filterClubType,
-      bowling_style_id: this.filterBowlStyle,
-      nationality_id: this.filterNationality
-    };
+    const filters: any = {};
 
-    // Reset to first page and load data with filters
+    if (this.filterBatType) filters.batting_style_list = this.filterBatType;
+    if (this.filterBowlType) filters.bowling_type_list = this.filterBowlType;
+    if (this.filterGenderType) filters.gender_list = this.filterGenderType;
+    if (this.filterClubType) filters.club_id = this.filterClubType;
+    if (this.filterBowlStyle) filters.bowling_style_list = this.filterBowlStyle;
+    if (this.filterNationality) filters.nationality_list = this.filterNationality;
+    if (this.filterPlayerType) filters.player_role_list = this.filterPlayerType;
+
+
+
+    console.log('Applying filters:', filters);
+
     this.first = 1;
     this.gridLoad(filters);
 
-    // Close filter panel and show notification
+
     this.showFilters = false;
-    this.msgService.add({
-      severity: 'info',
-      summary: 'Filters Applied',
-      data: { image: 'assets/images/default-logo.png' },
-      detail: 'Player list has been filtered'
-    });
+    this.toastService.playerSuccessToast({ message:'Player list has been filtered' })
+
+    // this.msgService.add({
+    //   severity: 'info',
+    //   summary: 'Filters Applied',
+    //   data: { image: 'assets/images/default-logo.png' },
+    //   detail: 'Player list has been filtered',
+    //   life: 800,
+    // });
   }
 
   clubsdropdown() {
@@ -383,7 +389,11 @@ export class PlayerRegistrationComponent implements OnInit {
       records: this.rows.toString(),
       search_text: this.searchKeyword.toString()
     };
-
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+        params[key] = filters[key];
+      }
+    });
     this.apiService.post(this.urlConstant.getplayerlist, params).subscribe((res) => {
       if (res.data?.players) {
         this.PlayerData = res.data.players;
@@ -398,10 +408,10 @@ export class PlayerRegistrationComponent implements OnInit {
       // this.PlayerData.forEach((val: any) => {
       //   val.profile_image = `${val.profile_image}?${Math.random()}`;
       // });
-    this.PlayerData.forEach((val: any) => {
+      this.PlayerData.forEach((val: any) => {
         if (!val.profile_image) {
           if (val.gender === 'Men') {
-            val.profile_image =  this.men_img;
+            val.profile_image = this.men_img;
           } else if (val.gender === 'Women') {
             val.profile_image = this.women_img;
           } else {
@@ -1271,10 +1281,10 @@ export class PlayerRegistrationComponent implements OnInit {
     this.searchKeyword = '';
     this.dt.clear();
     this.gridLoad();
+    this.showFilters = false;
   }
 
   clearFilters() {
-
     this.filterPlayerType = '';
     this.filterGenderType = '';
     this.filterBatType = '';
@@ -1283,7 +1293,9 @@ export class PlayerRegistrationComponent implements OnInit {
     this.filterBowlStyle = '';
     this.filterNationality = '';
     this.first = 1;
+    this.showFilters = false;
     this.gridLoad();
+
   }
 
   onViewPlayer(playersid: number) {

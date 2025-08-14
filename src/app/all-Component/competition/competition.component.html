@@ -168,15 +168,18 @@
                           Season Name is required
                         </small>
                       </div>
+
                       <div class="col-md-4">
                         <label>Competition Format
                           <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="filterTourformatList" class="drop-error "
-                          formControlName="competition_format_id" optionValue="config_id" optionLabel="config_name"
-                          [ngModel]="addCompetitionForm.get('competition_format_id')?.value" placeholder="Select Format"
-                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"
-                         >
+                          formControlName="competition_format_id" 
+                          optionValue="config_id" optionLabel="config_name"
+                          [ngModel]="addCompetitionForm.get('competition_format_id')?.value"
+                           placeholder="Select Format"
+                          (onChange)="formatChange()" 
+                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
                           <ng-template let-Format pTemplate="item">
                             <div class="flex align-items-center gap-2">
@@ -200,8 +203,7 @@
                         </label>
                         <p-dropdown [options]="tourtypeList" class="drop-error" formControlName="competition_type_id"
                           optionValue="config_id" optionLabel="config_name" placeholder="Select Match Type "
-                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'"
-                           >
+                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                           <ng-template let-comptype pTemplate="item">
                             <div class="flex align-items-center gap-2">
                               <div>{{ comptype.config_name }}</div>
@@ -216,6 +218,7 @@
                         </small>
 
                       </div>
+
                       <!-- <div class="col-md-4">
                             <label>Competition Category</label>
                             <p-dropdown [options]="genderList" class="drop-error "
@@ -363,8 +366,8 @@
                         <label class="">Overs Per Innings
                           <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="5" type="text" formControlName="overs_per_innings"
-                          (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" maxlength="25" type="text" formControlName="overs_per_innings"
+                          (input)="onPhoneNumberInput($event, 'overs_per_innings')">
                         <small *ngIf="
                               addCompetitionForm.get('overs_per_innings')?.invalid &&
                               (addCompetitionForm.get('overs_per_innings')?.touched || submitted)"
@@ -377,8 +380,8 @@
                         <label class="">Overs Per Bowler
                           <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="5" type="text" formControlName="overs_per_bowler"
-                          (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" maxlength="25" type="text" formControlName="overs_per_bowler"
+                          (input)="onPhoneNumberInput($event, 'overs_per_bowler')">
                         <small *ngIf="
                               addCompetitionForm.get('overs_per_bowler')?.invalid &&
                               (addCompetitionForm.get('overs_per_bowler')?.touched || submitted)" class="required-msg">
@@ -389,8 +392,8 @@
                         <label class="">Points Abandoned
                           <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="5" type="text" formControlName="points_abandoned"
-                          (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" maxlength="25" type="text" formControlName="points_abandoned"
+                          (input)="onPhoneNumberInput($event, 'points_abandoned')">
                         <small
                           *ngIf="addCompetitionForm.get('points_abandoned')?.invalid && (addCompetitionForm.get('points_abandoned')?.touched ||submitted)"
                           class="required-msg">
@@ -401,8 +404,8 @@
                         <label class="">Points Draw
                           <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="5" type="text" formControlName="points_draw"
-                          (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" maxlength="25" type="text" formControlName="points_draw"
+                          (input)="onPhoneNumberInput($event, 'points_draw')">
                         <small
                           *ngIf="addCompetitionForm.get('points_draw')?.invalid && (addCompetitionForm.get('points_draw')?.touched || submitted)"
                           class="required-msg">
@@ -415,8 +418,8 @@
                         <label class="">Points Win
                           <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="5" type="text" formControlName="points_win"
-                          (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" maxlength="25" type="text" formControlName="points_win"
+                          (input)="onPhoneNumberInput($event, 'points_win')">
                         <small
                           *ngIf="addCompetitionForm.get('points_win')?.invalid && (addCompetitionForm.get('points_win')?.touched || submitted)"
                           class="required-msg">
@@ -429,8 +432,8 @@
                         <label class="">Points Lead
                           <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="5" type="text" formControlName="points_lead"
-                          (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" maxlength="25" type="text" formControlName="points_lead"
+                          (input)="onPhoneNumberInput($event, 'points_lead')">
                         <small
                           *ngIf="addCompetitionForm.get('points_lead')?.invalid && (addCompetitionForm.get('points_lead')?.touched || submitted)"
                           class="required-msg">
@@ -442,8 +445,8 @@
                         <label class=""> Points Tie
                           <span class="text-danger">*</span>
                         </label>
-                        <input class="form-control" maxlength="5" type="text" formControlName="points_tie"
-                          (input)="onPhoneNumberInput($event)">
+                        <input class="form-control" maxlength="25" type="text" formControlName="points_tie"
+                          (input)="onPhoneNumberInput($event , 'points_tie')">
                         <small
                           *ngIf="addCompetitionForm.get('points_tie')?.invalid && (addCompetitionForm.get('points_tie')?.touched || submitted)"
                           class="required-msg">
@@ -454,7 +457,7 @@
                         <label class="">Calculation
                         </label>
                         <input class="form-control" maxlength="50" type="text" formControlName="calculation"
-                          (input)="onPhoneNumberInput($event)">
+                          (input)="onPhoneNumberInput($event, 'calculation')">
                       </div>
 
 
