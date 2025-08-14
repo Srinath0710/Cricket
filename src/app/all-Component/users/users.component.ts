@@ -126,9 +126,8 @@ export class UsersComponent implements OnInit {
         user_type: ['', Validators.required],
         ref_id: [''],
         role_id: ['', Validators.required],
-         login_user_id: [''],
-        Association: ['', Validators.required],
-        Official: ['', Validators.required]
+        // association: [''],
+        login_user_id: [''],
       },
       {
         validator: this.matchPasswords('u_password', 'confirm_password'),
@@ -296,8 +295,9 @@ export class UsersComponent implements OnInit {
       u_password: this.isEditMode ? undefined : this.addUsersForm.value.u_password,
       email: this.addUsersForm.value.email,
       user_type: this.addUsersForm.value.user_type,
-      ref_id: String(this.addUsersForm.value.client_id),
+      // ref_id: String(this.addUsersForm.value.client_id),
 
+      ref_id: this.addUsersForm.value.client_id != null ? this.addUsersForm.value.client_id.toString() : null,
       role_id: String(this.addUsersForm.value.role_id),
       action_flag: this.isEditMode ? this.Actionflag.Update : this.Actionflag.Create,
 

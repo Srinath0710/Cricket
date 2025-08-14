@@ -143,8 +143,8 @@ export class CompPlayerComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
     params.search_text = this.sourceSearchKeyword.toString(),
-      params.records = this.rows.toString();
-    params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
+      params.page_no = this.first.toString(),
+      params.records = this.rows.toString()
 
     if (applyFilters) {
       if (this.filterStatus) {
