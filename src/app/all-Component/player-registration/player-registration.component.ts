@@ -149,7 +149,7 @@ export class PlayerRegistrationComponent implements OnInit {
   filterStatus: string = '';
   filterPlayerType: string = '';
   filterGenderType: string = '';
-  filterBatType: any;
+  filterBatType: string = '';
   filterBowlType: string = '';
   filterClubType: string = '';
   filterBowlStyle: string = '';
@@ -309,9 +309,9 @@ export class PlayerRegistrationComponent implements OnInit {
       user_id: this.user_id.toString(),
       client_id: this.client_id.toString()
     };
-    this.apiService.post(this.urlConstant.teamclubdropdown, params).subscribe(
+    this.apiService.post(this.urlConstant.playerdropdown, params).subscribe(
       (res) => {
-        this.clublist = res.data?.clubs || [];
+        this.clublist = res.data?.Table1 || [];
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -364,14 +364,19 @@ export class PlayerRegistrationComponent implements OnInit {
       this.clientData = res.data ?? [];
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
-      this.gridLoad();
-      this.clubsdropdown();
+      this.callclientbased();
+
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
         this.apiService.RefreshToken();
       }
     });
   }
+  callclientbased() {
+
+    this.gridLoad();
+  }
+
 
   gridLoad(filters: any = {}) {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -400,12 +405,6 @@ export class PlayerRegistrationComponent implements OnInit {
         this.totalData = 0;
         this.spinnerService.raiseDataEmitterEvent('off');
       }
-<<<<<<< HEAD
-      this.PlayerData.forEach((val: any) => {
-        if (!val.profile_image) {
-          if (val.gender === 'Men') {
-            val.profile_image = 'assets/images/men-default.png';
-=======
       // this.PlayerData.forEach((val: any) => {
       //   val.profile_image = `${val.profile_image}?${Math.random()}`;
       // });
@@ -413,22 +412,20 @@ export class PlayerRegistrationComponent implements OnInit {
         if (!val.profile_image) {
           if (val.gender === 'Men') {
             val.profile_image = this.men_img;
->>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
           } else if (val.gender === 'Women') {
-            val.profile_image = 'assets/images/women-default.png';
+            val.profile_image = this.women_img;
           } else {
             val.profile_image = 'assets/images/player.jpg';
           }
         }
         // val.profile_image = `${val.profile_image}?${Math.random()}`;
       });
-
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg
         ? this.apiService.RefreshToken()
         : (this.spinnerService.raiseDataEmitterEvent('off'), this.PlayerData = [], this.totalData = this.PlayerData.length);
     });
-
+    this.clubsdropdown();
   }
 
   calculateFirst(): number {
@@ -795,7 +792,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
         this.showAddForm();
 
-
+        // Clear file data first
         this.filedata = null;
 
 

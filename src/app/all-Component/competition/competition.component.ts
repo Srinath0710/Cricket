@@ -285,14 +285,6 @@ export class CompetitionComponent implements OnInit {
               imageUrl: comp.profile_image || 'assets/images/default-competition.png'
             };
           });
-<<<<<<< HEAD
-
-          this.totalRecords = this.compititionList.length > 0 ? this.compititionList[0].total_records : 0;
-          this.spinnerService.raiseDataEmitterEvent('off');
-        } else {
-          this.compititionList = [];
-          this.totalRecords = 0;
-=======
           this.filteredCompititionList = [...this.compititionList];
           if (this.compititionList.length > 0 && this.compititionList[0].total_records) {
             this.totalRecords = this.compititionList[0].total_records;
@@ -307,7 +299,6 @@ export class CompetitionComponent implements OnInit {
           this.getGlobalData();
         }
         else {
->>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
           this.spinnerService.raiseDataEmitterEvent('off');
         }
       },
@@ -534,12 +525,6 @@ export class CompetitionComponent implements OnInit {
       this.genderList = this.metaDataList.filter(temp => temp.config_key === 'gender');
       this.ageGroupList = this.metaDataList.filter(temp => temp.config_key === 'age_category');
       this.tourlevelList = this.metaDataList.filter(temp => temp.config_key === 'comp_level');
-<<<<<<< HEAD
-      const selectedTypeId = this.addCompetitionForm.get('competition_type_id')?.value;
-
-
-=======
->>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
 
@@ -673,10 +658,6 @@ export class CompetitionComponent implements OnInit {
     }
   }
 
-<<<<<<< HEAD
-  //single quotes and doble quotes remove all label box
-=======
->>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
   sanitizeQuotesOnly(controlName: string, event: Event) {
     const input = (event.target as HTMLInputElement).value;
     const cleaned = input.replace(/['"]/g, '');
