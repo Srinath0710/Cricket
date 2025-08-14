@@ -74,29 +74,36 @@
                   <option value="InActive">InActive</option>
                 </select>
               </div>
+
               <div class="filter-item">
                 <label>Match Type</label>
                 <select class="filter-select" [(ngModel)]="filterMatchType">
                   <option value="">All</option>
                   <option value="ODI">ODI</option>
-                  <option value="T20">T20</option>
+                  <option value="T20I">T20I</option>
                   <option value="Test">Test</option>
+                  <option value="Tournament">Tournament</option>
+                  <option value="List A">List A</option>
                 </select>
+
               </div>
+
               <div class="filter-item">
                 <label>Category</label>
                 <select class="filter-select" [(ngModel)]="filterCategory">
                   <option value="">All</option>
                   <option value="Domestic">Domestic</option>
                   <option value="International">International</option>
-                  <option value="League">League</option>
                 </select>
               </div>
+
               <div class="filter-actions">
                 <button class="filter-apply-btn" (click)="applyFilters()">Apply</button>
               </div>
             </div>
           </div>
+
+
 
           <!-- Create/Edit Competition Dialog -->
 
@@ -174,12 +181,9 @@
                           <span class="text-danger">*</span>
                         </label>
                         <p-dropdown [options]="filterTourformatList" class="drop-error "
-                          formControlName="competition_format_id" 
-                          optionValue="config_id" optionLabel="config_name"
-                          [ngModel]="addCompetitionForm.get('competition_format_id')?.value"
-                           placeholder="Select Format"
-                          (onChange)="formatChange()" 
-                          appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                          formControlName="competition_format_id" optionValue="config_id" optionLabel="config_name"
+                          [ngModel]="addCompetitionForm.get('competition_format_id')?.value" placeholder="Select Format"
+                          (onChange)="formatChange()" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
 
                           <ng-template let-Format pTemplate="item">
                             <div class="flex align-items-center gap-2">
@@ -537,7 +541,7 @@
 
           <!-- Competition Grid Layout -->
           <div class="competition-grid">
-            <div class="grid-card" #dt *ngFor="let competition of compititionList">
+            <div class="grid-card" #dt *ngFor="let competition of filteredCompititionList">
               <div class="card-header">
                 <div class="card-status" [ngClass]="{
                         ' bg-success': competition.record_status === 'Active',

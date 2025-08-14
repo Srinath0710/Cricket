@@ -194,6 +194,7 @@ export class CompetitionComponent implements OnInit {
 
   };
   isClientShow: boolean = false;
+  paginatedList: Competition[] = [];
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -250,94 +251,72 @@ export class CompetitionComponent implements OnInit {
     this.resetForm()
   }
 
-  loadCompetitions() {
-    this.spinnerService.raiseDataEmitterEvent('on');
-    const params: any = {
-      user_id: this.user_id.toString(),
-      client_id: this.client_id.toString(),
-      page_no: this.first.toString(),
-      records: this.rows.toString()
-    };
+loadCompetitions() {
+  this.spinnerService.raiseDataEmitterEvent('on');
 
-    // Add filters if they have values
-    if (this.filterStatus) {
-      params.record_status = this.filterStatus; // Changed from 'status' to 'record_status' to match your data
-    }
-    if (this.filterMatchType) {
-      params.competition_type_id = this.filterMatchType; // Make sure this matches your API expectations
-    }
-    if (this.filterCategory) {
-      params.competition_level = this.filterCategory; // Adjust based on your API
-    }
+  const pageNo = Math.floor(this.first / this.rows); // page number for API
 
-    this.apiService.post(this.urlConstant.getCompetitionList, params).subscribe(
-      (res) => {
-        if (res.data && res.data.competitions) {
-          this.compititionList = res.data.competitions.map((comp: any) => {
-            return {
-              ...comp,
-              competition_id: comp.competition_id,
-              name: comp.competition_name,
-              start_date: comp.start_date,
-              end_date: comp.end_date,
-              match_type: comp.format,
-              status: comp.record_status,
-              imageUrl: comp.profile_image || 'assets/images/default-competition.png'
-            };
-          });
-          this.filteredCompititionList = [...this.compititionList];
-          if (this.compititionList.length > 0 && this.compititionList[0].total_records) {
-            this.totalRecords = this.compititionList[0].total_records;
-            this.spinnerService.raiseDataEmitterEvent('off');
-          }
-          else {
-            this.compititionList = [];
-            this.filteredCompititionList = [];
-            this.totalRecords = 0;
-            this.spinnerService.raiseDataEmitterEvent('off');
-          }
-          this.getGlobalData();
+  const params = {
+    user_id: this.user_id?.toString(),
+    client_id: this.client_id?.toString(),
+    page_no: pageNo.toString(),
+    records: this.rows.toString()
+  };
+
+  this.apiService.post(this.urlConstant.getCompetitionList, params).subscribe(
+    (res) => {
+      if (res?.data?.competitions) {
+        let list: any[] = res.data.competitions.map((comp: any) => ({
+          ...comp,
+          imageUrl: comp?.profile_image || 'assets/images/default-competition.png'
+        }));
+
+        // Apply filters BEFORE showing
+        if (this.filterStatus) {
+          list = list.filter((comp: any) => comp?.record_status === this.filterStatus);
         }
-        else {
-          this.spinnerService.raiseDataEmitterEvent('off');
+        if (this.filterMatchType) {
+          list = list.filter((comp: any) => comp?.tour_type === this.filterMatchType);
         }
-      },
-      (err) => {
-        if (err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg) {
-          this.apiService.RefreshToken();
-        } else {
-          this.compititionList = [];
-          this.filteredCompititionList = [];
-          this.totalRecords = 0;
-          this.spinnerService.raiseDataEmitterEvent('off');
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to load competitions'
-          });
+        if (this.filterCategory) {
+          list = list.filter((comp: any) => comp?.format === this.filterCategory);
         }
+
+        this.compititionList = list;
+        this.filteredCompititionList = [...list];
+        this.totalRecords = res.data.total_records || list.length; // from API if available
       }
-    );
-  }
+      this.spinnerService.raiseDataEmitterEvent('off');
+      this.updatePaginatedList(); // initialize first page
+
+    },
+    () => {
+      this.spinnerService.raiseDataEmitterEvent('off');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load competitions' });
+    }
+  );
+}
+
+
 
   toggleFilters() {
     this.showFilters = !this.showFilters;
   }
 
-  applyFilters() {
+applyFilters() {
+  this.filteredCompititionList = this.compititionList.filter(comp => {
+    const statusMatch = !this.filterStatus || comp.record_status === this.filterStatus;
+    const matchTypeMatch = !this.filterMatchType || comp.tour_type === this.filterMatchType;
+    const categoryMatch = !this.filterCategory || comp.format === this.filterCategory;
+    return statusMatch && matchTypeMatch && categoryMatch;
+  });
 
-    this.first = 1;
-    this.loadCompetitions();
-    this.showFilters = true;
+  this.totalRecords = this.filteredCompititionList.length;
+  this.first = 0; // reset pagination
+//  this.loadCompetitions();
+}
 
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Filters Applied',
-      detail: 'Competition list has been filtered',
-      data: { image: 'assets/images/default-logo.png' }
-    });
-  }
+
 
   editCompitition(comp: any) {
     this.isEditMode = true;
@@ -425,11 +404,18 @@ export class CompetitionComponent implements OnInit {
     }
   }
 
-  onPageChange(event: any) {
-    this.first = Math.floor(event.first / event.rows) + 1;
-    this.rows = event.rows;
-    this.loadCompetitions();
-  }
+onPageChange(event: any) {
+  this.first = event.first;
+  this.rows = event.rows;
+  this.updatePaginatedList();
+}
+
+updatePaginatedList() {
+  const start = this.first;
+  const end = this.first + this.rows;
+  this.paginatedList = this.filteredCompititionList.slice(start, end);
+}
+
 
   cancelForm() {
     this.ShowForm = false;
