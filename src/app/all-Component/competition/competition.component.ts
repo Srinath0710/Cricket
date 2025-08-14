@@ -486,7 +486,7 @@ export class CompetitionComponent implements OnInit {
       points_lead: String(this.addCompetitionForm.value.points_lead),
       points_tie: String(this.addCompetitionForm.value.points_tie),
 
-      calculation: String(this.addCompetitionForm.value.calculation),
+      calculation: this.addCompetitionForm.value.calculation,
       // competition_id: String(this.addCompetitionForm.value.competition_id),
       competition_id: this.addCompetitionForm.value.competition_id != null ? this.addCompetitionForm.value.competition_id.toString() : null,
       action_flag: this.Actionflag.Create,

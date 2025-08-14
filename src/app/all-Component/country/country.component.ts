@@ -105,7 +105,7 @@ export class CountryComponent implements OnInit {
     public cricketKeyConstant: CricketKeyConstant,
     private uploadImgService: UploadImgService,
     public spinnerService: SpinnerService,
-    private toastService:ToastService
+    private toastService: ToastService
   ) {
 
   }
@@ -174,7 +174,7 @@ export class CountryComponent implements OnInit {
             this.countriesData = [], this.totalData = this.countriesData.length);
 
       });
-
+    this.spinnerService.raiseDataEmitterEvent('off');
   }
 
   blockQuotesOnly(event: KeyboardEvent) {

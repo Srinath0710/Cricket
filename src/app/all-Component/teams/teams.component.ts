@@ -193,6 +193,7 @@ export class TeamsComponent implements OnInit {
           this.teamData = [], this.totalData = this.teamData.length);
 
       });
+      this.getGlobalData();
 
   }
 
@@ -534,7 +535,7 @@ export class TeamsComponent implements OnInit {
       this.client_id = this.clientData[0].client_id;
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridLoad();
-      this.getGlobalData();
+      
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });

@@ -188,9 +188,7 @@ export class ClientComponent implements OnInit {
             this.spinnerService.raiseDataEmitterEvent('off'),
             this.totalData = this.Clientdata.length);
       });
-    // (err: any) => {
-    //   err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
-    // }
+
   }
 
   onAddClient() {
