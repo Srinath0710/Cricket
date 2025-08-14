@@ -52,6 +52,11 @@ interface Competition {
 interface MetaDataItem {
   config_key: string;
   [key: string]: any;
+  config_id: number;
+  config_short: string;
+  config_name: string;
+  config_desc: string;
+  parent_config_id: number;
 }
 interface season {
   season_id: number;
@@ -139,6 +144,7 @@ export class CompetitionComponent implements OnInit {
   tourtypeList: MetaDataItem[] = [];
   tourformatList: MetaDataItem[] = [];
   filterTourformatList: MetaDataItem[] = [];
+  allTourTypes: MetaDataItem[] = [];
   genderList: MetaDataItem[] = [];
   ageGroupList: MetaDataItem[] = [];
   tourlevelList: MetaDataItem[] = [];
@@ -152,7 +158,11 @@ export class CompetitionComponent implements OnInit {
   default_img = CricketKeyConstant.default_image_url.teamimage;
   isEditOnce = false;
 
-
+  filterChoosed = {
+    tour_format_list: [],
+    match_type: [],
+    category: []
+  }
   // Filter properties
   showFilters: boolean = false;
   filterStatus: string = '';
@@ -275,12 +285,29 @@ export class CompetitionComponent implements OnInit {
               imageUrl: comp.profile_image || 'assets/images/default-competition.png'
             };
           });
+<<<<<<< HEAD
 
           this.totalRecords = this.compititionList.length > 0 ? this.compititionList[0].total_records : 0;
           this.spinnerService.raiseDataEmitterEvent('off');
         } else {
           this.compititionList = [];
           this.totalRecords = 0;
+=======
+          this.filteredCompititionList = [...this.compititionList];
+          if (this.compititionList.length > 0 && this.compititionList[0].total_records) {
+            this.totalRecords = this.compititionList[0].total_records;
+            this.spinnerService.raiseDataEmitterEvent('off');
+          }
+          else {
+            this.compititionList = [];
+            this.filteredCompititionList = [];
+            this.totalRecords = 0;
+            this.spinnerService.raiseDataEmitterEvent('off');
+          }
+          this.getGlobalData();
+        }
+        else {
+>>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
           this.spinnerService.raiseDataEmitterEvent('off');
         }
       },
@@ -366,8 +393,6 @@ export class CompetitionComponent implements OnInit {
     }, (err: any) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err);
     });
-
-
   }
 
   viewCompitition(competition: any) {
@@ -406,9 +431,7 @@ export class CompetitionComponent implements OnInit {
       tour_type: competition.tour_type,
       trophy_name: competition.trophy_name,
       client_id: this.client_id
-
     }
-
   }
 
   onPageChange(event: any) {
@@ -504,14 +527,19 @@ export class CompetitionComponent implements OnInit {
     this.apiService.post(this.urlConstant.dropdownlookups, params).subscribe((res: any) => {
       this.seasonList = res.data?.seasons ?? [];
       this.metaDataList = res.data?.metadata ?? [];
-      this.tourtypeList = this.metaDataList.filter(temp => temp.config_key === 'comp_type');
+      this.allTourTypes = this.metaDataList.filter(temp => temp.config_key === 'comp_type');
+      this.tourtypeList = [...this.allTourTypes];
+      // this.tourtypeList = this.metaDataList.filter(temp => temp.config_key === 'comp_type');
       this.filterTourformatList = this.metaDataList.filter(temp => temp.config_key === 'team_format');
       this.genderList = this.metaDataList.filter(temp => temp.config_key === 'gender');
       this.ageGroupList = this.metaDataList.filter(temp => temp.config_key === 'age_category');
       this.tourlevelList = this.metaDataList.filter(temp => temp.config_key === 'comp_level');
+<<<<<<< HEAD
       const selectedTypeId = this.addCompetitionForm.get('competition_type_id')?.value;
 
 
+=======
+>>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
     }, (err: any) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
 
@@ -523,8 +551,6 @@ export class CompetitionComponent implements OnInit {
     })
   }
   goBack(): void {
-    console.log("goBack called from child");
-
     this.showTabs = false;
     this.loadCompetitions();
   }
@@ -609,7 +635,6 @@ export class CompetitionComponent implements OnInit {
     } else if (this.activeTab === 'matches') {
       this.CompMatch.newmatch();
       this.showNewMatchForm = true;
-
     }
   }
   onShowFormChange(isShown: boolean) {
@@ -629,31 +654,43 @@ export class CompetitionComponent implements OnInit {
     this.dt.clear();
     this.loadCompetitions();
   }
-  //mobileno enter the only number alowed
-  onPhoneNumberInput(event: Event) {
+
+  onPhoneNumberInput(event: Event, controlName: string) {
     const inputElement = event.target as HTMLInputElement;
-    const phoneNumber = inputElement.value.replace(/\D/g, '');
-    this.addCompetitionForm.get('overs_per_innings')?.setValue(phoneNumber, { emitEvent: false });
-    this.addCompetitionForm.get('overs_per_bowler')?.setValue(phoneNumber, { emitEvent: false });
-    this.addCompetitionForm.get('points_abandoned')?.setValue(phoneNumber, { emitEvent: false });
-    this.addCompetitionForm.get('points_draw')?.setValue(phoneNumber, { emitEvent: false });
-    this.addCompetitionForm.get('points_win')?.setValue(phoneNumber, { emitEvent: false });
-    this.addCompetitionForm.get('points_lead')?.setValue(phoneNumber, { emitEvent: false });
-    this.addCompetitionForm.get('points_tie')?.setValue(phoneNumber, { emitEvent: false });
+    const phoneNumber = inputElement.value.replace(/\D/g, '').slice(0, 10);
+
+    if (this.addCompetitionForm?.get(controlName)) {
+      this.addCompetitionForm.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
+    }
+    else if (this.addCompetitionForm?.get(controlName)) {
+      this.addCompetitionForm.get(controlName)?.setValue(phoneNumber, { emitEvent: false });
+    }
   }
-  //single quotes and doble quotes remove all label box 
+
   blockQuotesOnly(event: KeyboardEvent) {
     if (event.key === '"' || event.key === "'") {
       event.preventDefault();
     }
   }
 
+<<<<<<< HEAD
   //single quotes and doble quotes remove all label box
+=======
+>>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
   sanitizeQuotesOnly(controlName: string, event: Event) {
     const input = (event.target as HTMLInputElement).value;
     const cleaned = input.replace(/['"]/g, '');
     this.addCompetitionForm.get(controlName)?.setValue(cleaned, { emitEvent: false });
   }
-  allFormatList = [];  // original unfiltered list
 
+  formatChange(selectedFormatId?: number) {
+    const formatId = selectedFormatId ?? this.addCompetitionForm.get('competition_format_id')?.value;
+    if (!formatId) {
+      this.tourtypeList = [...this.allTourTypes];
+    } else {
+      this.tourtypeList = this.allTourTypes.filter(
+        (matchType: MetaDataItem) => matchType.parent_config_id === formatId
+      );
+    }
+  }
 }

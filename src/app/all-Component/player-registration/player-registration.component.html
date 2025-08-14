@@ -58,45 +58,17 @@
             <div class="filter-panel" [ngClass]="{'show-filters': showFilters}">
               <div class="filter-row">
                 <div class="filter-item">
-                  <label>Club</label>
-                  <p-dropdown [options]="clublist" class="drop-error" formControlName="club_id" optionValue="club_id"
-                    optionLabel="club_name" placeholder="Select Club Id" [panelStyleClass]="'custom-dropdown-panel'">
-                    <ng-template let-club pTemplate="item">
-                      <div class="flex align-items-center gap-2">
-                        <div>{{ club.club_name }}
-                        </div>
-                      </div>
-                    </ng-template>
-                  </p-dropdown>
+                  <label>Player Type</label>
+                  <select class="filter-select" [(ngModel)]="filterPlayerType">
+                    <option value="">All</option>
+                    <option *ngFor="let role of playerrole" [value]="role.config_id">{{ role.config_name }}</option>
+                  </select>
                 </div>
                 <div class="filter-item">
                   <label>Gender</label>
                   <select class="filter-select" [(ngModel)]="filterGenderType">
                     <option value="">All</option>
-                    <option *ngFor="let gender of genderSelect" [value]="gender.config_id">
-                      {{ gender.config_name }}
-                    </option>
-                  </select>
-                </div>
-                <div class="filter-item">
-                  <label>Nationality</label>
-                  <p-dropdown [options]="countriesList" formControlName="nationality_id" optionValue="country_id"
-                    optionLabel="country_name" placeholder="Select Nationality" class="drop-error"
-                    [panelStyleClass]="'custom-dropdown-panel'" appendTo="self" [filter]="true">
-                    <ng-template let-nationality pTemplate="item">
-                      <div class="flex align-items-center gap-2">
-                        <div>{{ nationality.country_name }}</div>
-                      </div>
-                    </ng-template>
-                  </p-dropdown>
-                </div>
-
-                <div class="filter-item">
-                  <label>Player Role</label>
-                  <select class="filter-select" [(ngModel)]="filterPlayerType">
-                    <option value="">All</option>
-                    <option *ngFor="let role of playerrole" [value]="role.config_id">
-                      {{ role.config_name }}
+                    <option *ngFor="let gender of genderSelect" [value]="gender.config_id">{{ gender.config_name }}
                     </option>
                   </select>
                 </div>
@@ -104,43 +76,43 @@
                   <label>Batting Style</label>
                   <select class="filter-select" [(ngModel)]="filterBatType">
                     <option value="">All</option>
-                    <option *ngFor="let style of battingstyle" [value]="style.config_id">
-                      {{ style.config_name }}
+                    <option *ngFor="let style of battingstyle" [value]="style.config_id">{{ style.config_name }}
                     </option>
                   </select>
                 </div>
                 <div class="filter-item">
-                  <label>Batting Order</label>
+                  <label>Bowling Type</label>
                   <select class="filter-select" [(ngModel)]="filterBowlType">
                     <option value="">All</option>
-                    <option value="Top-Order">Top-Order</option>
-                    <option value="Middle Order">Middle Order</option>
-                    <option value="Lower-Order">Lower-Order</option>
-                    <option value="Tail Ender">Tail Ender</option>
+                    <option *ngFor="let type of bowlingtype" [value]="type.config_id">{{ type.config_name }}</option>
                   </select>
                 </div>
+                <!-- <div class="filter-item">
+<label>Club</label>
+<select class="filter-select" [(ngModel)]="filterClubType">
+<option value="">All</option>
+<option *ngFor="let club of clublist" [value]="club.club_id">{{ club.club_name }}</option>
+</select>
+</div> -->
                 <div class="filter-item">
                   <label>Bowling Style</label>
                   <select class="filter-select" [(ngModel)]="filterBowlStyle">
                     <option value="">All</option>
-                    <option value="Right Arm Fast">Right Arm Bowler</option>
-                    <option value="Left Arm Medium">Left Arm Bowler</option>
+                    <option *ngFor="let style of bowlingstyle" [value]="style.config_id">{{ style.config_name }}
+                    </option>
                   </select>
                 </div>
                 <div class="filter-item">
-                  <label>Bowling Spec</label>
-                  <select class="filter-select" [(ngModel)]="filterBowlType">
+                  <label>Nationality</label>
+                  <select class="filter-select" [(ngModel)]="filterNationality">
                     <option value="">All</option>
-                    <option value="Fast Bowler">Fast Bowler</option>
-                    <option value="Medium-Fast Bowler">Medium-Fast Bowler</option>
-                    <option value="Off Spin">Off Spin</option>
-                    <option value="Leg Spin">Leg Spin</option>
+                    <option *ngFor="let country of NationalitydropdownData" [value]="country.region_id">{{
+                      country.region_name }}</option>
                   </select>
                 </div>
                 <div class="filter-actions">
                   <button class="filter-apply-btn" (click)="applyFilters()">Apply</button>
-
-                  <button type="button" class="clear-apply-btn" (click)="clearFilters()"> Clear </button>
+                  <button class="filter-reset-btn" (click)="clearFilters()">Reset</button>
                 </div>
               </div>
             </div>
@@ -304,9 +276,15 @@
 
                 <section class="popup-section">
                   <h2 class="section-title"> Players Details</h2>
+<<<<<<< HEAD
                   <div class="info-row"><span class="info-label">Display Name</span>
                     <span class="seperator">|</span><span class="info-value">{{ player['display_name'] }}</span>
                   </div>
+=======
+                  <div class="info-row"><span class="info-label"> Display Name</span><span
+                      class="separator">|</span><span class="info-value">{{ player['display_name'] }}</span></div>
+
+>>>>>>> 5b366b214028196b0c4eeb9a590dedacd7a1136d
                   <div class="info-row"><span class="info-label">Email</span>
                     <span class="seperator">|</span><span class="info-value">{{ player['email'] }}</span>
                   </div>

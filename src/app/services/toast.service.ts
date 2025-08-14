@@ -17,11 +17,24 @@ export class ToastService {
     });
   }
 
+
   failedToast(data: any) {
     this.msgService.add({
       severity: 'error',
       summary: 'Error',
       detail: data.message,
+      life: 800,
+      data: { image: 'assets/images/default-logo.png' }
+    });
+  }
+  
+  /* Frontend filter for players*/
+
+  playerSuccessToast(data: any) {
+    this.msgService.add({
+      severity: 'info',
+      summary: 'Filters Applied',
+      detail: 'Player list has been filtered',
       life: 800,
       data: { image: 'assets/images/default-logo.png' }
     });
