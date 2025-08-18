@@ -311,7 +311,7 @@ export class PlayerRegistrationComponent implements OnInit {
     };
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe(
       (res) => {
-        this.clublist = res.data?.Table1 || [];
+        this.clublist = res.data?.clubs || [];
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -364,7 +364,7 @@ export class PlayerRegistrationComponent implements OnInit {
       this.clientData = res.data ?? [];
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.client_id = this.clientData[0].client_id;
-      this.callclientbased();
+      this.gridLoad();
 
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -372,11 +372,6 @@ export class PlayerRegistrationComponent implements OnInit {
       }
     });
   }
-  callclientbased() {
-
-    this.gridLoad();
-  }
-
 
   gridLoad(filters: any = {}) {
     this.spinnerService.raiseDataEmitterEvent('on');
@@ -460,12 +455,12 @@ export class PlayerRegistrationComponent implements OnInit {
     params.client_id = this.client_id.toString();
 
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-      this.configDataList = res.data.clubs ?? [];
-      this.genderSelect = res.data.clubs.filter((item: any) => item.config_key == 'gender');
-      this.playerrole = res.data.clubs.filter((item: any) => item.config_key == 'player_role');
-      this.battingstyle = res.data.clubs.filter((item: any) => item.config_key == 'batting_style');
-      this.battingorder = res.data.clubs.filter((item: any) => item.config_key == 'batting_order');
-      this.bowlingstyle = res.data.clubs.filter((item: any) => item.config_key == 'bowling_style');
+      this.configDataList = res.data.dropdowns ?? [];
+      this.genderSelect = res.data.dropdowns.filter((item: any) => item.config_key == 'gender');
+      this.playerrole = res.data.dropdowns.filter((item: any) => item.config_key == 'player_role');
+      this.battingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_style');
+      this.battingorder = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_order');
+      this.bowlingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'bowling_style');
       this.bowlingtype = this.configDataList.filter((item: any) => item.config_key === 'bowling_type');
       this.bowlingspec = this.configDataList.filter((item: any) => item.config_key === 'bowling_spec');
 

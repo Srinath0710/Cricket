@@ -66,7 +66,7 @@ export class CompOfficialComponent implements OnInit {
   ) { }
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
-    this.gridLoad();
+    // this.gridLoad();
   }
 
   gridLoad() {

@@ -115,13 +115,14 @@ export class CompTeamComponent implements OnInit {
           ...val,
           scorecard: val.team_name || ''
         }));
-        this.totalData = res.data.all_teams[0].total_records
+        this.totalData = res.data.all_teams[0]
         this.spinnerService.raiseDataEmitterEvent('off');
       },
 
       (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : (this.spinnerService.raiseDataEmitterEvent('off'), this.sourceTeams = [], this.targetTeams = []);
       });
+      this.spinnerService.raiseDataEmitterEvent('off');
   }
 
   popUpTeamsData() {

@@ -287,7 +287,8 @@ loadCompetitions() {
         this.totalRecords = res.data.total_records || list.length; // from API if available
       }
       this.spinnerService.raiseDataEmitterEvent('off');
-      this.updatePaginatedList(); // initialize first page
+      this.updatePaginatedList();
+      this.getGlobalData(); 
 
     },
     () => {

@@ -183,7 +183,6 @@ export class OfficialsComponent implements OnInit {
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
     this.Clientdropdown()
-    this.Natinalitydropdown()
     this.getCountries();
 
     this.addOfficialForm = this.fb.group({
@@ -198,7 +197,7 @@ export class OfficialsComponent implements OnInit {
       country_id: ['', [Validators.required]],
       official_id: [''],
       reference_id: [''],
-      club_id: ['', [Validators.required]],
+      club_id: [''],
       dob: ['',],
       gender_id: ['', [Validators.required]],
 
@@ -386,7 +385,7 @@ export class OfficialsComponent implements OnInit {
       official_category_id: this.addOfficialForm.value.official_category_id != null ? this.addOfficialForm.value.official_category_id.toString() : null,
       country_id: String(this.addOfficialForm.value.country_id),
       reference_id: this.addOfficialForm.value.reference_id,
-      club_id: String(this.addOfficialForm.value.club_id),
+      club_id: this.addOfficialForm.value.club_id != null ? this.addOfficialForm.value.club_id.toString() : null,
       gender_id: String(this.addOfficialForm.value.gender_id),
       dob: this.addOfficialForm.value.dob,
       profile_img: this.filedata ? '' : this.profileImages,
@@ -662,24 +661,24 @@ export class OfficialsComponent implements OnInit {
     );
   }
 
-  Natinalitydropdown() {
+  // Natinalitydropdown() {
 
-    const params: any = {};
-    params.action_flag = this.urlConstant.countryofficial.action_flag;
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
-    this.apiService.post(this.urlConstant.countryofficial.url, params).subscribe((res) => {
-      this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
+  //   const params: any = {};
+  //   params.action_flag = this.urlConstant.countryofficial.action_flag;
+  //   params.user_id = this.user_id.toString();
+  //   params.client_id = this.client_id.toString();
+  //   this.apiService.post(this.urlConstant.getCountryDropdown, params).subscribe((res) => {
+  //     this.countrydropdownData = res.data.region != undefined ? res.data.region : [];
 
-    }, (err: any) => {
-      if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-        this.apiService.RefreshToken();
+  //   }, (err: any) => {
+  //     if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+  //       this.apiService.RefreshToken();
 
-      }
-    })
+  //     }
+  //   })
 
 
-  }
+  // }
 
   getCountries() {
     const params: any = {};
