@@ -148,7 +148,7 @@ export class ClubRegistrationComponent implements OnInit {
     });
 
     this.Clientdropdown();
-    this.getCountries();
+
   }
 
   ClubDropdown() {
@@ -275,13 +275,13 @@ export class ClubRegistrationComponent implements OnInit {
     const target = event.target as HTMLImageElement;
     target.src = fallbackUrl;
   }
-  
+
   successToast(data: any) {
     this.toastService.successToast({ message: data.message })
   }
   /* Failed Toast */
   failedToast(data: any) {
-    this.toastService.failedToast({ message: data.message  })
+    this.toastService.failedToast({ message: data.message })
   }
 
 
@@ -588,7 +588,7 @@ export class ClubRegistrationComponent implements OnInit {
       this.client_id = this.clientData[0].client_id;
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
-
+      this.getCountries();
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });

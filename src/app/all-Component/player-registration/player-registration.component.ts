@@ -190,8 +190,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
-    this.dropdownapi();
-    this.Nationalitydropdown();
+    this.Clientdropdown();
     this.playerRegistrationform = this.formBuilder.group({
       first_name: ['', [Validators.required]],
       middle_name: [''],
@@ -260,9 +259,10 @@ export class PlayerRegistrationComponent implements OnInit {
 
   }
   dropdownapi() {
-    this.Clientdropdown();
     this.getCountries();
     this.getGlobalData();
+    this.gridLoad();
+    this.Nationalitydropdown();
   }
 
   toggleFilters(): void {
@@ -290,7 +290,7 @@ export class PlayerRegistrationComponent implements OnInit {
 
 
     this.showFilters = false;
-    this.toastService.playerSuccessToast({ message:'Player list has been filtered' })
+    this.toastService.playerSuccessToast({ message: 'Player list has been filtered' })
 
     // this.msgService.add({
     //   severity: 'info',
@@ -310,30 +310,30 @@ export class PlayerRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe(
       (res) => {
         this.clublist = res.data?.clubs || [];
-              this.genderSelect = res.data.dropdowns.filter((item: any) => item.config_key == 'gender');
-      this.playerrole = res.data.dropdowns.filter((item: any) => item.config_key == 'player_role');
-      this.battingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_style');
-      this.battingorder = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_order');
-      this.bowlingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'bowling_style');
-      this.bowlingtype = res.data.dropdowns.filter((item: any) => item.config_key === 'bowling_type');
-      this.bowlingspec = res.data.dropdowns.filter((item: any) => item.config_key === 'bowling_spec');
+        this.genderSelect = res.data.dropdowns.filter((item: any) => item.config_key == 'gender');
+        this.playerrole = res.data.dropdowns.filter((item: any) => item.config_key == 'player_role');
+        this.battingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_style');
+        this.battingorder = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_order');
+        this.bowlingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'bowling_style');
+        this.bowlingtype = res.data.dropdowns.filter((item: any) => item.config_key === 'bowling_type');
+        this.bowlingspec = res.data.dropdowns.filter((item: any) => item.config_key === 'bowling_spec');
 
-      this.playerRegistrationform.get('gender_id')?.valueChanges.subscribe((selectedGenderId) => {
-        const gender = this.genderSelect.find((g: any) => g.config_id === selectedGenderId);
+        this.playerRegistrationform.get('gender_id')?.valueChanges.subscribe((selectedGenderId) => {
+          const gender = this.genderSelect.find((g: any) => g.config_id === selectedGenderId);
 
-        if (gender) {
-          if (gender.config_name.toLowerCase() === 'men' || gender.config_name.toLowerCase() === 'male') {
-            this.default_img = this.men_img;
-          } else if (gender.config_name.toLowerCase() === 'women' || gender.config_name.toLowerCase() === 'female') {
-            this.default_img = this.women_img;
-          } else {
-            this.default_img = CricketKeyConstant.default_image_url.players;
+          if (gender) {
+            if (gender.config_name.toLowerCase() === 'men' || gender.config_name.toLowerCase() === 'male') {
+              this.default_img = this.men_img;
+            } else if (gender.config_name.toLowerCase() === 'women' || gender.config_name.toLowerCase() === 'female') {
+              this.default_img = this.women_img;
+            } else {
+              this.default_img = CricketKeyConstant.default_image_url.players;
+            }
           }
-        }
-      });
+        });
 
-      this.filteredSpecs = [];
-      this.formSetValue();
+        this.filteredSpecs = [];
+        this.formSetValue();
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -385,8 +385,8 @@ export class PlayerRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.groundUserClient, params).subscribe((res) => {
       this.clientData = res.data ?? [];
       this.isClientShow = this.clientData.length > 1 ? true : false;
-      this.client_id = this.clientData[0].client_id;
-      this.gridLoad();
+      this.client_id = Number(this.clientData[0].client_id) || 0;
+      this.dropdownapi();
 
     }, (err) => {
       if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -397,11 +397,9 @@ export class PlayerRegistrationComponent implements OnInit {
 
   gridLoad(filters: any = {}) {
     this.spinnerService.raiseDataEmitterEvent('on');
-
-    // Base params
     const params: any = {
       user_id: this.user_id?.toString(),
-      client_id: this.client_id?.toString(),
+      client_id: String(this.client_id),
       page_no: this.first.toString(),
       records: this.rows.toString(),
       search_text: this.searchKeyword.toString()
@@ -416,7 +414,7 @@ export class PlayerRegistrationComponent implements OnInit {
         this.PlayerData = res.data.players;
         this.totalData = this.PlayerData.length != 0 ? res.data.players[0].total_records : 0;
         this.spinnerService.raiseDataEmitterEvent('off');
-        
+
       } else {
         this.PlayerData = [];
         this.totalData = 0;
