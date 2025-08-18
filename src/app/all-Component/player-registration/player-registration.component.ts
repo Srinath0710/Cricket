@@ -263,8 +263,6 @@ export class PlayerRegistrationComponent implements OnInit {
     this.Clientdropdown();
     this.getCountries();
     this.getGlobalData();
-    this.radiobutton();
-
   }
 
   toggleFilters(): void {
@@ -312,6 +310,30 @@ export class PlayerRegistrationComponent implements OnInit {
     this.apiService.post(this.urlConstant.playerdropdown, params).subscribe(
       (res) => {
         this.clublist = res.data?.clubs || [];
+              this.genderSelect = res.data.dropdowns.filter((item: any) => item.config_key == 'gender');
+      this.playerrole = res.data.dropdowns.filter((item: any) => item.config_key == 'player_role');
+      this.battingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_style');
+      this.battingorder = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_order');
+      this.bowlingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'bowling_style');
+      this.bowlingtype = res.data.dropdowns.filter((item: any) => item.config_key === 'bowling_type');
+      this.bowlingspec = res.data.dropdowns.filter((item: any) => item.config_key === 'bowling_spec');
+
+      this.playerRegistrationform.get('gender_id')?.valueChanges.subscribe((selectedGenderId) => {
+        const gender = this.genderSelect.find((g: any) => g.config_id === selectedGenderId);
+
+        if (gender) {
+          if (gender.config_name.toLowerCase() === 'men' || gender.config_name.toLowerCase() === 'male') {
+            this.default_img = this.men_img;
+          } else if (gender.config_name.toLowerCase() === 'women' || gender.config_name.toLowerCase() === 'female') {
+            this.default_img = this.women_img;
+          } else {
+            this.default_img = CricketKeyConstant.default_image_url.players;
+          }
+        }
+      });
+
+      this.filteredSpecs = [];
+      this.formSetValue();
       },
       (err: any) => {
         if (err.status_code === this.statusConstants.refresh && err.error.message) {
@@ -448,40 +470,7 @@ export class PlayerRegistrationComponent implements OnInit {
     })
   }
 
-  radiobutton() {
-    const params: any = {};
-    params.action_flag = this.Actionflag.Dropdown;
-    params.user_id = this.user_id.toString();
-    params.client_id = this.client_id.toString();
 
-    this.apiService.post(this.urlConstant.playerdropdown, params).subscribe((res) => {
-      this.configDataList = res.data.dropdowns ?? [];
-      this.genderSelect = res.data.dropdowns.filter((item: any) => item.config_key == 'gender');
-      this.playerrole = res.data.dropdowns.filter((item: any) => item.config_key == 'player_role');
-      this.battingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_style');
-      this.battingorder = res.data.dropdowns.filter((item: any) => item.config_key == 'batting_order');
-      this.bowlingstyle = res.data.dropdowns.filter((item: any) => item.config_key == 'bowling_style');
-      this.bowlingtype = this.configDataList.filter((item: any) => item.config_key === 'bowling_type');
-      this.bowlingspec = this.configDataList.filter((item: any) => item.config_key === 'bowling_spec');
-
-      this.playerRegistrationform.get('gender_id')?.valueChanges.subscribe((selectedGenderId) => {
-        const gender = this.genderSelect.find((g: any) => g.config_id === selectedGenderId);
-
-        if (gender) {
-          if (gender.config_name.toLowerCase() === 'men' || gender.config_name.toLowerCase() === 'male') {
-            this.default_img = this.men_img;
-          } else if (gender.config_name.toLowerCase() === 'women' || gender.config_name.toLowerCase() === 'female') {
-            this.default_img = this.women_img;
-          } else {
-            this.default_img = CricketKeyConstant.default_image_url.players;
-          }
-        }
-      });
-
-      this.filteredSpecs = [];
-      this.formSetValue();
-    });
-  }
 
   onBowlingTypeChange(selectedBowlingTypeId: number): void {
     if (!selectedBowlingTypeId) {
@@ -1195,7 +1184,7 @@ export class PlayerRegistrationComponent implements OnInit {
       client_id: this.client_id.toString(),
     };
     this.apiService.post(this.urlConstant.playerspersonaldropdown, params).subscribe((res) => {
-      const dropdowns = res.data?.dropdowns || [];
+      const dropdowns = res.data.dropdowns || [];
 
       this.emergencyTypeList = dropdowns.filter((d: any) => d.config_key === 'emergency_type');
       this.bloodgroup = dropdowns.filter((d: any) => d.config_key === 'blood_group');
