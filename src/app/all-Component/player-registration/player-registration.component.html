@@ -147,8 +147,8 @@
                   </th>
                   <th>
                     <div class="d-flex justify-content-between align-items-center w-100">
-                      Mobile Number
-                      <p-sortIcon field="mobile_no" pSortableColumn="mobile_no"></p-sortIcon>
+                      Club Name
+                      <p-sortIcon field="club_name" pSortableColumn="club_name"></p-sortIcon>
                     </div>
                   </th>
                   <th>
@@ -199,7 +199,7 @@
                   </td>
                   <td>{{ player.gender }}</td>
                   <td>{{ player.player_dob }}</td>
-                  <td>{{ player.mobile_no }}</td>
+                  <td>{{ player.club_name }}</td>
                   <td>{{ player.player_role }}</td>
                   <td>{{ player.batting_style }}</td>
                   <td>{{ player.bowling_style }}</td>
@@ -451,7 +451,7 @@
                         </div>
 
                         <div class="col-md-6">
-                          <label>Country</label>
+                          <label>Nationality</label>
                           <span class="text-danger">*</span>
                           <p-dropdown [options]="countriesList" formControlName="nationality_id"
                             optionValue="country_id" optionLabel="country_name" placeholder="Select Nationality Country"
