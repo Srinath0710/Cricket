@@ -143,7 +143,7 @@ export class GroundsComponent implements OnInit {
 
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
-    this.getCountries();
+    
     this.Clientdropdown();
 
     this.addGroundForm = this.formBuilder.group({
@@ -234,6 +234,8 @@ export class GroundsComponent implements OnInit {
       this.ClientID = this.clientData[0].client_id;
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
+      this.getCountries();
+      
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });

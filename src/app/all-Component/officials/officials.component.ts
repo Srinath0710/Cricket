@@ -174,7 +174,7 @@ export class OfficialsComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private uploadImgService: UploadImgService,
     private spinnerService: SpinnerService,
-    private toastService:ToastService
+    private toastService: ToastService
   ) {
 
   }
@@ -183,7 +183,7 @@ export class OfficialsComponent implements OnInit {
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
     this.Clientdropdown()
-    this.getCountries();
+
 
     this.addOfficialForm = this.fb.group({
       first_name: ['', [Validators.required]],
@@ -261,7 +261,7 @@ export class OfficialsComponent implements OnInit {
   callBackClientChange() {
     this.dropdown();
     this.gridload();
-
+    this.getCountries();
   }
 
   dropdown() {
@@ -887,7 +887,7 @@ export class OfficialsComponent implements OnInit {
       (res: any) => {
         res.status_code === this.statusConstants.success && res.status ? (this.successToast(res), this.gridload()) : this.failedToast(res);
       },
-   (err: any) => {
+      (err: any) => {
         err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
       }
     );
