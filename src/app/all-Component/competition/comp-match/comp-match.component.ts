@@ -147,16 +147,16 @@ export class CompMatchComponent implements OnInit {
           this.spinnerService.raiseDataEmitterEvent('off');
         }
       },
-       (err: any) => {
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        }
-        this.spinnerService.raiseDataEmitterEvent('off');
-        this.failedToast(err.error);
-      })
+        (err: any) => {
+          if (
+            err.status_code === this.statusConstants.refresh &&
+            err.error.message === this.statusConstants.refresh_msg
+          ) {
+            this.apiService.RefreshToken();
+          }
+          this.spinnerService.raiseDataEmitterEvent('off');
+          this.failedToast(err.error);
+        })
   }
   newmatch() {
     this.ShowForm = true;
@@ -226,8 +226,8 @@ export class CompMatchComponent implements OnInit {
         this.resetForm();
 
 
-      }, 
-     (err: any) => {
+      },
+      (err: any) => {
         if (
           err.status_code === this.statusConstants.refresh &&
           err.error.message === this.statusConstants.refresh_msg
@@ -334,17 +334,17 @@ export class CompMatchComponent implements OnInit {
             }
           }
 
-        }, 
-     (err: any) => {
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        }
-        this.spinnerService.raiseDataEmitterEvent('off');
-        this.failedToast(err.error);
-      })
+        },
+        (err: any) => {
+          if (
+            err.status_code === this.statusConstants.refresh &&
+            err.error.message === this.statusConstants.refresh_msg
+          ) {
+            this.apiService.RefreshToken();
+          }
+          this.spinnerService.raiseDataEmitterEvent('off');
+          this.failedToast(err.error);
+        })
     }
 
     else {
@@ -398,17 +398,17 @@ export class CompMatchComponent implements OnInit {
         } else {
           this.failedToast(res);
         }
-      }, 
-     (err: any) => {
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        }
-        this.spinnerService.raiseDataEmitterEvent('off');
-        this.failedToast(err.error);
-      })
+      },
+        (err: any) => {
+          if (
+            err.status_code === this.statusConstants.refresh &&
+            err.error.message === this.statusConstants.refresh_msg
+          ) {
+            this.apiService.RefreshToken();
+          }
+          this.spinnerService.raiseDataEmitterEvent('off');
+          this.failedToast(err.error);
+        })
 
   }
   handleImageError(event: Event, fallbackUrl: string): void {
@@ -417,22 +417,30 @@ export class CompMatchComponent implements OnInit {
   }
 
   StatusConfirm(match_id: number) {
+    const message = `Are you sure you want to proceed?`;
+
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete this Match?`,
-      header: 'Confirmation',
-      icon: 'pi pi-question-circle',
+      header: '',
+      message: `
+      <div class="custom-confirm-content">
+        <i class="fa-solid fa-trash warning-icon icon-danger"></i>
+        <div class="warning">Delete</div>
+        <div class="message-text">${message}</div>
+      </div>
+    `,
       acceptLabel: 'Yes',
       rejectLabel: 'No',
+      // acceptButtonStyleClass: 'p-button-danger',
+      // rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        const url: string = this.urlConstant.deactivefixture;
+        const url = this.urlConstant.deactivefixture;
         this.status(match_id, url);
-        this.confirmationService.close();
       },
-      reject: () => {
-        this.confirmationService.close();
-      }
+      reject: () => { }
     });
   }
+
+
 
   status(match_id: number, url: string) {
     const params: any = {

@@ -1292,8 +1292,17 @@ export class PlayerRegistrationComponent implements OnInit {
         if (res.status_code === this.statusConstants.success && res.data) {
           this.selectedPlayers = res.data.players;
 
-          this.selectedPlayers.forEach((player: any) => {
-            player.profileImages = player.profileImages ? `${player.profileImages}?${Math.random()}` : this.profileImages;
+          this.PlayerData.forEach((val: any) => {
+            if (!val.profile_image) {
+              if (val.gender === 'Men') {
+                val.profile_image = this.men_img;
+              } else if (val.gender === 'Women') {
+                val.profile_image = this.women_img;
+                // } else {
+                //   val.profile_image = 'assets/images/player.jpg';
+              }
+            }
+            // val.profile_image = `${val.profile_image}?${Math.random()}`;
           });
           this.viewDialogVisible = true;
         } else {

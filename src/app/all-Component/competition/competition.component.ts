@@ -251,52 +251,52 @@ export class CompetitionComponent implements OnInit {
     this.resetForm()
   }
 
-loadCompetitions() {
-  this.spinnerService.raiseDataEmitterEvent('on');
+  loadCompetitions() {
+    this.spinnerService.raiseDataEmitterEvent('on');
 
-  const pageNo = Math.floor(this.first / this.rows); // page number for API
+    const pageNo = Math.floor(this.first / this.rows); // page number for API
 
-  const params = {
-    user_id: this.user_id?.toString(),
-    client_id: this.client_id?.toString(),
-    page_no: pageNo.toString(),
-    records: this.rows.toString()
-  };
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      page_no: pageNo.toString(),
+      records: this.rows.toString()
+    };
 
-  this.apiService.post(this.urlConstant.getCompetitionList, params).subscribe(
-    (res) => {
-      if (res?.data?.competitions) {
-        let list: any[] = res.data.competitions.map((comp: any) => ({
-          ...comp,
-          imageUrl: comp?.profile_image || 'assets/images/default-competition.png'
-        }));
+    this.apiService.post(this.urlConstant.getCompetitionList, params).subscribe(
+      (res) => {
+        if (res?.data?.competitions) {
+          let list: any[] = res.data.competitions.map((comp: any) => ({
+            ...comp,
+            imageUrl: comp?.profile_image || 'assets/images/default-competition.png'
+          }));
 
-        // Apply filters BEFORE showing
-        if (this.filterStatus) {
-          list = list.filter((comp: any) => comp?.record_status === this.filterStatus);
+          // Apply filters BEFORE showing
+          if (this.filterStatus) {
+            list = list.filter((comp: any) => comp?.record_status === this.filterStatus);
+          }
+          if (this.filterMatchType) {
+            list = list.filter((comp: any) => comp?.tour_type === this.filterMatchType);
+          }
+          if (this.filterCategory) {
+            list = list.filter((comp: any) => comp?.format === this.filterCategory);
+          }
+
+          this.compititionList = list;
+          this.filteredCompititionList = [...list];
+          this.totalRecords = res.data.total_records || list.length; // from API if available
         }
-        if (this.filterMatchType) {
-          list = list.filter((comp: any) => comp?.tour_type === this.filterMatchType);
-        }
-        if (this.filterCategory) {
-          list = list.filter((comp: any) => comp?.format === this.filterCategory);
-        }
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.updatePaginatedList();
+        this.getGlobalData();
 
-        this.compititionList = list;
-        this.filteredCompititionList = [...list];
-        this.totalRecords = res.data.total_records || list.length; // from API if available
+      },
+      () => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load competitions' });
       }
-      this.spinnerService.raiseDataEmitterEvent('off');
-      this.updatePaginatedList();
-      this.getGlobalData(); 
-
-    },
-    () => {
-      this.spinnerService.raiseDataEmitterEvent('off');
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load competitions' });
-    }
-  );
-}
+    );
+  }
 
 
 
@@ -304,18 +304,19 @@ loadCompetitions() {
     this.showFilters = !this.showFilters;
   }
 
-applyFilters() {
-  this.filteredCompititionList = this.compititionList.filter(comp => {
-    const statusMatch = !this.filterStatus || comp.record_status === this.filterStatus;
-    const matchTypeMatch = !this.filterMatchType || comp.tour_type === this.filterMatchType;
-    const categoryMatch = !this.filterCategory || comp.format === this.filterCategory;
-    return statusMatch && matchTypeMatch && categoryMatch;
-  });
+  applyFilters() {
+    this.filteredCompititionList = this.compititionList.filter(comp => {
+      const statusMatch = !this.filterStatus || comp.record_status === this.filterStatus;
+      const matchTypeMatch = !this.filterMatchType || comp.tour_type === this.filterMatchType;
+      const categoryMatch = !this.filterCategory || comp.format === this.filterCategory;
+      return statusMatch && matchTypeMatch && categoryMatch;
+    });
 
-  this.totalRecords = this.filteredCompititionList.length;
-  this.first = 0; // reset pagination
-//  this.loadCompetitions();
-}
+    this.totalRecords = this.filteredCompititionList.length;
+    this.first = 0; // reset pagination
+    //  this.loadCompetitions();
+    this.showFilters = false; // close filters after applying
+  }
 
 
 
@@ -405,17 +406,17 @@ applyFilters() {
     }
   }
 
-onPageChange(event: any) {
-  this.first = event.first;
-  this.rows = event.rows;
-  this.updatePaginatedList();
-}
+  onPageChange(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+    this.updatePaginatedList();
+  }
 
-updatePaginatedList() {
-  const start = this.first;
-  const end = this.first + this.rows;
-  this.paginatedList = this.filteredCompititionList.slice(start, end);
-}
+  updatePaginatedList() {
+    const start = this.first;
+    const end = this.first + this.rows;
+    this.paginatedList = this.filteredCompititionList.slice(start, end);
+  }
 
 
   cancelForm() {
@@ -625,6 +626,7 @@ updatePaginatedList() {
     this.searchKeyword = '';
     this.dt.clear();
     this.loadCompetitions();
+    this.showFilters = false;
   }
 
   onPhoneNumberInput(event: Event, controlName: string) {
@@ -660,5 +662,15 @@ updatePaginatedList() {
         (matchType: MetaDataItem) => matchType.parent_config_id === formatId
       );
     }
+  }
+
+  clearFilters() {
+    this.filterStatus = '';
+    this.filterMatchType = '';
+    this.filterCategory = '';
+    this.first = 1;
+    this.showFilters = false;
+    this.loadCompetitions();
+
   }
 }

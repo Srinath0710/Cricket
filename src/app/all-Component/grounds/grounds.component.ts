@@ -143,7 +143,7 @@ export class GroundsComponent implements OnInit {
 
   ngOnInit() {
     this.spinnerService.raiseDataEmitterEvent('on');
-    
+
     this.Clientdropdown();
 
     this.addGroundForm = this.formBuilder.group({
@@ -235,7 +235,7 @@ export class GroundsComponent implements OnInit {
       this.isClientShow = this.clientData.length > 1 ? true : false;
       this.gridload();
       this.getCountries();
-      
+
     }, (err) => {
       err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg ? this.apiService.RefreshToken() : this.failedToast(err.error);
     });
@@ -427,6 +427,7 @@ export class GroundsComponent implements OnInit {
       action_flag: this.isEditMode ? this.Actionflag.Update : this.Actionflag.Create,
       reference_id: this.addGroundForm.value.reference_id,
       ground_photo: this.filedata ? '' : this.profileImages
+      
 
     };
     if (this.addGroundForm.value.ground_id) {
@@ -502,7 +503,7 @@ export class GroundsComponent implements OnInit {
             longitude: editRecord.longitude,
             capacity: editRecord.capacity,
             reference_id: editRecord.reference_id,
-            profile: null,
+            profile: editRecord.ground_photo,
           });
           this.showAddForm();
           this.filedata = null;
