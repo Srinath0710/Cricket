@@ -3,11 +3,10 @@
     <div class="col-6">
 
       <p-table #dt1 [value]="sourceOfficial" [paginator]="true" [globalFilterFields]="['official_name']"
-          [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" 
-          [rows]="rows" [first]="first"
-          [totalRecords]="totalData" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true"
-          (onLazyLoad)="onPageChange($event)" responsiveLayout="scroll">
-      <!-- <p-table #dt1 [value]="sourceOfficial" [paginator]="true" [globalFilterFields]="['official_name']"
+        [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" [rows]="rows" [first]="first"
+        [totalRecords]="totalData" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true"
+        (onLazyLoad)="onPageChange($event)" responsiveLayout="scroll">
+        <!-- <p-table #dt1 [value]="sourceOfficial" [paginator]="true" [globalFilterFields]="['official_name']"
         [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" [rows]="rows" [first]="first"
         [totalRecords]="totalData" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true"
         (onLazyLoad)="onPageChange($event)" responsiveLayout="scroll"> -->
@@ -51,7 +50,7 @@
                 <span class="person-name padding-grid-center">
                   <strong>{{ official.official_name }}</strong>
                 </span>
-              
+
                 <span>
                   <button class="comp-chid-add-btn" (click)="moveToTarget(official)">
                     Add
@@ -70,9 +69,9 @@
     </div>
 
     <div class="col-md-6">
-      <p-table #dt2 [value]="targetOfficial" selectionMode="multiple"
-        [globalFilterFields]="['official_name']" [tableStyle]="{ 'min-width': '20rem' }"
-        styleClass="p-datatable-gridlines" [showCurrentPageReport]="false">
+      <p-table #dt2 [value]="targetOfficial" selectionMode="multiple" [globalFilterFields]="['official_name']"
+        [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" [showCurrentPageReport]="false"
+        [rowsPerPageOptions]="[10, 25, 50]" [scrollable]="true" scrollHeight="400px">
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
             <div class="p-1 Child-header text-center">Selected Officials</div>

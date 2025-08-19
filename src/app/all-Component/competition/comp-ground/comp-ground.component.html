@@ -1,20 +1,10 @@
 <div class="container">
   <div class="row mb-3">
     <div class="col-6">
-      <p-table #dt1
-    [value]="sourceGround"
-    [paginator]="true"
-    [globalFilterFields]="['ground_name']"
-    [tableStyle]="{ 'min-width': '20rem' }"
-    styleClass="p-datatable-gridlines"
-    [rows]="rows"
-    [first]="first"
-    [totalRecords]="totalData"
-    [showCurrentPageReport]="false"
-    [rowsPerPageOptions]="[10, 25, 50]"
-    [lazy]="true"
-    (onLazyLoad)="onPageChange($event)"
-    responsiveLayout="scroll">
+      <p-table #dt1 [value]="sourceGround" [paginator]="true" [globalFilterFields]="['ground_name']"
+        [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" [rows]="rows" [first]="first"
+        [totalRecords]="totalData" [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true"
+        (onLazyLoad)="onPageChange($event)" responsiveLayout="scroll">
 
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
@@ -52,7 +42,8 @@
                   <img *ngIf="ground.ground_image" [src]="ground.ground_image" class="player-img image-border"
                     (error)="handleImageError($event, default_img)" />
                 </span>
-                <span class="person-name padding-grid-center groundnameover"(click)="onViewGroundDetails(ground.ground_id)">
+                <span class="person-name padding-grid-center groundnameover"
+                  (click)="onViewGroundDetails(ground.ground_id)">
                   <strong>{{ ground.ground_name }}</strong>
                 </span>
 
@@ -74,9 +65,9 @@
     </div>
 
     <div class="col-md-6">
-      <p-table #dt2 [value]="targetGround" selectionMode="multiple"
-        [globalFilterFields]="['ground_name']" [tableStyle]="{ 'min-width': '20rem' }"
-        styleClass="p-datatable-gridlines" [showCurrentPageReport]="false">
+      <p-table #dt2 [value]="targetGround" selectionMode="multiple" [globalFilterFields]="['ground_name']"
+        [tableStyle]="{ 'min-width': '20rem' }" styleClass="p-datatable-gridlines" [showCurrentPageReport]="false"
+        [rowsPerPageOptions]="[10, 25, 50]" [scrollable]="true" scrollHeight="400px">
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
             <div class="p-1 Child-header text-center">Selected Grounds</div>
@@ -134,61 +125,57 @@
     </div>
   </div>
 </div>
-    <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
+<p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
 
 
-      <div class="popup-container" *ngFor="let ground of selectedGround">
+  <div class="popup-container" *ngFor="let ground of selectedGround">
 
-        <!-- ✅ Top bar: Image on left, Cancel button on right -->
-        <div class="top-bar">
-          <div class="profile-image-wrapper">
-            <span class="person-image-team-player">
-              <img class="player-img Viewimg" *ngIf="ground.profile_img==null || ground.profile_img==''"
-                [src]="default_img">
+    <!-- ✅ Top bar: Image on left, Cancel button on right -->
+    <div class="top-bar">
+      <div class="profile-image-wrapper">
+        <span class="person-image-team-player">
+          <img class="player-img Viewimg" *ngIf="ground.profile_img==null || ground.profile_img==''"
+            [src]="default_img">
 
-              <img class="player-img viewimg" *ngIf="ground.profile_img!=null  && ground.profile_img!=''"
-                [src]="ground.profile_img" (error)="handleImageError($event, default_img)">
-            </span>
-          </div>
-          <header class="popup-header no-icon">
-            <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
-          </header>
-
-          <button class="popup-close" pTooltip="Close popup" tooltipPosition="left"
-           (click)="viewDialogVisible = false"aria-label="Close popup">✖</button>
-        </div>
-
-
-        <div class="popup-content">
-          <!-- Ground Details -->
-          <section class="popup-section">
-            <h2 class="section-title">⛳ Ground Details</h2>
-            <div class="info-row"><span class="info-label"> Address 1</span><span class="separator">|</span><span
-                class="info-value">{{ ground['address 1'] }}</span></div>
-            <div class="info-row"><span class="info-label"> Address 2</span><span class="separator">|</span><span
-                class="info-value">{{ ground['address 2'] }}</span></div>
-            <div class="info-row"><span class="info-label"> Post Code</span><span class="separator">|</span><span
-                class="info-value">{{ ground['post code'] }}</span></div>
-            <div class="info-row"><span class="info-label"> Country</span><span class="separator">|</span><span
-                class="info-value">{{ ground.country }}</span></div>
-            <div class="info-row"><span class="info-label"> State</span><span class="separator">|</span><span
-                class="info-value">{{ ground.state }}</span></div>
-            <div class="info-row"><span class="info-label"> City</span><span class="separator">|</span><span
-                class="info-value">{{ ground.city }}</span></div>
-          </section>
-
-        </div>
+          <img class="player-img viewimg" *ngIf="ground.profile_img!=null  && ground.profile_img!=''"
+            [src]="ground.profile_img" (error)="handleImageError($event, default_img)">
+        </span>
       </div>
+      <header class="popup-header no-icon">
+        <h1 class="popup-title">{{ ground['ground name'] | uppercase }}</h1>
+      </header>
 
-    </p-dialog>
+      <button class="popup-close" pTooltip="Close popup" tooltipPosition="left" (click)="viewDialogVisible = false"
+        aria-label="Close popup">✖</button>
+    </div>
+
+
+    <div class="popup-content">
+      <!-- Ground Details -->
+      <section class="popup-section">
+        <h2 class="section-title">⛳ Ground Details</h2>
+        <div class="info-row"><span class="info-label"> Address 1</span><span class="separator">|</span><span
+            class="info-value">{{ ground['address 1'] }}</span></div>
+        <div class="info-row"><span class="info-label"> Address 2</span><span class="separator">|</span><span
+            class="info-value">{{ ground['address 2'] }}</span></div>
+        <div class="info-row"><span class="info-label"> Post Code</span><span class="separator">|</span><span
+            class="info-value">{{ ground['post code'] }}</span></div>
+        <div class="info-row"><span class="info-label"> Country</span><span class="separator">|</span><span
+            class="info-value">{{ ground.country }}</span></div>
+        <div class="info-row"><span class="info-label"> State</span><span class="separator">|</span><span
+            class="info-value">{{ ground.state }}</span></div>
+        <div class="info-row"><span class="info-label"> City</span><span class="separator">|</span><span
+            class="info-value">{{ ground.city }}</span></div>
+      </section>
+
+    </div>
+  </div>
+
+</p-dialog>
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
-      <img
-        *ngIf="message?.data?.image"
-        [src]="message.data.image"
-        style="width: 40px; height: 40px"
-      />
+      <img *ngIf="message?.data?.image" [src]="message.data.image" style="width: 40px; height: 40px" />
       <div>
         <div class="font-bold">{{ message.summary }}</div>
         <div>{{ message.detail }}</div>
