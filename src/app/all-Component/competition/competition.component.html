@@ -583,12 +583,12 @@
                     <i class="fa fa-eye" aria-hidden="true"></i>
                   </span>
                 </div>
-                <div class="action-icon" [pTooltip]="competition.status === 'Active' ? 'Inactive ' :
-                   'Active '" tooltipPosition="top" (click)="StatusConfirm(competition.competition_id, competition.status === 'Active' 
+                <div class="action-icon" [pTooltip]="competition.record_status === 'Active' ? 'Inactive ' :
+                   'Active '" tooltipPosition="top" (click)="StatusConfirm(competition.competition_id, competition.record_status === 'Active' 
                     ? { key: 'inactive', label: 'deactivate' } : { key: 'active', label: 'activate' })">
                   <span>
                     <i class="fa"
-                      [ngClass]="competition.status === 'Active' ? 'fa-solid fa-trash-arrow-up' : 'fa-check-square text-success'">
+                      [ngClass]="competition.record_status === 'Active' ? 'fa-solid fa-trash-arrow-up' : 'fa-check-square text-success'">
                     </i>
                   </span>
                 </div>

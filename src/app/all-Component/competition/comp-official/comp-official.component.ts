@@ -94,7 +94,7 @@ export class CompOfficialComponent implements OnInit {
         ) {
           this.apiService.RefreshToken();
         }
-        this.spinnerService.raiseDataEmitterEvent('off');
+        // this.spinnerService.raiseDataEmitterEvent('off');
         this.failedToast(err.error);
       })
   }

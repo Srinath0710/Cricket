@@ -299,16 +299,10 @@ export class CompPlayerComponent implements OnInit {
     this.selectedPlayer = null;
   }
   moveToSource(player: any) {
-    const alreadyInSource = this.sourcePlayer.some((p: any) => p.player_id === player.player_id);
-    if (!alreadyInSource) {
-      this.sourcePlayer.push(player);
-    }
-    this.targetPlayer = this.targetPlayer.filter((p: any) => p.player_id !== player.player_id);
-    this.totalData = this.sourcePlayer.length;
+    this.targetPlayer = this.targetPlayer.filter((t: any) => t.player_id !== player.player_id);
+    player.display_name = player.player_name || player.display_name;
+    this.sourcePlayer.push(player);
   }
-
-
-  /* Edit button not show in Available Players */
 
   TeamInTarget(player: any): boolean {
     return this.targetPlayer?.some((t: any) => t.team_id === player.team_id);
@@ -319,14 +313,12 @@ export class CompPlayerComponent implements OnInit {
   }
 
   moveToTarget(player: any) {
-    const alreadyInTarget = this.targetPlayer.some((p: any) => p.player_id === player.player_id);
-    if (!alreadyInTarget) {
-      this.targetPlayer.push(player);
-    }
-    this.sourcePlayer = this.sourcePlayer.filter((p: any) => p.player_id !== player.player_id);
-    this.totalData = this.sourcePlayer.length;
+    this.sourcePlayer = this.sourcePlayer.filter(t => t !== player);
+    player.player_name = player.player_name || player.display_name;
+    this.targetPlayer.push(player);
+    const targetplayer = this.targetPlayer;
+    this.targetPlayer = targetplayer
   }
-
 
   filterGlobalSource($event: any, stringVal: string) {
     this.dt1?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
