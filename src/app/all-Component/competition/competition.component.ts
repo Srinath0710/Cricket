@@ -254,12 +254,12 @@ export class CompetitionComponent implements OnInit {
   loadCompetitions() {
     this.spinnerService.raiseDataEmitterEvent('on');
 
-    const pageNo = Math.floor(this.first / this.rows); // page number for API
+    const pageNo = Math.floor(this.first / this.rows);
 
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
-      page_no: pageNo.toString(),
+      page_no: this.first.toString(),
       records: this.rows.toString()
     };
 
