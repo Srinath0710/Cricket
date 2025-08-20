@@ -24,7 +24,7 @@
         {{ Fixtures.ground_name }}
       </span>
       <span class="text-muted">{{ Fixtures.match_date }}</span>
-      <span><span style="font-weight: bold;">Toss </span>: Australia (Batting)</span>
+      <span><span style="font-weight: bold;">Toss{{ Fixtures.toss_data}} </span>: Australia (Batting)</span>
       <div class="d-flex justify-content-around align-items-center my-3">
         <div class="text-center">
           <span class="person-image-team-player">
@@ -33,7 +33,7 @@
             <img class="player-img " *ngIf="Fixtures.team_a_image !=null && Fixtures.team_a_image !=''"
               [src]="Fixtures.team_a_image " (error)="handleImageError($event,default_img)">
           </span>
-          <p class="mb-0">{{ Fixtures.team_a_full_name }}</p>
+          <p class="mb-0">{{ Fixtures.team_a_score }}</p>
         </div>
         <strong>VS</strong>
         <div class="text-center">
@@ -43,11 +43,11 @@
             <img class="player-img " *ngIf="Fixtures.team_a_image1 !=null && Fixtures.team_a_image1 !=''"
               [src]="Fixtures.team_a_image1 " (error)="handleImageError($event,default_img)">
           </span>
-          <p class="mb-0">{{ Fixtures.team_a_full_name1 }}</p>
+          <p class="mb-0">{{ Fixtures.team_b_score }}</p>
         </div>
       </div>
 
-      <div style="text-align: center;color: blue;"> Aus won by 159 runs</div>
+      <div style="text-align: center;color: blue;">{{ Fixtures.match_comments }} Aus won by 159 runs</div>
 
     </div>
   </div>
@@ -340,6 +340,7 @@
   </form>
 
 </p-drawer>
+
 </section>
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
