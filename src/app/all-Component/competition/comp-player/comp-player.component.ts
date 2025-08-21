@@ -13,6 +13,7 @@ import { ToastModule } from 'primeng/toast';
 import { SpinnerService } from '../../../services/Spinner/spinner.service';
 import { Tooltip } from 'primeng/tooltip';
 import { ToastService } from '../../../services/toast.service';
+import { Dialog } from "primeng/dialog";
 interface Team {
   team_id: number;
   team_name: string;
@@ -27,7 +28,8 @@ interface Team {
     DropdownModule,
     TableModule,
     ToastModule,
-    Tooltip
+    Tooltip,
+    Dialog
   ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
@@ -83,6 +85,9 @@ export class CompPlayerComponent implements OnInit {
   allPlayersRaw: any[] = [];
   selectedPlayersRaw: any[] = [];
   showFilters: boolean = false;
+  selectedPlayers: any[] = [];
+  viewDialogVisible: boolean = false;
+  PlayerData: any[] = [];
 
   searchKeyword: string = '';
   filterStatus: string = '';
@@ -96,6 +101,10 @@ export class CompPlayerComponent implements OnInit {
 
   showSourceFilters: boolean = false;
   showTargetFilters: boolean = false;
+
+  // default_img = CricketKeyConstant.default_image_url.players;
+  men_img = CricketKeyConstant.default_image_url.menimg;
+  women_img = CricketKeyConstant.default_image_url.womenimg;
 
 
   constructor(
@@ -302,6 +311,7 @@ export class CompPlayerComponent implements OnInit {
     this.targetPlayer = this.targetPlayer.filter((t: any) => t.player_id !== player.player_id);
     player.display_name = player.player_name || player.display_name;
     this.sourcePlayer.push(player);
+    this.updateCounts();
   }
 
   TeamInTarget(player: any): boolean {
@@ -316,8 +326,11 @@ export class CompPlayerComponent implements OnInit {
     this.sourcePlayer = this.sourcePlayer.filter(t => t !== player);
     player.player_name = player.player_name || player.display_name;
     this.targetPlayer.push(player);
-    const targetplayer = this.targetPlayer;
-    this.targetPlayer = targetplayer
+    this.updateCounts();
+  }
+
+  updateCounts() {
+    this.totalData = this.sourcePlayer.length + this.targetPlayer.length;
   }
 
   filterGlobalSource($event: any, stringVal: string) {
@@ -348,6 +361,7 @@ export class CompPlayerComponent implements OnInit {
     // this.showFilters = false;
   }
   applyFilters() {
+    this.spinnerService.raiseDataEmitterEvent('on');
     this.first = 1;
     this.gridLoad();
     this.showFilters = false;
@@ -390,6 +404,57 @@ export class CompPlayerComponent implements OnInit {
     this.showTargetFilters = !this.showTargetFilters;
     this.showSourceFilters = false; // Close the other filter
   }
+
+  onViewPlayer(playersid: number) {
+    const params = {
+      player_id: playersid.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
+      user_id: String(this.user_id)
+    };
+
+    this.apiService.post(this.urlConstant.viewgroundPlayers, params).subscribe({
+      next: (res) => {
+        if (res.status_code === this.statusConstants.success && res.data) {
+          this.selectedPlayers = res.data.players;
+
+          this.PlayerData.forEach((val: any) => {
+            if (!val.profile_image) {
+              if (val.gender === 'Men') {
+                val.profile_image = this.men_img;
+              } else if (val.gender === 'Women') {
+                val.profile_image = this.women_img;
+                // } else {
+                //   val.profile_image = 'assets/images/player.jpg';
+              }
+            }
+            // val.profile_image = `${val.profile_image}?${Math.random()}`;
+          });
+          this.viewDialogVisible = true;
+        } else {
+          this.failedToast(res);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch player details', err);
+        this.failedToast(err.error);
+      }
+    });
+  }
+
+  getPlayersParts(fullName: string | undefined | null): { name: string } {
+    if (!fullName) {
+      return { name: '' };
+    }
+
+    const match = fullName.match(/^([^(]+)\s*(\(.*\))?$/);
+    return {
+      name: match?.[1]?.trim() || fullName
+    };
+  }
+
+  //   get visibleRecords(): number {
+  //   return this.PlayerData?.length || 0;
+  // }
 
 
 }

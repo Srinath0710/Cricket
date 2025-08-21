@@ -28,6 +28,8 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { environment } from '../../environments/environment';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
 import { ToastService } from '../../services/toast.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+
 interface player {
   parent_config_id: number;
   config_id: number;
@@ -67,7 +69,8 @@ interface DuplicatePlayer {
     RadioButtonModule,
     Drawer,
     ToastModule,
-    ImageCropperComponent
+    ImageCropperComponent,
+    MultiSelectModule
 
   ],
   providers: [
@@ -146,13 +149,14 @@ export class PlayerRegistrationComponent implements OnInit {
   mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   email = (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
   playerNamePattern = /^[^'"]+$/; //allstringonly allow value
-  filterStatus: string = '';
   filterPlayerType: string = '';
   filterGenderType: string = '';
+  filterBatOrder: string = '';
   filterBatType: string = '';
   filterBowlType: string = '';
   filterClubType: string = '';
   filterBowlStyle: string = '';
+  filterBowlSpec: string = '';
   form: any;
   personal_player_id: any;
   isPersonalDataIntialized: boolean = false;
@@ -166,6 +170,7 @@ export class PlayerRegistrationComponent implements OnInit {
   imageSizeError: string = '';
   selectedImage: File | null = null;
   activeFilters: any;
+  order: any;
 
   enableEditMode() {
     this.disableReadonly = !this.disableReadonly;
@@ -270,36 +275,47 @@ export class PlayerRegistrationComponent implements OnInit {
 
   }
 
+  filters: any = {};  // global filter state maintain
+
   applyFilters() {
-    const filters: any = {};
+    this.spinnerService.raiseDataEmitterEvent('on');
+    this.filters = {}; // reset local filters before apply
 
-    if (this.filterBatType) filters.batting_style_list = this.filterBatType;
-    if (this.filterBowlType) filters.bowling_type_list = this.filterBowlType;
-    if (this.filterGenderType) filters.gender_list = this.filterGenderType;
-    if (this.filterClubType) filters.club_id = this.filterClubType;
-    if (this.filterBowlStyle) filters.bowling_style_list = this.filterBowlStyle;
-    if (this.filterNationality) filters.nationality_list = this.filterNationality;
-    if (this.filterPlayerType) filters.player_role_list = this.filterPlayerType;
+    if (this.filterBatType) this.filters.batting_style_list = this.filterBatType;
+    if (this.filterBowlType) this.filters.bowling_type_list = this.filterBowlType;
+    if (this.filterBatOrder) this.filters.batting_order_list = this.filterBatOrder;
+    if (this.filterGenderType) this.filters.gender_list = this.filterGenderType;
+    if (this.filterBowlStyle) this.filters.bowling_style_list = this.filterBowlStyle;
+    if (this.filterBowlSpec) this.filters.bowling_spec_list = this.filterBowlSpec;
+    if (this.filterNationality) this.filters.nationality_list = this.filterNationality;
+    if (this.filterPlayerType) this.filters.player_role_list = this.filterPlayerType;
+    if (this.filterClubType) this.filters.club_list = this.filterClubType;
 
-
-
-    console.log('Applying filters:', filters);
+    console.log('Applying filters:', this.filters);
 
     this.first = 1;
-    this.gridLoad(filters);
+    this.gridLoad(this.filters);
 
-
-    this.showFilters = false;
-    this.toastService.playerSuccessToast({ message: 'Player list has been filtered' })
-
-    // this.msgService.add({
-    //   severity: 'info',
-    //   summary: 'Filters Applied',
-    //   data: { image: 'assets/images/default-logo.png' },
-    //   detail: 'Player list has been filtered',
-    //   life: 800,
-    // });
+    this.showFilters = true;
+    this.toastService.playerSuccessToast({ message: 'Player list has been filtered' });
   }
+
+  clearFilters() {
+    this.filterPlayerType = '';
+    this.filterGenderType = '';
+    this.filterBatOrder = '';
+    this.filterBatType = '';
+    this.filterBowlType = '';
+    this.filterClubType = '';
+    this.filterBowlStyle = '';
+    this.filterBowlSpec = '';
+    this.filterNationality = '';
+
+    this.filters = {}; // clear global filter state
+    this.showFilters = false;
+    this.gridLoad();
+  }
+
 
   clubsdropdown() {
     const params: any = {
@@ -405,7 +421,7 @@ export class PlayerRegistrationComponent implements OnInit {
       search_text: this.searchKeyword.toString()
     };
     Object.keys(filters).forEach(key => {
-      if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') {
+      if (filters[key] !== null && filters[key] !== undefined) {
         params[key] = filters[key];
       }
     });
@@ -1266,19 +1282,7 @@ export class PlayerRegistrationComponent implements OnInit {
     this.showFilters = false;
   }
 
-  clearFilters() {
-    this.filterPlayerType = '';
-    this.filterGenderType = '';
-    this.filterBatType = '';
-    this.filterBowlType = '';
-    this.filterClubType = '';
-    this.filterBowlStyle = '';
-    this.filterNationality = '';
-    this.first = 1;
-    this.showFilters = false;
-    this.gridLoad();
 
-  }
 
   onViewPlayer(playersid: number) {
     const params = {

@@ -63,12 +63,29 @@
                     <option value="">All</option>
                     <option *ngFor="let role of playerrole" [value]="role.config_id">{{ role.config_name }}</option>
                   </select>
+                  <!-- <select class="filter-select" [(ngModel)]="filterChoosed.player_role_list">
+                    <option value="">All</option>
+                    <option *ngFor="let role of playerrole" [value]="role.config_id">{{ role.config_name }}</option>
+                  </select> -->
+                  <!-- <p-multiSelect class="filter-select" [filter]="true"
+                    [showClear]="false" [options]="playerrole" optionValue="config_id"
+                    [(ngModel)]="filterPlayerType" 
+                    optionLabel="config_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
+                  </p-multiSelect> -->
                 </div>
                 <div class="filter-item">
                   <label>Gender</label>
                   <select class="filter-select" [(ngModel)]="filterGenderType">
                     <option value="">All</option>
                     <option *ngFor="let gender of genderSelect" [value]="gender.config_id">{{ gender.config_name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Batting Order</label>
+                  <select class="filter-select" [(ngModel)]="filterBatOrder">
+                    <option value="">All</option>
+                    <option *ngFor="let order of battingorder" [value]="order.config_id">{{ order.config_name }}
                     </option>
                   </select>
                 </div>
@@ -80,25 +97,33 @@
                     </option>
                   </select>
                 </div>
-                <div class="filter-item">
+                <!-- <div class="filter-item">
                   <label>Bowling Type</label>
                   <select class="filter-select" [(ngModel)]="filterBowlType">
                     <option value="">All</option>
                     <option *ngFor="let type of bowlingtype" [value]="type.config_id">{{ type.config_name }}</option>
                   </select>
-                </div>
+                </div> -->
                 <!-- <div class="filter-item">
-<label>Club</label>
-<select class="filter-select" [(ngModel)]="filterClubType">
-<option value="">All</option>
-<option *ngFor="let club of clublist" [value]="club.club_id">{{ club.club_name }}</option>
-</select>
-</div> -->
+                  <label>Club</label>
+                  <select class="filter-select" [(ngModel)]="filterClubType">
+                    <option value="">All</option>
+                    <option *ngFor="let club of clublist" [value]="club.club_id">{{ club.club_name }}</option>
+                  </select>
+                </div> -->
                 <div class="filter-item">
                   <label>Bowling Style</label>
                   <select class="filter-select" [(ngModel)]="filterBowlStyle">
                     <option value="">All</option>
                     <option *ngFor="let style of bowlingstyle" [value]="style.config_id">{{ style.config_name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="filter-item">
+                  <label>Bowling Spec</label>
+                  <select class="filter-select" [(ngModel)]="filterBowlSpec">
+                    <option value="">All</option>
+                    <option *ngFor="let spec of bowlingspec" [value]="spec.config_id">{{ spec.config_name }}
                     </option>
                   </select>
                 </div>

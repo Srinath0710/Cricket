@@ -13,7 +13,7 @@
 
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
-            <div class="p-1 Child-header text-center">Available Officials</div>
+            <div class="p-1 Child-header text-center">Officials: {{ totalData }}</div>
             <div class="d-flex align-items-center gap-2 ms-auto">
               <div class="p-input-icon-left">
                 <span class="p-input-icon-right input-icons search-padding">
@@ -74,7 +74,7 @@
         [rowsPerPageOptions]="[10, 25, 50]" [scrollable]="true" scrollHeight="400px">
         <ng-template pTemplate="caption">
           <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
-            <div class="p-1 Child-header text-center">Selected Officials</div>
+            <div class="p-1 Child-header text-center">Selected : {{ targetOfficial.length }}</div>
             <div class="d-flex align-items-center gap-2 ms-auto">
               <div class="p-input-icon-left">
                 <span class="p-input-icon-right input-icons search-padding">

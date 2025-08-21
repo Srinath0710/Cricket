@@ -34,7 +34,7 @@
           (onLazyLoad)="onPageChange($event)" responsiveLayout="scroll"> -->
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between w-100 flex-wrap">
-              <div class="p-1 Child-header text-center">Available Players : {{totalData}}</div>
+              <div class="p-1 Child-header text-center"> Players : {{totalData}}</div>
               <div class="d-flex align-items-center gap-2 ms-auto">
                 <div class="p-input-icon-left">
                   <span class="p-input-icon-right input-icons search-padding">
@@ -61,52 +61,52 @@
                       <option value="Women">Women</option>
                     </select>
                   </div>
-                  <div class="filter-group">
-                    <label>Player Role</label>
+                    <div class="filter-group">
+                      <label>Player Role</label>
                     <select [(ngModel)]="filterPlayerType" class="form-select">
-                      <option value="">All</option>
-                      <option value="Batsman">Batter</option>
-                      <option value="Bowler">Bowler</option>
-                      <option value="WK">Wicket-Keeper</option>
-                      <option value="All-Rounder">All-Rounder</option>
-                    </select>
-                  </div>
-                  <div class="filter-group">
+                        <option value="">All</option>
+                        <option value="Batsman">Batter</option>
+                        <option value="Bowler">Bowler</option>
+                        <option value="WK">Wicket-Keeper</option>
+                        <option value="All-Rounder">All-Rounder</option>
+                      </select>
+                    </div>
+                    <div class="filter-group">
                     <label>Batting Style</label>
                     <select [(ngModel)]="filterBatType" class="form-select">
-                      <option value="">All</option>
+                        <option value="">All</option>
                       <option value="Right Hand Batsman">Right Hand Batsman</option>
                       <option value="Left Hand Batsman">Left Hand Batsman</option>
-                    </select>
-                  </div>
-                  <div class="filter-group">
-                    <label>Batting Order</label>
+                      </select>
+                    </div>
+                    <div class="filter-group">
+                      <label>Batting Order</label>
                     <select [(ngModel)]="filterBattingOrder" class="form-select">
-                      <option value="">All</option>
-                      <option value="Top">Top</option>
-                      <option value="Middle">Middle</option>
-                      <option value="Lower">Lower</option>
+                        <option value="">All</option>
+                        <option value="Top">Top</option>
+                        <option value="Middle">Middle</option>
+                        <option value="Lower">Lower</option>
                       <option value="Tail Ender">Tail Ender</option>
-                    </select>
-                  </div>
-                  <div class="filter-group">
+                      </select>
+                    </div>
+                    <div class="filter-group">
                     <label>Bowling Style</label>
                     <select [(ngModel)]="filterBowlStyle" class="form-select">
-                      <option value="">All</option>
+                        <option value="">All</option>
                       <option value="Right Hand Batsman">Right Hand Batsman</option>
                       <option value="Left Hand Batsman">Left Hand Batsman</option>
-                    </select>
-                  </div>
-                  <div class="filter-group">
+                      </select>
+                    </div>
+                    <div class="filter-group">
                     <label>Bowling Spec</label>
                     <select [(ngModel)]="filterBowlType" class="form-select">
-                      <option value="">All</option>
+                        <option value="">All</option>
                       <option value="Fast Bowler">Fast Bowler</option>
                       <option value="Medium-Fast Bowler">Medium-Fast Bowler</option>
                       <option value="Off Spin">Off Spin</option>
                       <option value="Leg Spin">Leg Spin</option>
-                    </select>
-                  </div>
+                      </select>
+                    </div>
                 </div>
 
                 <!-- Buttons -->
@@ -124,7 +124,7 @@
           <ng-template pTemplate="header">
             <tr class="table-row">
               <th class="position-relative" pSortableColumn="display_name">
-                PlayersName
+                Player Name
                 <p-sortIcon field="display_name"></p-sortIcon>
               </th>
             </tr>
@@ -139,7 +139,8 @@
                     <img *ngIf="player.profile_img" [src]="player.profile_img" class="player-img image-border"
                       (error)="handleImageError($event, default_img)" />
                   </span>
-                  <span class="person-name padding-grid-center">
+                  <span class="person-name padding-grid-center groundsnameover"
+                    (click)="onViewPlayer(player.player_id)">
                     <strong>{{ player.display_name }}</strong>
                   </span>
                   <span>
@@ -165,7 +166,7 @@
           [showCurrentPageReport]="false" [rowsPerPageOptions]="[10, 25, 50]" [scrollable]="true" scrollHeight="400px">
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between w-100 gap-3 flex-wrap">
-              <div class="p-1 Child-header text-center">Selected Players</div>
+              <div class="p-1 Child-header text-center">Selected : {{ targetPlayer.length }}</div>
               <div class="d-flex align-items-center gap-2 ms-auto">
                 <div class="p-input-icon-left">
                   <span class="p-input-icon-right input-icons search-padding">
@@ -332,6 +333,77 @@
     </div>
   </div>
 </div>
+
+<p-dialog header="Players Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
+  <div class="popup-container">
+    <div *ngFor="let player of selectedPlayers" class="popup-content">
+      <div class="top-bar">
+        <div class="profile_image-wrapper">
+          <span class="person-image-team-player">
+            <!-- <img class="player-img Viewimg" *ngIf="player.profileImages==null || player.profileImages==''" [src]="profileImages"> -->
+            <img class="player-img Viewimg" *ngIf="player.profileImages!==null && player.profileImages!=''"
+              [src]="player.profile_image" (error)="handleImageError($event, default_img)">
+          </span>
+        </div>
+        <header class="popup-header no-icon">
+          <h1 class="popup-title">{{ player['display_name'] | uppercase }}</h1>
+          <!-- <span style="font-weight: normal;">{{ getPlayersParts(player['display_name']) }}</span> -->
+        </header>
+        <button class="popup-close" pTooltip="Close" tooltipPosition="left" (click)="viewDialogVisible = false"
+          aria-label="Close">✖</button>
+      </div>
+
+      <section class="popup-section">
+        <h2 class="section-title"> Players Details</h2>
+        <div class="info-row"><span class="info-label">Display Name</span>
+          <span class="separator">|</span><span class="info-value">{{ player['display_name'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Email</span>
+          <span class="separator">|</span><span class="info-value">{{ player['email'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Gender</span>
+          <span class="separator">|</span><span class="info-value">{{ player['gender'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Player Role</span>
+          <span class="separator">|</span><span class="info-value">{{ player['player_role'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Batting Style</span>
+          <span class="separator">|</span><span class="info-value">{{ player['batting_style'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Bowling Style</span>
+          <span class="separator">|</span><span class="info-value">{{ player['bowling_style'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Bowling Type</span>
+          <span class="separator">|</span><span class="info-value">{{ player['bowling_type'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Bowling Spec</span>
+          <span class="separator">|</span><span class="info-value">{{ player['bowling_specialization']
+            }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Batting Order</span>
+          <span class="separator">|</span><span class="info-value">{{ player['batting_order'] }}</span>
+        </div>
+        <!-- <div class="info-row"><span class="info-label">Status</span>
+                    <span class="separator">|</span><span class="info-value">{{ player['record_status'] }}</span>
+                  </div> -->
+        <div class="info-row"><span class="info-label">DOB</span>
+          <span class="separator">|</span><span class="info-value">{{ player['player_dob'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Nationality</span>
+          <span class="separator">|</span><span class="info-value">{{ player['nationality'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Jersey NO</span>
+          <span class="separator">|</span><span class="info-value">{{ player['jersey_no'] }}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Ref ID</span>
+          <span class="separator">|</span><span class="info-value">{{ player['reference_source_id']
+            }}</span>
+        </div>
+      </section>
+    </div>
+  </div>
+</p-dialog>
+
 <p-toast position="center" [baseZIndex]="11000">
   <ng-template let-message pTemplate="message">
     <div class="custom-toast-message">
