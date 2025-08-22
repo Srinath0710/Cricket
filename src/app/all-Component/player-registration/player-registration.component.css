@@ -75,3 +75,10 @@
 }
 
 
+::ng-deep .p-multiselect .p-multiselect-label {
+  display: block;
+  max-height: 40px;  /* restrict height */
+  overflow-y: auto;  /* scroll instead of overflow */
+  white-space: normal;
+  margin-top: -10px;
+}

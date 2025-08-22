@@ -149,20 +149,20 @@ export class PlayerRegistrationComponent implements OnInit {
   mobileRegex = '^((\\+91-?)|0)?[0-9]{10,13}$';
   email = (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
   playerNamePattern = /^[^'"]+$/; //allstringonly allow value
-  filterPlayerType: string = '';
-  filterGenderType: string = '';
-  filterBatOrder: string = '';
-  filterBatType: string = '';
+  filterPlayerType: string[] = [];
+  filterGenderType: string[] = [];
+  filterBatOrder: string[] = [];
+  filterBatType: string[] = [];
   filterBowlType: string = '';
   filterClubType: string = '';
-  filterBowlStyle: string = '';
-  filterBowlSpec: string = '';
+  filterBowlStyle: string[] = [];
+  filterBowlSpec: string[] = [];
   form: any;
   personal_player_id: any;
   isPersonalDataIntialized: boolean = false;
   disableReadonly: boolean = true;
   isClientShow: boolean = false;
-  filterNationality: string = '';
+  filterNationality: string[] = [];
   // NationalitydropdownData: any[] = [];
 
 
@@ -281,14 +281,33 @@ export class PlayerRegistrationComponent implements OnInit {
     this.spinnerService.raiseDataEmitterEvent('on');
     this.filters = {}; // reset local filters before apply
 
-    if (this.filterBatType) this.filters.batting_style_list = this.filterBatType;
+    // if (this.filterBatType) this.filters.batting_style_list = this.filterBatType;
+    if (this.filterBatType && this.filterBatType.length > 0) {
+      this.filters.batting_style_list = this.filterBatType.join(',');
+    }
     if (this.filterBowlType) this.filters.bowling_type_list = this.filterBowlType;
-    if (this.filterBatOrder) this.filters.batting_order_list = this.filterBatOrder;
-    if (this.filterGenderType) this.filters.gender_list = this.filterGenderType;
-    if (this.filterBowlStyle) this.filters.bowling_style_list = this.filterBowlStyle;
-    if (this.filterBowlSpec) this.filters.bowling_spec_list = this.filterBowlSpec;
-    if (this.filterNationality) this.filters.nationality_list = this.filterNationality;
-    if (this.filterPlayerType) this.filters.player_role_list = this.filterPlayerType;
+    if (this.filterBatOrder && this.filterBatOrder.length > 0) {
+      this.filters.batting_order_list = this.filterBatOrder.join(',');
+    }
+    // if (this.filterBatOrder) this.filters.batting_order_list = this.filterBatOrder;
+    if (this.filterGenderType && this.filterGenderType.length > 0) {
+      this.filters.gender_list = this.filterGenderType.join(',');
+    }
+    // if (this.filterBowlStyle) this.filters.bowling_style_list = this.filterBowlStyle;
+    if (this.filterBowlStyle && this.filterBowlStyle.length > 0) {
+      this.filters.bowling_style_list = this.filterBowlStyle.join(',');
+    }
+    // if (this.filterBowlSpec) this.filters.bowling_spec_list = this.filterBowlSpec;
+    if (this.filterBowlSpec && this.filterBowlSpec.length > 0) {
+      this.filters.bowling_spec_list = this.filterBowlSpec.join(',');
+    }
+    // if (this.filterNationality) this.filters.nationality_list = this.filterNationality;
+    if (this.filterNationality && this.filterNationality.length > 0) {
+      this.filters.nationality_list = this.filterNationality.join(',');
+    }
+    if (this.filterPlayerType && this.filterPlayerType.length > 0) {
+      this.filters.player_role_list = this.filterPlayerType.join(',');
+    }
     if (this.filterClubType) this.filters.club_list = this.filterClubType;
 
     console.log('Applying filters:', this.filters);
@@ -301,15 +320,15 @@ export class PlayerRegistrationComponent implements OnInit {
   }
 
   clearFilters() {
-    this.filterPlayerType = '';
-    this.filterGenderType = '';
-    this.filterBatOrder = '';
-    this.filterBatType = '';
+    this.filterPlayerType = [];
+    this.filterGenderType = [];
+    this.filterBatOrder = [];
+    this.filterBatType = [];
     this.filterBowlType = '';
     this.filterClubType = '';
-    this.filterBowlStyle = '';
-    this.filterBowlSpec = '';
-    this.filterNationality = '';
+    this.filterBowlStyle = [];
+    this.filterBowlSpec = [];
+    this.filterNationality = [];
 
     this.filters = {}; // clear global filter state
     this.showFilters = false;
@@ -411,7 +430,7 @@ export class PlayerRegistrationComponent implements OnInit {
     });
   }
 
-  gridLoad(filters: any = {}) {
+  gridLoad(filters: any = this.filters) {
     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {
       user_id: this.user_id?.toString(),
