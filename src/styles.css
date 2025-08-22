@@ -1140,7 +1140,7 @@ table.p-datatable-table {
 }
 
 .p-datatable .p-datatable-tbody>tr>td {
-  line-height: 3.4;
+  line-height: 3.75 !important;
 }
 
 select,
