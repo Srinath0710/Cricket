@@ -333,6 +333,7 @@ export class PlayerRegistrationComponent implements OnInit {
     this.filters = {}; // clear global filter state
     this.showFilters = false;
     this.gridLoad();
+    this.clear();
   }
 
 
