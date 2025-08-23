@@ -338,7 +338,7 @@
   <div class="popup-container">
     <div *ngFor="let player of selectedPlayers" class="popup-content">
       <div class="top-bar">
-        <div class="profile_image-wrapper">
+        <div class="profile-image-wrapper">
           <span class="person-image-team-player">
             <!-- <img class="player-img Viewimg" *ngIf="player.profileImages==null || player.profileImages==''" [src]="profileImages"> -->
             <img class="player-img Viewimg" *ngIf="player.profileImages!==null && player.profileImages!=''"
@@ -346,7 +346,7 @@
           </span>
         </div>
         <header class="popup-header no-icon">
-          <h1 class="popup-title">{{ player['display_name'] | uppercase }}</h1>
+          <h1 class="popup-title">{{ getPlayersParts(player['display_name']).name | uppercase }}</h1>
           <!-- <span style="font-weight: normal;">{{ getPlayersParts(player['display_name']) }}</span> -->
         </header>
         <button class="popup-close" pTooltip="Close" tooltipPosition="left" (click)="viewDialogVisible = false"

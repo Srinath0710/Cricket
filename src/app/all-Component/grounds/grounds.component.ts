@@ -297,7 +297,7 @@ export class GroundsComponent implements OnInit {
             this.spinnerService.raiseDataEmitterEvent('off');
           }
           this.groundsData.forEach((val: any) => {
-            val.profile_img = `${val.profile_img}?${Math.random()}`;
+            val.ground_photo = `${val.ground_photo}?${Math.random()}`;
           });
         },
       });

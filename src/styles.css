@@ -979,6 +979,7 @@ main {
   font-size: 10px;
   color: #666;
   font-family: sans-serif;
+  padding-left: 5px;
 }
 
 .filter-select {
@@ -2159,7 +2160,7 @@ body.modal-open {
 .comp-chid-edit-button {
   margin-right: 6px;
   font-size: 12px;
-  background-color:#367039;
+  background-color: #367039;
   color: #fff;
   border-radius: 1px;
   cursor: pointer;
