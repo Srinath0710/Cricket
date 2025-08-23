@@ -1,48 +1,54 @@
 .card {
-    width: 100%;
-    padding: 10px;
-    min-height: auto;
-    max-width: 297px;
-    font-size: 13px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-    border-radius: 12px;
-  }
+  width: 100%;
+  padding: 10px;
+  min-height: auto;
+  max-width: 297px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  border-radius: 12px;
+}
 
-  button {
-    font-size: 12px !important;
-    padding: 4px 8px !important;
-    margin: 2px;
-  }
-  .player-img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border: 2px solid #dee2e6;
-  }
-  .new-buttons{
-    font-size: 12px !important;
-    padding: 6px 8px !important;
-    margin: 8px;
-    background-color:#367039;
-    color:white;
-    border-color:#367039;
-    }
-.status-color{
+button {
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  margin: 2px;
+}
+
+.player-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border: 2px solid #dee2e6;
+}
+
+.new-buttons {
+  font-size: 12px !important;
+  padding: 6px 8px !important;
+  margin: 8px;
+  background-color: #367039;
+  color: white;
+  border-color: #367039;
+}
+
+.status-color {
   background-color: #65398e;
-   color:#fff
+  color: #fff
 }
-.background-edit{
-  background-color:#367039;
+
+.background-edit {
+  background-color: #367039;
   height: 31px;
   width: 31px;
 }
-.background-delete{
+
+.background-delete {
   height: 31px;
   width: 31px;
 }
-.fixture-card{
-      background-color: rgb(177 206 236) !important;
+
+.fixture-card {
+  background-color: rgb(177 206 236) !important;
 }
 
 /* .delete-icon {
@@ -53,3 +59,9 @@
 .delete-icon:hover {
   color: darkred;
 } */
+
+::ng-deep .warning-icon {
+  color: #e53935 !important;
+  font-size: 50px;
+  margin-top: 12px;
+}

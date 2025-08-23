@@ -73,8 +73,8 @@
     </div>
 
     <form [formGroup]="competitionFixturesForm">
-      <div class="row">
-        <div class="col-md-3 mb-3">
+      <div class="row gy-3 gx-3">
+        <div class="col-md-3">
           <label class="form-label">
             Match No <span class="text-danger">*</span>
           </label>
@@ -217,7 +217,7 @@
           </p-dropdown>
         </div>
         <div class="col-md-3">
-          <label>On-field Umpire 1</label>
+          <label>On-Field Umpire 1</label>
           <p-dropdown [options]="filteredUmpireList1" class="drop-error" formControlName="umpire_1"
             optionValue="official_id" optionLabel="official_name" [filter]="true"
             [ngModel]="competitionFixturesForm.get('umpire_1')?.value" (ngModelChange)="updateFilteredLists()"
@@ -230,7 +230,7 @@
           </p-dropdown>
         </div>
         <div class="col-md-3">
-          <label>On-field Umpire 2</label>
+          <label>On-Field Umpire 2</label>
           <p-dropdown [options]="filteredUmpireList2" [ngModel]="competitionFixturesForm.get('umpire_2')?.value"
             (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_2"
             optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
@@ -243,7 +243,7 @@
           </p-dropdown>
         </div>
         <div class="col-md-3">
-          <label>TV Umpire </label>
+          <label>Third Umpire </label>
           <p-dropdown [options]="filteredUmpireList3" [ngModel]="competitionFixturesForm.get('umpire_3')?.value"
             (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_3"
             optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"
@@ -256,7 +256,7 @@
           </p-dropdown>
         </div>
         <div class="col-md-3">
-          <label>Off-field Umpire</label>
+          <label>Reserved Umpire</label>
           <p-dropdown [options]="filteredUmpireList4" [ngModel]="competitionFixturesForm.get('umpire_4')?.value"
             (ngModelChange)="updateFilteredLists()" class="drop-error" formControlName="umpire_4"
             optionValue="official_id" optionLabel="official_name" [filter]="true" filterBy="official_name"

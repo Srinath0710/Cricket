@@ -90,14 +90,15 @@ export class CompPlayerComponent implements OnInit {
   PlayerData: any[] = [];
 
   searchKeyword: string = '';
-  filterStatus: string = '';
-  filterPlayerType: string = '';
-  filterGenderType: string = '';
-  filterBatType: string = '';
-  filterBowlType: string = '';
   filterClubType: string = '';
+  filterPlayerType: string = '';
+  filterBatType: string = '';
   filterBattingOrder: string = '';
   filterBowlStyle: string = '';
+  filterBowlType: string = '';
+
+  players: any[] = [];        // original list from API
+  filteredPlayers: any[] = [];
 
   showSourceFilters: boolean = false;
   showTargetFilters: boolean = false;
@@ -156,15 +157,15 @@ export class CompPlayerComponent implements OnInit {
       params.records = this.rows.toString()
 
     if (applyFilters) {
-      if (this.filterStatus) {
-        params.status = this.filterStatus;
-      }
+      // if (this.filterStatus) {
+      //   params.status = this.filterStatus;
+      // }
       if (this.filterPlayerType) {
         params.player_type = this.filterPlayerType;
       }
-      if (this.filterGenderType) {
-        params.gender_type = this.filterGenderType;
-      }
+      // if (this.filterGenderType) {
+      //   params.gender_type = this.filterGenderType;
+      // }
       if (this.filterBatType) {
         params.bat_type = this.filterBatType;
       }
@@ -360,23 +361,36 @@ export class CompPlayerComponent implements OnInit {
     this.showFilters = !this.showFilters;
     // this.showFilters = false;
   }
-  applyFilters() {
-    this.spinnerService.raiseDataEmitterEvent('on');
-    this.first = 1;
-    this.gridLoad();
-    this.showFilters = false;
-    this.msgService.add({
-      severity: 'info',
-      summary: 'Filters Applied',
-      data: { image: 'assets/images/default-logo.png' },
-      detail: 'Player list has been filtered'
-    });
+applyFilters() {
+  // Check if the Source filter panel is open
+  if (this.showSourceFilters) {
+    this.gridLoad(true); // Re-fetch data from API with filters
   }
 
+  // Check if the Target filter panel is open
+  if (this.showTargetFilters) {
+    // Perform local filtering on the targetPlayer array
+    this.targetPlayer = this.selectedPlayersRaw.filter(player =>
+      (this.filterPlayerType ? player.player_role === this.filterPlayerType : true) &&
+      (this.filterBatType ? player.batting_style === this.filterBatType : true) &&
+      (this.filterBattingOrder ? player.batting_order === this.filterBattingOrder : true) &&
+      (this.filterBowlType ? player.bowling_specialization === this.filterBowlType : true)
+    );
+    // You might also want to call this to reset the PrimeNG table's internal state
+    if (this.dt2) {
+      this.dt2.reset();
+    }
+  }
+
+  // Close the filter panels after applying
+  this.showSourceFilters = false;
+  this.showTargetFilters = false;
+}
+
   clearFilters() {
-    this.filterStatus = '';
+    // this.filterStatus = '';
     this.filterPlayerType = '';
-    this.filterGenderType = '';
+    // this.filterGenderType = '';
     this.filterBatType = '';
     this.filterBowlType = '';
     this.searchKeyword = '';

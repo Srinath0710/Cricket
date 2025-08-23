@@ -417,14 +417,15 @@ export class CompMatchComponent implements OnInit {
   }
 
   StatusConfirm(match_id: number) {
+    const iconClass = 'icon-warning';
     const message = `Are you sure you want to proceed?`;
 
     this.confirmationService.confirm({
       header: '',
       message: `
       <div class="custom-confirm-content">
-        <i class="fa-solid fa-trash warning-icon icon-danger"></i>
-        <div class="warning">Delete</div>
+        <i class="fa-solid fa-triangle-exclamation warning-icon ${iconClass}"></i>
+        <div class="warning">Warning</div>
         <div class="message-text">${message}</div>
       </div>
     `,
@@ -439,9 +440,7 @@ export class CompMatchComponent implements OnInit {
       reject: () => { }
     });
   }
-
-
-
+ 
   status(match_id: number, url: string) {
     const params: any = {
       user_id: this.user_id?.toString(),
