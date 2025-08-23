@@ -1005,9 +1005,8 @@ main {
 }
 
 .p-datatable .p-datatable-thead>tr>th {
-  background-color: #959eb5 !important;
-  /* background-color: #fbfbfb !important; */
-  color: #2e2e2e !important;
+  background-color: #5b6b8f !important;
+  color: #fff !important;
   /* border: 1px solid #B33DC6 !important; */
   border: 0px solid #020425 !important;
   padding: 2px 13px !important;
