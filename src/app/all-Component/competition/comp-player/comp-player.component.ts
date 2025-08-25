@@ -312,7 +312,6 @@ export class CompPlayerComponent implements OnInit {
     this.targetPlayer = this.targetPlayer.filter((t: any) => t.player_id !== player.player_id);
     player.display_name = player.player_name || player.display_name;
     this.sourcePlayer.push(player);
-    this.updateCounts();
   }
 
   TeamInTarget(player: any): boolean {
@@ -327,11 +326,6 @@ export class CompPlayerComponent implements OnInit {
     this.sourcePlayer = this.sourcePlayer.filter(t => t !== player);
     player.player_name = player.player_name || player.display_name;
     this.targetPlayer.push(player);
-    this.updateCounts();
-  }
-
-  updateCounts() {
-    this.totalData = this.sourcePlayer.length + this.targetPlayer.length;
   }
 
   filterGlobalSource($event: any, stringVal: string) {

@@ -536,6 +536,7 @@ export class PlayerRegistrationComponent implements OnInit {
     setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
     setDefaultValue(this.bowlingstyle, 'bowling_style_id', '');
     setDefaultValue(this.bowlingtype, 'bowling_type_id', '');
+    setDefaultValue(this.genderSelect, 'gender_id', 'men');
 
     // const fastBowler = this.bowlingtype.find(type => type.config_name?.toLowerCase().includes('fast'));
     // if (fastBowler) {
