@@ -61,52 +61,52 @@
                       <option value="Women">Women</option>
                     </select>
                   </div>
-                    <div class="filter-group">
-                      <label>Player Role</label>
+                  <div class="filter-group">
+                    <label>Player Role</label>
                     <select [(ngModel)]="filterPlayerType" class="form-select">
-                        <option value="">All</option>
-                        <option value="Batsman">Batter</option>
-                        <option value="Bowler">Bowler</option>
-                        <option value="WK">Wicket-Keeper</option>
-                        <option value="All-Rounder">All-Rounder</option>
-                      </select>
-                    </div>
-                    <div class="filter-group">
+                      <option value="">All</option>
+                      <option value="Batsman">Batter</option>
+                      <option value="Bowler">Bowler</option>
+                      <option value="WK">Wicket-Keeper</option>
+                      <option value="All-Rounder">All-Rounder</option>
+                    </select>
+                  </div>
+                  <div class="filter-group">
                     <label>Batting Style</label>
                     <select [(ngModel)]="filterBatType" class="form-select">
-                        <option value="">All</option>
+                      <option value="">All</option>
                       <option value="Right Hand Batsman">Right Hand Batsman</option>
                       <option value="Left Hand Batsman">Left Hand Batsman</option>
-                      </select>
-                    </div>
-                    <div class="filter-group">
-                      <label>Batting Order</label>
+                    </select>
+                  </div>
+                  <div class="filter-group">
+                    <label>Batting Order</label>
                     <select [(ngModel)]="filterBattingOrder" class="form-select">
-                        <option value="">All</option>
-                        <option value="Top">Top</option>
-                        <option value="Middle">Middle</option>
-                        <option value="Lower">Lower</option>
+                      <option value="">All</option>
+                      <option value="Top">Top</option>
+                      <option value="Middle">Middle</option>
+                      <option value="Lower">Lower</option>
                       <option value="Tail Ender">Tail Ender</option>
-                      </select>
-                    </div>
-                    <div class="filter-group">
+                    </select>
+                  </div>
+                  <div class="filter-group">
                     <label>Bowling Style</label>
                     <select [(ngModel)]="filterBowlStyle" class="form-select">
-                        <option value="">All</option>
+                      <option value="">All</option>
                       <option value="Right Hand Batsman">Right Hand Batsman</option>
                       <option value="Left Hand Batsman">Left Hand Batsman</option>
-                      </select>
-                    </div>
-                    <div class="filter-group">
+                    </select>
+                  </div>
+                  <div class="filter-group">
                     <label>Bowling Spec</label>
                     <select [(ngModel)]="filterBowlType" class="form-select">
-                        <option value="">All</option>
+                      <option value="">All</option>
                       <option value="Fast Bowler">Fast Bowler</option>
                       <option value="Medium-Fast Bowler">Medium-Fast Bowler</option>
                       <option value="Off Spin">Off Spin</option>
                       <option value="Leg Spin">Leg Spin</option>
-                      </select>
-                    </div>
+                    </select>
+                  </div>
                 </div>
 
                 <!-- Buttons -->
@@ -139,8 +139,7 @@
                     <img *ngIf="player.profile_img" [src]="player.profile_img" class="player-img image-border"
                       (error)="handleImageError($event, default_img)" />
                   </span>
-                  <span class="person-name padding-grid-center groundnameover"
-                    (click)="onViewPlayer(player.player_id)">
+                  <span class="person-name padding-grid-center groundnameover" (click)="onViewPlayer(player.player_id)">
                     <strong>{{ player.display_name }}</strong>
                   </span>
                   <span>
@@ -319,6 +318,55 @@
           <input id="scorecard_name" type="text" class="form-control" formControlName="scorecard_name" />
         </div>
 
+        <div class="mb-3 d-flex align-items-center gap-4">
+          <label>Player Imagess  : </label>
+          <div class="image-upload-container text-center">
+            <div class="image-preview-wrapper">
+              <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+              <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                [src]="default_img" alt="Profile Image" class="profile-img">
+              <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Image" class="profile-img">
+              <img *ngIf="profileImages != null && profileImages != ''" [src]="profileImages"
+                (error)="handleImageError($event, default_img)" alt="Profile Image" class="profile-img">
+            </div>
+
+            <div class="split-button-wrapper">
+              <label for="profileImageInput" class="split-button upload-half">
+                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden formControlName="profile_image"/>
+                Upload
+              </label>
+              <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                Crop
+              </button> 
+            </div>
+
+            <div *ngIf="imageSizeError" class="required-msg" [style]="{width:'120px'}">
+              {{ imageSizeError }}
+            </div>
+          </div>
+
+          <small class="text-danger" *ngIf="ManagePlayerForm.get('pofile_url')?.errors">
+            *Only PNG,JPEG, or JPG files are allowed.
+          </small>
+
+          <div *ngIf="showCropperModal" class="modal img-cropper-popup">
+            <div class="modal-content crop-image">
+              <div class="modal-header modal-header-img">
+                <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+              </div>
+              <div class="modal-body img-fix">
+                <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3" (imageCropped)="imageCropped($event)"
+                (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+              </image-cropper>
+              </div>
+              <div class="modal-footer crop-footer">
+                <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
+                <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Buttons -->
         <div class="text-end">
           <button type="submit" class="btn btn-primary save-button" (click)="updateplayer()">
@@ -329,8 +377,7 @@
           </button>
         </div>
       </form>
-
-    </div>
+     </div>
   </div>
 </div>
 

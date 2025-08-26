@@ -169,15 +169,72 @@
             placeholder="Enter sponsor name (optional)" />
         </div>
 
+        <div class="mb-3 d-flex align-items-center gap-4">
+          <label>Team Profilesss : </label>
+          <div class="image-upload-container text-center">
+
+            <div class="image-preview-wrapper">
+              <button type="button" class="cancel-btn" (click)="cancel()">✕</button>
+              <img *ngIf="(filedata == null || filedata == '') && (profileImages == null || profileImages == '')"
+                [src]="default_img" alt="Profile Images" class="profile-img">
+              <img *ngIf="filedata != null && filedata != ''" [src]="url" alt="Profile Images" class="profile-img">
+              <img *ngIf="profileImages !=null && profileImages != ''" [src]="profileImages" alt="Profile Images"
+                (error)="handleImageError($event, default_img)" class="profile-img">
+              <!-- <img *ngIf="!selectedTeam?.profile_url" [src]="default_img" class="preview-img" />
+              <img *ngIf="selectedTeam?.profile_url" [src]="selectedTeam.profile_url" class="preview-img"
+                (error)="handleImageError($event, default_img)" /> -->
+            </div>
+
+            <div class="split-button-wrapper">
+              <label for="profileImageInput" class="split-button upload-half">
+                <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
+                  formControlName="profile_url" />
+                Upload
+              </label>
+              <button type="button" class="split-button crop-half" (click)="cropPopOpen()">
+                Crop
+              </button>
+            </div>
+            <div *ngIf="imageSizeError" class="required-msg" [style]="{width: '120px'}">
+              {{ imageSizeError }}
+            </div>
+          </div>
+          <small class="text-danger" *ngIf="ManageTeamsForm.get('profile_url')?.errors">
+            * Only PNG,JPEG, or JPG files are allowed.
+          </small>
+
+          <div *ngIf="showCropperModal" class="modal img-cropper-popup">
+            <div class="modal-content crop-image">
+              <div class="modal-header modal-header-img">
+                <h2 style="font-size: 20px; margin-left: 38%;">Crop Image</h2>
+              </div>
+              <div class="modal-body img-fix">
+                <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+                  (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                  (loadImageFailed)="loadImageFailed()">
+                </image-cropper>
+              </div>
+              <div class="modal-footer crop-footer">
+                <button class="submit-btn margin-right save-button" (click)="saveCroppedImage()">Save</button>
+                <button class="custom-cancel-btn submit-btn margin-right" (click)="cancelImg()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Buttons -->
         <div class="text-end">
           <button type="submit" class="btn btn-primary save-button" (click)="updateTeam()">
             Submit
           </button>
+          <button type="button" class="btn btn-secondary ms-2 custom-cancel-btn" (click)="clear()">
+            Clear
+          </button>
           <button type="button" class="btn btn-secondary ms-2 custom-cancel-btn" (click)="closeEditPopup()">
             Close
           </button>
         </div>
+
       </form>
     </div>
   </div>

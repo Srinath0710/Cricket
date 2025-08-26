@@ -14,6 +14,8 @@ import { SpinnerService } from '../../../services/Spinner/spinner.service';
 import { Tooltip } from 'primeng/tooltip';
 import { ToastService } from '../../../services/toast.service';
 import { Dialog } from "primeng/dialog";
+import { UploadImgService } from '../../../Profile_Img_service/upload-img.service';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 interface Team {
   team_id: number;
   team_name: string;
@@ -29,7 +31,8 @@ interface Team {
     TableModule,
     ToastModule,
     Tooltip,
-    Dialog
+    Dialog,
+    ImageCropperComponent
   ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
@@ -89,6 +92,21 @@ export class CompPlayerComponent implements OnInit {
   viewDialogVisible: boolean = false;
   PlayerData: any[] = [];
 
+  previewUrl: string | ArrayBuffer | null = null;
+  filedata: any;
+  uploadedImage: string | ArrayBuffer | null = null;
+  profileImages: any;
+  showCropperModal = false;
+  imageBase64: any = null;
+  url: any;
+  src: any;
+  imageCropAlter: any;
+  imageDefault: any;
+  croppedImage: any;
+  imagePreview: string | ArrayBuffer | null = null;
+  imageSizeError: string = '';
+  selectedImage: File | null = null;
+
   searchKeyword: string = '';
   filterClubType: string = '';
   filterPlayerType: string = '';
@@ -116,7 +134,8 @@ export class CompPlayerComponent implements OnInit {
     private cricketKeyConstant: CricketKeyConstant,
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private uploadImgService: UploadImgService
 
   ) { }
   ngOnInit() {
@@ -302,6 +321,7 @@ export class CompPlayerComponent implements OnInit {
       display_name: player.player_name || player.display_name,
     });
     this.isEditPopupVisible = true;
+    this.filedata = null;
   }
 
   closeEditPopup() {
@@ -355,31 +375,31 @@ export class CompPlayerComponent implements OnInit {
     this.showFilters = !this.showFilters;
     // this.showFilters = false;
   }
-applyFilters() {
-  // Check if the Source filter panel is open
-  if (this.showSourceFilters) {
-    this.gridLoad(true); // Re-fetch data from API with filters
-  }
-
-  // Check if the Target filter panel is open
-  if (this.showTargetFilters) {
-    // Perform local filtering on the targetPlayer array
-    this.targetPlayer = this.selectedPlayersRaw.filter(player =>
-      (this.filterPlayerType ? player.player_role === this.filterPlayerType : true) &&
-      (this.filterBatType ? player.batting_style === this.filterBatType : true) &&
-      (this.filterBattingOrder ? player.batting_order === this.filterBattingOrder : true) &&
-      (this.filterBowlType ? player.bowling_specialization === this.filterBowlType : true)
-    );
-    // You might also want to call this to reset the PrimeNG table's internal state
-    if (this.dt2) {
-      this.dt2.reset();
+  applyFilters() {
+    // Check if the Source filter panel is open
+    if (this.showSourceFilters) {
+      this.gridLoad(true); // Re-fetch data from API with filters
     }
-  }
 
-  // Close the filter panels after applying
-  this.showSourceFilters = false;
-  this.showTargetFilters = false;
-}
+    // Check if the Target filter panel is open
+    if (this.showTargetFilters) {
+      // Perform local filtering on the targetPlayer array
+      this.targetPlayer = this.selectedPlayersRaw.filter(player =>
+        (this.filterPlayerType ? player.player_role === this.filterPlayerType : true) &&
+        (this.filterBatType ? player.batting_style === this.filterBatType : true) &&
+        (this.filterBattingOrder ? player.batting_order === this.filterBattingOrder : true) &&
+        (this.filterBowlType ? player.bowling_specialization === this.filterBowlType : true)
+      );
+      // You might also want to call this to reset the PrimeNG table's internal state
+      if (this.dt2) {
+        this.dt2.reset();
+      }
+    }
+
+    // Close the filter panels after applying
+    this.showSourceFilters = false;
+    this.showTargetFilters = false;
+  }
 
   clearFilters() {
     // this.filterStatus = '';
@@ -460,9 +480,217 @@ applyFilters() {
     };
   }
 
+  cancel() {
+    this.filedata = null;
+    this.url = null;
+    this.profileImages = null;
+    this.imageCropAlter = null;
+    this.imageBase64 = null;
+    this.imageDefault = null;
+    this.croppedImage = null
+  }
+
   //   get visibleRecords(): number {
   //   return this.PlayerData?.length || 0;
   // }
 
+  fileEvent(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    const maxSizeKB = 500;
+
+    if (this.ManagePlayerForm.value.profile_image !== null && this.ManagePlayerForm.value.profile_image !== '') {
+      this.profileImages = null;
+    }
+
+    if (file) {
+      const fileSizeKB = file.size / 500;
+      if (fileSizeKB > maxSizeKB) {
+        this.imageSizeError = 'Max.size is 500KB';
+        this.imagePreview = null;
+        this.selectedImage = null;
+        this.filedata = null; this.ManagePlayerForm.get('profile_url')?.reset();
+        return;
+      }
+
+      this.imageSizeError = '';
+      this.filedata = file;
+      this.selectedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const result = e.target.result;
+        this.url = result;
+        this.imageCropAlter = result;
+        this.imageDefault = result;
+        this.imagePreview = result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.filedata = null;
+      this.url = this.imageDefault;
+      this.imagePreview = this.imageDefault;
+      this.filedata = this.base64ToBinary(this.imageDefault);
+    }
+  }
+
+  saveCroppedImage(): void {
+    this.profileImages = this.croppedImage;
+    this.imageCropAlter = this.filedata;
+    this.filedata = this.base64ToBinary(this.filedata);
+    this.showCropperModal = false;
+  }
+
+  cancelImg(): void {
+    this.showCropperModal = false;
+    this.url = this.imageCropAlter;
+    this.filedata = this.base64ToBinary(this.imageCropAlter);
+  }
+
+  loadImageFailed() {
+    console.error('Image loading failed');
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    const blob = event.blob;
+
+    if (blob) {
+      this.convertBlobToBase64(blob).then((base64) => {
+        this.url = base64;
+        this.filedata = base64;
+        this.profileImages = null;
+      }).catch((error) => {
+        console.error('Failed to convert blob to base64:', error);
+      });
+    }
+  }
+
+  imageLoaded() {
+    console.log('Image loaded');
+  }
+
+  cropperReady() {
+    console.log('Cropper ready');
+  }
+
+  base64ToBinary(base64: string): Blob | null {
+    if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 input:', base64);
+      return null;
+    }
+    try {
+      const byteCharacters = atob(base64.split(',')[1]);
+      const byteArrays = new Uint8Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+      }
+      return new Blob([byteArrays], { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Error converting base64 to binary:', error);
+      return null;
+    }
+  }
+
+  convertUrlToBase64(imageUrl: string): void {
+    fetch(imageUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Image = reader.result as string;
+          this.imageBase64 = base64Image;
+          this.imageCropAlter = base64Image
+          this.imageDefault = base64Image
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch((error) => {
+      });
+  }
+
+  cropPopOpen() {
+    this.showCropperModal = true;
+    this.imageBase64 = this.imageDefault;
+  }
+  convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = () => {
+        reject('Failed to convert Blob to base64');
+      };
+
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  profileImgAppend(player_id: any) {
+    const myFormData = new FormData();
+    if (this.filedata != null && this.filedata != '') {
+      myFormData.append('profile_url', this.filedata);
+      myFormData.append('client_id', this.CompetitionData.client_id.toString());
+      myFormData.append('file_id', player_id);
+      myFormData.append('player_id',player_id);
+      myFormData.append('upload_type', 'players');
+      myFormData.append('user_id', this.user_id?.toString());
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+        (res) => {
+          if (res.status_code == this.statusConstants.success) {
+            if (res.url != null && res.url != '') {
+              this.addCallBack(res)
+            } else {
+              this.failedToast(res);
+            }
+          } else {
+            this.failedToast(res);
+          }
+        },
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+
+          } else {
+            this.failedToast(err.error);
+          }
+        }
+      );
+    }
+  }
+
+  onImageUpload(event: any) {
+    const file = event.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.uploadedImage = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  onProfileImageSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.filedata = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+
+      };
+      reader.readAsDataURL(file);
+
+    }
+  }
+
+  addCallBack(res: any){
+    this.successToast(res);
+    this.gridLoad();
+  }
 
 }
