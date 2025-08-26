@@ -139,7 +139,7 @@
                     <img *ngIf="player.profile_img" [src]="player.profile_img" class="player-img image-border"
                       (error)="handleImageError($event, default_img)" />
                   </span>
-                  <span class="person-name padding-grid-center groundsnameover"
+                  <span class="person-name padding-grid-center groundnameover"
                     (click)="onViewPlayer(player.player_id)">
                     <strong>{{ player.display_name }}</strong>
                   </span>

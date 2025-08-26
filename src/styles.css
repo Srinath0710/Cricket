@@ -545,6 +545,7 @@ label {
   position: relative;
   padding-left: 5px;
   display: table-cell;
+  font-weight: 300;
 }
 
 .flex-row>a>img {
@@ -1140,7 +1141,7 @@ table.p-datatable-table {
 }
 
 .p-datatable .p-datatable-tbody>tr>td {
-  line-height: 3.75 !important;
+  line-height: 3.80 !important;
 }
 
 select,

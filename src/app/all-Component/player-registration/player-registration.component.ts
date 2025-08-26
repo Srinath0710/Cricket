@@ -523,28 +523,40 @@ export class PlayerRegistrationComponent implements OnInit {
     });
   }
 
-  formSetValue() {
-    // 🔁 Generic setter
-    const setDefaultValue = (list: any[], field: string, keyword: string) => {
-      const match = list.find(item => item.config_name?.toLowerCase().includes(keyword));
-      if (match) {
-        this.playerRegistrationform.patchValue({ [field]: match.config_id });
-      }
-    };
-    // 🏏 Set defaults using helper
-    setDefaultValue(this.playerrole, 'player_role_id', 'batsman');
-    setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
-    setDefaultValue(this.bowlingstyle, 'bowling_style_id', '');
-    setDefaultValue(this.bowlingtype, 'bowling_type_id', '');
-    setDefaultValue(this.genderSelect, 'gender_id', 'men');
+formSetValue() {
+  // 🔁 Generic setter
+  const setDefaultValue = (list: any[], field: string, keyword: string) => {
+    const match = list.find(item => item.config_name?.toLowerCase().includes(keyword));
+    if (match) {
+      this.playerRegistrationform.patchValue({ [field]: match.config_id });
+    }
+  };
+  
+  // 🏏 Set defaults using helper
+  setDefaultValue(this.playerrole, 'player_role_id', 'batsman');
+  setDefaultValue(this.battingstyle, 'batting_style_id', 'right');
+  setDefaultValue(this.bowlingstyle, 'bowling_style_id', '');
+  setDefaultValue(this.bowlingtype, 'bowling_type_id', '');
+  setDefaultValue(this.genderSelect, 'gender_id', 'men');
 
-    // const fastBowler = this.bowlingtype.find(type => type.config_name?.toLowerCase().includes('fast'));
-    // if (fastBowler) {
-    //   const fastBowlerId = fastBowler.config_id;
-    //   this.playerRegistrationform.patchValue({ bowling_type_id: fastBowlerId });
-    //   this.onBowlingTypeChange(fastBowlerId);
-    // }
+  // Set default image based on the selected gender
+  const genderId = this.playerRegistrationform.get('gender_id')?.value;
+  if (genderId) {
+    const gender = this.genderSelect.find(g => g.config_id === genderId);
+    if (gender) {
+      const genderName = gender.config_name.toLowerCase();
+      if (genderName.includes('male') || genderName.includes('men') || genderName.includes('boy')) {
+        this.default_img = this.men_img;
+      } else if (genderName.includes('female') || genderName.includes('women') || genderName.includes('girl')) {
+        this.default_img = this.women_img;
+      // } else {
+      //   this.default_img = CricketKeyConstant.default_image_url.players;
+      }
+    }
   }
+
+  this.filteredSpecs = [];
+}
 
   duplicateChange(isEditMode: boolean = false) {
     this.submitted = true;
