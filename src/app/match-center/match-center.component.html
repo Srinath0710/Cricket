@@ -1,0 +1,113 @@
+<div class="row match-center-header">
+
+  <div class="col-4">
+    <h2 class="heading">Match Center</h2>
+  </div>
+
+  <div class="col-8">
+    <div class="row">
+
+      <div class="col-3">
+        <p-dropdown [options]="statuses" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value"
+          placeholder="Select Status" styleClass="fixed-dropdown">
+        </p-dropdown>
+      </div>
+
+      <div class="col-3">
+        <p-dropdown [options]="genders" [(ngModel)]="selectedGender" optionLabel="label" optionValue="value"
+          placeholder="Select Gender" styleClass="fixed-dropdown">
+        </p-dropdown>
+      </div>
+
+      <div class="col-3">
+        <p-dropdown [options]="ageGroups" [(ngModel)]="selectedAgeGroup" optionLabel="label" optionValue="value"
+          placeholder="Select Age Group" styleClass="fixed-dropdown">
+        </p-dropdown>
+      </div>
+
+      <div class="col-3">
+        <p-dropdown [options]="matchTypes" [(ngModel)]="selectedMatchType" optionLabel="label" optionValue="value"
+          placeholder="Select Match Type" styleClass="fixed-dropdown">
+        </p-dropdown>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Match Grid -->
+<div *ngIf="!ShowPointsForm" class="row match-center-body">
+  <div class="col-12 match-grid">
+    <div class="match-card" *ngFor="let match of filteredMatches">
+      <div class="match-type">{{match.matchType}}</div>
+      <div class="series-name">{{match.series}}</div>
+      <!-- <div class="dates">{{match.startDate}} – {{match.endDate}}</div> -->
+      <div class="status">{{match.status}}</div>
+
+  <!-- Series Match Counts -->
+<div class="series-match-counts">
+  <ng-container *ngFor="let type of getMatchTypeCounts(match.series) | keyvalue">
+    <span class="count-badge"
+          (click)="showPointsForm(match.series, type.key)">
+      {{ type.key }}: {{ type.value }}
+    </span>
+  </ng-container>
+</div>
+
+
+      <button class="points-btn" (click)="showPointsForm(match.series)">Points</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Points Form (full page) -->
+<div *ngIf="ShowPointsForm" class="points-form-fullpage">
+  <form [formGroup]="pointsForm">
+
+    <div class="match-center">
+      <h2 class="heading">Fixtures & Results</h2> 
+
+      <!-- Matches List -->
+      <div class="matches-list">
+        <div class="match-row" *ngFor="let match of filteredPointsMatches">
+
+          <!-- Left Side Info -->
+          <div class="left-info">
+            <h6>
+              <div class="head">{{ match.series }}</div>
+            </h6>
+            <div class="date">{{ match.dateTime }}</div>
+            <div class="series">{{ match.matchType }}</div>
+            <div class="venue">{{ match.stadium }}, {{ match.location }}</div>
+          </div>
+
+          <div class="teams">
+            <div class="team left-team">
+              <span class="team-name">{{ match.teamA.name }}</span>
+              <img [src]="match.teamA.logo" />
+            </div>
+            <div>
+              <span><img src="assets/images/game.png" width="50" height="50"></span>
+            </div>
+            <div class="team right-team">
+              <img [src]="match.teamB.logo" />
+              <span class="team-name">{{ match.teamB.name }}</span>
+            </div>
+          </div>
+
+          <!-- Right Button -->
+          <div class="right-btn">
+            <button class="match-btn">Match Centre →</button>
+          </div>
+
+        </div>
+      </div>  
+    </div>
+
+    <!-- ✅ Common Cancel button (always visible) -->
+    <div class="form-actions">
+      <button type="button" (click)="closePointsForm()">Cancel</button>
+    </div>
+
+  </form>
+</div>
