@@ -34,7 +34,7 @@
 
 .match-card {
   height: 180px;
-  background: linear-gradient(135deg, #3830a5, #20131f);
+  background: linear-gradient(135deg, black, black);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -192,9 +192,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 50px;
   text-align: center;
-  margin-right: 175px;
+  /* margin-right: 175px; */
   color: black;
 }
 
@@ -286,4 +286,12 @@
   
 }
 
-
+.result-status {
+    /* margin-top: 30px; */
+    font-size: 12px;
+    color: blueviolet;
+    font-weight: small;
+    position: relative;
+    top: 46px;
+    right: 33%;
+}

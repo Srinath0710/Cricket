@@ -59,7 +59,10 @@
       </div>
 
 
-      <button class="points-btn" (click)="showPointsForm(match.series)">Points</button>
+<!-- Only show button if series has match points -->
+<button *ngIf="hasPoints(match.series)" class="points-btn" (click)="showPointsForm(match.series)">
+  Points
+</button>
     </div>
   </div>
 </div>
@@ -117,12 +120,17 @@
             </div>
           </div>
 
+  <div class="result-status" *ngIf="match.resultStatus">
+    <strong>{{ match.resultStatus }}</strong>
+  </div>
+
           <!-- Right Button -->
           <div class="right-btn">
             <button class="match-btn">Match Centre →</button>
           </div>
 
         </div>
+        
       </div>
     </div>
 
