@@ -71,7 +71,6 @@ export class MatchCenterComponent {
     { series: 'India U16 Tour of Sri Lanka 2025', matchType: 'ODI', gender: 'Men', ageGroup: 'Under 16', status: 'Live' },
     { series: 'India U22 Women T20 Series 2025', matchType: 'T20', gender: 'Women', ageGroup: 'Under 22', status: 'Upcoming' }
   ];
-
   // Filtered matchescard
   get filteredMatches() {
     return this.matchescard.filter(matchescard =>
@@ -94,6 +93,69 @@ export class MatchCenterComponent {
 
 
   matchespoints = [
+
+    {
+      series: 'India Women Tour of England 2025',
+      dateTime: "10:00 AM, 24-Aug",
+      stadium: "MCG",
+      location: "Melbourne, Australia",
+      matchType: "Test",
+      teamA: { name: "AUS", score: "143/7 (12)", logo: "assets/aus.png" },
+      teamB: { name: "ENG", score: "173/2 (11)", logo: "assets/eng.png" },
+      status: "Match scheduled",
+      type: "upcoming"
+    },  
+
+ {
+      series: 'India Women Tour of England 2025',
+      dateTime: "10:00 AM, 24-Aug",
+      stadium: "MCG",
+      location: "Melbourne, Australia",
+      matchType: "Test",
+      teamA: { name: "AUS", score: "113/7 (10)", logo: "assets/aus.png" },
+      teamB: { name: "ENG", score: "133/9 (8)", logo: "assets/eng.png" },
+      status: "Match scheduled",
+      type: "upcoming"
+    },
+
+     {
+      series: 'India Women Tour of England 2025',
+      dateTime: "10:00 AM, 24-Aug",
+      stadium: "MCG",
+      location: "Melbourne, Australia",
+      matchType: "Test",
+      teamA: { name: "AUS", score: "183/3 (6.2)", logo: "assets/aus.png" },
+      teamB: { name: "ENG", score: "173/1 (9.5)", logo: "assets/eng.png" },
+      status: "Match scheduled",
+      type: "upcoming"
+    },
+
+     {
+      series: 'India Women Tour of England 2025',
+      dateTime: "10:00 AM, 24-Aug",
+      stadium: "MCG",
+      location: "Melbourne, Australia",
+      matchType: "Test",
+      teamA: { name: "AUS", score: "137/5 (9.1)", logo: "assets/aus.png" },
+      teamB: { name: "ENG", score: "193/3 (2.6)", logo: "assets/eng.png" },
+      status: "Match scheduled",
+      type: "upcoming"
+    },
+
+     {
+      series: 'India Women Tour of England 2025',
+      dateTime: "10:00 AM, 24-Aug",
+      stadium: "MCG",
+      location: "Melbourne, Australia",
+      matchType: "Test",
+      teamA: { name: "AUS", score: "123/0 (9.5)", logo: "assets/aus.png" },
+      teamB: { name: "ENG", score: "143/1 (18.5)", logo: "assets/eng.png" },
+      status: "Match scheduled",
+      type: "upcoming"
+    },
+
+
+    
     // ---------------- Upcoming Matches (3) ----------------
     {
       series: 'India Tour of England 2025',
@@ -117,17 +179,17 @@ export class MatchCenterComponent {
       status: "Match scheduled",
       type: "upcoming"
     },
-    {
-      series: 'India Women Tour of England 2025',
-      dateTime: "10:00 AM, 24-Aug",
-      stadium: "MCG",
-      location: "Melbourne, Australia",
-      matchType: "Test",
-      teamA: { name: "AUS", score: "Yet to Bat", logo: "assets/aus.png" },
-      teamB: { name: "ENG", score: "Yet to Bat", logo: "assets/eng.png" },
-      status: "Match scheduled",
-      type: "upcoming"
-    },
+    // {
+    //   series: 'India Women Tour of England 2025',
+    //   dateTime: "10:00 AM, 24-Aug",
+    //   stadium: "MCG",
+    //   location: "Melbourne, Australia",
+    //   matchType: "Test",
+    //   teamA: { name: "AUS", score: "Yet to Bat", logo: "assets/aus.png" },
+    //   teamB: { name: "ENG", score: "Yet to Bat", logo: "assets/eng.png" },
+    //   status: "Match scheduled",
+    //   type: "upcoming"
+    // },
 
 
 
@@ -154,17 +216,17 @@ export class MatchCenterComponent {
       status: "Stars need 91 runs in 48 balls",
       type: "live"
     },
-    {
-      series: 'India Women Tour of England 2025',
-      dateTime: "09:00 PM, 22-Aug",
-      stadium: "Cape Town Stadium",
-      location: "Cape Town, SA",
-      matchType: "T20",
-      teamA: { name: "Cape Town Blitz", score: "156/5 (20)", logo: "assets/capetown.png" },
-      teamB: { name: "Jozi Stars", score: "32/1 (4)", logo: "assets/jozi.png" },
-      status: "Jozi needs 125 runs in 96 balls",
-      type: "live"
-    },
+    // {
+    //   series: 'India Women Tour of England 2025',
+    //   dateTime: "09:00 PM, 22-Aug",
+    //   stadium: "Cape Town Stadium",
+    //   location: "Cape Town, SA",
+    //   matchType: "T20",
+    //   teamA: { name: "Cape Town Blitz", score: "156/5 (20)", logo: "assets/capetown.png" },
+    //   teamB: { name: "Jozi Stars", score: "32/1 (4)", logo: "assets/jozi.png" },
+    //   status: "Jozi needs 125 runs in 96 balls",
+    //   type: "live"
+    // },
     {
       series: 'India A Women Tour of Australia 2025',
       dateTime: "11:00 AM, 23-Aug",
@@ -222,21 +284,21 @@ export class MatchCenterComponent {
       status: "Globstars won by 23 runs",
       type: "result"
     },
-    {
-      series: 'India Women Tour of England 2025',
-      dateTime: "06:00 PM, 20-Aug",
-      stadium: "Wankhede",
-      location: "Mumbai, India",
-      matchType: "T20",
-      teamA: { name: "Mumbai Indians", score: "178/8 (20)", logo: "assets/mumbai.png" },
-      teamB: { name: "CSK", score: "180/6 (19.2)", logo: "assets/csk.png" },
-      status: "CSK won by 4 wickets",
-      type: "result"
-    }
+    // {
+    //   series: 'India Women Tour of England 2025',
+    //   dateTime: "06:00 PM, 20-Aug",
+    //   stadium: "Wankhede",
+    //   location: "Mumbai, India",
+    //   matchType: "T20",
+    //   teamA: { name: "Mumbai Indians", score: "178/8 (20)", logo: "assets/mumbai.png" },
+    //   teamB: { name: "CSK", score: "180/6 (19.2)", logo: "assets/csk.png" },
+    //   status: "CSK won by 4 wickets",
+    //   type: "result"
+    // }
   ];
 
   // Points form logic
-  public ShowPointsForm: boolean = false;                                                       
+  public ShowPointsForm: boolean = false;
   pointsForm: FormGroup;
 
   constructor(private fb: FormBuilder) {
@@ -245,30 +307,30 @@ export class MatchCenterComponent {
     });
   }
 
- showPointsForm(series: string, matchType?: string) {
-  this.selectedSeries = series;
-  this.selectedMatchType = matchType || null; // if badge click, filter with matchType
-  this.ShowPointsForm = true;
-  this.resetPointsForm();
-}
+  showPointsForm(series: string, matchType?: string) {
+    this.selectedSeries = series;
+    this.selectedMatchType = matchType || null; // if badge click, filter with matchType
+    this.ShowPointsForm = true;
+    this.resetPointsForm();
+  }
 
   resetPointsForm() {
     this.pointsForm.reset();
   }
 
- closePointsForm() {
-  this.ShowPointsForm = false;
-  this.selectedMatchType = null; // reset filter
-}
+  closePointsForm() {
+    this.ShowPointsForm = false;
+    this.selectedMatchType = null; // reset filter
+  }
 
 
-get filteredPointsMatches() {
-  if (!this.selectedSeries) return [];
-  return this.matchespoints.filter(match =>
-    match.series === this.selectedSeries &&
-    (!this.selectedMatchType || match.matchType === this.selectedMatchType)
-  );
-}
+  get filteredPointsMatches() {
+    if (!this.selectedSeries) return [];
+    return this.matchespoints.filter(match =>
+      match.series === this.selectedSeries &&
+      (!this.selectedMatchType || match.matchType === this.selectedMatchType)
+    );
+  }
 
 
 }

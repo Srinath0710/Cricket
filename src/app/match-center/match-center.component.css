@@ -267,3 +267,23 @@
 .match-btn:hover {
   background: #dc2626;
 }
+
+.match-card .card-image {
+  text-align: center;
+  margin-bottom: 8px;
+    pointer-events: none;  /* container won't block clicks */
+
+}
+
+.match-card .card-image img {
+  width: 350px;
+  height: 350px;
+  object-fit: contain;
+  position: relative;
+  opacity: 0.1;
+    pointer-events: none;  /* image also won't block clicks */
+
+  
+}
+
+

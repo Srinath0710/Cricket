@@ -38,20 +38,25 @@
 <div *ngIf="!ShowPointsForm" class="row match-center-body">
   <div class="col-12 match-grid">
     <div class="match-card" *ngFor="let match of filteredMatches">
+
+      <div class="card-image">
+        <img src="assets/images/Flash Light.jpeg" alt="Flash Light">
+     
+      </div>
+
       <div class="match-type">{{match.matchType}}</div>
       <div class="series-name">{{match.series}}</div>
       <!-- <div class="dates">{{match.startDate}} – {{match.endDate}}</div> -->
       <div class="status">{{match.status}}</div>
 
-  <!-- Series Match Counts -->
-<div class="series-match-counts">
-  <ng-container *ngFor="let type of getMatchTypeCounts(match.series) | keyvalue">
-    <span class="count-badge"
-          (click)="showPointsForm(match.series, type.key)">
-      {{ type.key }}: {{ type.value }}
-    </span>
-  </ng-container>
-</div>
+      <!-- Series Match Counts -->
+      <div class="series-match-counts">
+        <ng-container *ngFor="let type of getMatchTypeCounts(match.series) | keyvalue">
+          <span class="count-badge" (click)="showPointsForm(match.series, type.key)">
+            {{ type.key }}: {{ type.value }}
+          </span>
+        </ng-container>
+      </div>
 
 
       <button class="points-btn" (click)="showPointsForm(match.series)">Points</button>
@@ -65,7 +70,7 @@
   <form [formGroup]="pointsForm">
 
     <div class="match-center">
-      <h2 class="heading">Fixtures & Results</h2> 
+      <h2 class="heading">Fixtures & Results</h2>
 
       <!-- Matches List -->
       <div class="matches-list">
@@ -85,12 +90,29 @@
             <div class="team left-team">
               <span class="team-name">{{ match.teamA.name }}</span>
               <img [src]="match.teamA.logo" />
+              <div class="team-score">
+                <ng-container *ngIf="match.teamA.score !== 'Yet to Bat'; else yetToBatA">
+                  <span>{{ match.teamA.score.split(' ')[0] }}</span><br>
+                  <small>{{ match.teamA.score.split(' ')[1] }}</small>
+                </ng-container>
+                <ng-template #yetToBatA>
+                  {{ match.teamA.score }}
+                </ng-template>
+              </div>
             </div>
             <div>
               <span><img src="assets/images/game.png" width="50" height="50"></span>
             </div>
             <div class="team right-team">
-              <img [src]="match.teamB.logo" />
+              <div class="team-score">
+                <ng-container *ngIf="match.teamB.score !== 'Yet to Bat'; else yetToBatB">
+                  <span>{{ match.teamB.score.split(' ')[0] }}</span><br>
+                  <small>{{ match.teamB.score.split(' ')[1] }}</small>
+                </ng-container>
+                <ng-template #yetToBatB>
+                  {{ match.teamB.score }}
+                </ng-template>
+              </div> <img [src]="match.teamB.logo" />
               <span class="team-name">{{ match.teamB.name }}</span>
             </div>
           </div>
@@ -101,7 +123,7 @@
           </div>
 
         </div>
-      </div>  
+      </div>
     </div>
 
     <!-- ✅ Common Cancel button (always visible) -->
