@@ -41,7 +41,7 @@
 
       <div class="card-image">
         <img src="assets/images/Flash Light.jpeg" alt="Flash Light">
-     
+
       </div>
 
       <div class="match-type">{{match.matchType}}</div>
@@ -59,10 +59,10 @@
       </div>
 
 
-<!-- Only show button if series has match points -->
-<button *ngIf="hasPoints(match.series)" class="points-btn" (click)="showPointsForm(match.series)">
-  Points
-</button>
+      <!-- Only show button if series has match points -->
+      <button *ngIf="hasPoints(match.series)" class="points-btn" (click)="showPointsForm(match.series)">
+        Points
+      </button>
     </div>
   </div>
 </div>
@@ -90,39 +90,104 @@
           </div>
 
           <div class="teams">
+            <!-- Team A -->
             <div class="team left-team">
               <span class="team-name">{{ match.teamA.name }}</span>
               <img [src]="match.teamA.logo" />
+
               <div class="team-score">
-                <ng-container *ngIf="match.teamA.score !== 'Yet to Bat'; else yetToBatA">
-                  <span>{{ match.teamA.score.split(' ')[0] }}</span><br>
-                  <small>{{ match.teamA.score.split(' ')[1] }}</small>
+                <!-- ✅ If Test Match → show multiple innings -->
+                <ng-container *ngIf="match.matchType === 'Test'; else singleScoreA">
+                  <div class="innings-row">
+                    <!-- Header -->
+                    <div class="innings-header">
+                      <span *ngFor="let inn of match.teamA.innings; let i = index" class="innings-col">
+                        Inn {{ i+1 }}
+                      </span>
+                    </div>
+
+                    <!-- Scores -->
+                    <div class="innings-score">
+                      <span *ngFor="let inn of match.teamA.innings" class="score-text innings-col">
+                        {{ inn.split('(')[0].trim() }}
+                      </span>
+                    </div>
+
+                    <!-- Overs -->
+                    <div class="innings-overs">
+                      <span *ngFor="let inn of match.teamA.innings" class="overs-text innings-col">
+                        ({{ inn.split('(')[1] ? inn.split('(')[1].replace(')', '') : '' }})
+                      </span>
+                    </div>
+                  </div>
                 </ng-container>
-                <ng-template #yetToBatA>
-                  {{ match.teamA.score }}
+
+
+                <!-- ✅ Else normal score -->
+                <!-- Normal score (non-Test) -->
+                <ng-template #singleScoreA>
+                  <ng-container *ngIf="match.teamA.score; else yetToBatA">
+                    <span class="score-text">{{ match.teamA.score.split(' ')[0] }}</span><br>
+                    <small class="overs-text">{{ match.teamA.score.split(' ')[1] || '' }}</small>
+                  </ng-container>
+                  <ng-template #yetToBatA>
+                    {{ match.teamA.score || 'Yet to Bat' }}
+                  </ng-template>
                 </ng-template>
+
               </div>
             </div>
+
             <div>
               <span><img src="assets/images/game.png" width="50" height="50"></span>
             </div>
+
+            <!-- Team B -->
             <div class="team right-team">
               <div class="team-score">
-                <ng-container *ngIf="match.teamB.score !== 'Yet to Bat'; else yetToBatB">
-                  <span>{{ match.teamB.score.split(' ')[0] }}</span><br>
-                  <small>{{ match.teamB.score.split(' ')[1] }}</small>
+                <ng-container *ngIf="match.matchType === 'Test'; else singleScoreB">
+                  <div class="innings-row">
+                    <div class="innings-header">
+                      <span *ngFor="let inn of match.teamB.innings; let i = index" class="innings-col">
+                        Inn {{ i+1 }}
+                      </span>
+                    </div>
+
+                    <div class="innings-score">
+                      <span *ngFor="let inn of match.teamB.innings" class="score-text innings-col">
+                        {{ inn.split('(')[0].trim() }}
+                      </span>
+                    </div>
+
+                    <div class="innings-overs">
+                      <span *ngFor="let inn of match.teamB.innings" class="overs-text innings-col">
+                        ({{ inn.split('(')[1] ? inn.split('(')[1].replace(')', '') : '' }})
+                      </span>
+                    </div>
+
+                  </div>
                 </ng-container>
-                <ng-template #yetToBatB>
-                  {{ match.teamB.score }}
+
+
+                <ng-template #singleScoreB>
+                  <ng-container *ngIf="match.teamB.score; else yetToBatB">
+                    <span class="score-text">{{ match.teamB.score.split(' ')[0] }}</span><br>
+                    <small class="overs-text">{{ match.teamB.score.split(' ')[1] || '' }}</small>
+                  </ng-container>
+                  <ng-template #yetToBatB>
+                    {{ match.teamB.score || 'Yet to Bat' }}
+                  </ng-template>
                 </ng-template>
-              </div> <img [src]="match.teamB.logo" />
+
+              </div>
+              <img [src]="match.teamB.logo" />
               <span class="team-name">{{ match.teamB.name }}</span>
             </div>
           </div>
 
-  <div class="result-status" *ngIf="match.resultStatus">
-    <strong>{{ match.resultStatus }}</strong>
-  </div>
+          <div class="result-status" *ngIf="match.resultStatus">
+            <strong>{{ match.resultStatus }}</strong>
+          </div>
 
           <!-- Right Button -->
           <div class="right-btn">
@@ -130,7 +195,7 @@
           </div>
 
         </div>
-        
+
       </div>
     </div>
 

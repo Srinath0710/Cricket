@@ -103,8 +103,16 @@ export class MatchCenterComponent {
       stadium: "MCG",
       location: "Melbourne, Australia",
       matchType: "Test",
-      teamA: { name: "AUS", score: "143/7 (16)", logo: "assets/aus.png" },
-      teamB: { name: "ENG", score: "173/2 (11)", logo: "assets/eng.png" },
+    teamA: { 
+      name: "AUS", 
+      innings: ["143/7 (50)", "210/9d (70)"], 
+      logo: "assets/aus.png" 
+    },
+    teamB: { 
+      name: "ENG", 
+      innings: ["173/2 (60)", "150/5 (45)"], 
+      logo: "assets/eng.png" 
+    },
       resultStatus: "Match scheduled",
       type: "upcoming"
     },
@@ -115,8 +123,16 @@ export class MatchCenterComponent {
       stadium: "MCG",
       location: "Melbourne, Australia",
       matchType: "Test",
-      teamA: { name: "AUS", score: "113/7 (10)", logo: "assets/aus.png" },
-      teamB: { name: "ENG", score: "133/9 (8)", logo: "assets/eng.png" },
+ teamA: { 
+      name: "AUS", 
+      innings: ["143/7 (50)", "210/9d (70)"], 
+      logo: "assets/aus.png" 
+    },
+    teamB: { 
+      name: "ENG", 
+      innings: ["173/2 (60)", "150/5 (45)"], 
+      logo: "assets/eng.png" 
+    },
       resultStatus: "Match scheduled",
       type: "upcoming"
     },
@@ -127,8 +143,16 @@ export class MatchCenterComponent {
       stadium: "MCG",
       location: "Melbourne, Australia",
       matchType: "Test",
-      teamA: { name: "AUS", score: "183/3 (6.2)", logo: "assets/aus.png" },
-      teamB: { name: "ENG", score: "173/1 (9.5)", logo: "assets/eng.png" },
+ teamA: { 
+      name: "AUS", 
+      innings: ["143/7 (50)", "210/9d (70)"], 
+      logo: "assets/aus.png" 
+    },
+    teamB: { 
+      name: "ENG", 
+      innings: ["173/2 (60)", "150/5 (45)"], 
+      logo: "assets/eng.png" 
+    },
       resultStatus: "Match scheduled",
       type: "upcoming"
     },
@@ -139,8 +163,16 @@ export class MatchCenterComponent {
       stadium: "MCG",
       location: "Melbourne, Australia",
       matchType: "Test",
-      teamA: { name: "AUS", score: "137/5 (9.1)", logo: "assets/aus.png" },
-      teamB: { name: "ENG", score: "193/3 (2.6)", logo: "assets/eng.png" },
+ teamA: { 
+      name: "AUS", 
+      innings: ["143/7 (50)", "210/9d (70)"], 
+      logo: "assets/aus.png" 
+    },
+    teamB: { 
+      name: "ENG", 
+      innings: ["173/2 (60)", "150/5 (45)"], 
+      logo: "assets/eng.png" 
+    },
       resultStatus: "Match scheduled",
       type: "upcoming"
     },
@@ -151,8 +183,16 @@ export class MatchCenterComponent {
       stadium: "MCG",
       location: "Melbourne, Australia",
       matchType: "Test",
-      teamA: { name: "AUS", score: "123/0 (9.5)", logo: "assets/aus.png" },
-      teamB: { name: "ENG", score: "143/1 (18.5)", logo: "assets/eng.png" },
+ teamA: { 
+      name: "AUS", 
+      innings: ["143/7 (50)", "210/9d (70)"], 
+      logo: "assets/aus.png" 
+    },
+    teamB: { 
+      name: "ENG", 
+      innings: ["173/2 (60)", "150/5 (45)"], 
+      logo: "assets/eng.png" 
+    },
       resultStatus: "Match scheduled",
       type: "upcoming"
     },
