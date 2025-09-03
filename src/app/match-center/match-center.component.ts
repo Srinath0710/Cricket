@@ -28,6 +28,7 @@ interface MatchDetail {
   type: string; // live/upcoming/result
 }
 
+
 @Component({
   selector: 'app-match-center',
   standalone: true,
@@ -37,15 +38,15 @@ interface MatchDetail {
 })
 export class MatchCenterComponent implements OnInit {
 
-  /** ---------------- Pagination ---------------- */
+  /**-- Pagination-- */
   rows: number = 6;  // Cards per page
   first: number = 0; // Index of first item
 
-  /** ---------------- Points Form Pagination ---------------- */
+  /**-- Points Form Pagination-- */
 pointsRows: number = 2;  // rows per page for points matches
 pointsFirst: number = 0; // index of first item for points matches
 
-  /** ---------------- Filters ---------------- */
+  /**-- Filters-- */
   selectedSeries: string | null = null;
   selectedMatchType: string | null = null;
   selectedStatus: string | null = null;
@@ -83,11 +84,11 @@ pointsFirst: number = 0; // index of first item for points matches
     { label: 'IPL', value: 'IPL' }
   ];
 
-  /** ---------------- Match Data ---------------- */
+  /**-- Match Data-- */
   matchescard: Match[] = [];        // Summary cards
   matchespoints: MatchDetail[] = []; // Detailed matches
 
-  /** ---------------- Points Form ---------------- */
+  /**-- Points Form-- */
   ShowPointsForm: boolean = false;
   pointsForm: FormGroup;
 
@@ -95,19 +96,19 @@ pointsFirst: number = 0; // index of first item for points matches
     // Initialize the reactive form
     this.pointsForm = this.fb.group({});
   }
-  /** ---------------- OnInit ---------------- */
+  /**-- OnInit-- */
   ngOnInit(): void {
     this.initializeMatches();      // Load sample data
     this.initializeMatchesPoints();
   }
 
-  /** ---------------- Initialize Match Cards ---------------- */
+  /**-- Initialize Match Cards-- */
   private initializeMatches(): void {
     /** Sample data set panrathu */
     this.matchescard = [
       { series: 'India Tour of England 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'Test', gender: 'Men', ageGroup: 'Senior', status: 'Live' },
       { series: 'India Mens U19 Tour of England 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'ODI', gender: 'Men', ageGroup: 'Under 19', status: 'Upcoming' },
-      { series: 'India Women Tour of England 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'Test', gender: 'Women', ageGroup: 'Senior', status: 'Upcoming' },
+      { series: 'India Women Tour of England 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'Test', gender: 'Women', ageGroup: 'Senior', status: 'Completed' },
       { series: 'India A Women Tour of Australia 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'ODI', gender: 'Women', ageGroup: 'Senior', status: 'Completed' },
       { series: 'India vs Australia T20 Series 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'T20', gender: 'Men', ageGroup: 'Senior', status: 'Live' },
       { series: 'TNPL 2025 Finals', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'TNPL', gender: 'Men', ageGroup: 'Senior', status: 'Upcoming' },
@@ -118,7 +119,7 @@ pointsFirst: number = 0; // index of first item for points matches
     ];
   }
 
-  /** ---------------- Initialize Detailed Matches ---------------- */
+  /**-- Initialize Detailed Matches-- */
   private initializeMatchesPoints(): void {
     this.matchespoints = [
       // Live / Upcoming / Completed match objects here
@@ -140,7 +141,7 @@ pointsFirst: number = 0; // index of first item for points matches
           logo: "assets/eng.png"
         },
         resultStatus: "Match scheduled",
-        type: "upcoming"
+        type: "Completed"
       },
 
       {
@@ -160,7 +161,7 @@ pointsFirst: number = 0; // index of first item for points matches
           logo: "assets/eng.png"
         },
         resultStatus: "Match scheduled",
-        type: "upcoming"
+        type: "Completed"
       },
 
       {
@@ -180,7 +181,7 @@ pointsFirst: number = 0; // index of first item for points matches
           logo: "assets/eng.png"
         },
         resultStatus: "Match scheduled",
-        type: "upcoming"
+        type: "Completed"
       },
 
       {
@@ -200,7 +201,7 @@ pointsFirst: number = 0; // index of first item for points matches
           logo: "assets/eng.png"
         },
         resultStatus: "Match scheduled",
-        type: "upcoming"
+        type: "Completed"
       },
 
       {
@@ -220,13 +221,13 @@ pointsFirst: number = 0; // index of first item for points matches
           logo: "assets/eng.png"
         },
         resultStatus: "Match scheduled",
-        type: "upcoming"
+        type: "Completed"
       },
 
 
 
 
-      // ---------------- Upcoming Matches (6) ----------------
+      //-- Upcoming Matches (6)--
 
       {
         series: 'India Mens U19 Tour of England 2025',
@@ -297,7 +298,7 @@ pointsFirst: number = 0; // index of first item for points matches
 
 
 
-      // ---------------- Live Matches (4) ----------------
+      //-- Live Matches (4)--
       {
         series: 'India Tour of England 2025',
         dateTime: "03:30 PM, 23-Aug",
@@ -346,7 +347,7 @@ pointsFirst: number = 0; // index of first item for points matches
         type: "live"
       },
 
-      // ---------------- Result Matches (2) ----------------
+      //-- Result Matches (2)--
 
       {
         series: 'India A Women Tour of Australia 2025',
@@ -376,7 +377,7 @@ pointsFirst: number = 0; // index of first item for points matches
 
   }
 
-  /** ---------------- Filtered Matches ---------------- */
+  /**-- Filtered Matches-- */
   get filteredMatches(): Match[] {
     /** Filters apply pannuthu summary cards */
     return this.matchescard.filter(match =>
@@ -387,31 +388,31 @@ pointsFirst: number = 0; // index of first item for points matches
     );
   }
 
-  /** ---------------- Paginated Matches Card ---------------- */
+  /**-- Paginated Matches Card-- */
   get paginatedMatches(): Match[] {
     return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
 
 
 
-  /** ---------------- Pagination Event ---------------- */
+  /**-- Pagination Event-- */
   onPageChange(event: any): void {
     this.first = event.first;
     this.rows = event.rows;
   }
 
-  /** ---------------- Paginated Points ---------------- */
+  /**-- Paginated Points-- */
   get paginatedPointsMatches(): MatchDetail[] {
   return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
 }
-  /** ---------------- Paginated Event points ---------------- */
+  /**-- Paginated Event points-- */
 onPointsPageChange(event: any): void {
   this.pointsFirst = event.first;
   this.pointsRows = event.rows;
 }
 
 
-  /** ---------------- Points Form Logic ---------------- */
+  /**-- Points Form Logic-- */
   showPointsForm(series: string, matchType?: string): void {
     this.selectedSeries = series;
     this.selectedMatchType = matchType || null;
@@ -429,13 +430,13 @@ onPointsPageChange(event: any): void {
     this.ShowPointsForm = false;
     this.selectedMatchType = null;
   }
-  /** ---------------- Check if points available ---------------- */
+  /**-- Check if points available-- */
   hasPoints(series: string): boolean {
     return this.matchespoints.some(match => match.series === series);
   }
 
   get filteredPointsMatches(): MatchDetail[] {
-    /** ---------------- Filtered Points Matches ---------------- */
+    /**-- Filtered Points Matches-- */
     if (!this.selectedSeries) return [];
     return this.matchespoints.filter(match =>
       match.series === this.selectedSeries &&
@@ -443,7 +444,7 @@ onPointsPageChange(event: any): void {
     );
   }
 
-  /** ---------------- Get Match Type Counts ---------------- */
+  /**-- Get Match Type Counts-- */
   getMatchTypeCounts(series: string): { [key: string]: number } {
     const counts: { [key: string]: number } = {};
     this.matchespoints
@@ -454,7 +455,7 @@ onPointsPageChange(event: any): void {
     return counts;
   }
 
-  /** ---------------- Total Filtered Cards Count ---------------- */
+  /**-- Total Filtered Cards Count-- */
   get totalData(): number {
     return this.filteredMatches.length;
   }
@@ -528,9 +529,6 @@ closeScorecard() {
   ];
 
  activeInnings: string = 'teamA';   // default to team A
-
-  // Example dummy match (replace with your data)
-  // You can set selectedMatch in the constructor or in a method if needed.
 
 
 

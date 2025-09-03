@@ -9,7 +9,7 @@ body,
 /* ---------- Header ---------- */
 .match-center-header {
   padding: 2px;
-  background: #615f5f;
+  /* background: #615f5f; */
   color: #fff;
   margin-left: 30px;
   position: sticky;
@@ -20,15 +20,29 @@ body,
 .heading {
   font-size: 22px;
   font-weight: bold;
-  margin: 0 0 20px 20px;
-  color: #fff;
+  color: black;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+
+.heading2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-left: -40px;
+  color: black;
+  margin-top: -35px;
+  margin-right: 0;
+  margin-bottom: 50px;
 }
 
 /* ---------- Match Grid ---------- */
 .match-center-body {
   padding: 16px;
   background: #fff;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   margin-left: 30px;
 }
 
@@ -157,7 +171,7 @@ body,
 .points-form-fullpage {
   padding: 40px;
   background: #fff;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   position: relative;
 }
 
@@ -181,10 +195,10 @@ body,
 
 /* ---------- Fixtures & Results ---------- */
 .match-center {
-  padding: 20px;
-  background: #f8fafc;
+  padding: 10px;
+  /* background: #f8fafc; */
 
-/* VNew_code */
+  /* VNew_code */
   padding-top: 0px;
   margin-top: 0px;
   margin-left: 45px;
@@ -195,9 +209,9 @@ body,
   flex-direction: column;
   gap: 14px;
 
-/* VNew_code */
+  /* VNew_code */
   margin-top: -30px;
-  padding: 0 20px;
+  padding: 0px;
   padding-bottom: 0px;
   padding-top: 0px;
 }
@@ -353,10 +367,119 @@ body,
 }
 
 /* VNew_code */
-.sresult-status{
+.sresult-status {
   font-size: 12px;
   color: blueviolet;
   position: relative;
   top: 46px;
   right: 35%;
 }
+
+
+
+
+/* vicky css code */
+/* -- Scorecard Container -- */
+.scorecard-container {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0px;
+  padding: 10px;
+  /* font-family: Arial, sans-serif; */
+  margin-top: -5px;
+  margin-right: 10px;
+  margin-bottom: 0;
+  margin-left:55px;
+}
+
+/* -- Tabs -- */
+.tabs {
+  text-align: left;
+  padding: 0px 0;
+}
+
+.tab {
+  display: inline-block;
+  margin: 0 20px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+  border-bottom: 3px solid transparent;
+}
+
+.activeTab {
+  color: #007bff;
+  border-bottom: 3px solid #007bff;
+}
+
+/* -- Innings Tabs -- */
+.innings-tabs {
+  margin: 10px 0;
+}
+
+.innings-btn {
+  padding: 6px 15px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+  background: #f8f8f8;
+  cursor: pointer;
+  font-size: small;
+}
+
+.innings-btn.active {
+  background: #007bff;
+  color: white;
+  border: none;
+}
+
+/* -- Tables -- */
+.table-scroll {
+  max-height: 160px;
+  /* adjust as needed */
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 335px;
+}
+
+.scorecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.scorecard-table th,
+.scorecard-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 14px;
+}
+
+.scorecard-table th {
+  color: #007bff;
+   position: sticky;
+  top: 0px;
+  background-color: white;
+}
+
+/* -- Scorecard Teams Layout -- */
+.scorecard-teams-visible,
+.squad-teams-visible {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.team-scorecard,
+.team-squad {
+  flex: 1;
+}
+
+.TeamsScoreFont {
+  font-size: 13px;
+  color: blueviolet;
+}
+
