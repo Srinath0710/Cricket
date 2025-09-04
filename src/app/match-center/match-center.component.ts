@@ -520,25 +520,26 @@ closeScorecard() {
     { player: 'Glenn Maxwell', overs: 4, maidens:0, runs: 35, wickets: 1, econ:8.75 },
   ];
 
-  teamAsquad = ['Rohit Sharma', 'Virat Kohli', 'KL Rahul', 'Jasprit Bumrah', 'Ravindra Jadeja',
+  teamAsquad = ['Rohit Sharma(C)', 'Virat Kohli', 'KL Rahul(WK)', 'Jasprit Bumrah', 'Ravindra Jadeja',
   'Suryakumar Yadav', 'Dinesh Karthik', 'Rishabh Pant', 'Shikhar Dhawan', 'Yuzvendra Chahal', 'Bhuvneshwar Kumar'
   ];
 
-  teamBsquad = ['David Warner', 'Steve Smith', 'Marnus Labuschagne', 'Glenn Maxwell', 'Aaron Finch',
-  'Marcus Stoinis', 'Alex Carey', 'Pat Cummins', 'Mitchell Starc', 'Josh Hazlewood'
+  teamBsquad = ['David Warner', 'Steve Smith(WK)', 'Marnus Labuschagne', 'Glenn Maxwell', 'Aaron Finch',
+  'Marcus Stoinis', 'Alex Carey', 'Pat Cummins(C)', 'Mitchell Starc', 'Josh Hazlewood'
   ];
 
- activeinnings: string = 'one';   // default to team A
+ activeinnings: string = 'one'; 
+activeInnings: string = 'testone';   // default to team A
 
 
 // fall of wickets
 
 fallOfWickets = [
-  { player:'Rohit Sharma -',over:' 5.3',score:'30/1' },
-  { player:'Virat Kohli -',over:' 10.1',score:'90/2' },
-  { player:'KL Rahul -',over:' 15.4',score:'140/3' },
-  { player:'Suryakumar Yadav -',over:' 19.5',score:'190/4' },
-    
+  { player:'Rohit Sharma ',over:' 5.3',score:'30/1' },
+  { player:'Virat Kohli ',over:' 10.1',score:'90/2' },
+  { player:'KL Rahul ',over:' 15.4',score:'140/3' },
+  { player:'Suryakumar Yadav ',over:' 19.5',score:'190/4' },
+  
 ];
 
 
