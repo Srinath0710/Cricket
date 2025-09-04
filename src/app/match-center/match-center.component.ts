@@ -528,10 +528,30 @@ closeScorecard() {
   'Marcus Stoinis', 'Alex Carey', 'Pat Cummins', 'Mitchell Starc', 'Josh Hazlewood'
   ];
 
- activeInnings: string = 'teamA';   // default to team A
+ activeinnings: string = 'one';   // default to team A
 
 
+// fall of wickets
 
+fallOfWickets = [
+  { player:'Rohit Sharma -',over:' 5.3',score:'30/1' },
+  { player:'Virat Kohli -',over:' 10.1',score:'90/2' },
+  { player:'KL Rahul -',over:' 15.4',score:'140/3' },
+  { player:'Suryakumar Yadav -',over:' 19.5',score:'190/4' },
+    
+];
+
+
+matchDetails = {
+  tournament: 'INDIA IN ENGLAND TEST SERIES 2025',
+  toss: 'England Won The Toss And Elected To Field',
+  venue: 'Kennington Oval, London',
+  onFieldUmpires: ['Ahsan Raza', 'Kumar Dharmasena'],
+  thirdUmpire: 'Rod Tucker',
+  referee: 'Jeff Crowe',
+  playerOfTheMatch: 'Mohammed Siraj (India)',
+  playerOfTheSeries: 'Shubman Gill And Harry Brook'
+};
 
 
 }
