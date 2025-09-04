@@ -55,7 +55,7 @@ body,
 
 .match-card {
   height: 160px;
-  background: black;
+  background: #203c3be8;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -540,10 +540,30 @@ body,
   margin-right: 10px;
 }
 
-.match-details h3 {
-  margin-bottom: 12px;
+
+.match-details .heading {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
   color: #333;
 }
+
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.details-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+
 .total-score-display{
   margin-top: 20px;
 }
+
+
+
+
+

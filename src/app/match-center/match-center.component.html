@@ -503,17 +503,45 @@
     </div>
   </div>
 
-    <!-- Match Details (ONLY SHOW ON SCORECARD) -->
-  <div class="match-details" *ngIf="matchDetails">
-    <p><strong>Tournament:</strong> {{matchDetails.tournament}}</p>
-    <p><strong>Toss:</strong> {{matchDetails.toss}}</p>
-    <p><strong>Venue:</strong> {{matchDetails.venue}}</p>
-    <p><strong>On-Field Umpires:</strong> {{matchDetails.onFieldUmpires.join(', ')}}</p>
-    <p><strong>Third Umpire:</strong> {{matchDetails.thirdUmpire}}</p>
-    <p><strong>Referee:</strong> {{matchDetails.referee}}</p>
-    <p><strong>Player Of The Match:</strong> {{matchDetails.playerOfTheMatch}}</p>
-    <p><strong>Player Of The Series:</strong> {{matchDetails.playerOfTheSeries}}</p>
-  </div>
+<!-- Match Details (ONLY SHOW ON SCORECARD) -->
+<div class="match-details" *ngIf="matchDetails">
+  <h3 class="heading">Match Details</h3>
+  <table class="details-table">
+    <tr>
+      <td><strong>Tournament</strong></td>
+      <td>{{ matchDetails.tournament }}</td>
+    </tr>
+    <tr>
+      <td><strong>Toss</strong></td>
+      <td>{{ matchDetails.toss }}</td>
+    </tr>
+    <tr>
+      <td><strong>Venue</strong></td>
+      <td>{{ matchDetails.venue }}</td>
+    </tr>
+    <tr>
+      <td><strong>On-Field Umpires</strong></td>
+      <td>{{ matchDetails.onFieldUmpires.join(', ') }}</td>
+    </tr>
+    <tr>
+      <td><strong>Third Umpire</strong></td>
+      <td>{{ matchDetails.thirdUmpire }}</td>
+    </tr>
+    <tr>
+      <td><strong>Referee</strong></td>
+      <td>{{ matchDetails.referee }}</td>
+    </tr>
+    <tr>
+      <td><strong>Player Of The Match</strong></td>
+      <td>{{ matchDetails.playerOfTheMatch }}</td>
+    </tr>
+    <tr>
+      <td><strong>Player Of The Series</strong></td>
+      <td>{{ matchDetails.playerOfTheSeries }}</td>
+    </tr>
+  </table>
+</div>
+
 
 
 </div>
