@@ -28,6 +28,7 @@ interface MatchDetail {
   type: string; // live/upcoming/result
 }
 
+
 @Component({
   selector: 'app-match-center',
   standalone: true,
@@ -42,8 +43,8 @@ export class MatchCenterComponent implements OnInit {
   first: number = 0; // Index of first item
 
   /**-- Points Form Pagination-- */
-  pointsRows: number = 2;  // rows per page for points matches
-  pointsFirst: number = 0; // index of first item for points matches
+pointsRows: number = 2;  // rows per page for points matches
+pointsFirst: number = 0; // index of first item for points matches
 
   /**-- Filters-- */
   selectedSeries: string | null = null;
@@ -223,6 +224,9 @@ export class MatchCenterComponent implements OnInit {
         type: "Completed"
       },
 
+
+
+
       //-- Upcoming Matches (6)--
 
       {
@@ -292,6 +296,8 @@ export class MatchCenterComponent implements OnInit {
         type: "upcoming"
       },
 
+
+
       //-- Live Matches (4)--
       {
         series: 'India Tour of England 2025',
@@ -315,6 +321,7 @@ export class MatchCenterComponent implements OnInit {
         resultStatus: "Mysore needs 122 runs in 83 balls",
         type: "live"
       },
+
 
       {
         series: 'India vs Australia T20 Series 2025',
@@ -341,6 +348,7 @@ export class MatchCenterComponent implements OnInit {
       },
 
       //-- Result Matches (2)--
+
       {
         series: 'India A Women Tour of Australia 2025',
         dateTime: "11:00 AM, 23-Aug",
@@ -363,6 +371,8 @@ export class MatchCenterComponent implements OnInit {
         resultStatus: "CSK won by 50 runs",
         type: "Completed"
       },
+
+
     ];
 
   }
@@ -377,25 +387,31 @@ export class MatchCenterComponent implements OnInit {
       (!this.selectedMatchType || match.matchType === this.selectedMatchType)
     );
   }
+
   /**-- Paginated Matches Card-- */
   get paginatedMatches(): Match[] {
     return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
+
+
 
   /**-- Pagination Event-- */
   onPageChange(event: any): void {
     this.first = event.first;
     this.rows = event.rows;
   }
+
   /**-- Paginated Points-- */
   get paginatedPointsMatches(): MatchDetail[] {
-    return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
-  }
+  return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
+}
   /**-- Paginated Event points-- */
-  onPointsPageChange(event: any): void {
-    this.pointsFirst = event.first;
-    this.pointsRows = event.rows;
-  }
+onPointsPageChange(event: any): void {
+  this.pointsFirst = event.first;
+  this.pointsRows = event.rows;
+}
+
+
   /**-- Points Form Logic-- */
   showPointsForm(series: string, matchType?: string): void {
     this.selectedSeries = series;
@@ -403,10 +419,12 @@ export class MatchCenterComponent implements OnInit {
     this.ShowPointsForm = true;
     this.resetPointsForm();
   }
+
   resetPointsForm(): void {
     /** Form close panruthu, matchType reset panruthu */
     this.pointsForm.reset();
   }
+
   closePointsForm(): void {
     /** Form close panruthu, matchType reset panruthu */
     this.ShowPointsForm = false;
@@ -442,18 +460,18 @@ export class MatchCenterComponent implements OnInit {
     return this.filteredMatches.length;
   }
 
-  // Scorecard form logic 
-  showScorecard = false;
-  selectedMatch: any;
-  openScorecard(match: any) {
-    this.selectedMatch = match;
-    this.showScorecard = true;
-  }
+// Scorecard form logic 
+showScorecard = false; 
+selectedMatch: any; 
+openScorecard(match: any) {
+  this.selectedMatch = match;
+  this.showScorecard = true;
+}
 
-  closeScorecard() {
-    this.showScorecard = false;
-  }
-  activeTab = 'scorecard'; // default tab
+closeScorecard() {
+  this.showScorecard = false;
+}
+ activeTab = 'scorecard'; // default tab
 
   teamAbatting = [
     { player: 'Rohit Sharma', runs: 85, balls: 70, fours: 8, sixes: 3, sR: 121.42 },
@@ -496,17 +514,20 @@ export class MatchCenterComponent implements OnInit {
   ];
 
   teamAsquad = ['Rohit Sharma(C)', 'Virat Kohli', 'KL Rahul(WK)', 'Jasprit Bumrah', 'Ravindra Jadeja',
-    'Suryakumar Yadav', 'Dinesh Karthik', 'Rishabh Pant', 'Shikhar Dhawan', 'Yuzvendra Chahal', 'Bhuvneshwar Kumar'
+  'Suryakumar Yadav', 'Dinesh Karthik', 'Rishabh Pant', 'Shikhar Dhawan', 'Yuzvendra Chahal', 'Bhuvneshwar Kumar'
   ];
 
   teamBsquad = ['David Warner', 'Steve Smith(WK)', 'Marnus Labuschagne', 'Glenn Maxwell', 'Aaron Finch',
     'Marcus Stoinis', 'Alex Carey', 'Pat Cummins(C)', 'Mitchell Starc', 'Josh Hazlewood'
   ];
 
-  activeinnings: string = 'one';
-  activeInnings: string = 'testone';   // default to team A
-  // fall of wickets
-  fallOfWickets = [
+ activeinnings: string = 'one'; 
+activeInnings: string = 'testone';   // default to team A
+
+
+// fall of wickets
+
+fallOfWickets = [
     { player: 'Rohit Sharma ', over: ' 5.3', score: '30/1' },
     { player: 'Virat Kohli ', over: ' 10.1', score: '90/2' },
     { player: 'KL Rahul ', over: ' 15.4', score: '140/3' },

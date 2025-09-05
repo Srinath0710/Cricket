@@ -339,7 +339,7 @@ body,
   background: #fff;
  border: 2px solid; /* required */
   border-image: linear-gradient(45deg, #e36fe5, #60c3e4)1;
-    border-radius: 0px;
+  border-radius: 0px;
   padding: 10px;
   /* font-family: Arial, sans-serif; */
   margin-top: 3px;
@@ -436,6 +436,7 @@ body,
   display: flex;
   gap: 20px;
 }
+
 .innings-one,
 .innings-two{
   border-radius: 10px;
@@ -493,7 +494,7 @@ margin-top: 50px;
 
 .partnership {
   margin-bottom: 20px;
-}
+} 
 
 .players {
   display: flex;
@@ -528,4 +529,38 @@ margin-top: 50px;
   font-size: 12px;
   color: #555;
   text-align: center;
+}
+
+.extra-score-display{
+  margin-top: 30px;
+}
+/* .extra{
+  margin-top: 10px;
+}  */
+/* .extra-table-scroll{ */
+  /* padding-left: 20px; */
+  /* width: 500px; */
+  /* overflow-y: auto; */
+  /* overflow-x: auto; */
+  /* border: 1px solid #ddd; */
+  /* border-radius: 5px; */
+  /* height: 100px; */
+  /* margin: 20px;
+} 
+
+/* .extra-table-scroll table th,td{
+  border: 2px solid black;
+  padding: 10px;
+} */
+/* .col1{
+  width: 80px;
+}
+.col2{
+  width: 60px;
+}  */
+.extra-table table tr,.col1{
+  border: 1px solid #ddd;
+}
+.extra-table table{
+  border-radius: 5px;
 }
