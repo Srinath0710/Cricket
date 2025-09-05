@@ -77,7 +77,7 @@ export class CompOfficialComponent implements OnInit {
     params.competition_id = this.CompetitionData.competition_id.toString();
     params.records = this.rows.toString();
     params.search_text = this.sourceSearchKeyword.toString(),
-    params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
+      params.page_no = (Math.floor(this.first / this.rows) + 1).toString();
     this.apiService.post(this.urlConstant.compOfficialList, params).subscribe((res: any) => {
       const allItems = res.data.all_officials;
       const mappedIds = res.data.selected_officials.map((value: any) => value.official_id);
@@ -94,9 +94,10 @@ export class CompOfficialComponent implements OnInit {
         ) {
           this.apiService.RefreshToken();
         }
-        // this.spinnerService.raiseDataEmitterEvent('off');
+        this.spinnerService.raiseDataEmitterEvent('off');
         this.failedToast(err.error);
       })
+    this.spinnerService.raiseDataEmitterEvent('off');
   }
   updateOfficial() {
     const params: any = {}
