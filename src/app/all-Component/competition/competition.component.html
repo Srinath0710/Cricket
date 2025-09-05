@@ -312,6 +312,30 @@
                       </div>
 
                       <div class="col-md-4">
+                        <label class="formItemLabel">Start Date
+                          <span class="text-danger">*</span></label>
+                        <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter Start Date"
+                          formControlName="start_date">
+                        <small *ngIf="
+                              addCompetitionForm.get('start_date')?.invalid &&
+                              (addCompetitionForm.get('start_date')?.touched || submitted)" class="required-msg">
+                          Start Date is required
+                        </small>
+
+                      </div>
+                      <div class="col-md-4">
+                        <label class="formItemLabel">End Date
+                          <span class="text-danger">*</span></label>
+                        <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter End Date"
+                          formControlName="end_date">
+                        <small *ngIf="
+                              addCompetitionForm.get('end_date')?.invalid &&
+                              (addCompetitionForm.get('end_date')?.touched || submitted)" class="required-msg">
+                          End Date is required
+                        </small>
+                      </div>
+
+                      <div class="col-md-4">
                         <label>Is Practice
                           <span class="text-danger">*</span>
                         </label>
@@ -342,31 +366,6 @@
                   <div class="p-3 border rounded shadow-sm h-100 bg-white">
                     <h6 class="mb-3">Match Configurations</h6>
                     <div class="row gy-3">
-                      <div class="col-md-4">
-                        <label class="formItemLabel">Start Date
-                          <span class="text-danger">*</span></label>
-                        <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter Start Date"
-                          formControlName="start_date">
-                        <small *ngIf="
-                              addCompetitionForm.get('start_date')?.invalid &&
-                              (addCompetitionForm.get('start_date')?.touched || submitted)" class="required-msg">
-                          Start Date is required
-                        </small>
-
-                      </div>
-                      <div class="col-md-4">
-                        <label class="formItemLabel">End Date
-                          <span class="text-danger">*</span></label>
-                        <input class="form-control" type="date" value="yyyy/mm/dd" placeholder="Enter End Date"
-                          formControlName="end_date">
-                        <small *ngIf="
-                              addCompetitionForm.get('end_date')?.invalid &&
-                              (addCompetitionForm.get('end_date')?.touched || submitted)" class="required-msg">
-                          End Date is required
-                        </small>
-                      </div>
-
-
                       <div class="col-md-4">
                         <label class="">Overs Per Innings
                           <span class="text-danger">*</span>

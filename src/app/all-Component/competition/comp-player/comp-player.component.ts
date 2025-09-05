@@ -290,6 +290,7 @@ export class CompPlayerComponent implements OnInit {
       player_id: this.selectedPlayer.player_id?.toString(),
       scorecard_name: this.ManagePlayerForm.get('scorecard_name')?.value || '',
       jersey_number: this.ManagePlayerForm.get('jersey_number')?.value || '',
+      profile_url: this.ManagePlayerForm.get('profile_url')?.value || ''
     };
 
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
@@ -455,7 +456,7 @@ export class CompPlayerComponent implements OnInit {
                 //   val.profile_image = 'assets/images/player.jpg';
               }
             }
-            // val.profile_image = `${val.profile_image}?${Math.random()}`;
+            val.profile_image = `${val.profile_image}?${Math.random()}`;
           });
           this.viewDialogVisible = true;
         } else {
@@ -634,37 +635,60 @@ export class CompPlayerComponent implements OnInit {
   }
 
   profileImgAppend(player_id: any) {
+    if (!this.filedata) {
+      return;
+    }
+
     const myFormData = new FormData();
-    if (this.filedata != null && this.filedata != '') {
-      myFormData.append('profile_url', this.filedata);
-      myFormData.append('client_id', this.CompetitionData.client_id.toString());
-      myFormData.append('file_id', player_id);
-      myFormData.append('player_id',player_id);
-      myFormData.append('upload_type', 'players');
-      myFormData.append('user_id', this.user_id?.toString());
-      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
-        (res) => {
-          if (res.status_code == this.statusConstants.success) {
-            if (res.url != null && res.url != '') {
-              this.addCallBack(res)
-            } else {
-              this.failedToast(res);
-            }
+
+    // Ensure filedata is a File/Blob
+    let fileToUpload: File | Blob | null = null;
+
+    if (this.filedata instanceof File || this.filedata instanceof Blob) {
+      fileToUpload = this.filedata;
+    } else if (typeof this.filedata === 'string' && this.filedata.startsWith('data:')) {
+      // Convert base64 to Blob
+      fileToUpload = this.base64ToBinary(this.filedata);
+    }
+
+    if (!fileToUpload) {
+      console.error("Invalid filedata format");
+      return;
+    }
+
+    // 🔹 Check the exact field name your backend expects.
+    myFormData.append('file', fileToUpload); // not 'profile_url'
+    myFormData.append('client_id', this.CompetitionData.client_id.toString());
+    myFormData.append('file_id', player_id);
+    myFormData.append('player_id', player_id);
+    myFormData.append('upload_type', 'players');
+    myFormData.append('user_id', this.user_id?.toString());
+
+    this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
+      (res) => {
+        if (res.status_code == this.statusConstants.success) {
+          if (res.url) {
+            this.addCallBack(res);
           } else {
             this.failedToast(res);
           }
-        },
-        (err: any) => {
-          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
-            this.apiService.RefreshToken();
-
-          } else {
-            this.failedToast(err.error);
-          }
+        } else {
+          this.failedToast(res);
         }
-      );
-    }
+      },
+      (err: any) => {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err.error);
+        }
+      }
+    );
   }
+
 
   onImageUpload(event: any) {
     const file = event.files[0];
@@ -688,7 +712,7 @@ export class CompPlayerComponent implements OnInit {
     }
   }
 
-  addCallBack(res: any){
+  addCallBack(res: any) {
     this.successToast(res);
     this.gridLoad();
   }

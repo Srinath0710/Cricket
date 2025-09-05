@@ -181,6 +181,8 @@ export class CompTeamComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.team_list = this.targetTeams.map((p: any) => p.team_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
+    // params.profile_url = this.profileImages.toString();
+    // params.profile_url = this.ManageTeamsForm.profile_url.toString();
     this.apiService.post(this.urlConstant.compTeamadd, params).subscribe((res: any) => {
       // this.TeamUpdate.emit();
       this.gridLoad();
@@ -199,6 +201,7 @@ export class CompTeamComponent implements OnInit {
   }
 
   updateTeam(): void {
+    this.showCropperModal = false;
     if (!this.selectedTeam) {
       console.error('No team selected for update!');
       return;
@@ -210,7 +213,6 @@ export class CompTeamComponent implements OnInit {
       competition_id: this.CompetitionData.competition_id.toString(),
       file_id: this.selectedTeam.team_id?.toString(),
       team_id: this.selectedTeam.team_id?.toString(),
-
       scorecard_name: this.ManageTeamsForm.get('scorecard_name')?.value || '',
       sponser_name: this.ManageTeamsForm.get('sponser_name')?.value || '',
       profile_url: this.ManageTeamsForm.get('profile_url')?.value || '',
@@ -349,7 +351,7 @@ export class CompTeamComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     const maxSizeKB = 500;
 
-    if (this.ManageTeamsForm.value.profile_url !== null && this.ManageTeamsForm.value.profile_url !== '') {
+    if (this.ManageTeamsForm.value.team_profile !== null && this.ManageTeamsForm.value.team_profile !== '') {
       this.profileImages = null;
     }
 
@@ -360,7 +362,7 @@ export class CompTeamComponent implements OnInit {
         this.imagePreview = null;
         this.selectedImage = null;
         this.filedata = null;
-        this.ManageTeamsForm.get('profile_url')?.reset('');
+        this.ManageTeamsForm.get('team_profile')?.reset('');
         return;
       }
 
@@ -450,7 +452,7 @@ export class CompTeamComponent implements OnInit {
     fetch(imageUrl)
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Failed to fetch image');
         }
         return response.blob();
       })
@@ -501,7 +503,6 @@ export class CompTeamComponent implements OnInit {
     console.error('Image loading failed');
   }
   imageCropped(event: ImageCroppedEvent) {
-    // console.log("hi this ")
     const blob = event.blob;
     if (blob) {
       this.convertBlobToBase64(blob).then((base64) => {
