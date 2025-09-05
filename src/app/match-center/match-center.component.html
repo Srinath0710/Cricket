@@ -489,6 +489,37 @@
       </tr>
     </table>
   </div>
+
+ <h2 class="heading4">Partnerships</h2>
+<div class="match-details" *ngIf="Partnerships && Partnerships.length">
+  <div class="partnership" *ngFor="let p of Partnerships">
+    <!-- Players -->
+    <div class="players">
+      <span class="player-a">{{ p.playerA }} - {{ p.runsA }}</span>
+      <span class="player-b">{{ p.playerB }} - {{ p.runsB }}</span>
+    </div>
+
+    <!-- Donut Chart -->
+    <div class="partnership-circle" 
+         [style.background]="
+          'conic-gradient(' +
+          '#e36fe5 0% ' + (p.partnership / p.partnershipTotal * 100) + '%, ' +
+          '#60c3e4 ' + (p.partnership / p.partnershipTotal * 100) + '% ' + 
+          ((p.partnership + p.extras) / p.partnershipTotal * 100) + '%, ' +
+          '#eee ' + ((p.partnership + p.extras) / p.partnershipTotal * 100) + '% 100%)'
+         ">
+      <span>
+        {{ p.partnership + p.extras }}
+      </span>
+    </div>
+
+    <!-- Info Below Chart -->
+    <div class="partnership-info">
+      Partnership - {{ p.partnership }} | Extras - {{ p.extras }} | Total - {{ p.partnershipTotal }}
+    </div>
+  </div>
+</div>
+
 </div>
 
 <!-- --Reusable Team Block ---->

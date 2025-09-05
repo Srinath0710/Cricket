@@ -28,7 +28,6 @@ interface MatchDetail {
   type: string; // live/upcoming/result
 }
 
-
 @Component({
   selector: 'app-match-center',
   standalone: true,
@@ -43,8 +42,8 @@ export class MatchCenterComponent implements OnInit {
   first: number = 0; // Index of first item
 
   /**-- Points Form Pagination-- */
-pointsRows: number = 2;  // rows per page for points matches
-pointsFirst: number = 0; // index of first item for points matches
+  pointsRows: number = 2;  // rows per page for points matches
+  pointsFirst: number = 0; // index of first item for points matches
 
   /**-- Filters-- */
   selectedSeries: string | null = null;
@@ -224,9 +223,6 @@ pointsFirst: number = 0; // index of first item for points matches
         type: "Completed"
       },
 
-
-
-
       //-- Upcoming Matches (6)--
 
       {
@@ -296,8 +292,6 @@ pointsFirst: number = 0; // index of first item for points matches
         type: "upcoming"
       },
 
-
-
       //-- Live Matches (4)--
       {
         series: 'India Tour of England 2025',
@@ -321,7 +315,6 @@ pointsFirst: number = 0; // index of first item for points matches
         resultStatus: "Mysore needs 122 runs in 83 balls",
         type: "live"
       },
-
 
       {
         series: 'India vs Australia T20 Series 2025',
@@ -348,7 +341,6 @@ pointsFirst: number = 0; // index of first item for points matches
       },
 
       //-- Result Matches (2)--
-
       {
         series: 'India A Women Tour of Australia 2025',
         dateTime: "11:00 AM, 23-Aug",
@@ -371,8 +363,6 @@ pointsFirst: number = 0; // index of first item for points matches
         resultStatus: "CSK won by 50 runs",
         type: "Completed"
       },
-
-
     ];
 
   }
@@ -387,31 +377,25 @@ pointsFirst: number = 0; // index of first item for points matches
       (!this.selectedMatchType || match.matchType === this.selectedMatchType)
     );
   }
-
   /**-- Paginated Matches Card-- */
   get paginatedMatches(): Match[] {
     return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
-
-
 
   /**-- Pagination Event-- */
   onPageChange(event: any): void {
     this.first = event.first;
     this.rows = event.rows;
   }
-
   /**-- Paginated Points-- */
   get paginatedPointsMatches(): MatchDetail[] {
-  return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
-}
+    return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
+  }
   /**-- Paginated Event points-- */
-onPointsPageChange(event: any): void {
-  this.pointsFirst = event.first;
-  this.pointsRows = event.rows;
-}
-
-
+  onPointsPageChange(event: any): void {
+    this.pointsFirst = event.first;
+    this.pointsRows = event.rows;
+  }
   /**-- Points Form Logic-- */
   showPointsForm(series: string, matchType?: string): void {
     this.selectedSeries = series;
@@ -419,12 +403,10 @@ onPointsPageChange(event: any): void {
     this.ShowPointsForm = true;
     this.resetPointsForm();
   }
-
   resetPointsForm(): void {
     /** Form close panruthu, matchType reset panruthu */
     this.pointsForm.reset();
   }
-
   closePointsForm(): void {
     /** Form close panruthu, matchType reset panruthu */
     this.ShowPointsForm = false;
@@ -460,99 +442,125 @@ onPointsPageChange(event: any): void {
     return this.filteredMatches.length;
   }
 
+  // Scorecard form logic 
+  showScorecard = false;
+  selectedMatch: any;
+  openScorecard(match: any) {
+    this.selectedMatch = match;
+    this.showScorecard = true;
+  }
 
-
-
-
-
-
-
-// Scorecard form logic 
-showScorecard = false; 
-selectedMatch: any; 
-openScorecard(match: any) {
-  this.selectedMatch = match;
-  this.showScorecard = true;
-}
-
-closeScorecard() {
-  this.showScorecard = false;
-}
- activeTab = 'scorecard'; // default tab
+  closeScorecard() {
+    this.showScorecard = false;
+  }
+  activeTab = 'scorecard'; // default tab
 
   teamAbatting = [
-    { player: 'Rohit Sharma', runs: 85, balls: 70, fours: 8, sixes: 3,  sR:121.42 },
-    { player: 'Virat Kohli', runs: 120, balls: 95, fours: 10, sixes: 2, sR:126.31 },
-    { player: 'KL Rahul', runs: 60, balls: 50, fours: 5, sixes: 1, sR:120.00 },
-    { player: 'Suryakumar Yadav', runs: 45, balls: 30, fours: 4, sixes: 2, sR:150.00 },
-    { player: 'Hardik Pandya', runs: 30, balls: 20, fours: 2, sixes: 1, sR:150.00 },
-    { player: 'Dinesh Karthik', runs: 25, balls: 15, fours: 3, sixes: 0, sR:166.67 },
-    { player: 'Rishabh Pant', runs: 15, balls: 10, fours: 1, sixes: 1, sR:150.00 },
-    { player: 'Shikhar Dhawan', runs: 10, balls: 8, fours: 1, sixes: 0 ,sR:125.00 },
-    { player: 'Yuzvendra Chahal', runs: 5, balls: 5, fours: 0, sixes: 0, sR:100.00 },
-    { player: 'Bhuvneshwar Kumar', runs: 0, balls: 2, fours: 0, sixes: 0, sR:0.00 },
+    { player: 'Rohit Sharma', runs: 85, balls: 70, fours: 8, sixes: 3, sR: 121.42 },
+    { player: 'Virat Kohli', runs: 120, balls: 95, fours: 10, sixes: 2, sR: 126.31 },
+    { player: 'KL Rahul', runs: 60, balls: 50, fours: 5, sixes: 1, sR: 120.00 },
+    { player: 'Suryakumar Yadav', runs: 45, balls: 30, fours: 4, sixes: 2, sR: 150.00 },
+    { player: 'Hardik Pandya', runs: 30, balls: 20, fours: 2, sixes: 1, sR: 150.00 },
+    { player: 'Dinesh Karthik', runs: 25, balls: 15, fours: 3, sixes: 0, sR: 166.67 },
+    { player: 'Rishabh Pant', runs: 15, balls: 10, fours: 1, sixes: 1, sR: 150.00 },
+    { player: 'Shikhar Dhawan', runs: 10, balls: 8, fours: 1, sixes: 0, sR: 125.00 },
+    { player: 'Yuzvendra Chahal', runs: 5, balls: 5, fours: 0, sixes: 0, sR: 100.00 },
+    { player: 'Bhuvneshwar Kumar', runs: 0, balls: 2, fours: 0, sixes: 0, sR: 0.00 },
   ];
   teamBbatting = [
-    { player: 'David Warner', runs: 75, balls: 60, fours: 7, sixes: 2, sR:125.00 },
-    { player: 'Steve Smith', runs: 95, balls: 80, fours: 9, sixes: 1, sR:118.75 },
-    { player: 'Marnus Labuschagne', runs: 50, balls: 40, fours: 6, sixes: 0, sR:125.00 },
-    { player: 'Glenn Maxwell', runs: 40, balls: 25, fours: 4, sixes: 2, sR:160.00 },
-    { player: 'Aaron Finch', runs: 35, balls: 20, fours: 3, sixes: 1, sR:175.00 },
-    { player: 'Marcus Stoinis', runs: 20, balls: 15, fours: 2, sixes: 0, sR:133.33 },
-    { player: 'Alex Carey', runs: 15, balls: 10, fours: 1, sixes: 1, sR:150.00 },
-    { player: 'Pat Cummins', runs: 10, balls: 8, fours: 1, sixes: 0, sR:125.00 },
-    { player: 'Mitchell Starc', runs: 5, balls: 5, fours: 0, sixes: 0, sR:100.00 },
-    { player: 'Josh Hazlewood', runs: 0, balls: 2, fours: 0, sixes: 0, sR:0.00 },
+    { player: 'David Warner', runs: 75, balls: 60, fours: 7, sixes: 2, sR: 125.00 },
+    { player: 'Steve Smith', runs: 95, balls: 80, fours: 9, sixes: 1, sR: 118.75 },
+    { player: 'Marnus Labuschagne', runs: 50, balls: 40, fours: 6, sixes: 0, sR: 125.00 },
+    { player: 'Glenn Maxwell', runs: 40, balls: 25, fours: 4, sixes: 2, sR: 160.00 },
+    { player: 'Aaron Finch', runs: 35, balls: 20, fours: 3, sixes: 1, sR: 175.00 },
+    { player: 'Marcus Stoinis', runs: 20, balls: 15, fours: 2, sixes: 0, sR: 133.33 },
+    { player: 'Alex Carey', runs: 15, balls: 10, fours: 1, sixes: 1, sR: 150.00 },
+    { player: 'Pat Cummins', runs: 10, balls: 8, fours: 1, sixes: 0, sR: 125.00 },
+    { player: 'Mitchell Starc', runs: 5, balls: 5, fours: 0, sixes: 0, sR: 100.00 },
+    { player: 'Josh Hazlewood', runs: 0, balls: 2, fours: 0, sixes: 0, sR: 0.00 },
   ];
 
   teamAbowling = [
-    { player: 'Jasprit Bumrah', overs: 10, maidens:1, runs: 45, wickets: 3, econ:4.5 },
-    { player: 'Ravindra Jadeja', overs: 8, maidens:0, runs: 40, wickets: 2, econ:5.0 },
-    { player: 'Mohammed Shami', overs: 10, maidens:1, runs: 50, wickets: 1, econ:5.0 },
-    { player: 'Kuldeep Yadav', overs: 10, maidens:0, runs: 60, wickets: 0, econ:6.0 },
-    { player: 'Hardik Pandya', overs: 4, maidens:1, runs: 30, wickets: 1, econ:7.5 },
+    { player: 'Jasprit Bumrah', overs: 10, maidens: 1, runs: 45, wickets: 3, econ: 4.5 },
+    { player: 'Ravindra Jadeja', overs: 8, maidens: 0, runs: 40, wickets: 2, econ: 5.0 },
+    { player: 'Mohammed Shami', overs: 10, maidens: 1, runs: 50, wickets: 1, econ: 5.0 },
+    { player: 'Kuldeep Yadav', overs: 10, maidens: 0, runs: 60, wickets: 0, econ: 6.0 },
+    { player: 'Hardik Pandya', overs: 4, maidens: 1, runs: 30, wickets: 1, econ: 7.5 },
   ];
   teamBbowling = [
-    { player: 'Pat Cummins', overs: 10, maidens:2, runs: 40, wickets: 4, econ:4.0 },
-    { player: 'Mitchell Starc', overs: 10, maidens:1, runs: 50, wickets: 2, econ:5.0 },
-    { player: 'Josh Hazlewood', overs: 10, maidens:0, runs: 55, wickets: 1, econ:5.5 },
-    { player: 'Adam Zampa', overs: 10, maidens:0, runs: 65, wickets: 0, econ:6.5 },
-    { player: 'Glenn Maxwell', overs: 4, maidens:0, runs: 35, wickets: 1, econ:8.75 },
+    { player: 'Pat Cummins', overs: 10, maidens: 2, runs: 40, wickets: 4, econ: 4.0 },
+    { player: 'Mitchell Starc', overs: 10, maidens: 1, runs: 50, wickets: 2, econ: 5.0 },
+    { player: 'Josh Hazlewood', overs: 10, maidens: 0, runs: 55, wickets: 1, econ: 5.5 },
+    { player: 'Adam Zampa', overs: 10, maidens: 0, runs: 65, wickets: 0, econ: 6.5 },
+    { player: 'Glenn Maxwell', overs: 4, maidens: 0, runs: 35, wickets: 1, econ: 8.75 },
   ];
 
   teamAsquad = ['Rohit Sharma(C)', 'Virat Kohli', 'KL Rahul(WK)', 'Jasprit Bumrah', 'Ravindra Jadeja',
-  'Suryakumar Yadav', 'Dinesh Karthik', 'Rishabh Pant', 'Shikhar Dhawan', 'Yuzvendra Chahal', 'Bhuvneshwar Kumar'
+    'Suryakumar Yadav', 'Dinesh Karthik', 'Rishabh Pant', 'Shikhar Dhawan', 'Yuzvendra Chahal', 'Bhuvneshwar Kumar'
   ];
 
   teamBsquad = ['David Warner', 'Steve Smith(WK)', 'Marnus Labuschagne', 'Glenn Maxwell', 'Aaron Finch',
-  'Marcus Stoinis', 'Alex Carey', 'Pat Cummins(C)', 'Mitchell Starc', 'Josh Hazlewood'
+    'Marcus Stoinis', 'Alex Carey', 'Pat Cummins(C)', 'Mitchell Starc', 'Josh Hazlewood'
   ];
 
- activeinnings: string = 'one'; 
-activeInnings: string = 'testone';   // default to team A
+  activeinnings: string = 'one';
+  activeInnings: string = 'testone';   // default to team A
+  // fall of wickets
+  fallOfWickets = [
+    { player: 'Rohit Sharma ', over: ' 5.3', score: '30/1' },
+    { player: 'Virat Kohli ', over: ' 10.1', score: '90/2' },
+    { player: 'KL Rahul ', over: ' 15.4', score: '140/3' },
+    { player: 'Suryakumar Yadav ', over: ' 19.5', score: '190/4' },
 
+  ];
 
-// fall of wickets
+  matchDetails = {
+    tournament: 'INDIA IN ENGLAND TEST SERIES 2025',
+    toss: 'England Won The Toss And Elected To Field',
+    venue: 'Kennington Oval, London',
+    onFieldUmpires: ['Ahsan Raza', 'Kumar Dharmasena'],
+    thirdUmpire: 'Rod Tucker',
+    referee: 'Jeff Crowe',
+    playerOfTheMatch: 'Mohammed Siraj (India)',
+    playerOfTheSeries: 'Shubman Gill And Harry Brook'
+  };
 
-fallOfWickets = [
-  { player:'Rohit Sharma ',over:' 5.3',score:'30/1' },
-  { player:'Virat Kohli ',over:' 10.1',score:'90/2' },
-  { player:'KL Rahul ',over:' 15.4',score:'140/3' },
-  { player:'Suryakumar Yadav ',over:' 19.5',score:'190/4' },
-  
-];
-
-
-matchDetails = {
-  tournament: 'INDIA IN ENGLAND TEST SERIES 2025',
-  toss: 'England Won The Toss And Elected To Field',
-  venue: 'Kennington Oval, London',
-  onFieldUmpires: ['Ahsan Raza', 'Kumar Dharmasena'],
-  thirdUmpire: 'Rod Tucker',
-  referee: 'Jeff Crowe',
-  playerOfTheMatch: 'Mohammed Siraj (India)',
-  playerOfTheSeries: 'Shubman Gill And Harry Brook'
-};
-
-
+  Partnerships = [
+    {
+      playerA: 'Ben Duckett',
+      runsA: 34,
+      playerB: 'Zak Crawley',
+      runsB: 4,
+      partnership: 50,
+      partnershipTotal: 84,
+      extras: 2
+    },
+    {
+      playerA: 'Ollie Pope',
+      runsA: 12,
+      playerB: 'Ben Duckett',
+      runsB: 20,
+      partnership: 32,
+      partnershipTotal: 53,
+      extras: 0
+    },
+    {
+      playerA: 'Ollie Pope',
+      runsA: 15,
+      playerB: 'Joe Root',
+      runsB: 8,
+      partnership: 24,
+      partnershipTotal: 29,
+      extras: 1
+    },
+    {
+      playerA: 'Joe Root',
+      runsA: 75,
+      playerB: 'Harry Brook',
+      runsB: 111,
+      partnership: 195,
+      partnershipTotal: 211,
+      extras: 9
+    }
+  ];
 }
