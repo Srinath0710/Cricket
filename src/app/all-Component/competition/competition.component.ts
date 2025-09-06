@@ -315,7 +315,7 @@ export class CompetitionComponent implements OnInit {
     this.totalRecords = this.filteredCompititionList.length;
     this.first = 0; // reset pagination
     //  this.loadCompetitions();
-    this.showFilters = false; // close filters after applying
+    this.showFilters = true; // close filters after applying
   }
 
 
@@ -671,6 +671,6 @@ export class CompetitionComponent implements OnInit {
     this.first = 1;
     this.showFilters = false;
     this.loadCompetitions();
-
+    this.clear();
   }
 }

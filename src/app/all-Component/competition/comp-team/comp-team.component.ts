@@ -110,7 +110,7 @@ export class CompTeamComponent implements OnInit {
       competition_id: ['', [Validators.required]],
       sponser_name: ['', [Validators.required]],
       scorecard_name: ['', [Validators.required]],
-      profile_url: [''],
+      profile_url: [null],
     })
 
   }
@@ -238,6 +238,9 @@ export class CompTeamComponent implements OnInit {
         this.failedToast(err.error);
       }
     );
+    // this.filedata = null;
+    // this.profileImages = this.updateTeam.country_image + '?' + Math.random();
+    // this.convertUrlToBase64(editRecord.country_image + '?' + Math.random());
   }
 
 
