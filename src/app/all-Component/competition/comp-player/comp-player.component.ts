@@ -147,7 +147,7 @@ export class CompPlayerComponent implements OnInit {
       competition_id: ['', []],
       jersey_number: ['', [Validators.required]],
       scorecard_name: ['', [Validators.required]],
-      profile_url: ['', []],
+      profile_url: [''],
       user_id: ['', []],
       team_id: ['', []],
       display_name: [''],
@@ -208,6 +208,10 @@ export class CompPlayerComponent implements OnInit {
         this.teamsData = res.data.teams != undefined ? res.data.teams : [];
         this.allPlayersRaw = res.data.all_players ?? [];
         this.selectedPlayersRaw = res.data.selected_players ?? [];
+
+        this.setDefaultImages(this.allPlayersRaw);
+        this.setDefaultImages(this.selectedPlayersRaw);
+
         this.totalData = res.data.all_players[0].total_records
         if (this.teamsData.length > 0) {
           this.teamID = this.teamsData[0].team_id;
@@ -244,6 +248,7 @@ export class CompPlayerComponent implements OnInit {
     this.targetSearchKeyword = '';
     if (this.dt1) this.dt1.filterGlobal('', 'contains');
     if (this.dt2) this.dt2.filterGlobal('', 'contains');
+    
   }
   public singleFilterFunction(arrayFilter: Array<any>, filterKey: string, byFilterValue: any) {
     return arrayFilter.filter((data: any) => data[filterKey] == byFilterValue)
@@ -290,7 +295,7 @@ export class CompPlayerComponent implements OnInit {
       player_id: this.selectedPlayer.player_id?.toString(),
       scorecard_name: this.ManagePlayerForm.get('scorecard_name')?.value || '',
       jersey_number: this.ManagePlayerForm.get('jersey_number')?.value || '',
-      profile_url: this.ManagePlayerForm.get('profile_url')?.value || ''
+      profile_url: this.ManagePlayerForm.get('profile_url')?.value || this.selectedPlayer?.profile_url || ''
     };
 
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
@@ -446,18 +451,8 @@ export class CompPlayerComponent implements OnInit {
         if (res.status_code === this.statusConstants.success && res.data) {
           this.selectedPlayers = res.data.players;
 
-          this.PlayerData.forEach((val: any) => {
-            if (!val.profile_image) {
-              if (val.gender === 'Men') {
-                val.profile_image = this.men_img;
-              } else if (val.gender === 'Women') {
-                val.profile_image = this.women_img;
-                // } else {
-                //   val.profile_image = 'assets/images/player.jpg';
-              }
-            }
-            val.profile_image = `${val.profile_image}?${Math.random()}`;
-          });
+          this.setDefaultImages(this.selectedPlayers);
+
           this.viewDialogVisible = true;
         } else {
           this.failedToast(res);
@@ -715,6 +710,21 @@ export class CompPlayerComponent implements OnInit {
   addCallBack(res: any) {
     this.successToast(res);
     this.gridLoad();
+  }
+
+  private setDefaultImages(players: any[]): void {
+    players.forEach((val: any) => {
+      if (!val.profile_image) {
+        const gender = val.gender?.toLowerCase();
+        if (gender === 'men' || gender === 'm') {
+          val.profile_image = this.men_img;
+        } else if (gender === 'women' || gender === 'f') {
+          val.profile_image = this.women_img;
+        } else {
+          val.profile_image = 'assets/images/player.jpg';
+        }
+      }
+    });
   }
 
 }
