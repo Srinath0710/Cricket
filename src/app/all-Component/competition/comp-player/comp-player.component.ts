@@ -248,7 +248,7 @@ export class CompPlayerComponent implements OnInit {
     this.targetSearchKeyword = '';
     if (this.dt1) this.dt1.filterGlobal('', 'contains');
     if (this.dt2) this.dt2.filterGlobal('', 'contains');
-    
+
   }
   public singleFilterFunction(arrayFilter: Array<any>, filterKey: string, byFilterValue: any) {
     return arrayFilter.filter((data: any) => data[filterKey] == byFilterValue)
@@ -351,8 +351,22 @@ export class CompPlayerComponent implements OnInit {
   moveToTarget(player: any) {
     this.sourcePlayer = this.sourcePlayer.filter(t => t !== player);
     player.player_name = player.player_name || player.display_name;
+
+    // ✅ Ensure profile image is available
+    if (!player.profile_image) {
+      const gender = player.gender?.toLowerCase();
+      if (gender === 'men' || gender === 'm') {
+        player.profile_image = this.men_img;
+      } else if (gender === 'women' || gender === 'f') {
+        player.profile_image = this.women_img;
+      } else {
+        player.profile_image = 'assets/images/player.jpg';
+      }
+    }
+
     this.targetPlayer.push(player);
   }
+
 
   filterGlobalSource($event: any, stringVal: string) {
     this.dt1?.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
@@ -630,29 +644,20 @@ export class CompPlayerComponent implements OnInit {
   }
 
   profileImgAppend(player_id: any) {
-    if (!this.filedata) {
-      return;
-    }
+    if (!this.filedata) return;
 
     const myFormData = new FormData();
-
-    // Ensure filedata is a File/Blob
     let fileToUpload: File | Blob | null = null;
 
     if (this.filedata instanceof File || this.filedata instanceof Blob) {
       fileToUpload = this.filedata;
     } else if (typeof this.filedata === 'string' && this.filedata.startsWith('data:')) {
-      // Convert base64 to Blob
       fileToUpload = this.base64ToBinary(this.filedata);
     }
 
-    if (!fileToUpload) {
-      console.error("Invalid filedata format");
-      return;
-    }
+    if (!fileToUpload) return;
 
-    // 🔹 Check the exact field name your backend expects.
-    myFormData.append('file', fileToUpload); // not 'profile_url'
+    myFormData.append('file', fileToUpload);
     myFormData.append('client_id', this.CompetitionData.client_id.toString());
     myFormData.append('file_id', player_id);
     myFormData.append('player_id', player_id);
@@ -663,6 +668,11 @@ export class CompPlayerComponent implements OnInit {
       (res) => {
         if (res.status_code == this.statusConstants.success) {
           if (res.url) {
+            // ✅ Update player image in targetPlayer
+            const player = this.targetPlayer.find(p => p.player_id === player_id);
+            if (player) {
+              player.profile_image = res.url;
+            }
             this.addCallBack(res);
           } else {
             this.failedToast(res);
@@ -683,6 +693,7 @@ export class CompPlayerComponent implements OnInit {
       }
     );
   }
+
 
 
   onImageUpload(event: any) {
