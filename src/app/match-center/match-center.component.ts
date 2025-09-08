@@ -5,7 +5,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { PaginatorModule } from 'primeng/paginator';
 import { ApiService } from '../services/api.service';
 
-/** --- Match interface for type safety --- */
+/*--Interfaces (type safety) -- */
 interface FilterMatch {
   series: string;
   startDate: string;
@@ -17,7 +17,7 @@ interface FilterMatch {
   teamFormat?: string;
 }
 
-interface compitation {
+interface Competition {
   series: string;
   dateTime: string;
   stadium: string;
@@ -74,7 +74,7 @@ interface BattingSummary {
   fours: number;
   sixes: number;
   strikeRate: number;
-  wicketDesc?: string;
+  wicketDesc?: string | null;
 }
 
 interface BowlingSummary {
@@ -113,6 +113,8 @@ interface Season {
   season_id: string;
 }
 
+/*---Component -- */
+
 @Component({
   selector: 'app-match-center',
   standalone: true,
@@ -122,14 +124,16 @@ interface Season {
 })
 export class MatchCenterComponent implements OnInit {
 
-  /**-- Pagination-- */
-  rows: number = 6;
-  first: number = 0;
+  /*- Pagination config -- */
 
-  pointsRows: number = 2;
-  pointsFirst: number = 0;
+  rows: number = 6;         // items per page for match cards
+  first: number = 0;        // current first index for pagination
 
-  /**-- Filters-- */
+  pointsRows: number = 2;   // items per page for points list
+  pointsFirst: number = 0;  // first index for points pagination
+
+  /*--- Filter selected values    -- */
+
   selectedSeries: string | null = null;
   selectedMatchType: string | null = null;
   selectedStatus: string | null = null;
@@ -137,7 +141,7 @@ export class MatchCenterComponent implements OnInit {
   selectedAgeGroup: string | null = null;
   selectedTeamFormat: string | null = null;
 
-  // Dropdown Options
+  /*-- Dropdown option arrays -- */
   genders: any[] = [];
   ageGroups: any[] = [];
   matchTypes: any[] = [];
@@ -149,19 +153,21 @@ export class MatchCenterComponent implements OnInit {
     { label: 'Completed', value: 'Completed' }
   ];
 
+  /*--- Raw JSON storages (from API/mock)-- */
 
-  filters = [] as any;
-  competitions = [] as any;
-  matchSumaruy = [] as any;
-  schedules = [] as any;
-  scorecard_batting_summary = [] as any;
-  scorecard_bowling_summary = [] as any;
-  scorecard_fow = [] as any;
-  seasons: any = [] as any
+  filters: any[] = [];
+  competitions: any[] = [];
+  matchSummaryRaw: any[] = [];
+  schedulesRaw: any[] = [];
+  battingSummaryRaw: any[] = [];
+  bowlingSummaryRaw: any[] = [];
+  fowRaw: any[] = [];
+  seasonsRaw: any[] = [];
 
-  /**-- Match Data-- */
+  /*--- Typed/processed lists used by template   *-- */
+
   matchescard: FilterMatch[] = [];
-  matchespoints: compitation[] = [];
+  matchespoints: Competition[] = [];
   matchSummaries: MatchSummary[] = [];
   schedulesList: Schedule[] = [];
   battingSummaries: BattingSummary[] = [];
@@ -169,78 +175,95 @@ export class MatchCenterComponent implements OnInit {
   fallOfWickets: FallOfWicket[] = [];
   Season: Season[] = [];
 
-  /**-- Points Form-- */
+  /*--- Points form  -- */
   ShowPointsForm: boolean = false;
   pointsForm: FormGroup;
 
-  /**-- Scorecard Variables -- */
+  /*--- Scorecard UI -- */
   showScorecard = false;
-  selectedMatch: any;
+  selectedMatch: any = null;
   activeTab = 'scorecard';
-  teamAbatting = [];
-  teamBbatting = [];
-  teamAbowling = [];
-  teamBbowling = [];
-  teamAsquad = [];
-  teamBsquad = [];
+  teamAbatting: any[] = [];
+  teamBbatting: any[] = [];
+  teamAbowling: any[] = [];
+  teamBbowling: any[] = [];
+  teamAsquad: any[] = [];
+  teamBsquad: any[] = [];
   activeinnings: string = 'one';
   activeInnings: string = 'testone';
-  //fallOfWickets = [];
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
+    // create empty reactive form for points UI (fields to be added as per requirements)
     this.pointsForm = this.fb.group({});
   }
 
+  /*---Ngonit-- */
   ngOnInit(): void {
-    this.loadFilterOptions();
-    this.initializeMatches();
-    this.initializeMatchesPoints();
-    this.initializeMatchSummaries();
-    this.initializeSchedules();
-    this.initializeBattingSummaries();
-    this.initializeBowlingSummaries();
-    this.initializeFallOfWickets();
-    this.initializeSeason();
+    // Load options & mock data
+    this.loadFilterOptionsFromMock();
+    this.loadCompetitionsFromMock();
+    this.loadMatchesPointsFromMock();
+    this.loadMatchSummariesFromMock();
+    this.loadSchedulesFromMock();
+    this.loadBattingSummariesFromMock();
+    this.loadBowlingSummariesFromMock();
+    this.loadFallOfWicketsFromMock();
+    this.loadSeasonsFromMock();
   }
 
-  /**-- Load Dropdown Options Dynamically --*/
-  loadFilterOptions() {
+  /*---Filters: read filters.json and populate dropdowns -- */
+  loadFilterOptionsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/filters.json').subscribe(data => {
       this.filters = data;
+      // Build the dropdown arrays with "All" item as first element
       this.genders = [{ label: 'All Gender', value: null }, ...this.filters.filter((f: any) => f.config_key === 'gender').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
       this.ageGroups = [{ label: 'All Age Groups', value: null }, ...this.filters.filter((f: any) => f.config_key === 'age_category').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
       this.teamFormats = [{ label: 'All Team Formats', value: null }, ...this.filters.filter((f: any) => f.config_key === 'team_format').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
       this.matchTypes = [{ label: 'All Match Types', value: null }, ...this.filters.filter((f: any) => f.config_key === 'comp_type').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
-
     });
   }
 
-  /**-- Initialize Match Cards Dynamically from JSON --*/
-  private initializeMatches(): void {
-
+  /*---Competitions: map competition JSON to match cards used in UI-- */
+  loadCompetitionsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/compitation.json').subscribe(data => {
       this.competitions = data;
-
       this.matchescard = this.competitions.map((c: any) => ({
-        series: c.competition_name,   //  from competition_name
+        series: c.competition_name,
         startDate: new Date(c.start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
         endDate: new Date(c.end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        matchType: c.comp_type,       //  from comp_type
-        gender: c.gender,             //  from gender
-        ageGroup: c.age_category,     //  from age_category
-        status: this.mapStatus(c.status), //  from status
-        teamFormat: c.team_format     //  from team_format
+        matchType: c.comp_type,
+        gender: c.gender,
+        ageGroup: c.age_category,
+        status: this.normalizeStatus(c.status),
+        teamFormat: c.team_format
       }));
-
-      console.error('Failed to load competitions JSON');
-
     });
   }
 
-  private initializeMatchSummaries(): void {
+  /*---
+   *  Matches points list: load more detailed competition entries (for points view)-- */
+  loadMatchesPointsFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/compitation.json').subscribe(data => {
+      this.matchespoints = data.map((c: any) => ({
+        series: c.competition_name,
+        dateTime: new Date(c.start_date).toLocaleString('en-GB'),
+        stadium: c.stadium || '',
+        location: c.location || '',
+        matchType: c.comp_type,
+        teamA: c.teamA || null,
+        teamB: c.teamB || null,
+        resultStatus: c.resultStatus || '',
+        type: this.normalizeStatus(c.status)
+      }));
+    });
+  }
+
+  /*---
+   *  Match summaries: map matchsummary mock into typed objects-- */
+  loadMatchSummariesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/matchsumary.json').subscribe(data => {
-      this.matchSumaruy = data;
-      this.matchSummaries = this.matchSumaruy.map((m: any) => ({
+      this.matchSummaryRaw = data;
+      this.matchSummaries = this.matchSummaryRaw.map((m: any) => ({
         matchId: m.match_id,
         competitionName: m.competition_name,
         teamA: m.team_1_name,
@@ -248,24 +271,20 @@ export class MatchCenterComponent implements OnInit {
         teamASummary: m.team_1_summary,
         teamBSummary: m.team_2_summary,
         venue: m.venue,
-        startDate: new Date(m.match_start_date).toLocaleDateString('en-GB', {
-          day: '2-digit', month: 'short', year: 'numeric'
-        }),
-        endDate: new Date(m.match_end_date).toLocaleDateString('en-GB', {
-          day: '2-digit', month: 'short', year: 'numeric'
-        }),
+        startDate: new Date(m.match_start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        endDate: new Date(m.match_end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
         result: m.match_result,
         matchType: m.comp_type,
-        status: this.mapStatusFromSummary(m.match_result) // 👈 we’ll write this helper
+        status: this.deriveStatusFromResult(m.match_result)
       }));
     });
   }
 
-  private initializeSchedules(): void {
-
+  /*---Schedules: map schedules JSON to typed Schedule objects -- */
+  loadSchedulesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/schedules.json').subscribe(data => {
-      this.schedules = data;
-      this.schedulesList = this.schedules.map((s: any) => ({
+      this.schedulesRaw = data;
+      this.schedulesList = this.schedulesRaw.map((s: any) => ({
         matchId: s.match_id,
         competitionName: s.competition_name,
         teamA: s.team_1_name,
@@ -273,15 +292,11 @@ export class MatchCenterComponent implements OnInit {
         teamASummary: s.team_1_summary,
         teamBSummary: s.team_2_summary,
         venue: s.venue,
-        startDate: new Date(s.match_start_date).toLocaleDateString('en-GB', {
-          day: '2-digit', month: 'short', year: 'numeric'
-        }),
-        endDate: new Date(s.match_end_date).toLocaleDateString('en-GB', {
-          day: '2-digit', month: 'short', year: 'numeric'
-        }),
+        startDate: new Date(s.match_start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        endDate: new Date(s.match_end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
         result: s.match_result,
         matchType: s.comp_type,
-        status: this.mapStatusFromSummary(s.match_result),
+        status: this.deriveStatusFromResult(s.match_result),
         teamFormat: s.team_format,
         gender: s.gender,
         ageCategory: s.age_category
@@ -289,11 +304,11 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  private initializeBattingSummaries(): void {
+  /*--- Batting summaries: typed list used for scorecards-- */
+  loadBattingSummariesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/battingSumary.json').subscribe(data => {
-      this.scorecard_batting_summary = data;
-
-      this.battingSummaries = this.scorecard_batting_summary.map((b: any) => ({
+      this.battingSummaryRaw = data;
+      this.battingSummaries = this.battingSummaryRaw.map((b: any) => ({
         matchId: b.match_id,
         inningsNo: b.innings_no,
         battingTeam: b.batting_team,
@@ -309,11 +324,12 @@ export class MatchCenterComponent implements OnInit {
       }));
     });
   }
-  private initializeBowlingSummaries(): void {
 
+  /*--Bowling summaries: typed list used for scorecards*/
+  loadBowlingSummariesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/bowlingSumary.json').subscribe(data => {
-      this.scorecard_bowling_summary = data;
-      this.bowlingSummaries = this.scorecard_bowling_summary.map((b: any) => ({
+      this.bowlingSummaryRaw = data;
+      this.bowlingSummaries = this.bowlingSummaryRaw.map((b: any) => ({
         matchId: b.match_id,
         inningsNo: b.innings_no,
         bowlingTeam: b.bowling_team,
@@ -332,12 +348,12 @@ export class MatchCenterComponent implements OnInit {
       }));
     });
   }
-  // 
-  private initializeFallOfWickets(): void {
 
+  /*--- Fall of wickets list-- */
+  loadFallOfWicketsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/scorecardFlow.json').subscribe(data => {
-      this.scorecard_fow = data;
-      this.fallOfWickets = this.scorecard_fow.map((f: any) => ({
+      this.fowRaw = data;
+      this.fallOfWickets = this.fowRaw.map((f: any) => ({
         matchId: f.match_id,
         inningsNo: f.innings_no,
         battingTeam: f.batting_team,
@@ -351,39 +367,39 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  private initializeSeason(): void {
+  /*---Seasons: load seasons JSON- */
+  loadSeasonsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/sesson.json').subscribe(data => {
-      this.seasons = data;
-      this.seasons = this.seasons.map((s: any) => ({
+      this.seasonsRaw = data;
+      this.Season = this.seasonsRaw.map((s: any) => ({
         current: s.current,
         season_value: s.season_value,
         season_id: s.season_id
       }));
     });
   }
-
-  private mapStatusFromSummary(result: string): string {
-    if (!result) return 'Upcoming';
-    if (result.toLowerCase().includes('won') || result.toLowerCase().includes('draw'))
-      return 'Completed';
+  // Match result text la irundhu status decide panra function
+  private deriveStatusFromResult(result: string | null | undefined): string {
+    if (!result) return 'Upcoming';  // result illa → Upcoming
+    const lowered = result.toLowerCase();  // small letter ku convert panrom
+    if (lowered.includes('won') || lowered.includes('draw')) return 'Completed';  // 'won' illa 'draw' irundha → Completed
+    // illati → Live
     return 'Live';
   }
 
-  private mapStatus(status: string): string {
+  // API/JSON la varra status values normalize panra function
+  private normalizeStatus(status: string | null | undefined): string {
+    if (!status) return 'Upcoming';  // status illa → Upcoming
+
     switch (status.toLowerCase()) {
-      case 'completed': return 'Completed';
-      case 'inprogress': return 'Live';
-      case 'upcoming': return 'Upcoming';
-      default: return 'Upcoming';
+      case 'completed': return 'Completed';   // completed ah irundha
+      case 'inprogress': return 'Live';       // inprogress ah irundha
+      case 'upcoming': return 'Upcoming';     // upcoming ah irundha
+      default: return 'Upcoming';             // vera yedhum na Upcoming
     }
   }
 
-  /**-- Initialize Detailed Matches (Optional, you can make dynamic similarly) --*/
-  private initializeMatchesPoints(): void {
-    this.matchespoints = [];
-  }
-
-  /**-- Filtered Matches-- */
+  /*---Filtered match-cards computed property (applies all selected filters)-- */
   get filteredMatches(): FilterMatch[] {
     return this.matchescard.filter(match =>
       (!this.selectedStatus || match.status === this.selectedStatus) &&
@@ -394,16 +410,19 @@ export class MatchCenterComponent implements OnInit {
     );
   }
 
+  /*---Pagination slice for match cards- */
   get paginatedMatches(): FilterMatch[] {
     return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
 
   onPageChange(event: any): void {
+    // event has { first, rows } from p-paginator
     this.first = event.first;
     this.rows = event.rows;
   }
 
-  get filteredPointsMatches(): compitation[] {
+  /*---Points-list filtering based on selected series & matchType-- */
+  get filteredPointsMatches(): Competition[] {
     if (!this.selectedSeries) return [];
     return this.matchespoints.filter(match =>
       match.series === this.selectedSeries &&
@@ -411,7 +430,7 @@ export class MatchCenterComponent implements OnInit {
     );
   }
 
-  get paginatedPointsMatches(): compitation[] {
+  get paginatedPointsMatches(): Competition[] {
     return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
   }
 
@@ -419,6 +438,8 @@ export class MatchCenterComponent implements OnInit {
     this.pointsFirst = event.first;
     this.pointsRows = event.rows;
   }
+
+  /*--Points form open/closeopens the points UI for a series*/
 
   showPointsForm(series: string, matchType?: string): void {
     this.selectedSeries = series;
@@ -432,10 +453,12 @@ export class MatchCenterComponent implements OnInit {
     this.selectedMatchType = null;
   }
 
+  /*--- Helper to check whether any points data exists for a series-- */
   hasPoints(series: string): boolean {
     return this.matchespoints.some(match => match.series === series);
   }
 
+  /*---Count match types in a series (returns object like { 'T20': 2, 'ODI': 1 })-- */
   getMatchTypeCounts(series: string): { [key: string]: number } {
     const counts: { [key: string]: number } = {};
     this.matchespoints.filter(match => match.series === series).forEach(match => {
@@ -444,18 +467,18 @@ export class MatchCenterComponent implements OnInit {
     return counts;
   }
 
+  /*---Total number of match cards after filters applied-- */
   get totalData(): number {
     return this.filteredMatches.length;
   }
 
-  /**-- Scorecard Logic --*/
-  openScorecard(match: any) {
+  /*---Scorecard open/close controls used by template-- */
+  openScorecard(match: any): void {
     this.selectedMatch = match;
     this.showScorecard = true;
   }
 
-  closeScorecard() {
+  closeScorecard(): void {
     this.showScorecard = false;
   }
 }
-
