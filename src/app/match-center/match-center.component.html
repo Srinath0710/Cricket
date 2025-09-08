@@ -6,37 +6,47 @@
     <h2 class="heading">Match Center</h2>
   </div>
   <!-- Right: Filters -->
-  <div class="col-8">
+  <div class="col-8 ">
     <div class="row">
       <!-- Status Dropdown -->
-      <div class="col-3">
+      <div class="col-2 col-main-dropdown">
         <p-dropdown [options]="statuses" [(ngModel)]="selectedStatus" optionLabel="label" optionValue="value"
           placeholder="Select Status" styleClass="fixed-dropdown">
         </p-dropdown>
       </div>
 
       <!-- Gender Dropdown -->
-      <div class="col-3">
+      <div class="col-2 col-main-dropdown">
         <p-dropdown [options]="genders" [(ngModel)]="selectedGender" optionLabel="label" optionValue="value"
           placeholder="Select Gender" styleClass="fixed-dropdown">
         </p-dropdown>
       </div>
+
       <!-- Age Group Dropdown -->
-      <div class="col-3">
+      <div class="col-2 col-main-dropdown">
         <p-dropdown [options]="ageGroups" [(ngModel)]="selectedAgeGroup" optionLabel="label" optionValue="value"
           placeholder="Select Age Group" styleClass="fixed-dropdown">
         </p-dropdown>
       </div>
+
       <!-- Match Type Dropdown -->
-      <div class="col-3">
+      <div class="col-2 col-main-dropdown">
         <p-dropdown [options]="matchTypes" [(ngModel)]="selectedMatchType" optionLabel="label" optionValue="value"
           placeholder="Select Match Type" styleClass="fixed-dropdown">
         </p-dropdown>
       </div>
+
+      <!-- Team Format Dropdown (optional) -->
+      <div class="col-2 col-main-dropdown">
+        <p-dropdown [options]="teamFormats" [(ngModel)]="selectedTeamFormat" optionLabel="label" optionValue="value"
+          placeholder="Select Team Format" styleClass="fixed-dropdown">
+        </p-dropdown>
+      </div>
+
+
     </div>
   </div>
 </div>
-
 <!-- --Match Cards Grid ---->
 <div *ngIf="!ShowPointsForm && !showScorecard" class="row match-center-body">
   <div class="col-12 match-grid">
@@ -453,73 +463,7 @@
     </div>
   </div>
   <!-- Match Details (ONLY SHOW ON SCORECARD) -->
-  <h2 class="heading4">Match Details</h2>
-  <div class="match-details" *ngIf="matchDetails">
-    <table class="details-table">
-      <tr>
-        <td><strong>Tournament</strong></td>
-        <td>{{ matchDetails.tournament }}</td>
-      </tr>
-      <tr>
-        <td><strong>Toss</strong></td>
-        <td>{{ matchDetails.toss }}</td>
-      </tr>
-      <tr>
-        <td><strong>Venue</strong></td>
-        <td>{{ matchDetails.venue }}</td>
-      </tr>
-      <tr>
-        <td><strong>On-Field Umpires</strong></td>
-        <td>{{ matchDetails.onFieldUmpires.join(', ') }}</td>
-      </tr>
-      <tr>
-        <td><strong>Third Umpire</strong></td>
-        <td>{{ matchDetails.thirdUmpire }}</td>
-      </tr>
-      <tr>
-        <td><strong>Referee</strong></td>
-        <td>{{ matchDetails.referee }}</td>
-      </tr>
-      <tr>
-        <td><strong>Player Of The Match</strong></td>
-        <td>{{ matchDetails.playerOfTheMatch }}</td>
-      </tr>
-      <tr>
-        <td><strong>Player Of The Series</strong></td>
-        <td>{{ matchDetails.playerOfTheSeries }}</td>
-      </tr>
-    </table>
-  </div>
 
- <h2 class="heading4">Partnerships</h2>
-<div class="match-details" *ngIf="Partnerships && Partnerships.length">
-  <div class="partnership" *ngFor="let p of Partnerships">
-    <!-- Players -->
-    <div class="players">
-      <span class="player-a">{{ p.playerA }} - {{ p.runsA }}</span>
-      <span class="player-b">{{ p.playerB }} - {{ p.runsB }}</span>
-    </div>
-
-    <!-- Donut Chart -->
-    <div class="partnership-circle" 
-         [style.background]="
-          'conic-gradient(' +
-          '#e36fe5 0% ' + (p.partnership / p.partnershipTotal * 100) + '%, ' +
-          '#60c3e4 ' + (p.partnership / p.partnershipTotal * 100) + '% ' + 
-          ((p.partnership + p.extras) / p.partnershipTotal * 100) + '%, ' +
-          '#eee ' + ((p.partnership + p.extras) / p.partnershipTotal * 100) + '% 100%)'
-         ">
-      <span>
-        {{ p.partnership + p.extras }}
-      </span>
-    </div>
-
-    <!-- Info Below Chart -->
-    <div class="partnership-info">
-      Partnership - {{ p.partnership }} | Extras - {{ p.extras }} | Total - {{ p.partnershipTotal }}
-    </div>
-  </div>
-</div>
 </div>
 
 <!-- --Reusable Team Block ---->

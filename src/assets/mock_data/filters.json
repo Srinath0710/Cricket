@@ -1,0 +1,20 @@
+[
+    { "config_value": "Men", "config_key": "gender" },
+    { "config_value": "Women", "config_key": "gender" },
+    { "config_value": "Under-14", "config_key": "age_category" },
+    { "config_value": "Under-16", "config_key": "age_category" },
+    { "config_value": "Under-19", "config_key": "age_category" },
+    { "config_value": "Under-23", "config_key": "age_category" },
+    { "config_value": "Senior", "config_key": "age_category" },
+    { "config_value": "Domestic", "config_key": "team_format" },
+    { "config_value": "International", "config_key": "team_format" },
+    { "config_value": "Others", "config_key": "team_format" },
+    { "config_value": "List A", "config_key": "comp_type", "parent_config_id": "3" },
+    { "config_value": "T20 Domestic", "config_key": "comp_type", "parent_config_id": "3" },
+    { "config_value": "T10 Domestic", "config_key": "comp_type", "parent_config_id": "3" },
+    { "config_value": "Multiday", "config_key": "comp_type", "parent_config_id": "3" },
+    { "config_value": "ODI", "config_key": "comp_type", "parent_config_id": "4" },
+    { "config_value": "Test", "config_key": "comp_type", "parent_config_id": "4" },
+    { "config_value": "T20I", "config_key": "comp_type", "parent_config_id": "4" },
+    { "config_value": "T10I", "config_key": "comp_type", "parent_config_id": "4" }
+  ]

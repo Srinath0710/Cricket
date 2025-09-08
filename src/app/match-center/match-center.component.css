@@ -564,3 +564,9 @@ margin-top: 50px;
 .extra-table table{
   border-radius: 5px;
 }
+
+
+ /* Dynamic code change */
+.col-main-dropdown {
+    width: 19.666667% !important;
+}

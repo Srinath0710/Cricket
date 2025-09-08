@@ -1,12 +1,12 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { PaginatorModule } from 'primeng/paginator';
+import { ApiService } from '../services/api.service';
 
 /** --- Match interface for type safety --- */
-interface Match {
+interface FilterMatch {
   series: string;
   startDate: string;
   endDate: string;
@@ -14,9 +14,10 @@ interface Match {
   gender: string;
   ageGroup: string;
   status: string;
+  teamFormat?: string;
 }
 
-interface MatchDetail {
+interface compitation {
   series: string;
   dateTime: string;
   stadium: string;
@@ -28,6 +29,89 @@ interface MatchDetail {
   type: string; // live/upcoming/result
 }
 
+interface MatchSummary {
+  matchId: string;
+  competitionName: string;
+  teamA: string;
+  teamB: string;
+  teamASummary: string;
+  teamBSummary: string;
+  venue: string;
+  startDate: string;
+  endDate: string;
+  result: string;
+  matchType: string;
+  status: string;
+}
+
+interface Schedule {
+  matchId: string;
+  competitionName: string;
+  teamA: string;
+  teamB: string;
+  teamASummary: string;
+  teamBSummary: string;
+  venue: string;
+  startDate: string;
+  endDate: string;
+  result: string;
+  matchType: string;
+  status: string;
+  teamFormat: string;
+  gender: string;
+  ageCategory: string;
+}
+
+interface BattingSummary {
+  matchId: string;
+  inningsNo: string;
+  battingTeam: string;
+  playerId: string;
+  playerName: string;
+  battingOrder: number;
+  runs: number;
+  balls: number;
+  fours: number;
+  sixes: number;
+  strikeRate: number;
+  wicketDesc?: string;
+}
+
+interface BowlingSummary {
+  matchId: string;
+  inningsNo: string;
+  bowlingTeam: string;
+  playerId: string;
+  playerName: string;
+  bowlingOrder: number;
+  overs: number;
+  maidens: number;
+  runs: number;
+  wickets: number;
+  economy: number;
+  foursConceded: number;
+  sixesConceded: number;
+  dotBalls: number;
+  strikeRate?: number;
+}
+
+interface FallOfWicket {
+  matchId: string;
+  inningsNo: string;
+  battingTeam: string;
+  wicketNo: number;
+  teamTotal: number;
+  overValue: number;
+  playerId: string;
+  playerName: string;
+  wicketDesc: string;
+}
+
+interface Season {
+  current: string;
+  season_value: string;
+  season_id: string;
+}
 
 @Component({
   selector: 'app-match-center',
@@ -39,12 +123,11 @@ interface MatchDetail {
 export class MatchCenterComponent implements OnInit {
 
   /**-- Pagination-- */
-  rows: number = 6;  // Cards per page
-  first: number = 0; // Index of first item
+  rows: number = 6;
+  first: number = 0;
 
-  /**-- Points Form Pagination-- */
-pointsRows: number = 2;  // rows per page for points matches
-pointsFirst: number = 0; // index of first item for points matches
+  pointsRows: number = 2;
+  pointsFirst: number = 0;
 
   /**-- Filters-- */
   selectedSeries: string | null = null;
@@ -52,8 +135,13 @@ pointsFirst: number = 0; // index of first item for points matches
   selectedStatus: string | null = null;
   selectedGender: string | null = null;
   selectedAgeGroup: string | null = null;
+  selectedTeamFormat: string | null = null;
 
-  // Filter options
+  // Dropdown Options
+  genders: any[] = [];
+  ageGroups: any[] = [];
+  matchTypes: any[] = [];
+  teamFormats: any[] = [];
   statuses = [
     { label: 'All Status', value: null },
     { label: 'Live', value: 'Live' },
@@ -61,382 +149,261 @@ pointsFirst: number = 0; // index of first item for points matches
     { label: 'Completed', value: 'Completed' }
   ];
 
-  genders = [
-    { label: 'All Gender', value: null },
-    { label: 'Men', value: 'Men' },
-    { label: 'Women', value: 'Women' }
-  ];
 
-  ageGroups = [
-    { label: 'All Age Groups', value: null },
-    { label: 'Under 16', value: 'Under 16' },
-    { label: 'Under 19', value: 'Under 19' },
-    { label: 'Under 22', value: 'Under 22' },
-    { label: 'Senior', value: 'Senior' }
-  ];
-
-  matchTypes = [
-    { label: 'All Match Types', value: null },
-    { label: 'Test', value: 'Test' },
-    { label: 'ODI', value: 'ODI' },
-    { label: 'T20', value: 'T20' },
-    { label: 'TNPL', value: 'TNPL' },
-    { label: 'IPL', value: 'IPL' }
-  ];
+  filters = [] as any;
+  competitions = [] as any;
+  matchSumaruy = [] as any;
+  schedules = [] as any;
+  scorecard_batting_summary = [] as any;
+  scorecard_bowling_summary = [] as any;
+  scorecard_fow = [] as any;
+  seasons: any = [] as any
 
   /**-- Match Data-- */
-  matchescard: Match[] = [];        // Summary cards
-  matchespoints: MatchDetail[] = []; // Detailed matches
+  matchescard: FilterMatch[] = [];
+  matchespoints: compitation[] = [];
+  matchSummaries: MatchSummary[] = [];
+  schedulesList: Schedule[] = [];
+  battingSummaries: BattingSummary[] = [];
+  bowlingSummaries: BowlingSummary[] = [];
+  fallOfWickets: FallOfWicket[] = [];
+  Season: Season[] = [];
 
   /**-- Points Form-- */
   ShowPointsForm: boolean = false;
   pointsForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    // Initialize the reactive form
+  /**-- Scorecard Variables -- */
+  showScorecard = false;
+  selectedMatch: any;
+  activeTab = 'scorecard';
+  teamAbatting = [];
+  teamBbatting = [];
+  teamAbowling = [];
+  teamBbowling = [];
+  teamAsquad = [];
+  teamBsquad = [];
+  activeinnings: string = 'one';
+  activeInnings: string = 'testone';
+  //fallOfWickets = [];
+
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.pointsForm = this.fb.group({});
   }
-  /**-- OnInit-- */
+
   ngOnInit(): void {
-    this.initializeMatches();      // Load sample data
+    this.loadFilterOptions();
+    this.initializeMatches();
     this.initializeMatchesPoints();
+    this.initializeMatchSummaries();
+    this.initializeSchedules();
+    this.initializeBattingSummaries();
+    this.initializeBowlingSummaries();
+    this.initializeFallOfWickets();
+    this.initializeSeason();
   }
 
-  /**-- Initialize Match Cards-- */
+  /**-- Load Dropdown Options Dynamically --*/
+  loadFilterOptions() {
+    this.apiService.getMockData('assets/mock_data/filters.json').subscribe(data => {
+      this.filters = data;
+      this.genders = [{ label: 'All Gender', value: null }, ...this.filters.filter((f: any) => f.config_key === 'gender').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
+      this.ageGroups = [{ label: 'All Age Groups', value: null }, ...this.filters.filter((f: any) => f.config_key === 'age_category').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
+      this.teamFormats = [{ label: 'All Team Formats', value: null }, ...this.filters.filter((f: any) => f.config_key === 'team_format').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
+      this.matchTypes = [{ label: 'All Match Types', value: null }, ...this.filters.filter((f: any) => f.config_key === 'comp_type').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
+
+    });
+  }
+
+  /**-- Initialize Match Cards Dynamically from JSON --*/
   private initializeMatches(): void {
-    /** Sample data set panrathu */
-    this.matchescard = [
-      { series: 'India Tour of England 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'Test', gender: 'Men', ageGroup: 'Senior', status: 'Live' },
-      { series: 'India Mens U19 Tour of England 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'ODI', gender: 'Men', ageGroup: 'Under 19', status: 'Upcoming' },
-      { series: 'India Women Tour of England 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'Test', gender: 'Women', ageGroup: 'Senior', status: 'Completed' },
-      { series: 'India A Women Tour of Australia 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'ODI', gender: 'Women', ageGroup: 'Senior', status: 'Completed' },
-      { series: 'India vs Australia T20 Series 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'T20', gender: 'Men', ageGroup: 'Senior', status: 'Live' },
-      { series: 'TNPL 2025 Finals', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'TNPL', gender: 'Men', ageGroup: 'Senior', status: 'Upcoming' },
-      { series: 'IPL 2025 Opening Match', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'IPL', gender: 'Men', ageGroup: 'Senior', status: 'Completed' },
-      { series: 'India Women T20 Challenge 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'T20', gender: 'Women', ageGroup: 'Senior', status: 'Upcoming' },
-      { series: 'India U16 Tour of Sri Lanka 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'ODI', gender: 'Men', ageGroup: 'Under 16', status: 'Live' },
-      { series: 'India U22 Women T20 Series 2025', startDate: '02.Aug.2025', endDate: '02.Aug.2025', matchType: 'T20', gender: 'Women', ageGroup: 'Under 22', status: 'Upcoming' }
-    ];
+
+    this.apiService.getMockData('assets/mock_data/compitation.json').subscribe(data => {
+      this.competitions = data;
+
+      this.matchescard = this.competitions.map((c: any) => ({
+        series: c.competition_name,   //  from competition_name
+        startDate: new Date(c.start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        endDate: new Date(c.end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        matchType: c.comp_type,       //  from comp_type
+        gender: c.gender,             //  from gender
+        ageGroup: c.age_category,     //  from age_category
+        status: this.mapStatus(c.status), //  from status
+        teamFormat: c.team_format     //  from team_format
+      }));
+
+      console.error('Failed to load competitions JSON');
+
+    });
   }
 
-  /**-- Initialize Detailed Matches-- */
+  private initializeMatchSummaries(): void {
+    this.apiService.getMockData('assets/mock_data/matchsumary.json').subscribe(data => {
+      this.matchSumaruy = data;
+      this.matchSummaries = this.matchSumaruy.map((m: any) => ({
+        matchId: m.match_id,
+        competitionName: m.competition_name,
+        teamA: m.team_1_name,
+        teamB: m.team_2_name,
+        teamASummary: m.team_1_summary,
+        teamBSummary: m.team_2_summary,
+        venue: m.venue,
+        startDate: new Date(m.match_start_date).toLocaleDateString('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }),
+        endDate: new Date(m.match_end_date).toLocaleDateString('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }),
+        result: m.match_result,
+        matchType: m.comp_type,
+        status: this.mapStatusFromSummary(m.match_result) // 👈 we’ll write this helper
+      }));
+    });
+  }
+
+  private initializeSchedules(): void {
+
+    this.apiService.getMockData('assets/mock_data/schedules.json').subscribe(data => {
+      this.schedules = data;
+      this.schedulesList = this.schedules.map((s: any) => ({
+        matchId: s.match_id,
+        competitionName: s.competition_name,
+        teamA: s.team_1_name,
+        teamB: s.team_2_name,
+        teamASummary: s.team_1_summary,
+        teamBSummary: s.team_2_summary,
+        venue: s.venue,
+        startDate: new Date(s.match_start_date).toLocaleDateString('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }),
+        endDate: new Date(s.match_end_date).toLocaleDateString('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }),
+        result: s.match_result,
+        matchType: s.comp_type,
+        status: this.mapStatusFromSummary(s.match_result),
+        teamFormat: s.team_format,
+        gender: s.gender,
+        ageCategory: s.age_category
+      }));
+    });
+  }
+
+  private initializeBattingSummaries(): void {
+    this.apiService.getMockData('assets/mock_data/battingSumary.json').subscribe(data => {
+      this.scorecard_batting_summary = data;
+
+      this.battingSummaries = this.scorecard_batting_summary.map((b: any) => ({
+        matchId: b.match_id,
+        inningsNo: b.innings_no,
+        battingTeam: b.batting_team,
+        playerId: b.player_id,
+        playerName: b.player_name,
+        battingOrder: Number(b.batting_order),
+        runs: Number(b.runs),
+        balls: Number(b.balls),
+        fours: Number(b.bdry_four),
+        sixes: Number(b.bdry_six),
+        strikeRate: Number(b.strike_rate),
+        wicketDesc: b.wicket_desc || null
+      }));
+    });
+  }
+  private initializeBowlingSummaries(): void {
+
+    this.apiService.getMockData('assets/mock_data/bowlingSumary.json').subscribe(data => {
+      this.scorecard_bowling_summary = data;
+      this.bowlingSummaries = this.scorecard_bowling_summary.map((b: any) => ({
+        matchId: b.match_id,
+        inningsNo: b.innings_no,
+        bowlingTeam: b.bowling_team,
+        playerId: b.player_id,
+        playerName: b.player_name,
+        bowlingOrder: Number(b.bowling_order),
+        overs: Number(b.overs),
+        maidens: Number(b.maidens),
+        runs: Number(b.runs),
+        wickets: Number(b.wicket),
+        economy: Number(b.economy),
+        foursConceded: Number(b.bdry_four),
+        sixesConceded: Number(b.bdry_six),
+        dotBalls: Number(b.dot_balls),
+        strikeRate: b.strike_rate ? Number(b.strike_rate) : undefined
+      }));
+    });
+  }
+  // 
+  private initializeFallOfWickets(): void {
+
+    this.apiService.getMockData('assets/mock_data/scorecardFlow.json').subscribe(data => {
+      this.scorecard_fow = data;
+      this.fallOfWickets = this.scorecard_fow.map((f: any) => ({
+        matchId: f.match_id,
+        inningsNo: f.innings_no,
+        battingTeam: f.batting_team,
+        wicketNo: Number(f.wicket_no),
+        teamTotal: Number(f.team_total),
+        overValue: Number(f.over_value),
+        playerId: f.player_id,
+        playerName: f.player_name,
+        wicketDesc: f.wicket_desc
+      }));
+    });
+  }
+
+  private initializeSeason(): void {
+    this.apiService.getMockData('assets/mock_data/sesson.json').subscribe(data => {
+      this.seasons = data;
+      this.seasons = this.seasons.map((s: any) => ({
+        current: s.current,
+        season_value: s.season_value,
+        season_id: s.season_id
+      }));
+    });
+  }
+
+  private mapStatusFromSummary(result: string): string {
+    if (!result) return 'Upcoming';
+    if (result.toLowerCase().includes('won') || result.toLowerCase().includes('draw'))
+      return 'Completed';
+    return 'Live';
+  }
+
+  private mapStatus(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'completed': return 'Completed';
+      case 'inprogress': return 'Live';
+      case 'upcoming': return 'Upcoming';
+      default: return 'Upcoming';
+    }
+  }
+
+  /**-- Initialize Detailed Matches (Optional, you can make dynamic similarly) --*/
   private initializeMatchesPoints(): void {
-    this.matchespoints = [
-      // Live / Upcoming / Completed match objects here
-      // Example object:
-      {
-        series: 'India Women Tour of England 2025',
-        dateTime: "10:00 AM, 24-Aug",
-        stadium: "MCG",
-        location: "Melbourne, Australia",
-        matchType: "Test",
-        teamA: {
-          name: "AUS",
-          innings: ["143/7 (50)", "210/9d (70)"],
-          logo: "assets/aus.png"
-        },
-        teamB: {
-          name: "ENG",
-          innings: ["173/2 (60)", "150/5 (45)"],
-          logo: "assets/eng.png"
-        },
-        resultStatus: "Match scheduled",
-        type: "Completed"
-      },
-
-      {
-        series: 'India Women Tour of England 2025',
-        dateTime: "10:00 AM, 24-Aug",
-        stadium: "MCG",
-        location: "Melbourne, Australia",
-        matchType: "Test",
-        teamA: {
-          name: "AUS",
-          innings: ["143/7 (50)", "210/9d (70)"],
-          logo: "assets/aus.png"
-        },
-        teamB: {
-          name: "ENG",
-          innings: ["173/2 (60)", "150/5 (45)"],
-          logo: "assets/eng.png"
-        },
-        resultStatus: "Match scheduled",
-        type: "Completed"
-      },
-
-      {
-        series: 'India Women Tour of England 2025',
-        dateTime: "10:00 AM, 24-Aug",
-        stadium: "MCG",
-        location: "Melbourne, Australia",
-        matchType: "Test",
-        teamA: {
-          name: "AUS",
-          innings: ["143/7 (50)", "210/9d (70)"],
-          logo: "assets/aus.png"
-        },
-        teamB: {
-          name: "ENG",
-          innings: ["173/2 (60)", "150/5 (45)"],
-          logo: "assets/eng.png"
-        },
-        resultStatus: "Match scheduled",
-        type: "Completed"
-      },
-
-      {
-        series: 'India Women Tour of England 2025',
-        dateTime: "10:00 AM, 24-Aug",
-        stadium: "MCG",
-        location: "Melbourne, Australia",
-        matchType: "Test",
-        teamA: {
-          name: "AUS",
-          innings: ["143/7 (50)", "210/9d (70)"],
-          logo: "assets/aus.png"
-        },
-        teamB: {
-          name: "ENG",
-          innings: ["173/2 (60)", "150/5 (45)"],
-          logo: "assets/eng.png"
-        },
-        resultStatus: "Match scheduled",
-        type: "Completed"
-      },
-
-      {
-        series: 'India Women Tour of England 2025',
-        dateTime: "10:00 AM, 24-Aug",
-        stadium: "MCG",
-        location: "Melbourne, Australia",
-        matchType: "Test",
-        teamA: {
-          name: "AUS",
-          innings: ["143/7 (50)", "210/9d (70)"],
-          logo: "assets/aus.png"
-        },
-        teamB: {
-          name: "ENG",
-          innings: ["173/2 (60)", "150/5 (45)"],
-          logo: "assets/eng.png"
-        },
-        resultStatus: "Match scheduled",
-        type: "Completed"
-      },
-
-
-
-
-      //-- Upcoming Matches (6)--
-
-      {
-        series: 'India Mens U19 Tour of England 2025',
-        dateTime: "07:00 PM, 23-Aug",
-        stadium: "Eden Gardens",
-        location: "Kolkata, India",
-        matchType: "T20",
-        teamA: { name: "KKR", score: "Yet to Bat", logo: "assets/kkr.png" },
-        teamB: { name: "RCB", score: "Yet to Bat", logo: "assets/rcb.png" },
-        resultStatus: "Match Start at 07:00 PM, 23-Aug",
-        type: "upcoming"
-      },
-      {
-        series: 'India Mens U19 Tour of England 2025',
-        dateTime: "02:30 PM, 21-Aug",
-        stadium: "Greenfield Stadium",
-        location: "Kerala, India",
-        matchType: "T20",
-        teamA: { name: "Sailors", score: "Yet to Bat", logo: "assets/sailors.png" },
-        teamB: { name: "Globstars", score: "Yet to Bat", logo: "assets/globstars.png" },
-        resultStatus: "Match Start at 02:30 PM, 21-Aug",
-        type: "upcoming"
-      },
-      {
-        series: 'India Mens U19 Tour of England 2025',
-        dateTime: "07:00 PM, 22-Aug",
-        stadium: "SCG",
-        location: "Sydney, Australia",
-        matchType: "T20",
-        teamA: { name: "Sydney Sixers", score: "Yet to Bat", logo: "assets/sixers.png" },
-        teamB: { name: "Melbourne Stars", score: "Yet to Bat", logo: "assets/stars.png" },
-        resultStatus: "Match Start at 07:00 PM, 22-Aug",
-        type: "upcoming"
-      },
-      {
-        series: 'TNPL 2025 Finals',
-        dateTime: "07:30 PM, 31-Aug",
-        stadium: "Feroz Shah Kotla",
-        location: "Delhi, India",
-        matchType: "TNPL",
-        teamA: { name: "Delhi Capitals", score: "Yet to Bat", logo: "assets/delhi.png" },
-        teamB: { name: "Mumbai Indians", score: "Yet to Bat", logo: "assets/mumbai.png" },
-        resultStatus: "Match Start at 07:30 PM, 23-Aug",
-        type: "upcoming"
-      },
-      {
-        series: 'India Women T20 Challenge 2025',
-        dateTime: "06:00 PM, 31-Aug",
-        stadium: "Wankhede",
-        location: "Mumbai, India",
-        matchType: "T20",
-        teamA: { name: "India Womens", score: "Yet to Bat", logo: "assets/mumbai.png" },
-        teamB: { name: "England Womes", score: "Yet to Bat", logo: "assets/csk.png" },
-        resultStatus: "Match Start at 06:00 PM, 31-Aug",
-        type: "upcoming"
-      },
-      {
-        series: 'India U22 Women T20 Series 2025',
-        dateTime: "09:00 PM, 1-sep",
-        stadium: "Cape Town Stadium",
-        location: "Cape Town, South Africa",
-        matchType: "T20",
-        teamA: { name: "India U22 Womes", score: "Yet to Bat", logo: "assets/capetown.png" },
-        teamB: { name: "South Africa U22 Womes", score: "Yet to Bat", logo: "assets/jozi.png" },
-        resultStatus: "Match Start at 09:00 PM, 1-sep",
-        type: "upcoming"
-      },
-
-
-
-      //-- Live Matches (4)--
-      {
-        series: 'India Tour of England 2025',
-        dateTime: "03:30 PM, 23-Aug",
-        stadium: "County Ground",
-        location: "Hove, England",
-        matchType: "ODI",
-        teamA: { name: "Sussex", score: "190/6 (20)", logo: "assets/sussex.png" },
-        teamB: { name: "Hampshire", score: "150/3 (15)", logo: "assets/hampshire.png" },
-        resultStatus: "Hampshire needs 41 runs in 30 balls",
-        type: "live"
-      },
-      {
-        series: 'India Tour of England 2025',
-        dateTime: "03:15 PM, 22-Aug",
-        stadium: "Chamundi Stadium",
-        location: "Mysore, India",
-        matchType: "T20",
-        teamA: { name: "Dragons", score: "173/7 (20)", logo: "assets/dragons.png" },
-        teamB: { name: "Mysore", score: "52/3 (6.1)", logo: "assets/mysore.png" },
-        resultStatus: "Mysore needs 122 runs in 83 balls",
-        type: "live"
-      },
-
-
-      {
-        series: 'India vs Australia T20 Series 2025',
-        dateTime: "12:30 PM, 23-Aug",
-        stadium: "Oval",
-        location: "London, England",
-        matchType: "ODI",
-        teamA: { name: "London Spirit", score: "120/4 (15)", logo: "assets/london.png" },
-        teamB: { name: "Oval Invincibles", score: "90/3 (12)", logo: "assets/oval.png" },
-        resultStatus: "Oval needs 122 runs in 60 balls",
-        type: "live"
-      },
-
-      {
-        series: 'India Tour of England 2025',
-        dateTime: "03:00 PM, 21-Aug",
-        stadium: "Ekana Stadium",
-        location: "Lucknow, India",
-        matchType: "T20",
-        teamA: { name: "Noida", score: "185/10 (20)", logo: "assets/noida.png" },
-        teamB: { name: "Kashi", score: "173/6 (19)", logo: "assets/kashi.png" },
-        resultStatus: "Kashi needs 13 runs in 6 balls",
-        type: "live"
-      },
-
-      //-- Result Matches (2)--
-
-      {
-        series: 'India A Women Tour of Australia 2025',
-        dateTime: "11:00 AM, 23-Aug",
-        stadium: "Abu Dhabi Stadium",
-        location: "UAE",
-        matchType: "T20",
-        teamA: { name: "Team Abu Dhabi", score: "145/9 (20)", logo: "assets/abudhabi.png" },
-        teamB: { name: "Sharjah Warriors", score: "150/5 (19)", logo: "assets/sharjah.png" },
-        resultStatus: "Sharjah Warriors won by 5 wickets",
-        type: "result"
-      },
-      {
-        series: 'IPL 2025 Opening Match',
-        dateTime: "10:00 AM, 24-Aug",
-        stadium: "MCG",
-        location: "Melbourne, Australia",
-        matchType: "IPL",
-        teamA: { name: "CSK", score: "250/7 (20)", logo: "assets/aus.png" },
-        teamB: { name: "RCB", score: "200/10 (18)", logo: "assets/eng.png" },
-        resultStatus: "CSK won by 50 runs",
-        type: "Completed"
-      },
-
-
-    ];
-
+    this.matchespoints = [];
   }
 
   /**-- Filtered Matches-- */
-  get filteredMatches(): Match[] {
-    /** Filters apply pannuthu summary cards */
+  get filteredMatches(): FilterMatch[] {
     return this.matchescard.filter(match =>
       (!this.selectedStatus || match.status === this.selectedStatus) &&
       (!this.selectedGender || match.gender === this.selectedGender) &&
       (!this.selectedAgeGroup || match.ageGroup === this.selectedAgeGroup) &&
-      (!this.selectedMatchType || match.matchType === this.selectedMatchType)
+      (!this.selectedMatchType || match.matchType === this.selectedMatchType) &&
+      (!this.selectedTeamFormat || match.teamFormat === this.selectedTeamFormat)
     );
   }
 
-  /**-- Paginated Matches Card-- */
-  get paginatedMatches(): Match[] {
+  get paginatedMatches(): FilterMatch[] {
     return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
 
-
-
-  /**-- Pagination Event-- */
   onPageChange(event: any): void {
     this.first = event.first;
     this.rows = event.rows;
   }
 
-  /**-- Paginated Points-- */
-  get paginatedPointsMatches(): MatchDetail[] {
-  return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
-}
-  /**-- Paginated Event points-- */
-onPointsPageChange(event: any): void {
-  this.pointsFirst = event.first;
-  this.pointsRows = event.rows;
-}
-
-
-  /**-- Points Form Logic-- */
-  showPointsForm(series: string, matchType?: string): void {
-    this.selectedSeries = series;
-    this.selectedMatchType = matchType || null;
-    this.ShowPointsForm = true;
-    this.resetPointsForm();
-  }
-
-  resetPointsForm(): void {
-    /** Form close panruthu, matchType reset panruthu */
-    this.pointsForm.reset();
-  }
-
-  closePointsForm(): void {
-    /** Form close panruthu, matchType reset panruthu */
-    this.ShowPointsForm = false;
-    this.selectedMatchType = null;
-  }
-  /**-- Check if points available-- */
-  hasPoints(series: string): boolean {
-    return this.matchespoints.some(match => match.series === series);
-  }
-
-  get filteredPointsMatches(): MatchDetail[] {
-    /**-- Filtered Points Matches-- */
+  get filteredPointsMatches(): compitation[] {
     if (!this.selectedSeries) return [];
     return this.matchespoints.filter(match =>
       match.series === this.selectedSeries &&
@@ -444,144 +411,51 @@ onPointsPageChange(event: any): void {
     );
   }
 
-  /**-- Get Match Type Counts-- */
+  get paginatedPointsMatches(): compitation[] {
+    return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
+  }
+
+  onPointsPageChange(event: any): void {
+    this.pointsFirst = event.first;
+    this.pointsRows = event.rows;
+  }
+
+  showPointsForm(series: string, matchType?: string): void {
+    this.selectedSeries = series;
+    this.selectedMatchType = matchType || null;
+    this.ShowPointsForm = true;
+    this.pointsForm.reset();
+  }
+
+  closePointsForm(): void {
+    this.ShowPointsForm = false;
+    this.selectedMatchType = null;
+  }
+
+  hasPoints(series: string): boolean {
+    return this.matchespoints.some(match => match.series === series);
+  }
+
   getMatchTypeCounts(series: string): { [key: string]: number } {
     const counts: { [key: string]: number } = {};
-    this.matchespoints
-      .filter(match => match.series === series)
-      .forEach(match => {
-        counts[match.matchType] = counts[match.matchType] ? counts[match.matchType] + 1 : 1;
-      });
+    this.matchespoints.filter(match => match.series === series).forEach(match => {
+      counts[match.matchType] = counts[match.matchType] ? counts[match.matchType] + 1 : 1;
+    });
     return counts;
   }
 
-  /**-- Total Filtered Cards Count-- */
   get totalData(): number {
     return this.filteredMatches.length;
   }
 
-// Scorecard form logic 
-showScorecard = false; 
-selectedMatch: any; 
-openScorecard(match: any) {
-  this.selectedMatch = match;
-  this.showScorecard = true;
+  /**-- Scorecard Logic --*/
+  openScorecard(match: any) {
+    this.selectedMatch = match;
+    this.showScorecard = true;
+  }
+
+  closeScorecard() {
+    this.showScorecard = false;
+  }
 }
 
-closeScorecard() {
-  this.showScorecard = false;
-}
- activeTab = 'scorecard'; // default tab
-
-  teamAbatting = [
-    { player: 'Rohit Sharma', runs: 85, balls: 70, fours: 8, sixes: 3, sR: 121.42 },
-    { player: 'Virat Kohli', runs: 120, balls: 95, fours: 10, sixes: 2, sR: 126.31 },
-    { player: 'KL Rahul', runs: 60, balls: 50, fours: 5, sixes: 1, sR: 120.00 },
-    { player: 'Suryakumar Yadav', runs: 45, balls: 30, fours: 4, sixes: 2, sR: 150.00 },
-    { player: 'Hardik Pandya', runs: 30, balls: 20, fours: 2, sixes: 1, sR: 150.00 },
-    { player: 'Dinesh Karthik', runs: 25, balls: 15, fours: 3, sixes: 0, sR: 166.67 },
-    { player: 'Rishabh Pant', runs: 15, balls: 10, fours: 1, sixes: 1, sR: 150.00 },
-    { player: 'Shikhar Dhawan', runs: 10, balls: 8, fours: 1, sixes: 0, sR: 125.00 },
-    { player: 'Yuzvendra Chahal', runs: 5, balls: 5, fours: 0, sixes: 0, sR: 100.00 },
-    { player: 'Bhuvneshwar Kumar', runs: 0, balls: 2, fours: 0, sixes: 0, sR: 0.00 },
-  ];
-  teamBbatting = [
-    { player: 'David Warner', runs: 75, balls: 60, fours: 7, sixes: 2, sR: 125.00 },
-    { player: 'Steve Smith', runs: 95, balls: 80, fours: 9, sixes: 1, sR: 118.75 },
-    { player: 'Marnus Labuschagne', runs: 50, balls: 40, fours: 6, sixes: 0, sR: 125.00 },
-    { player: 'Glenn Maxwell', runs: 40, balls: 25, fours: 4, sixes: 2, sR: 160.00 },
-    { player: 'Aaron Finch', runs: 35, balls: 20, fours: 3, sixes: 1, sR: 175.00 },
-    { player: 'Marcus Stoinis', runs: 20, balls: 15, fours: 2, sixes: 0, sR: 133.33 },
-    { player: 'Alex Carey', runs: 15, balls: 10, fours: 1, sixes: 1, sR: 150.00 },
-    { player: 'Pat Cummins', runs: 10, balls: 8, fours: 1, sixes: 0, sR: 125.00 },
-    { player: 'Mitchell Starc', runs: 5, balls: 5, fours: 0, sixes: 0, sR: 100.00 },
-    { player: 'Josh Hazlewood', runs: 0, balls: 2, fours: 0, sixes: 0, sR: 0.00 },
-  ];
-
-  teamAbowling = [
-    { player: 'Jasprit Bumrah', overs: 10, maidens: 1, runs: 45, wickets: 3, econ: 4.5 },
-    { player: 'Ravindra Jadeja', overs: 8, maidens: 0, runs: 40, wickets: 2, econ: 5.0 },
-    { player: 'Mohammed Shami', overs: 10, maidens: 1, runs: 50, wickets: 1, econ: 5.0 },
-    { player: 'Kuldeep Yadav', overs: 10, maidens: 0, runs: 60, wickets: 0, econ: 6.0 },
-    { player: 'Hardik Pandya', overs: 4, maidens: 1, runs: 30, wickets: 1, econ: 7.5 },
-  ];
-  teamBbowling = [
-    { player: 'Pat Cummins', overs: 10, maidens: 2, runs: 40, wickets: 4, econ: 4.0 },
-    { player: 'Mitchell Starc', overs: 10, maidens: 1, runs: 50, wickets: 2, econ: 5.0 },
-    { player: 'Josh Hazlewood', overs: 10, maidens: 0, runs: 55, wickets: 1, econ: 5.5 },
-    { player: 'Adam Zampa', overs: 10, maidens: 0, runs: 65, wickets: 0, econ: 6.5 },
-    { player: 'Glenn Maxwell', overs: 4, maidens: 0, runs: 35, wickets: 1, econ: 8.75 },
-  ];
-
-  teamAsquad = ['Rohit Sharma(C)', 'Virat Kohli', 'KL Rahul(WK)', 'Jasprit Bumrah', 'Ravindra Jadeja',
-  'Suryakumar Yadav', 'Dinesh Karthik', 'Rishabh Pant', 'Shikhar Dhawan', 'Yuzvendra Chahal', 'Bhuvneshwar Kumar'
-  ];
-
-  teamBsquad = ['David Warner', 'Steve Smith(WK)', 'Marnus Labuschagne', 'Glenn Maxwell', 'Aaron Finch',
-    'Marcus Stoinis', 'Alex Carey', 'Pat Cummins(C)', 'Mitchell Starc', 'Josh Hazlewood'
-  ];
-
- activeinnings: string = 'one'; 
-activeInnings: string = 'testone';   // default to team A
-
-
-// fall of wickets
-
-fallOfWickets = [
-    { player: 'Rohit Sharma ', over: ' 5.3', score: '30/1' },
-    { player: 'Virat Kohli ', over: ' 10.1', score: '90/2' },
-    { player: 'KL Rahul ', over: ' 15.4', score: '140/3' },
-    { player: 'Suryakumar Yadav ', over: ' 19.5', score: '190/4' },
-
-  ];
-
-  matchDetails = {
-    tournament: 'INDIA IN ENGLAND TEST SERIES 2025',
-    toss: 'England Won The Toss And Elected To Field',
-    venue: 'Kennington Oval, London',
-    onFieldUmpires: ['Ahsan Raza', 'Kumar Dharmasena'],
-    thirdUmpire: 'Rod Tucker',
-    referee: 'Jeff Crowe',
-    playerOfTheMatch: 'Mohammed Siraj (India)',
-    playerOfTheSeries: 'Shubman Gill And Harry Brook'
-  };
-
-  Partnerships = [
-    {
-      playerA: 'Ben Duckett',
-      runsA: 34,
-      playerB: 'Zak Crawley',
-      runsB: 4,
-      partnership: 50,
-      partnershipTotal: 84,
-      extras: 2
-    },
-    {
-      playerA: 'Ollie Pope',
-      runsA: 12,
-      playerB: 'Ben Duckett',
-      runsB: 20,
-      partnership: 32,
-      partnershipTotal: 53,
-      extras: 0
-    },
-    {
-      playerA: 'Ollie Pope',
-      runsA: 15,
-      playerB: 'Joe Root',
-      runsB: 8,
-      partnership: 24,
-      partnershipTotal: 29,
-      extras: 1
-    },
-    {
-      playerA: 'Joe Root',
-      runsA: 75,
-      playerB: 'Harry Brook',
-      runsB: 111,
-      partnership: 195,
-      partnershipTotal: 211,
-      extras: 9
-    }
-  ];
-}

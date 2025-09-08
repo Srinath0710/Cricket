@@ -99,4 +99,9 @@ export class ApiService {
         };
         this.post('Feed/generate_competition_schedule', params).subscribe();
     }
+
+     getMockData(url:string): Observable<any> {
+        console.log('Mock API Call:', url);
+    return this.http.get<any>(url);
+  }
 }
