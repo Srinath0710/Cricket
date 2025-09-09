@@ -2,3 +2,9 @@
     background-color: #f4f5ff !important;
     color: black !important;
 }
+
+.groundname {
+  cursor: pointer;
+  color: #1d7042;
+  font-weight: 300 !important;
+}

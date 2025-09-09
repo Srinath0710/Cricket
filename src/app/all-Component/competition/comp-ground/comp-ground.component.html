@@ -42,7 +42,7 @@
                   <img *ngIf="ground.ground_image" [src]="ground.ground_image" class="player-img image-border"
                     (error)="handleImageError($event, default_img)" />
                 </span>
-                <span class="person-name padding-grid-center groundnameover"
+                <span class="person-name padding-grid-center groundname"
                   (click)="onViewGroundDetails(ground.ground_id)">
                   <strong>{{ ground.ground_name }}</strong>
                 </span>
