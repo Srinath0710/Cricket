@@ -114,6 +114,7 @@ export class CompPlayerComponent implements OnInit {
   filterBattingOrder: string = '';
   filterBowlStyle: string = '';
   filterBowlType: string = '';
+  filterGenderType: string = '';
 
   players: any[] = [];        // original list from API
   filteredPlayers: any[] = [];
@@ -182,9 +183,9 @@ export class CompPlayerComponent implements OnInit {
       if (this.filterPlayerType) {
         params.player_type = this.filterPlayerType;
       }
-      // if (this.filterGenderType) {
-      //   params.gender_type = this.filterGenderType;
-      // }
+      if (this.filterGenderType) {
+        params.gender_type = this.filterGenderType;
+      }
       if (this.filterBatType) {
         params.bat_type = this.filterBatType;
       }
@@ -396,35 +397,33 @@ export class CompPlayerComponent implements OnInit {
     // this.showFilters = false;
   }
   applyFilters() {
-    // Check if the Source filter panel is open
+    // ✅ Source filter (via API)
     if (this.showSourceFilters) {
-      this.gridLoad(true); // Re-fetch data from API with filters
+      this.gridLoad(true);
     }
 
-    // Check if the Target filter panel is open
+    // ✅ Target filter (local filtering)
     if (this.showTargetFilters) {
-      // Perform local filtering on the targetPlayer array
-      this.targetPlayer = this.selectedPlayersRaw.filter(player =>
+      this.targetPlayer = this.targetPlayer.filter(player =>
         (this.filterPlayerType ? player.player_role === this.filterPlayerType : true) &&
         (this.filterBatType ? player.batting_style === this.filterBatType : true) &&
         (this.filterBattingOrder ? player.batting_order === this.filterBattingOrder : true) &&
-        (this.filterBowlType ? player.bowling_specialization === this.filterBowlType : true)
+        (this.filterBowlType ? player.bowling_specialization === this.filterBowlType : true) &&
+        (this.filterGenderType ? player.gender_type === this.filterGenderType : true)
       );
-      // You might also want to call this to reset the PrimeNG table's internal state
-      if (this.dt2) {
-        this.dt2.reset();
-      }
+
+      if (this.dt2) this.dt2.reset();
     }
 
-    // Close the filter panels after applying
     this.showSourceFilters = false;
     this.showTargetFilters = false;
   }
 
+
   clearFilters() {
     // this.filterStatus = '';
     this.filterPlayerType = '';
-    // this.filterGenderType = '';
+    this.filterGenderType = '';
     this.filterBatType = '';
     this.filterBowlType = '';
     this.searchKeyword = '';
@@ -668,7 +667,6 @@ export class CompPlayerComponent implements OnInit {
       (res) => {
         if (res.status_code == this.statusConstants.success) {
           if (res.url) {
-            // ✅ Update player image in targetPlayer
             const player = this.targetPlayer.find(p => p.player_id === player_id);
             if (player) {
               player.profile_image = res.url;
@@ -737,5 +735,28 @@ export class CompPlayerComponent implements OnInit {
       }
     });
   }
+
+  clearPopup(): void {
+    this.ManagePlayerForm.patchValue({
+      scorecard_name: '',
+      jersey_number: '',
+      profile_url: ''
+    });
+    this.filedata = null;
+    this.previewUrl = null;
+    this.imagePreview = null;
+    this.profileImages = null;
+    this.uploadedImage = null;
+    this.croppedImage = null;
+    this.imageSizeError = '';
+
+    if (this.selectedPlayer) {
+      this.selectedPlayer.scorecard_name = '';
+      this.selectedPlayer.jersey_number = '';
+      this.selectedPlayer.profile_url = '';
+      this.selectedPlayer.profile_image = null;
+    }
+  }
+
 
 }

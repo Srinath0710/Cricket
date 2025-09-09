@@ -168,3 +168,9 @@
   border-radius: 4px;
 } */
 
+.groundname {
+  cursor: pointer;
+  color: #1d7042;
+  font-weight: 300 !important;
+}
+

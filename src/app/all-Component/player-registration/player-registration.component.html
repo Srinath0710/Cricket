@@ -63,16 +63,16 @@
                     <option value="">All</option>
                     <option *ngFor="let role of playerrole" [value]="role.config_id">{{ role.config_name }}</option>
                   </select> -->
-                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="playerrole" placeholder="Player Role"
-                    optionValue="config_id" [(ngModel)]="filterPlayerType" optionLabel="config_name" appendTo="body"
-                    [panelStyleClass]="'custom-dropdown-panel'">
+                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="playerrole"
+                    placeholder="Player Role" optionValue="config_id" [(ngModel)]="filterPlayerType"
+                    optionLabel="config_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   </p-multiSelect>
                 </div>
                 <div class="filter-item">
                   <label>Gender</label>
-                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="genderSelect" placeholder="Gender"
-                    optionValue="config_id" [(ngModel)]="filterGenderType" optionLabel="config_name" appendTo="body"
-                    [panelStyleClass]="'custom-dropdown-panel'">
+                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="genderSelect"
+                    placeholder="Gender" optionValue="config_id" [(ngModel)]="filterGenderType"
+                    optionLabel="config_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   </p-multiSelect>
                   <!-- <select class="filter-select" [(ngModel)]="filterGenderType">
                     <option value="">All</option>
@@ -87,9 +87,9 @@
                     <option *ngFor="let order of battingorder" [value]="order.config_id">{{ order.config_name }}
                     </option>
                   </select> -->
-                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="battingorder" placeholder="Batting Order"
-                    optionValue="config_id" [(ngModel)]="filterBatOrder" optionLabel="config_name" appendTo="body"
-                    [panelStyleClass]="'custom-dropdown-panel'">
+                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="battingorder"
+                    placeholder="Batting Order" optionValue="config_id" [(ngModel)]="filterBatOrder"
+                    optionLabel="config_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   </p-multiSelect>
                 </div>
                 <div class="filter-item">
@@ -99,9 +99,9 @@
                     <option *ngFor="let style of battingstyle" [value]="style.config_id">{{ style.config_name }}
                     </option>
                   </select> -->
-                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="battingstyle" placeholder="Batting Style"
-                    optionValue="config_id" [(ngModel)]="filterBatType" optionLabel="config_name" appendTo="body"
-                    [panelStyleClass]="'custom-dropdown-panel'">
+                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="battingstyle"
+                    placeholder="Batting Style" optionValue="config_id" [(ngModel)]="filterBatType"
+                    optionLabel="config_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   </p-multiSelect>
                 </div>
                 <!-- <div class="filter-item">
@@ -125,9 +125,9 @@
                     <option *ngFor="let style of bowlingstyle" [value]="style.config_id">{{ style.config_name }}
                     </option>
                   </select> -->
-                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="bowlingstyle" placeholder="Bowling Style"
-                    optionValue="config_id" [(ngModel)]="filterBowlStyle" optionLabel="config_name" appendTo="body"
-                    [panelStyleClass]="'custom-dropdown-panel'">
+                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="bowlingstyle"
+                    placeholder="Bowling Style" optionValue="config_id" [(ngModel)]="filterBowlStyle"
+                    optionLabel="config_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   </p-multiSelect>
                 </div>
                 <div class="filter-item">
@@ -137,9 +137,9 @@
                     <option *ngFor="let spec of bowlingspec" [value]="spec.config_id">{{ spec.config_name }}
                     </option>
                   </select> -->
-                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="bowlingspec" placeholder="Bowling Spec"
-                    optionValue="config_id" [(ngModel)]="filterBowlSpec" optionLabel="config_name" appendTo="body"
-                    [panelStyleClass]="'custom-dropdown-panel'">
+                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="bowlingspec"
+                    placeholder="Bowling Spec" optionValue="config_id" [(ngModel)]="filterBowlSpec"
+                    optionLabel="config_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   </p-multiSelect>
                 </div>
                 <div class="filter-item">
@@ -149,9 +149,9 @@
                     <option *ngFor="let country of NationalitydropdownData" [value]="country.region_id">{{
                       country.region_name }}</option>
                   </select> -->
-                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="NationalitydropdownData" placeholder="Nationality"
-                    optionValue="region_id" [(ngModel)]="filterNationality" optionLabel="region_name" appendTo="body"
-                    [panelStyleClass]="'custom-dropdown-panel'">
+                  <p-multiSelect class="filter-select" [filter]="true" [showClear]="false" [options]="countriesList"
+                    placeholder="Nationality" optionValue="rcountry_id" [(ngModel)]="filterNationality"
+                    optionLabel="country_name" appendTo="body" [panelStyleClass]="'custom-dropdown-panel'">
                   </p-multiSelect>
                 </div>
                 <div class="filter-actions">
@@ -987,7 +987,7 @@
                           </label>
                           <p-dropdown [options]="citiesList" class="drop-error " formControlName="city_id"
                             placeholder="Select City" optionValue="city_id" optionLabel="city_name"
-                            [readonly]="disableReadonly&&isPersonalDataIntialized">
+                            [readonly]="disableReadonly&&isPersonalDataIntialized" [filter]="true">
                             <ng-template let-city pTemplate="item">
                               <div class="flex align-items-center gap-2">
                                 <div>{{ city.city_name }}

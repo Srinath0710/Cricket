@@ -45,7 +45,7 @@
                   <img *ngIf="team.profile_img" [src]="team.profile_img" class="player-img image-border"
                     (error)="handleImageError($event, default_img)" />
                 </span>
-                <span class="person-name padding-grid-center groundnameover" (click)="onViewteam(team.team_id)">
+                <span class="person-name padding-grid-center groundname" (click)="onViewteam(team.team_id)">
                   <strong>{{ team.team_name }}</strong>
                 </span>
                 <span>
