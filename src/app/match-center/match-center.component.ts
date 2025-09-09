@@ -4,117 +4,16 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angul
 import { DropdownModule } from 'primeng/dropdown';
 import { PaginatorModule } from 'primeng/paginator';
 import { ApiService } from '../services/api.service';
-
-/*--Interfaces (type safety) -- */
-interface FilterMatch {
-  series: string;
-  startDate: string;
-  endDate: string;
-  matchType: string;
-  gender: string;
-  ageGroup: string;
-  status: string;
-  teamFormat?: string;
-}
-
-interface Competition {
-  series: string;
-  dateTime: string;
-  stadium: string;
-  location: string;
-  matchType: string;
-  teamA: any;
-  teamB: any;
-  resultStatus: string;
-  type: string; // live/upcoming/result
-}
-
-interface MatchSummary {
-  matchId: string;
-  competitionName: string;
-  teamA: string;
-  teamB: string;
-  teamASummary: string;
-  teamBSummary: string;
-  venue: string;
-  startDate: string;
-  endDate: string;
-  result: string;
-  matchType: string;
-  status: string;
-}
-
-interface Schedule {
-  matchId: string;
-  competitionName: string;
-  teamA: string;
-  teamB: string;
-  teamASummary: string;
-  teamBSummary: string;
-  venue: string;
-  startDate: string;
-  endDate: string;
-  result: string;
-  matchType: string;
-  status: string;
-  teamFormat: string;
-  gender: string;
-  ageCategory: string;
-}
-
-interface BattingSummary {
-  matchId: string;
-  inningsNo: string;
-  battingTeam: string;
-  playerId: string;
-  playerName: string;
-  battingOrder: number;
-  runs: number;
-  balls: number;
-  fours: number;
-  sixes: number;
-  strikeRate: number;
-  wicketDesc?: string | null;
-}
-
-interface BowlingSummary {
-  matchId: string;
-  inningsNo: string;
-  bowlingTeam: string;
-  playerId: string;
-  playerName: string;
-  bowlingOrder: number;
-  overs: number;
-  maidens: number;
-  runs: number;
-  wickets: number;
-  economy: number;
-  foursConceded: number;
-  sixesConceded: number;
-  dotBalls: number;
-  strikeRate?: number;
-}
-
-interface FallOfWicket {
-  matchId: string;
-  inningsNo: string;
-  battingTeam: string;
-  wicketNo: number;
-  teamTotal: number;
-  overValue: number;
-  playerId: string;
-  playerName: string;
-  wicketDesc: string;
-}
-
-interface Season {
-  current: string;
-  season_value: string;
-  season_id: string;
-}
+import { FilterMatchModel } from './match.center.model';
+import { CompetitionModel } from './match.center.model';
+import { MatchSummaryModel } from './match.center.model';
+import { ScheduleModel } from './match.center.model';
+import { BattingSummaryModel } from './match.center.model';
+import { BowlingSummaryModel } from './match.center.model';
+import { FallOfWicketModel } from './match.center.model';
+import { SeasonModel } from './match.center.model';
 
 /*---Component -- */
-
 @Component({
   selector: 'app-match-center',
   standalone: true,
@@ -125,7 +24,6 @@ interface Season {
 export class MatchCenterComponent implements OnInit {
 
   /*- Pagination config -- */
-
   rows: number = 6;         // items per page for match cards
   first: number = 0;        // current first index for pagination
 
@@ -133,7 +31,6 @@ export class MatchCenterComponent implements OnInit {
   pointsFirst: number = 0;  // first index for points pagination
 
   /*--- Filter selected values    -- */
-
   selectedSeries: string | null = null;
   selectedMatchType: string | null = null;
   selectedStatus: string | null = null;
@@ -154,7 +51,6 @@ export class MatchCenterComponent implements OnInit {
   ];
 
   /*--- Raw JSON storages (from API/mock)-- */
-
   filters: any[] = [];
   competitions: any[] = [];
   matchSummaryRaw: any[] = [];
@@ -164,16 +60,16 @@ export class MatchCenterComponent implements OnInit {
   fowRaw: any[] = [];
   seasonsRaw: any[] = [];
 
-  /*--- Typed/processed lists used by template   *-- */
-
-  matchescard: FilterMatch[] = [];
-  matchespoints: Competition[] = [];
-  matchSummaries: MatchSummary[] = [];
-  schedulesList: Schedule[] = [];
-  battingSummaries: BattingSummary[] = [];
-  bowlingSummaries: BowlingSummary[] = [];
-  fallOfWickets: FallOfWicket[] = [];
-  Season: Season[] = [];
+  /*--- Typed/processed lists used by template   -- */
+  /* Typed/processed lists */
+  matchescard: FilterMatchModel[] = [];
+  matchespoints: CompetitionModel[] = [];
+  matchSummaries: MatchSummaryModel[] = [];
+  schedulesList: ScheduleModel[] = [];
+  battingSummaries: BattingSummaryModel[] = [];
+  bowlingSummaries: BowlingSummaryModel[] = [];
+  fallOfWickets: FallOfWicketModel[] = [];
+  Season: SeasonModel[] = [];
 
   /*--- Points form  -- */
   ShowPointsForm: boolean = false;
@@ -211,23 +107,23 @@ export class MatchCenterComponent implements OnInit {
     this.loadSeasonsFromMock();
   }
 
-  /*---Filters: read filters.json and populate dropdowns -- */
+  
+  /* Filters: populate dropdowns */
   loadFilterOptionsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/filters.json').subscribe(data => {
       this.filters = data;
-      // Build the dropdown arrays with "All" item as first element
-      this.genders = [{ label: 'All Gender', value: null }, ...this.filters.filter((f: any) => f.config_key === 'gender').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
-      this.ageGroups = [{ label: 'All Age Groups', value: null }, ...this.filters.filter((f: any) => f.config_key === 'age_category').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
-      this.teamFormats = [{ label: 'All Team Formats', value: null }, ...this.filters.filter((f: any) => f.config_key === 'team_format').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
-      this.matchTypes = [{ label: 'All Match Types', value: null }, ...this.filters.filter((f: any) => f.config_key === 'comp_type').map((f: any) => ({ label: f.config_value, value: f.config_value }))];
+      this.genders = [{ label: 'All Gender', value: null }, ...this.filters.filter(f => f.config_key === 'gender').map(f => ({ label: f.config_value, value: f.config_value }))];
+      this.ageGroups = [{ label: 'All Age Groups', value: null }, ...this.filters.filter(f => f.config_key === 'age_category').map(f => ({ label: f.config_value, value: f.config_value }))];
+      this.teamFormats = [{ label: 'All Team Formats', value: null }, ...this.filters.filter(f => f.config_key === 'team_format').map(f => ({ label: f.config_value, value: f.config_value }))];
+      this.matchTypes = [{ label: 'All Match Types', value: null }, ...this.filters.filter(f => f.config_key === 'comp_type').map(f => ({ label: f.config_value, value: f.config_value }))];
     });
   }
 
-  /*---Competitions: map competition JSON to match cards used in UI-- */
+  /* Competitions */
   loadCompetitionsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/compitation.json').subscribe(data => {
       this.competitions = data;
-      this.matchescard = this.competitions.map((c: any) => ({
+      this.matchescard = this.competitions.map(c => new FilterMatchModel({
         series: c.competition_name,
         startDate: new Date(c.start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
         endDate: new Date(c.end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
@@ -240,11 +136,10 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  /*---
-   *  Matches points list: load more detailed competition entries (for points view)-- */
+  /* Matches points */
   loadMatchesPointsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/compitation.json').subscribe(data => {
-      this.matchespoints = data.map((c: any) => ({
+      this.matchespoints = data.map((c:any) => new CompetitionModel({
         series: c.competition_name,
         dateTime: new Date(c.start_date).toLocaleString('en-GB'),
         stadium: c.stadium || '',
@@ -258,12 +153,11 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  /*---
-   *  Match summaries: map matchsummary mock into typed objects-- */
+  /* Match summaries */
   loadMatchSummariesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/matchsumary.json').subscribe(data => {
       this.matchSummaryRaw = data;
-      this.matchSummaries = this.matchSummaryRaw.map((m: any) => ({
+      this.matchSummaries = this.matchSummaryRaw.map(m => new MatchSummaryModel({
         matchId: m.match_id,
         competitionName: m.competition_name,
         teamA: m.team_1_name,
@@ -280,11 +174,11 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  /*---Schedules: map schedules JSON to typed Schedule objects -- */
+  /* Schedules */
   loadSchedulesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/schedules.json').subscribe(data => {
       this.schedulesRaw = data;
-      this.schedulesList = this.schedulesRaw.map((s: any) => ({
+      this.schedulesList = this.schedulesRaw.map(s => new ScheduleModel({
         matchId: s.match_id,
         competitionName: s.competition_name,
         teamA: s.team_1_name,
@@ -304,11 +198,11 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  /*--- Batting summaries: typed list used for scorecards-- */
+  /* Batting summaries */
   loadBattingSummariesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/battingSumary.json').subscribe(data => {
       this.battingSummaryRaw = data;
-      this.battingSummaries = this.battingSummaryRaw.map((b: any) => ({
+      this.battingSummaries = this.battingSummaryRaw.map(b => new BattingSummaryModel({
         matchId: b.match_id,
         inningsNo: b.innings_no,
         battingTeam: b.batting_team,
@@ -325,11 +219,11 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  /*--Bowling summaries: typed list used for scorecards*/
+  /* Bowling summaries */
   loadBowlingSummariesFromMock(): void {
     this.apiService.getMockData('assets/mock_data/bowlingSumary.json').subscribe(data => {
       this.bowlingSummaryRaw = data;
-      this.bowlingSummaries = this.bowlingSummaryRaw.map((b: any) => ({
+      this.bowlingSummaries = this.bowlingSummaryRaw.map(b => new BowlingSummaryModel({
         matchId: b.match_id,
         inningsNo: b.innings_no,
         bowlingTeam: b.bowling_team,
@@ -349,17 +243,17 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  /*--- Fall of wickets list-- */
+  /* Fall of wickets */
   loadFallOfWicketsFromMock(): void {
-    this.apiService.getMockData('assets/mock_data/scorecardFlow.json').subscribe(data => {
+    this.apiService.getMockData('assets/mock_data/fow.json').subscribe(data => {
       this.fowRaw = data;
-      this.fallOfWickets = this.fowRaw.map((f: any) => ({
+      this.fallOfWickets = this.fowRaw.map(f => new FallOfWicketModel({
         matchId: f.match_id,
         inningsNo: f.innings_no,
         battingTeam: f.batting_team,
         wicketNo: Number(f.wicket_no),
         teamTotal: Number(f.team_total),
-        overValue: Number(f.over_value),
+        overValue: Number(f.over),
         playerId: f.player_id,
         playerName: f.player_name,
         wicketDesc: f.wicket_desc
@@ -367,15 +261,11 @@ export class MatchCenterComponent implements OnInit {
     });
   }
 
-  /*---Seasons: load seasons JSON- */
+  /* Seasons */
   loadSeasonsFromMock(): void {
-    this.apiService.getMockData('assets/mock_data/sesson.json').subscribe(data => {
+    this.apiService.getMockData('assets/mock_data/seasons.json').subscribe(data => {
       this.seasonsRaw = data;
-      this.Season = this.seasonsRaw.map((s: any) => ({
-        current: s.current,
-        season_value: s.season_value,
-        season_id: s.season_id
-      }));
+      this.Season = this.seasonsRaw.map(s => new SeasonModel(s));
     });
   }
   // Match result text la irundhu status decide panra function
@@ -400,7 +290,7 @@ export class MatchCenterComponent implements OnInit {
   }
 
   /*---Filtered match-cards computed property (applies all selected filters)-- */
-  get filteredMatches(): FilterMatch[] {
+  get filteredMatches(): FilterMatchModel[] {
     return this.matchescard.filter(match =>
       (!this.selectedStatus || match.status === this.selectedStatus) &&
       (!this.selectedGender || match.gender === this.selectedGender) &&
@@ -411,7 +301,7 @@ export class MatchCenterComponent implements OnInit {
   }
 
   /*---Pagination slice for match cards- */
-  get paginatedMatches(): FilterMatch[] {
+  get paginatedMatches(): FilterMatchModel[] {
     return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
 
@@ -422,7 +312,7 @@ export class MatchCenterComponent implements OnInit {
   }
 
   /*---Points-list filtering based on selected series & matchType-- */
-  get filteredPointsMatches(): Competition[] {
+  get filteredPointsMatches(): CompetitionModel[] {
     if (!this.selectedSeries) return [];
     return this.matchespoints.filter(match =>
       match.series === this.selectedSeries &&
@@ -430,7 +320,7 @@ export class MatchCenterComponent implements OnInit {
     );
   }
 
-  get paginatedPointsMatches(): Competition[] {
+  get paginatedPointsMatches(): CompetitionModel[] {
     return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
   }
 
@@ -440,7 +330,6 @@ export class MatchCenterComponent implements OnInit {
   }
 
   /*--Points form open/closeopens the points UI for a series*/
-
   showPointsForm(series: string, matchType?: string): void {
     this.selectedSeries = series;
     this.selectedMatchType = matchType || null;
