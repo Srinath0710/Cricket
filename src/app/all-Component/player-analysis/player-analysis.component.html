@@ -1,0 +1,253 @@
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <main>
+            <div class="card margin-card">
+                <div class="card-body">
+                    <div class="page-header main-page-header d-flex align-items-center justify-content-between">
+                        <div class="main-page-title page-title playerbackground">
+                            <i class="fa fa-universal-access" aria-hidden="true"></i>
+                            Player Analysis
+                            <div class="flex items-center px-3 py-2 rounded-md gap-2 w-fit">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <p-toggleswitch [(ngModel)]="checked">
+                                        <ng-template #handle let-checked="checked">
+                                        </ng-template>
+                                    </p-toggleswitch>
+                                    <span class="text-sm font-medium">Advanced Filters</span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="filter-container">
+                        <!-- <div class="common-filter-card border"> -->
+                        <div class="filter-section">
+                            <div class="filter-section  border " *ngIf="checked">
+                                <div class="section-title">
+                                    <span class="text">Custom Filters</span>
+                                </div>
+                                <div class="filter-row advance-filter-row scrollable-filter">
+
+                                    <div class="input-filters">
+                                        <div class="title-filter">Match Phase</div>
+                                        <p-multiselect [options]="categories" placeholder="Match Type"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Is Wicket Keeper</div>
+                                        <p-multiselect [options]="years" placeholder="Select Year" optionLabel="name"
+                                            display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Match Name</div>
+                                        <p-multiselect [options]="regions" placeholder="Select Region"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Opponent Team</div>
+                                        <p-multiselect [options]="countries" placeholder="Select Country"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Match Innings</div>
+                                        <p-multiselect [options]="competition" placeholder="Competition"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Match Day</div>
+                                        <p-multiselect [options]="BattingTeams" placeholder="Batting Teams"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Match Session</div>
+                                        <p-multiselect [options]="BattingStyles" placeholder="Batting Styles"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Match Result</div>
+                                        <p-multiselect [options]="Batters" placeholder="Select Batters"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Batting Position</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Batting Order</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Bowling Type</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Bowling Speclization</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Bowler</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Ball Type</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Bowl Variation</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">
+                                            Bowling Side
+                                        </div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">
+                                            Shot Type
+                                        </div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">
+                                            Foot Movement
+                                        </div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">
+                                            Shots Played
+                                        </div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">
+                                            Dismissal Mode
+                                        </div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">
+                                            Shot Region
+                                        </div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                            <div class="filter-card ">
+                                <div class="section-title">
+                                    <span class="text">Regular Filter</span>
+                                </div>
+                                <div class="filter-row scrollable-filter" style="gap: 4px;">
+
+                                    <div class="input-filters">
+                                        <div class="title-filter">Match Type</div>
+                                        <p-multiselect [options]="categories" placeholder="Match Type"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Year</div>
+                                        <p-multiselect [options]="years" placeholder="Select Year" optionLabel="name"
+                                            display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Region</div>
+                                        <p-multiselect [options]="regions" placeholder="Select Region"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+
+                                    <div class="input-filters">
+                                        <div class="title-filter">Country</div>
+                                        <p-multiselect [options]="countries" placeholder="Select Country"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Competition</div>
+                                        <p-multiselect [options]="competition" placeholder="Competition"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">BattingTeams</div>
+                                        <p-multiselect [options]="BattingTeams" placeholder="Batting Teams"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">BattingStyles</div>
+                                        <p-multiselect [options]="BattingStyles" placeholder="Batting Styles"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Batters</div>
+                                        <p-multiselect [options]="Batters" placeholder="Select Batters"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+                                    <div class="input-filters">
+                                        <div class="title-filter">Ground</div>
+                                        <p-multiselect [options]="Grounds" placeholder="Select Ground"
+                                            optionLabel="name" display="chip" class="custom-multiselect" />
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="card-body border mt-2">
+                            <p-table [value]="tableData" #dt [styleClass]="'custom-table'">
+                                <!-- Table Header -->
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Batter</th>
+                                        <th>Innings</th>
+                                        <th>Runs</th>
+                                        <th>Average</th>
+                                        <th>Strike Rate</th>
+                                        <th>100s/50s</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData>
+                                    <tr>
+                                        <td>{{ rowData.batter }}</td>
+                                        <td>{{ rowData.innings }}</td>
+                                        <td>{{ rowData.runs }}</td>
+                                        <td>{{ rowData.average }}</td>
+                                        <td>{{ rowData.strikeRate }}</td>
+                                        <td>{{ rowData.centuries }} / {{ rowData.fifties }}</td>
+
+                                    </tr>
+                                </ng-template>
+                                <!-- Empty Message -->
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="6" class="text-center">No Records Found</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+  <p-dialog header="Ground Details" [(visible)]="viewDialogVisible" [modal]="true" [dismissableMask]="true">
+  </p-dialog>

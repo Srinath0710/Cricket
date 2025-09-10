@@ -10,13 +10,12 @@ import { StateComponent } from "./state/state.component";
 import { AllCitiesComponent } from "./all-cities/all-cities.component";
 import { SeasonsComponent } from "./seasons/seasons.component";
 import { GroundsComponent } from "./grounds/grounds.component";
-// import { ScoreEnginesComponent } from "../score-engines/score-engines.component";
-import { ScoreEngineComponent } from "../score-engine/score-engine.component";
 import { ClientComponent } from "./client/client.component";
 import { ClubRegistrationComponent } from "./club-registration/club-registration.component";
 import { MenuComponent } from "./menu/menu.component";
 import { UsersComponent } from "./users/users.component";
 import { MatchCenterComponent } from "../match-center/match-center.component";
+import { PlayerAnalysisComponent } from "./player-analysis/player-analysis.component";
 
 export const AllComponentRoutes: Route[] = [
     {
@@ -68,17 +67,6 @@ export const AllComponentRoutes: Route[] = [
                 path: 'ground',
                 component: GroundsComponent
             },
-            // {
-            //     path: 'score-cards',
-            //     component: ScoreEnginesComponent
-
-            // },
-         
-            {
-                path: 'score-card',
-                component: ScoreEngineComponent
-
-            },
             {
                 path: 'client',
                 component: ClientComponent
@@ -100,6 +88,11 @@ export const AllComponentRoutes: Route[] = [
                 path: 'match_center',
                 component: MatchCenterComponent
             },
+                {
+                path: 'player_analysis',
+                component: PlayerAnalysisComponent
+            }
+
         ]
 
     },
