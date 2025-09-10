@@ -16,6 +16,7 @@ import { MenuComponent } from "./menu/menu.component";
 import { UsersComponent } from "./users/users.component";
 import { MatchCenterComponent } from "../match-center/match-center.component";
 import { PlayerAnalysisComponent } from "./player-analysis/player-analysis.component";
+import { DashboardComponent } from "./dashboard/dashboard.component";
 
 export const AllComponentRoutes: Route[] = [
     {
@@ -91,8 +92,11 @@ export const AllComponentRoutes: Route[] = [
                 {
                 path: 'player_analysis',
                 component: PlayerAnalysisComponent
+            },
+            {
+                path: 'dashboard',
+                component: DashboardComponent
             }
-
         ]
 
     },
