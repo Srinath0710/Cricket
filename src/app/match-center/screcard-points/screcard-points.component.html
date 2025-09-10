@@ -1,8 +1,7 @@
 
 
-
 <!-- --SCORECARD ---->
-<div *ngIf="showScorecard && activePage=='scorecard'" class="points-form-fullpage">
+<div *ngIf="selectedMatch && activePage=='scorecard'" class="points-form-fullpage">
 
   <!-- Match Header -->
   <div class="match-center">
@@ -335,4 +334,15 @@
       </tbody>
     </table>
   </div>
+</ng-template>
+<div *ngIf="selectedMatch; else noData">
+  <h2>Result</h2>
+  <p><strong>Competition:</strong> {{ selectedMatch.competitionName }}</p>
+  <p><strong>Team A:</strong> {{ selectedMatch.teamA }}</p>
+  <p><strong>Team B:</strong> {{ selectedMatch.teamB }}</p>
+  <p><strong>Date:</strong> {{ selectedMatch.matchDate }}</p>
+</div>
+
+<ng-template #noData>
+  <p>No match data available.</p>
 </ng-template>

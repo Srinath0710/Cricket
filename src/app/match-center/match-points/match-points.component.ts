@@ -61,11 +61,9 @@ export class MatchPointsComponent {
      this.changeTab('matches');
   }
 
-  openScorecard(match: any): void {
-    this.selectedMatch = match;
-    this.showScorecard = true;
-    this.changeTab('scorecard');
-
+ openScorecard(match: any) {
+  this.selectedMatch = match;
+  this.activePage = 'scorecard';
 
   }
   /*---Points-list filtering based on selected series & matchType-- */

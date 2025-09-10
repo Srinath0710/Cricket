@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PaginatorModule } from 'primeng/paginator';
@@ -7,6 +7,7 @@ import { ApiService } from '../../services/api.service';
 import { BattingSummaryModel, BowlingSummaryModel, FallOfWicketModel, SeasonModel } from '../match.center.model';
 
 @Component({
+  
   selector: 'app-screcard-points',
   standalone:true,
   imports: [CommonModule, FormsModule,
@@ -17,6 +18,7 @@ import { BattingSummaryModel, BowlingSummaryModel, FallOfWicketModel, SeasonMode
   styleUrl: './screcard-points.component.css'
 })
 export class ScrecardPointsComponent {
+@Input() selectedMatch: any;
 
 
 ngOnInit(): void {
@@ -27,7 +29,7 @@ ngOnInit(): void {
 }
   /*--- Scorecard UI -- */
   showScorecard = false;
-  selectedMatch: any = null;
+  // selectedMatch: any = null; 
   activeTab = 'scorecard';
   teamAbatting: any[] = [];
   teamBbatting: any[] = [];
@@ -50,10 +52,11 @@ activePage: string ='scorecard';
 constructor(private apiService:ApiService){}
   
  /*---Scorecard open/close controls used by template-- */
-  openScorecard(match: any): void {
-    this.selectedMatch = match;
-    this.showScorecard = true;
-  }
+openScorecard(match: any): void {
+  this.selectedMatch = match;
+  this.showScorecard = true;
+}
+
 
   closeScorecard(): void {
     this.showScorecard = false;

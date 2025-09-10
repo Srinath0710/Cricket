@@ -123,9 +123,10 @@
 </div>
 
 <div *ngIf="activePage === 'scorecard'">
-  <app-screcard-points></app-screcard-points>
+  <app-screcard-points [selectedMatch]="selectedMatch"></app-screcard-points>
   <div class="form-actions">
     <button type="button" (click)="changeTab('matches')">Back</button>
   </div>
 </div>
+
 
