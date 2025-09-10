@@ -7,8 +7,10 @@ export class FilterMatchModel {
     gender: string;
     ageGroup: string;
     status: string;
-    teamFormat?: string;
-
+    teamFormat: string;
+    competition_id: number;
+    match_id: string;
+    match: string;
     constructor(item: Partial<FilterMatchModel> = {}) {
         this.series = item.series || '';
         this.startDate = item.startDate || '';
@@ -18,6 +20,9 @@ export class FilterMatchModel {
         this.ageGroup = item.ageGroup || '';
         this.status = item.status || '';
         this.teamFormat = item.teamFormat || '';
+        this.competition_id = item.competition_id || 0;
+        this.match_id = item.match_id || '';
+        this.match = item.match || '';
     }
 }
 
@@ -29,8 +34,15 @@ export class CompetitionModel {
     matchType: string;
     teamA: any;
     teamB: any;
+    competition_id: number;
     resultStatus: string;
     type: string; // live/upcoming/result
+    competitionName: any;
+    startDate: any;
+    venue: any;
+    teamASummary: any;
+    teamBSummary: any;
+    result: any;
 
     constructor(item: Partial<CompetitionModel> = {}) {
         this.series = item.series || '';
@@ -38,6 +50,7 @@ export class CompetitionModel {
         this.stadium = item.stadium || '';
         this.location = item.location || '';
         this.matchType = item.matchType || '';
+        this.competition_id = item.competition_id || 0;
         this.teamA = item.teamA || null;
         this.teamB = item.teamB || null;
         this.resultStatus = item.resultStatus || '';
@@ -58,7 +71,7 @@ export class MatchSummaryModel {
     result: string;
     matchType: string;
     status: string;
-
+    competition_id: number;
     constructor(item: Partial<MatchSummaryModel> = {}) {
         this.matchId = item.matchId || '';
         this.competitionName = item.competitionName || '';
@@ -72,6 +85,7 @@ export class MatchSummaryModel {
         this.result = item.result || '';
         this.matchType = item.matchType || '';
         this.status = item.status || '';
+        this.competition_id = item.competition_id || 0;
     }
 }
 
@@ -123,7 +137,7 @@ export class BattingSummaryModel {
     fours: number;
     sixes: number;
     strikeRate: number;
-    wicketDesc?: string | null;
+    wicketDesc: string | null;
 
     constructor(item: Partial<BattingSummaryModel> = {}) {
         this.matchId = item.matchId || '';
