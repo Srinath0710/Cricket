@@ -360,8 +360,8 @@ export class CompPlayerComponent implements OnInit {
         player.profile_image = this.men_img;
       } else if (gender === 'women' || gender === 'f') {
         player.profile_image = this.women_img;
-      } else {
-        player.profile_image = 'assets/images/player.jpg';
+      // } else {
+      //   player.profile_image = 'assets/images/player.jpg';
       }
     }
 

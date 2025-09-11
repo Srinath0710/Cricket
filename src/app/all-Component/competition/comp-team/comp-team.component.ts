@@ -73,6 +73,7 @@ export class CompTeamComponent implements OnInit {
 
   filedata: any;
   url: any;
+  src: any;
   profileImages: any;
   previewUrl: string | ArrayBuffer | null = null;
   imagePreview: string | ArrayBuffer | null = null;
@@ -110,7 +111,7 @@ export class CompTeamComponent implements OnInit {
       competition_id: ['', [Validators.required]],
       sponser_name: ['', [Validators.required]],
       scorecard_name: ['', [Validators.required]],
-      profile_url: [null],
+      profile_url: [''],
     })
 
   }
@@ -280,6 +281,7 @@ export class CompTeamComponent implements OnInit {
 
   showEditPopup(team: any) {
     this.isEditPopupVisible = true;
+    this.filedata = null;
     this.selectedTeam = team;
     this.currentEditedImage = team.profile_url || this.default_img;
 
@@ -290,7 +292,6 @@ export class CompTeamComponent implements OnInit {
       team_name: team.team_name || '',
       profile_url: team.profile_url || ''
     });
-    this.filedata = null;
   }
 
   closeEditPopup() {
@@ -354,12 +355,12 @@ export class CompTeamComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     const maxSizeKB = 500;
 
-    if (this.ManageTeamsForm.value.team_profile !== null && this.ManageTeamsForm.value.team_profile !== '') {
+    if (this.ManageTeamsForm.value.profile_url !== null && this.ManageTeamsForm.value.profile_url !== '') {
       this.profileImages = null;
     }
 
     if (file) {
-      const fileSizeKB = file.size / 1024; // Fixed: should divide by 1024 for KB
+      const fileSizeKB = file.size / 500;
       if (fileSizeKB > maxSizeKB) {
         this.imageSizeError = 'Max.size is 500KB';
         this.imagePreview = null;
@@ -399,6 +400,7 @@ export class CompTeamComponent implements OnInit {
   }
   base64ToBinary(base64: string): Blob | null {
     if (!base64 || typeof base64 !== 'string' || !base64.includes(',')) {
+      console.error('Invalid base64 string');
       return null;
     }
 
@@ -410,7 +412,7 @@ export class CompTeamComponent implements OnInit {
         byteArrays[i] = byteCharacters.charCodeAt(i);
       }
 
-      return new Blob([byteArrays], { type: 'image/png' });
+      return new Blob([byteArrays], { type: 'image/jpeg' });
     } catch (error) {
       console.error('Error converting base64 to binary:', error);
       return null;
