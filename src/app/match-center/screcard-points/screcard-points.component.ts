@@ -4,12 +4,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PaginatorModule } from 'primeng/paginator';
 import { ApiService } from '../../services/api.service';
-import { BattingSummaryModel, BowlingSummaryModel, FallOfWicketModel, SeasonModel } from '../match.center.model';
+import { ScheduleModel, BattingSummaryModel, BowlingSummaryModel, FallOfWicketModel, SeasonModel } from '../match.center.model';
+import { OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
-  
+
   selector: 'app-screcard-points',
-  standalone:true,
+  standalone: true,
   imports: [CommonModule, FormsModule,
     ReactiveFormsModule,
     PaginatorModule,
@@ -18,15 +19,16 @@ import { BattingSummaryModel, BowlingSummaryModel, FallOfWicketModel, SeasonMode
   styleUrl: './screcard-points.component.css'
 })
 export class ScrecardPointsComponent {
-@Input() selectedMatch: any;
+  @Input() selectedMatch: any;
+  scorecardHeader: any = {};
 
-
-ngOnInit(): void {
-  this.loadBattingSummariesFromMock();
-  this.loadBowlingSummariesFromMock();
-  this.loadFallOfWicketsFromMock();
-  this.loadSeasonsFromMock();
-}
+  ngOnInit(): void {
+    this.loadScheduleSummarysFromMock();
+    this.loadBattingSummariesFromMock();
+    this.loadBowlingSummariesFromMock();
+    this.loadFallOfWicketsFromMock();
+    this.loadSeasonsFromMock();
+  }
   /*--- Scorecard UI -- */
   showScorecard = false;
   // selectedMatch: any = null; 
@@ -39,6 +41,10 @@ ngOnInit(): void {
   teamBsquad: any[] = [];
   activeinnings: string = 'one';
   activeInnings: string = 'testfour';
+    ScheduleMatchSummary: any
+  ScheduleMatchSummaryRaw: any
+  battingMatchSummary: any
+  battingMatchSummaryRaw: any
   battingSummaries: any;
   battingSummaryRaw: any;
   bowlingSummaryRaw: any;
@@ -47,93 +53,144 @@ ngOnInit(): void {
   fallOfWickets: any;
   seasonsRaw: any;
   Season: any;
-activePage: string ='scorecard';
+  activePage: string = 'scorecard';
 
-constructor(private apiService:ApiService){}
-  
- /*---Scorecard open/close controls used by template-- */
-openScorecard(match: any): void {
-  this.selectedMatch = match;
-  this.showScorecard = true;
-}
+  constructor(private apiService: ApiService) { }
+
+  /*---Scorecard open/close controls used by template-- */
+  openScorecard(match: any): void {
+    this.selectedMatch = match;
+    this.showScorecard = true;
+  }
 
 
   closeScorecard(): void {
     this.showScorecard = false;
+    this.changeTab('points');
+
   }
+
+
+
+  /* Schedules */
+  loadScheduleSummarysFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/schedules.json').subscribe(data => {
+      this.ScheduleMatchSummaryRaw = data;
+      this.ScheduleMatchSummary = this.battingMatchSummaryRaw.map((s: any) => new ScheduleModel({
+        match_id: s.match_id,
+        competition_name: s.competition_name,
+        team_1_name: s.team_1_name,
+        team_2_name: s.team_2_name,
+        team_1_summary: s.team_1_summary,
+        team_2_summary: s.team_2_summary,
+        venue: s.venue,
+        match_start_date: new Date(s.match_start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        match_end_date: new Date(s.match_end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        // match_result: s.match_result,
+        comp_type: s.comp_type,
+        // match_result: this.deriveStatusFromResult(s.match_result),
+        team_format: s.team_format,
+        gender: s.gender,
+        age_category: s.age_category
+      }));
+    });
+  }
+
+
   /* Batting summaries */
-    loadBattingSummariesFromMock(): void {
-      this.apiService.getMockData('assets/mock_data/battingSumary.json').subscribe(data => {
-        this.battingSummaryRaw = data;
-        this.battingSummaries = this.battingSummaryRaw.map((b:any) => new BattingSummaryModel({
-          matchId: b.match_id,
-          inningsNo: b.innings_no,
-          battingTeam: b.batting_team,
-          playerId: b.player_id,
-          playerName: b.player_name,
-          battingOrder: Number(b.batting_order),
-          runs: Number(b.runs),
-          balls: Number(b.balls),
-          fours: Number(b.bdry_four),
-          sixes: Number(b.bdry_six),
-          strikeRate: Number(b.strike_rate),
-          wicketDesc: b.wicket_desc || null
-        }));
-      });
-    }
-  
-    /* Bowling summaries */
-    loadBowlingSummariesFromMock(): void {
-      this.apiService.getMockData('assets/mock_data/bowlingSumary.json').subscribe(data => {
-        this.bowlingSummaryRaw = data;
-        this.bowlingSummaries = this.bowlingSummaryRaw.map((b:any) => new BowlingSummaryModel({
-          matchId: b.match_id,
-          inningsNo: b.innings_no,
-          bowlingTeam: b.bowling_team,
-          playerId: b.player_id,
-          playerName: b.player_name,
-          bowlingOrder: Number(b.bowling_order),
-          overs: Number(b.overs),
-          maidens: Number(b.maidens),
-          runs: Number(b.runs),
-          wickets: Number(b.wicket),
-          economy: Number(b.economy),
-          foursConceded: Number(b.bdry_four),
-          sixesConceded: Number(b.bdry_six),
-          dotBalls: Number(b.dot_balls),
-          strikeRate: b.strike_rate ? Number(b.strike_rate) : undefined
-        }));
-      });
-    }
-  
-    /* Fall of wickets */
-    loadFallOfWicketsFromMock(): void {
-      this.apiService.getMockData('assets/mock_data/fow.json').subscribe(data => {
-        this.fowRaw = data;
-        this.fallOfWickets = this.fowRaw.map((f:any) => new FallOfWicketModel({
-          matchId: f.match_id,
-          inningsNo: f.innings_no,
-          battingTeam: f.batting_team,
-          wicketNo: Number(f.wicket_no),
-          teamTotal: Number(f.team_total),
-          overValue: Number(f.over),
-          playerId: f.player_id,
-          playerName: f.player_name,
-          wicketDesc: f.wicket_desc
-        }));
-      });
-    }
-  
-    /* Seasons */
-    loadSeasonsFromMock(): void {
-      this.apiService.getMockData('assets/mock_data/seasons.json').subscribe(data => {
-        this.seasonsRaw = data;
-        this.Season = this.seasonsRaw.map((s:any) => new SeasonModel(s));
-      });
-    }
-  changeTab(page:string){
-    this.activePage=page;
+  loadBattingSummariesFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/battingSumary.json').subscribe(data => {
+      this.battingSummaryRaw = data;
+      this.battingSummaries = this.battingSummaryRaw.map((b: any) => new BattingSummaryModel({
+        match_id: b.match_id,
+        innings_no: b.innings_no,
+        batting_team: b.batting_team,
+        player_id: b.player_id,
+        player_name: b.player_name,
+        batting_order: Number(b.batting_order),
+        runs: Number(b.runs),
+        balls: Number(b.balls),
+        bdry_four: Number(b.bdry_four),
+        bdry_six: Number(b.bdry_six),
+        strike_rate: Number(b.strike_rate),
+        wicket_desc: b.wicket_desc || null
+      }));
+    });
   }
+
+  /* Bowling summaries */
+  loadBowlingSummariesFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/bowlingSumary.json').subscribe(data => {
+      this.bowlingSummaryRaw = data;
+      this.bowlingSummaries = this.bowlingSummaryRaw.map((b: any) => new BowlingSummaryModel({
+        match_id: b.match_id,
+        innings_no: b.innings_no,
+        bowling_team: b.bowling_team,
+        player_id: b.player_id,
+        player_name: b.player_name,
+        bowling_order: Number(b.bowling_order),
+        overs: Number(b.overs),
+        maidens: Number(b.maidens),
+        runs: Number(b.runs),
+        wicket: Number(b.wicket),
+        economy: Number(b.economy),
+        bdry_four: Number(b.bdry_four),
+        bdry_six: Number(b.bdry_six),
+        dot_balls: Number(b.dot_balls),
+        strike_rate: b.strike_rate ? Number(b.strike_rate) : undefined
+      }));
+    });
+  }
+
+  /* Fall of wickets */
+  loadFallOfWicketsFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/fow.json').subscribe(data => {
+      this.fowRaw = data;
+      this.fallOfWickets = this.fowRaw.map((f: any) => new FallOfWicketModel({
+        match_id: f.match_id,
+        innings_no: f.innings_no,
+        batting_team: f.batting_team,
+        wicket_no: Number(f.wicket_no),
+        team_total: Number(f.team_total),
+        over_value: Number(f.over_value),
+        player_id: f.player_id,
+        player_name: f.player_name,
+        wicket_desc: f.wicket_desc
+      }));
+    });
+  }
+
+  /* Seasons */
+  loadSeasonsFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/seasons.json').subscribe(data => {
+      this.seasonsRaw = data;
+      this.Season = this.seasonsRaw.map((s: any) => new SeasonModel(s));
+    });
+  }
+  changeTab(page: string) {
+    this.activePage = page;
+  }
+
+ngOnChanges(changes: SimpleChanges) {
+  if (changes['selectedMatch'] && this.selectedMatch) {
+    // Map points card data to scorecard top
+    this.scorecardHeader = {
+      competitionName: this.selectedMatch.competition_name,
+      startDate: this.selectedMatch.match_start_date,
+      matchType: this.selectedMatch.comp_type,
+      venue: this.selectedMatch.venue,
+      teamA: this.selectedMatch.team_1_name,
+      teamB: this.selectedMatch.team_2_name,
+      teamASummary: Array.isArray(this.selectedMatch.team_1_summary) 
+                      ? this.selectedMatch.team_1_summary.map((x: any) => x.runs).join(' & ')
+                      : this.selectedMatch.team_1_summary, // fallback if string
+      teamBSummary: Array.isArray(this.selectedMatch.team_2_summary) 
+                      ? this.selectedMatch.team_2_summary.map((x: any) => x.runs).join(' & ')
+                      : this.selectedMatch.team_2_summary, // fallback if string
+      result: this.selectedMatch.match_result
+    };
+  }
+}
 
 }
 

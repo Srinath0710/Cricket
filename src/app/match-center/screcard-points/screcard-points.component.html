@@ -1,40 +1,37 @@
-
-
 <!-- --SCORECARD ---->
 <div *ngIf="selectedMatch && activePage=='scorecard'" class="points-form-fullpage">
 
   <!-- Match Header -->
-  <div class="match-center">
-    <h2 class="heading2">Result</h2>
-    <div class="matches-list">
-      <div class="match-row">
-        <div class="left-info">
-          <h6>
-            <div class="head">{{ selectedMatch.competitionName }}</div>
-          </h6>
-          <div class="date">{{ selectedMatch.startDate }}</div>
-          <div class="series">{{ selectedMatch.matchType }}</div>
-          <div class="venue">{{ selectedMatch.venue }}</div>
+<div class="match-center">
+  <h2 class="heading2">Result</h2>
+  <div class="matches-list">
+    <div class="match-row">
+      <div class="left-info">
+        <h6>
+          <div class="head">{{ scorecardHeader.competitionName }}</div>
+        </h6>
+        <div class="date">{{ scorecardHeader.startDate }}</div>
+        <div class="series">{{ scorecardHeader.matchType }}</div>
+        <div class="venue">{{ scorecardHeader.venue }}</div>
+      </div>
+      <div class="teams">
+        <div class="team left-team">
+          <span class="team-name">{{ scorecardHeader.teamA }}</span>
+          <div class="team-score">{{ scorecardHeader.teamASummary }}</div>
         </div>
-        <div class="teams">
-          <!-- Reusable Team Block -->
-          <ng-container
-            *ngTemplateOutlet="teamBlock; context:{ team: selectedMatch.teamA, side:'left' }"></ng-container>
-
-
-          <!-- VS Icon -->
-          <div><img src="assets/images/game.png" width="50" height="50" /></div>
-          <!-- Reusable Team Block -->
-          <ng-container
-            *ngTemplateOutlet="teamBlock; context:{ team: selectedMatch.teamB, side:'right' }"></ng-container>
-
+        <div><img src="assets/images/game.png" width="50" height="50" /></div>
+        <div class="team right-team">
+          <span class="team-name">{{ scorecardHeader.teamB }}</span>
+          <div class="team-score">{{ scorecardHeader.teamBSummary }}</div>
         </div>
-        <div class="sresult-status" *ngIf="selectedMatch.result">
-          <strong>{{ selectedMatch.result }}</strong>
-        </div>
+      </div>
+      <div class="sresult-status" *ngIf="scorecardHeader.result">
+        <strong>{{ scorecardHeader.result }}</strong>
       </div>
     </div>
   </div>
+</div>
+
   <!-- Back Button -->
   <div class="form-actions">
     <button type="button" (click)="closeScorecard()">Back</button>
@@ -334,15 +331,4 @@
       </tbody>
     </table>
   </div>
-</ng-template>
-<div *ngIf="selectedMatch; else noData">
-  <h2>Result</h2>
-  <p><strong>Competition:</strong> {{ selectedMatch.competitionName }}</p>
-  <p><strong>Team A:</strong> {{ selectedMatch.teamA }}</p>
-  <p><strong>Team B:</strong> {{ selectedMatch.teamB }}</p>
-  <p><strong>Date:</strong> {{ selectedMatch.matchDate }}</p>
-</div>
-
-<ng-template #noData>
-  <p>No match data available.</p>
 </ng-template>

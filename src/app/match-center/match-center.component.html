@@ -59,13 +59,13 @@
 
         <!-- Top Row: Match Type | Dates | Status -->
         <div class="top-row">
-          <div class="match-type">{{ match.matchType }}</div>
-          <div class="match-dates">{{ match.startDate }} – {{ match.endDate }}</div>
+          <div class="match-type">{{ match.comp_type }}</div>
+          <div class="match-dates">{{ match.start_date }} – {{ match.end_date }}</div>
           <div class="status">{{ match.status }}</div>
         </div>
         <!-- Series Name -->
         <div class="series-name-container">
-          <div class="series-name">{{ match.series }}</div>
+          <div class="series-name">{{ match.competition_name }}</div>
         </div>
         <!-- Series Match Counts -->
         <div class="series-match-counts">
@@ -98,15 +98,10 @@
 </div>
 
 
-  <!-- Cancel Button (Common) -->
-    <div class="form-actions" *ngIf="activePage !='matches'">
-      <button type="button" (click)="closePointsForm()">Back</button>
-    </div>
 
 <div *ngIf="activePage === 'points'">
-  <app-match-points></app-match-points>
+  <app-match-points [competitionId]="competitionId" [selectedMatchType]="selectedMatchType"></app-match-points>
   <div class="form-actions">
-    <button type="button" (click)="closePointsForm()">Back</button>
-  </div>
+   <button type="button" (click)="closePointsForm()">Back</button>
+    </div>
 </div>
-

@@ -1,132 +1,132 @@
-<div *ngIf="ShowPointsForm  && activePage == 'points'" class="points-form-fullpage">
+<div *ngIf="ShowPointsForm && activePage === 'points'" class="points-form-fullpage">
   <form [formGroup]="pointsForm">
     <div class="match-center">
       <h2 class="heading2">Fixtures & Results</h2>
+
       <!-- Matches List -->
       <div class="matches-list">
-        <div class="match-row mt-1" *ngFor="let match of schedulesList">
-          <!-- Left Side: Match Info -->
-          <div class="left-info">
-            <h6>
-              <div class="head">{{ match.competitionName }}</div>
-            </h6>
-            <div class="date">{{ match.startDate }}</div>
-            <div class="series">{{ match.matchType }}</div>
-            <div class="venue">{{ match.venue }}</div>
-          </div>
-          <!-- Teams Section -->
-          <div class="teams">
-            <!-- Team A -->
-            <div class="team left-team">
-              <span class="team-name">{{ match.teamA }}</span>
-              <img [src]="" />
-              <div class="team-score">
-                <!-- Test Match: Show Multiple Innings -->
-                <ng-container *ngIf="match.matchType === 'Multiday'; else singleScoreA">
-                  <div class="innings-row">
-                    <div class="innings-header">
-                      <span *ngFor="let inn of match.teamASummary; let i = index" class="innings-col">
-                        Inn {{ i + 1 }}
-                      </span>
-                    </div>
-                    <div class="innings-score">
-                      <span *ngFor="let inn of match.teamASummary" class="score-text innings-col">
-                        {{ inn.split('(')[0].trim() }}
-                      </span>
-                    </div>
-                    <div class="innings-overs">
-                      <span *ngFor="let inn of match.teamASummary" class="overs-text innings-col">
-                        ({{ inn.split('(')[1] ? inn.split('(')[1].replace(')', '') : '' }})
-                      </span>
-                    </div>
-                  </div>
-                </ng-container>
+        <ng-container *ngIf="paginatedPointsMatches.length > 0; else noData">
+          <div class="match-row mt-1" *ngFor="let match of paginatedPointsMatches">
 
-                <!-- Non-Test Score -->
-                <ng-template #singleScoreA>
-                  <ng-container *ngIf="match.teamASummary; else yetToBatA">
-                    <span class="score-text">{{ match.teamASummary.split(' ')[0] }}</span><br>
-                    <small class="overs-text">{{ match.teamASummary.split(' ')[1] || '' }}</small>
-                  </ng-container>
-                  <ng-template #yetToBatA>
-                    {{ match.teamASummary || 'Yet to Bat' }}
-                  </ng-template>
-                </ng-template>
-              </div>
+            <!-- Left Info -->
+            <div class="left-info">
+              <h6>
+                <div class="head">{{ match.competition_name }}</div>
+              </h6>
+              <div class="date">{{ match.match_start_date }}</div>
+              <div class="series">{{ match.comp_type }}</div>
+              <div class="venue">{{ match.venue }}</div>
             </div>
-            <!-- VS Icon -->
-            <div>
-              <span><img src="assets/images/game.png" width="50" height="50"></span>
-            </div>
-            <!-- Team B -->
-            <div class="team right-team">
-              <div class="team-score">
-                <!-- Test Match -->
-                <ng-container *ngIf="match.matchType === 'Multiday'; else singleScoreB">
-                  <div class="innings-row">
-                    <div class="innings-header">
-                      <span *ngFor="let inn of match.teamBSummary; let i = index" class="innings-col">
-                        Inn {{ i + 1 }}
-                      </span>
-                    </div>
-                    <div class="innings-score">
-                      <span *ngFor="let inn of match.teamBSummary" class="score-text innings-col">
-                        {{ inn.split('(')[0].trim() }}
-                      </span>
-                    </div>
-                    <div class="innings-overs">
-                      <span *ngFor="let inn of match.teamBSummary" class="overs-text innings-col">
-                        ({{ inn.split('(')[1] ? inn.split('(')[1].replace(')', '') : '' }})
-                      </span>
-                    </div>
-                  </div>
-                </ng-container>
 
-                <!-- Non-Test Score -->
-                <ng-template #singleScoreB>
-                  <ng-container *ngIf="match.teamBSummary; else yetToBatB">
-                    <span class="score-text">{{ match.teamBSummary.split(' ')[0] }}</span><br>
-                    <small class="overs-text">{{ match.teamBSummary.split(' ')[1] || '' }}</small>
+            <!-- Teams -->
+            <div class="teams">
+
+              <!-- Team 1 -->
+              <div class="team left-team">
+                <span class="team-name">{{ match.team_1_name }}</span>
+                <img [src]="" />
+                <div class="team-score">
+                  <ng-container *ngIf="match.team_1_summary?.length; else yetToBatA">
+                    <div class="innings-row">
+                      <div class="innings-header">
+                        <span *ngFor="let inn of match.team_1_summary; let i = index" class="innings-col">
+                          Inn {{ i + 1 }}
+                        </span>
+                      </div>
+                      <div class="innings-score">
+                        <span *ngFor="let inn of match.team_1_summary" class="score-text innings-col">
+                          {{ inn.runs }}
+                        </span>
+                      </div>
+                      <div class="innings-overs">
+                        <span *ngFor="let inn of match.team_1_summary" class="overs-text innings-col">
+                          ({{ inn.overs }})
+                        </span>
+                      </div>
+                    </div>
                   </ng-container>
-                  <ng-template #yetToBatB>
-                    {{ match.teamBSummary || 'Yet to Bat' }}
-                  </ng-template>
-                </ng-template>
+                  <ng-template #yetToBatA>Yet to Bat</ng-template>
+                </div>
               </div>
-              <img [src]="" />
-              <span class="team-name">{{ match.teamB }}</span>
+              <!-- Game Icon -->
+              <div>
+                <span><img src="assets/images/game.png" width="50" height="50"></span>
+              </div>
+
+              <!-- Team 2 -->
+
+              <div class="team right-team">
+                <div class="team-score">
+                  <ng-container *ngIf="match.team_2_summary?.length; else yetToBatB">
+                    <div class="innings-row">
+                      <div class="innings-header">
+                        <span *ngFor="let inn of match.team_2_summary; let i = index" class="innings-col">
+                          Inn {{ i + 1 }}
+                        </span>
+                      </div>
+                      <div class="innings-score">
+                        <span *ngFor="let inn of match.team_2_summary" class="score-text innings-col">
+                          {{ inn.runs }}
+                        </span>
+                      </div>
+                      <div class="innings-overs">
+                        <span *ngFor="let inn of match.team_2_summary" class="overs-text innings-col">
+                          ({{ inn.overs }})
+                        </span>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #yetToBatB>Yet to Bat</ng-template>
+                </div>
+                <img [src]="" />
+                <span class="team-name">{{ match.team_2_name }}</span>
+              </div>
+
             </div>
+
+            <!-- Match Result -->
+            <div class="result-status" *ngIf="match.match_result">
+              <strong>{{ match.match_result }}</strong>
+            </div>
+
+            <!-- Match Centre Button -->
+            <div class="right-btn">
+              <button class="match-btn" (click)="openScorecard(match)">Match Centre →</button>
+            </div>
+
           </div>
-          <!-- Match Result Status -->
-          <div class="result-status" *ngIf="match.result">
-            <strong>{{ match.result }}</strong>
+        </ng-container>
+
+        <!-- No Matches Found -->
+        <ng-template #noData>
+          <div class="match-row no-data-row">
+            <p>No matches found for this competition and type.</p>
           </div>
-          <!-- Match Center Button -->
-          <div class="right-btn">
-            <button class="match-btn" (click)="openScorecard(match)">Match Centre →</button>
-          </div>
-        </div>
+        </ng-template>
+
       </div>
-      <!-- Paginator Ponints -->
+
+      <!-- Pagination -->
       <div class="match-cardpaginator-container">
-        <p-paginator [rows]="pointsRows" [totalRecords]="filteredPointsMatches.length" [first]="pointsFirst"
+        <p-paginator [rows]="pointsRows" [totalRecords]="filteredSchedulesList.length" [first]="pointsFirst"
           [rowsPerPageOptions]="[5, 10, 15]" (onPageChange)="onPointsPageChange($event)">
         </p-paginator>
       </div>
+
     </div>
 
-  <!-- Cancel Button (Common) -->
+    <!-- Back Button -->
     <div class="form-actions">
       <button type="button" (click)="closePointsForm()">Back</button>
     </div>
+
   </form>
 </div>
 
+<!-- Scorecard Page -->
 <div *ngIf="activePage === 'scorecard'">
   <app-screcard-points [selectedMatch]="selectedMatch"></app-screcard-points>
   <div class="form-actions">
     <button type="button" (click)="changeTab('matches')">Back</button>
   </div>
 </div>
-
-

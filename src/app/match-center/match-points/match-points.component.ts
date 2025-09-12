@@ -1,31 +1,35 @@
-
-
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PaginatorModule } from 'primeng/paginator';
-import { CompetitionModel, ScheduleModel } from '../match.center.model';
+import { MatchSummaryModel } from '../match.center.model';
 import { ScrecardPointsComponent } from "../screcard-points/screcard-points.component";
 import { ApiService } from '../../services/api.service';
+
+interface InningsData {
+  runs: string;
+  overs: string;
+}
 
 @Component({
   selector: 'app-match-points',
   standalone: true,
-  imports: [CommonModule, FormsModule,
+  imports: [
+    CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     PaginatorModule,
-    RouterModule, ScrecardPointsComponent],
+    RouterModule,
+    ScrecardPointsComponent
+  ],
   templateUrl: './match-points.component.html',
   styleUrl: './match-points.component.css'
 })
+export class MatchPointsComponent implements OnChanges {
 
-
-export class MatchPointsComponent {
-
-    ngOnInit(): void {
-    this.loadSchedulesFromMock();
-  }
+  @Input() competitionId: number | 0 = 0;
+  @Input() selectedMatchType: string | null = null;
 
   ShowPointsForm: boolean = true;
   pointsForm: FormGroup;
@@ -33,88 +37,111 @@ export class MatchPointsComponent {
   pointsRows: number = 2;
   pointsFirst: number = 0;
 
-  schedulesList: ScheduleModel[] = [];
+  schedulesList: MatchSummaryModel[] = [];
+  filteredSchedulesList: MatchSummaryModel[] = [];
 
   showScorecard = false;
   selectedMatch: any = null;
-  competitionId: any;
-  matchespoints: any;
-  selectedMatchType: any;
-
   schedulesRaw: any;
-  activePage: string='points';
+  activePage: string = 'points';
 
-  constructor(private fb: FormBuilder,private apiService:ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.pointsForm = this.fb.group({});
   }
 
-  changeTab(page: string) {
-    this.activePage = page;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['competitionId'] || changes['selectedMatchType']) {
+      this.loadMatchSummarysFromMock();
+    }
   }
+
+  loadMatchSummarysFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/schedules.json').subscribe(data => {
+      this.schedulesRaw = data;
+
+      this.schedulesList = this.schedulesRaw.map((s: any) => new MatchSummaryModel({
+        match_id: s.match_id,
+        competition_name: s.competition_name,
+        team_1_name: s.team_1_name,
+        team_2_name: s.team_2_name,
+
+        // preprocess summaries
+        team_1_summary: this.parseSummary(s.team_1_summary),
+        team_2_summary: this.parseSummary(s.team_2_summary),
+
+        venue: s.venue,
+        match_start_date: new Date(s.match_start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        match_end_date: new Date(s.match_end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        comp_type: s.comp_type,
+
+        // Keep the original result string
+        match_result: s.match_result,
+
+        team_format: s.team_format,
+        gender: s.gender,
+        age_category: s.age_category,
+        competition_id: s.competition_id
+      }));
+
+
+      this.applyFilters();
+    });
+  }
+
+  /**
+   * Convert summary string like:
+   *   "373/5 (55.2) & 465/10 (55.2)"
+   * into array of { runs, overs }
+   */
+  private parseSummary(summary: string | null): InningsData[] | null {
+    if (!summary) return null;
+
+    // If already array from API
+    if (Array.isArray(summary)) return summary;
+
+    return summary.split("&").map((x: string) => {
+      const parts = x.trim().split("(");
+      const runs = parts[0].trim();
+      const overs = parts[1] ? parts[1].replace(")", "").trim() : "";
+      return { runs, overs };
+    });
+  }
+
+  applyFilters(): void {
+    this.filteredSchedulesList = this.schedulesList.filter(match =>
+      match.competition_id === this.competitionId &&
+      (!this.selectedMatchType || match.comp_type === this.selectedMatchType)
+    );
+  }
+
   onPointsPageChange(event: any): void {
     this.pointsFirst = event.first;
     this.pointsRows = event.rows;
   }
 
-  closePointsForm(): void {
-    this.ShowPointsForm = false;
-     this.changeTab('matches');
+  get paginatedPointsMatches(): MatchSummaryModel[] {
+    return this.filteredSchedulesList.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
   }
 
- openScorecard(match: any) {
-  this.selectedMatch = match;
-  this.activePage = 'scorecard';
-
-  }
-  /*---Points-list filtering based on selected series & matchType-- */
-  get filteredPointsMatches(): CompetitionModel[] {
-    if (!this.competitionId) return [];
-    return this.matchespoints.filter((match: any) =>
-      match.competition_id === this.competitionId &&
-      (!this.selectedMatchType || match.matchType === this.selectedMatchType)
-    );
-  }
-
-
-  get paginatedPointsMatches(): CompetitionModel[] {
-    return this.filteredPointsMatches.slice(this.pointsFirst, this.pointsFirst + this.pointsRows);
-  }
-
-    private deriveStatusFromResult(result: string | null | undefined): string {
-    if (!result) return 'Upcoming';  // result illa → Upcoming
-    const lowered = result.toLowerCase();  // small letter ku convert panrom
-    if (lowered.includes('won') || lowered.includes('draw')) return 'Completed';  // 'won' illa 'draw' irundha → Completed
-    // illati → Live
+  private deriveStatusFromResult(result: string | null | undefined): string {
+    if (!result) return 'Upcoming';
+    const lowered = result.toLowerCase();
+    if (lowered.includes('won') || lowered.includes('draw')) return 'Completed';
     return 'Live';
   }
-  
-  /* Schedules */
-  loadSchedulesFromMock(): void {
-    this.apiService.getMockData('assets/mock_data/schedules.json').subscribe(data => {
-      this.schedulesRaw = data;
-      this.schedulesList = this.schedulesRaw.map((s:any) => new ScheduleModel({
-        matchId: s.match_id,
-        competitionName: s.competition_name,
-        teamA: s.team_1_name,
-        teamB: s.team_2_name,
-        teamASummary: s.team_1_summary,
-        teamBSummary: s.team_2_summary,
-        venue: s.venue,
-        startDate: new Date(s.match_start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        endDate: new Date(s.match_end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        result: s.match_result,
-        matchType: s.comp_type,
-        status: this.deriveStatusFromResult(s.match_result),
-        teamFormat: s.team_format,
-        gender: s.gender,
-        ageCategory: s.age_category
-      }));
-    });
+
+  closePointsForm(): void {
+    this.ShowPointsForm = false;
+    this.changeTab('matches');
   }
 
+  changeTab(page: string) {
+    this.activePage = page;
+  }
 
+openScorecard(match: any) {
+  this.selectedMatch = match;
+  this.activePage = 'scorecard';
 }
 
-
-
-
+}

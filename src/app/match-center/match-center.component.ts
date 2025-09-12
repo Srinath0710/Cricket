@@ -27,7 +27,7 @@ import { RouterModule } from '@angular/router';
     PaginatorModule,
     RouterModule,
     MatchPointsComponent,
-],
+  ],
   templateUrl: './match-center.component.html',
   styleUrls: ['./match-center.component.css']
 })
@@ -55,7 +55,7 @@ export class MatchCenterComponent implements OnInit {
   teamFormats: any[] = [];
   statuses = [
     { label: 'All Status', value: null },
-    { label: 'Live', value: 'Live' },
+    { label: 'InProgress', value: 'InProgress' },
     { label: 'Upcoming', value: 'Upcoming' },
     { label: 'Completed', value: 'Completed' }
   ];
@@ -84,8 +84,8 @@ export class MatchCenterComponent implements OnInit {
   /*--- Points form  -- */
   ShowPointsForm: boolean = false;
   pointsForm: FormGroup;
-activePage: string='matches';
-isShowPage:boolean =true;
+  activePage: string = 'matches';
+  isShowPage: boolean = true;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     // create empty reactive form for points UI (fields to be added as per requirements)
@@ -97,7 +97,6 @@ isShowPage:boolean =true;
     // Load options & mock data
     this.loadFilterOptionsFromMock();
     this.loadCompetitionsFromMock();
-    this.loadMatchesPointsFromMock();
     this.loadMatchSummariesFromMock();
 
   }
@@ -116,32 +115,16 @@ isShowPage:boolean =true;
   loadCompetitionsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/compitation.json').subscribe(data => {
       this.competitions = data;
-      this.matchescard = this.competitions.map(c => new FilterMatchModel({
-        series: c.competition_name,
-        startDate: new Date(c.start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        endDate: new Date(c.end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        matchType: c.comp_type,
+      this.matchespoints = this.competitions.map(c => new CompetitionModel({
+        competition_id: c.competition_id,
+        competition_name: c.competition_name,
+        start_date: new Date(c.start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        end_date: new Date(c.end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        comp_type: c.comp_type,
         gender: c.gender,
-        ageGroup: c.age_category,
+        age_category: c.age_category,
         status: c.status,
-        teamFormat: c.team_format
-      }));
-    });
-  }
-
-  /* Matches points */
-  loadMatchesPointsFromMock(): void {
-    this.apiService.getMockData('assets/mock_data/compitation.json').subscribe(data => {
-      this.matchespoints = data.map((c: any) => new CompetitionModel({
-        series: c.competition_name,
-        dateTime: new Date(c.start_date).toLocaleString('en-GB'),
-        stadium: c.stadium || '',
-        location: c.location || '',
-        matchType: c.comp_type,
-        teamA: c.teamA || null,
-        teamB: c.teamB || null,
-        resultStatus: c.resultStatus || '',
-        type: this.normalizeStatus(c.status)
+        team_format: c.team_format
       }));
     });
   }
@@ -151,55 +134,57 @@ isShowPage:boolean =true;
     this.apiService.getMockData('assets/mock_data/matchsumary.json').subscribe(data => {
       this.matchSummaryRaw = data;
       this.matchSummaries = this.matchSummaryRaw.map(m => new MatchSummaryModel({
-        matchId: m.match_id,
-        competitionName: m.competition_name,
-        teamA: m.team_1_name,
-        teamB: m.team_2_name,
-        teamASummary: m.team_1_summary,
-        teamBSummary: m.team_2_summary,
+        match_id: m.match_id,
+        competition_name: m.competition_name,
+        team_1_name: m.team_1_name,
+        team_2_name: m.team_2_name,
+        team_1_summary: m.team_1_summary,
+        team_2_summary: m.team_2_summary,
         venue: m.venue,
-        startDate: new Date(m.match_start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        endDate: new Date(m.match_end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        result: m.match_result,
-        matchType: m.comp_type,
-        status: this.deriveStatusFromResult(m.match_result)
+        match_start_date: new Date(m.match_start_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        match_end_date: new Date(m.match_end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        // match_result: m.match_result,
+        comp_type: m.comp_type,
+        match_result: this.deriveStatusFromResult(m.match_result)
       }));
     });
   }
 
-  
+
   // API/JSON la varra status values normalize panra function
   private normalizeStatus(status: string | null | undefined): string {
     if (!status) return 'Upcoming';  // status illa → Upcoming
 
     switch (status.toLowerCase()) {
       case 'completed': return 'Completed';   // completed ah irundha
-      case 'inprogress': return 'Live';       // inprogress ah irundha
+      case 'inprogress': return 'inprogress';       // inprogress ah irundha
       case 'upcoming': return 'Upcoming';     // upcoming ah irundha
       default: return 'Upcoming';             // vera yedhum na Upcoming
     }
   }
 
   /*---Filtered match-cards computed property (applies all selected filters)-- */
-  get filteredMatches(): FilterMatchModel[] {
-    return this.matchescard.filter(match =>
+  get filteredMatches(): CompetitionModel[] {
+    return this.matchespoints.filter(match =>
       (!this.selectedStatus || match.status === this.selectedStatus) &&
       (!this.selectedGender || match.gender === this.selectedGender) &&
-      (!this.selectedAgeGroup || match.ageGroup === this.selectedAgeGroup) &&
-      (!this.selectedMatchType || match.matchType === this.selectedMatchType) &&
-      (!this.selectedTeamFormat || match.teamFormat === this.selectedTeamFormat)
+      (!this.selectedAgeGroup || match.age_category === this.selectedAgeGroup) &&
+      (!this.selectedMatchType || match.comp_type === this.selectedMatchType) &&
+      (!this.selectedTeamFormat || match.team_format === this.selectedTeamFormat)
     );
   }
 
-  /*---Pagination slice for match cards- */
-  get paginatedMatches(): FilterMatchModel[] {
-    return this.filteredMatches.slice(this.first, this.first + this.rows);
-  }
+
 
   onPageChange(event: any): void {
+    ``
     // event has { first, rows } from p-paginator
     this.first = event.first;
     this.rows = event.rows;
+  }
+
+  get paginatedMatches(): CompetitionModel[] {
+    return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
 
 
@@ -209,8 +194,8 @@ isShowPage:boolean =true;
     this.pointsRows = event.rows;
   }
 
-  changeTab(page:string){
-    this.activePage=page;
+  changeTab(page: string) {
+    this.activePage = page;
   }
 
   showPointsForm(competitionId: number, matchType?: string): void {
@@ -218,15 +203,16 @@ isShowPage:boolean =true;
     this.selectedMatchType = matchType || null;
     this.ShowPointsForm = true;
     this.pointsForm.reset();
-     this.changeTab('points');
+    this.changeTab('points');
   }
 
 
   closePointsForm(): void {
     this.ShowPointsForm = false;
     this.selectedMatchType = null;
-     this.changeTab('matches');
+    this.changeTab('matches');
   }
+  
 
   /*--- Helper to check whether any points data exists for a series-- */
   hasPoints(competitionId: number): boolean {
@@ -235,31 +221,32 @@ isShowPage:boolean =true;
 
 
   /*---Count match types in a series (returns object like { 'T20': 2, 'ODI': 1 })-- */
-  getMatchTypeCounts(match: number): { [key: string]: number } {
+  // Add this new method inside your MatchCenterComponent class
+
+  getMatchTypeCounts(competitionId: number): { [key: string]: number } {
     const counts: { [key: string]: number } = {};
-    console.log("match", match);
-    this.matchespoints
-      .filter(match => match.competition_id === this.competitionId)
+    this.matchSummaryRaw
+      .filter(match => match.competition_id === competitionId)
       .forEach(match => {
-        counts[match.matchType] = counts[match.matchType] ? counts[match.matchType] + 1 : 1;
+        const type = match.comp_type;
+        counts[type] = (counts[type] || 0) + 1;
       });
     return counts;
   }
-
   /*---Total number of match cards after filters applied-- */
   get totalData(): number {
     return this.filteredMatches.length;
   }
-  
-      // Match result text la irundhu status decide panra function
-    private deriveStatusFromResult(result: string | null | undefined): string {
-      if (!result) return 'Upcoming';  // result illa → Upcoming
-      const lowered = result.toLowerCase();  // small letter ku convert panrom
-      if (lowered.includes('won') || lowered.includes('draw')) return 'Completed';  // 'won' illa 'draw' irundha → Completed
-      // illati → Live
-      return 'Live';
-    }
-  
- 
+
+  // Match result text la irundhu status decide panra function
+  private deriveStatusFromResult(result: string | null | undefined): string {
+    if (!result) return 'Upcoming';  // result illa → Upcoming
+    const lowered = result.toLowerCase();  // small letter ku convert panrom
+    if (lowered.includes('won') || lowered.includes('draw')) return 'Completed';  // 'won' illa 'draw' irundha → Completed
+    // illati → Live
+    return 'inprogress';
+  }
+
+
 
 }
