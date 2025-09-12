@@ -621,6 +621,7 @@
                 <div class="d-flex flex-wrap gap-2">
                   <button *ngIf="activeTab !== 'matches'" class="new-button p-button-text"
                     (click)="UpdateFromParent()">Update</button>
+                    <!-- <button *ngIf="activeTab !== 'teams'" class="new-button p-button-text new-button">+ Import</button> -->
                   <button *ngIf="activeTab === 'matches' && !showNewMatchForm"
                     class="new-button p-button-text new-button  " (click)="UpdateFromParent()">
                     + Match

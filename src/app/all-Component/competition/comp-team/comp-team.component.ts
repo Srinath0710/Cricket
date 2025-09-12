@@ -139,9 +139,11 @@ export class CompTeamComponent implements OnInit {
           return {
             ...val,
             profile_url: val.profile_url
-              ? val.profile_url + '?' + Math.random()
+              ? (val.profile_url.startsWith('http')
+                ? val.profile_url + '?' + Math.random()
+                : val.profile_url) // keep base64 intact
               : (existing?.profile_url || this.default_img),
-            scorecard: val.team_name || ''
+
           };
         });
 
@@ -182,6 +184,8 @@ export class CompTeamComponent implements OnInit {
     params.user_id = this.user_id.toString();
     params.team_list = this.targetTeams.map((p: any) => p.team_id).join(',').toString();
     params.competition_id = this.CompetitionData.competition_id.toString();
+    params.profileImages = this.profileImages;
+    params.filedata = this.filedata;
     // params.profile_url = this.profileImages.toString();
     // params.profile_url = this.ManageTeamsForm.profile_url.toString();
     this.apiService.post(this.urlConstant.compTeamadd, params).subscribe((res: any) => {
@@ -222,11 +226,17 @@ export class CompTeamComponent implements OnInit {
     this.apiService.post(this.urlConstant.compTeamsUpdate, params).subscribe(
       (res: any) => {
         if (res.data?.profile_url) {
-          this.selectedTeam.profile_url = res.data.profile_url + '?' + Math.random();
+          const newUrl = res.data.profile_url;
+          this.selectedTeam.profile_url = newUrl.startsWith('http')
+            ? newUrl + '?' + Math.random()
+            : newUrl;
         }
-        this.successToast(res);
-        this.closeEditPopup();
+
         this.gridLoad();
+        this.successToast(res);
+
+        this.closeEditPopup();
+
       },
       (err: any) => {
         if (
@@ -283,8 +293,7 @@ export class CompTeamComponent implements OnInit {
     this.isEditPopupVisible = true;
     this.filedata = null;
     this.selectedTeam = team;
-    this.currentEditedImage = team.profile_url || this.default_img;
-
+    this.profileImages = team.profile_url || team.profile_img || null;
     this.ManageTeamsForm.patchValue({
       scorecard_name: team.scorecard_name || '',
       sponser_name: team.sponser_name || '',
@@ -355,7 +364,7 @@ export class CompTeamComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     const maxSizeKB = 500;
 
-    if (this.ManageTeamsForm.value.profile_url !== null && this.ManageTeamsForm.value.profile_url !== '') {
+    if (this.ManageTeamsForm.value.team_profile !== null && this.ManageTeamsForm.value.team_profile !== '') {
       this.profileImages = null;
     }
 
@@ -366,29 +375,21 @@ export class CompTeamComponent implements OnInit {
         this.imagePreview = null;
         this.selectedImage = null;
         this.filedata = null;
-        this.ManageTeamsForm.get('team_profile')?.reset('');
+        this.ManageTeamsForm.get('team_profile')?.reset();
         return;
       }
 
       this.imageSizeError = '';
-      this.selectedImage = file;
       this.filedata = file;
+      this.selectedImage = file;
 
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const result = e.target.result;
         this.url = result;
-        this.imagePreview = result;
         this.imageCropAlter = result;
         this.imageDefault = result;
-
-        // Update the current edited image preview
-        this.currentEditedImage = result;
-
-        // Update the form control value
-        this.ManageTeamsForm.patchValue({
-          profile_url: result
-        });
+        this.imagePreview = result;
       };
       reader.readAsDataURL(file);
     } else {
@@ -422,7 +423,7 @@ export class CompTeamComponent implements OnInit {
   profileImgAppend(team_id: any) {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
-      myFormData.append('profile_url', this.filedata);
+      myFormData.append('imageFile', this.filedata);
       myFormData.append('client_id', this.CompetitionData.client_id.toString());
       myFormData.append('user_id', this.user_id?.toString());
       myFormData.append('file_id', team_id);
@@ -432,7 +433,7 @@ export class CompTeamComponent implements OnInit {
         if (res.status_code == this.statusConstants.success) {
           if (res.url != null && res.url != '') {
             // Update the selected team profile image immediately
-            this.selectedTeam.profile_url = res.url + '?' + Math.random();
+            // this.selectedTeam.profile_url = res.url + '?' + Math.random();
 
             // Also update the grid list so UI refreshes instantly
             this.targetTeams = this.targetTeams.map((team: any) => {
@@ -474,7 +475,7 @@ export class CompTeamComponent implements OnInit {
       .catch((error) => {
       });
   }
-
+  
   imageLoaded() {
     console.log('Image loaded');
   }

@@ -141,8 +141,8 @@
                     <img class="player-img" *ngIf="player.profile_image!=null  && player.profile_image!=''"
                       [src]="player.profile_image" (error)="handleImageError($event, default_img)">
                   </span>
-                  <span class="person-name padding-grid-center groundname" (click)="onViewPlayer(player.player_id)">
-                    <strong>{{ player.display_name }}</strong>
+                  <span class="person-name padding-grid-center groundname" >
+                    <strong (click)="onViewPlayer(player.player_id)">{{ player.display_name }}</strong>
                   </span>
                   <span>
                     <button class="comp-chid-add-btn" (click)="moveToTarget(player)">
@@ -339,7 +339,7 @@
             <div class="split-button-wrapper">
               <label for="profileImageInput" class="split-button upload-half">
                 <input type="file" id="profileImageInput" accept="image/*" (change)="fileEvent($event)" hidden
-                  formControlName="profile_image" />
+                  formControlName="profile_url" />
                 Upload
               </label>
               <button type="button" class="split-button crop-half" (click)="cropPopOpen()">

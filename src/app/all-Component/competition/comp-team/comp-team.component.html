@@ -46,8 +46,8 @@
                   <img *ngIf="team.profile_img" [src]="team.profile_img" class="player-img image-border"
                     (error)="handleImageError($event, default_img)" />
                 </span>
-                <span class="person-name padding-grid-center groundname" (click)="onViewteam(team.team_id)">
-                  <strong>{{ team.team_name }}</strong>
+                <span class="person-name padding-grid-center groundname" >
+                  <strong (click)="onViewteam(team.team_id)">{{ team.team_name }}</strong>
                 </span>
                 <span>
                   <button class="comp-chid-add-btn" (click)="moveToTarget(team)">
@@ -102,8 +102,8 @@
             <td>
               <div class="image-person-name">
                 <span class="person-image">
-                  <img *ngIf="!team.profile_img" [src]="default_img" class="player-img image-border" />
-                  <img *ngIf="team.profile_img" [src]="team.profile_img" class="player-img image-border"
+                  <img *ngIf="!team.profile_url" [src]="default_img" class="player-img image-border" />
+                  <img *ngIf="team.profile_url" [src]="team.profile_url" class="player-img image-border"
                     (error)="handleImageError($event, default_img)" />
                 </span>
                 <span class="person-name padding-grid-center">
@@ -145,6 +145,7 @@
 
               <img class="player-img Child-image" *ngIf="selectedTeam?.profile_url" [src]="selectedTeam.profile_url"
                 (error)="handleImageError($event, default_img)">
+
             </span>
           </div>
           <div class="ms-2 fw-bold fs-6">

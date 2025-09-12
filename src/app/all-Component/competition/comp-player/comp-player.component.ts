@@ -16,6 +16,7 @@ import { ToastService } from '../../../services/toast.service';
 import { Dialog } from "primeng/dialog";
 import { UploadImgService } from '../../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { profile } from 'console';
 interface Team {
   team_id: number;
   team_name: string;
@@ -148,7 +149,7 @@ export class CompPlayerComponent implements OnInit {
       competition_id: ['', []],
       jersey_number: ['', [Validators.required]],
       scorecard_name: ['', [Validators.required]],
-      profile_url: [''],
+      profile_url: [null],
       user_id: ['', []],
       team_id: ['', []],
       display_name: [''],
@@ -296,7 +297,8 @@ export class CompPlayerComponent implements OnInit {
       player_id: this.selectedPlayer.player_id?.toString(),
       scorecard_name: this.ManagePlayerForm.get('scorecard_name')?.value || '',
       jersey_number: this.ManagePlayerForm.get('jersey_number')?.value || '',
-      profile_url: this.ManagePlayerForm.get('profile_url')?.value || this.selectedPlayer?.profile_url || ''
+      // profile_img: this.profileImages || this.selectedPlayer?.profile_img || '',
+      profile_url: this.ManagePlayerForm.get('profile_url')?.value || this.selectedPlayer?.profile_img || ''
     };
 
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
@@ -323,6 +325,7 @@ export class CompPlayerComponent implements OnInit {
       team_id: player.team_id || '',
       scorecard_name: player.scorecard_name || '',
       jersey_number: player.jersey_number || '',
+      // profile_img: player.profile_image || '',
       profile_url: player.profile_url || '',
       team_name: player.team_name || '',
       display_name: player.player_name || player.display_name,
@@ -360,8 +363,8 @@ export class CompPlayerComponent implements OnInit {
         player.profile_image = this.men_img;
       } else if (gender === 'women' || gender === 'f') {
         player.profile_image = this.women_img;
-      // } else {
-      //   player.profile_image = 'assets/images/player.jpg';
+        // } else {
+        //   player.profile_image = 'assets/images/player.jpg';
       }
     }
 

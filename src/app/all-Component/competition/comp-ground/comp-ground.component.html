@@ -43,8 +43,8 @@
                     (error)="handleImageError($event, default_img)" />
                 </span>
                 <span class="person-name padding-grid-center groundname"
-                  (click)="onViewGroundDetails(ground.ground_id)">
-                  <strong>{{ ground.ground_name }}</strong>
+                  >
+                  <strong (click)="onViewGroundDetails(ground.ground_id)">{{ ground.ground_name }}</strong>
                 </span>
 
                 <span>

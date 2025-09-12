@@ -210,8 +210,8 @@ export class SidebarComponent implements OnInit {
       var menu_list = modules;
       var parent_menu = parent_menu_list;
       
-      console.log('Menu data loaded:', { menusList, modules, parent_menu_list });
-      this.router.navigateByUrl('/'+menusList[0].menu_link)
+      // console.log('Menu data loaded:', { menusList, modules, parent_menu_list });
+      // this.router.navigateByUrl('/'+menusList[0].menu_link)
 
       this.apiService.menuList = menusList;
 

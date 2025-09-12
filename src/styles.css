@@ -1019,7 +1019,7 @@ main {
   padding: 0 6px !important;
   height: 26px !important;
   max-height: 26px !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
   border: 0.5px solid #e2e5f5 !important;
   white-space: nowrap;
 }
@@ -1141,7 +1141,7 @@ table.p-datatable-table {
 }
 
 .p-datatable .p-datatable-tbody>tr>td {
-  line-height: 3.80 !important;
+  line-height: 3.50 !important;
 }
 
 select,

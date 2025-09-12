@@ -310,13 +310,13 @@ export class PlayerRegistrationComponent implements OnInit {
     }
     if (this.filterClubType) this.filters.club_list = this.filterClubType;
 
-    console.log('Applying filters:', this.filters);
+    // console.log('Applying filters:', this.filters);
 
     this.first = 1;
     this.gridLoad(this.filters);
 
-    this.showFilters = true;
-    this.toastService.playerSuccessToast({ message: 'Player list has been filtered' });
+    // this.showFilters = true;
+    // this.toastService.playerSuccessToast({ message: 'Player list has been filtered' });
   }
 
   clearFilters() {
