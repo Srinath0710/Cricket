@@ -64,8 +64,6 @@
   </div>
 </div>
 
-
-
   <!-- Back Button -->
   <div class="form-actions">
     <button type="button" (click)="closeScorecard()">Back</button>
@@ -79,176 +77,93 @@
       <span class="tab" (click)="activeTab='squad'" [ngClass]="{ activeTab: activeTab==='squad' }">Squad</span>
       <span class="tab" (click)="activeTab='videos'" [ngClass]="{ activeTab: activeTab==='videos' }">Videos</span>
     </div>
-<!-- Dynamic innings button -->
-<div class="innings-button" *ngIf="scorecardHeader.matchType !== 'Multiday'">
- <button 
-  *ngFor="let inn of scorecardHeader.teamASummary; let i = index"
-  (click)="setActiveInnings('A', i)"
-  [ngClass]="{ activetab: activeInnings === 'A' + i }">
-  {{ scorecardHeader.teamA }} Inn {{ i+1 }} {{ inn }}
-</button>
-
-<button 
-  *ngFor="let inn of scorecardHeader.teamBSummary; let j = index"
-  (click)="setActiveInnings('B', j)"
-  [ngClass]="{ activetab: activeInnings === 'B' + j }">
-  {{ scorecardHeader.teamB }} Inn {{ j+1 }} {{ inn }}
-</button>
+    
+<!-- Dynamic innings buttons for both teams Non test Match -->
+<div class="innings-button" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeTab==='scorecard'">
+  <button *ngFor="let inn of getAllInnings(); let i = index"
+          (click)="setActiveInnings(inn.team, inn.index)"
+          [ngClass]="{ activetab: activeInnings === inn.team + inn.index }">
+    {{ inn.teamName }} Inn {{ inn.index + 1 }} {{ inn.summary }}
+  </button>
 </div>
-     <!-- Test match innings button -->
-    <div class="test-innings-button" *ngIf="scorecardHeader.matchType === 'Multiday' && activeTab==='scorecard'">
-      <button class="innings-one" (click)="activeinnings='testone'"
-       [ngClass]="{ activetab: activeinnings=== 'testone'}">{{ scorecardHeader.teamA }} 1st Inns {{ scorecardHeader.teamASummary [0] }}
-</button> 
-      <button class="innings-two" (click)="activeinnings='testtwo'"
-        [ngClass]="{ activetab: activeinnings=== 'testtwo'}">{{ scorecardHeader.teamB }} 1nd Inns {{ scorecardHeader.teamBSummary [0] }}</button>
-      <button class="innings-one" (click)="activeinnings='testthird'"
-        [ngClass]="{ activetab: activeinnings=== 'testthird'}">{{ scorecardHeader.teamA }} 2st Inns {{ scorecardHeader.teamASummary [1] }}</button>
-      <button class="innings-two" (click)="activeinnings='testfour'"
-        [ngClass]="{ activetab: activeinnings=== 'testfour'}">{{ scorecardHeader.teamB }} 2nd Inns {{ scorecardHeader.teamBSummary [1] }}</button>
-     </div>
+
+<!-- Test match innings buttons -->
+<div class="test-innings-button" *ngIf="scorecardHeader.matchType === 'Multiday' && activeTab==='scorecard'">
+ <button *ngFor="let inn of inningsList; let i = index"
+     (click)="activeinnings = inn.key"
+     [ngClass]="{ activetab: activeinnings === inn.key }">
+  {{ inn.team }} {{ inn.text }} 
+  <ng-container *ngIf="inn.summary && inn.summary.runs">
+   {{ inn.summary.runs }}
+   <ng-container *ngIf="inn.summary.wickets">/{{ inn.summary.wickets }}</ng-container>
+   <ng-container *ngIf="inn.summary.overs">({{ inn.summary.overs }})</ng-container>
+  </ng-container>
+ </button>
+</div>
+
 
     <!-- Scorecard Tab -->
     <div *ngIf="activeTab==='scorecard'">
 
       <!-- Scorecard tables for both teams visible by default -->
-       <div class="scorecard-teams-visible" *ngIf="scorecardHeader.type !== 'Upcoming'">
+<div class="scorecard-teams-visible" *ngIf="scorecardHeader?.type !== 'Upcoming'">
+  <ng-container *ngFor="let inn of getInningsData()">
+    <ng-container *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === inn.key">
 
-         <!--Team A Batting & Team B Bowling -->
-         <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'A0'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Batting</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings1 }"></ng-container>
-        </div>
+      <!-- Batting -->
+      <div class="team-scorecard">
+        <span class="TeamsScoreFont">{{ inn.battingTeam }} Batting</span>
+        <ng-container *ngTemplateOutlet="battingTable; context:{ batters: inn.batting }"></ng-container>
+      </div>
 
-        <!-- fall of wickets -->
-         <div class="fall-of-wickets" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'A0'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings1 }"></ng-container>
-        </div>
+      <!-- Fall of wickets -->
+      <div class="fall-of-wickets">
+        <span class="fallOfwicketsTitle">Fall Of Wickets</span>
+        <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: inn.fow }"></ng-container>
+      </div>
 
-        <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'A0'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings1 }"></ng-container>
-        </div> 
+      <!-- Bowling -->
+      <div class="team-scorecard">
+        <span class="TeamsScoreFont">
+          {{ inn.battingTeam === scorecardHeader.teamA ? scorecardHeader.teamB : scorecardHeader.teamA }} Bowling
+        </span>
+        <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: inn.bowling }"></ng-container>
+      </div>
 
-        <!-- Team B Batting & Team A Bowling -->
-        <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'B0'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Batting</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings2 }"></ng-container>
-        </div>
+    </ng-container>
+  </ng-container>
+</div>
 
-        <!-- fall of wickets -->
-        <div class="fall-of-wickets" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'B0'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings2 }"></ng-container>
-        </div> 
-
-        <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'B0'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings2 }"></ng-container>
-        </div>
-        <!-- Team B Batting & Team A Bowling -->
-        <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'A1'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Batting</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings3 }"></ng-container>
-        </div>
-
-        <!-- fall of wickets -->
-        <div class="fall-of-wickets" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'A1'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings3 }"></ng-container>
-        </div> 
-
-        <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'A1'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings3 }"></ng-container>
-        </div><!-- Team B Batting & Team A Bowling -->
-        <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'B1'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Batting</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings4 }"></ng-container>
-        </div>
-
-        <!-- fall of wickets -->
-        <div class="fall-of-wickets" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'B1'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings4 }"></ng-container>
-        </div> 
-
-        <div class="team-scorecard" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === 'B1'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings4 }"></ng-container>
-        </div>
-      </div> 
 
       <!--Test Match Inngings  -->
-      <div class="scorecard-teams-visible"
-        *ngIf="scorecardHeader.type !== 'Upcoming' && scorecardHeader.matchType === 'Multiday'">
+<div class="scorecard-teams-visible"
+     *ngIf="scorecardHeader?.type !== 'Upcoming' && scorecardHeader?.matchType === 'Multiday'">
 
-        <!-- Team A Batting & Team B Bowling first inngings-->
-        <div class="team-scorecard" *ngIf="activeinnings === 'testone'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Batting 1st inn</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings1 }"></ng-container>
-        </div>
+  <ng-container *ngFor="let inn of getTestInningsData()">
+    <ng-container *ngIf="activeinnings === inn.key">
 
-        <!-- fall of wickts -->
-        <div class="fall-of-wickets" *ngIf=" activeinnings === 'testone'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings1 }"></ng-container>
-        </div>
-
-        <div class="team-scorecard" *ngIf="activeinnings === 'testone'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings1 }"></ng-container>
-        </div>
-
-        <!-- Team B Batting & Team A Bowling first Inngings -->
-        <div class="team-scorecard" *ngIf="activeinnings === 'testtwo'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Batting 2nd inn</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings2 }"></ng-container>
-        </div>
-
-        <div class="fall-of-wickets" *ngIf=" activeinnings === 'testtwo'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings2 }"></ng-container>
-        </div>
-
-        <div class="team-scorecard" *ngIf="activeinnings === 'testtwo'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings2 }"></ng-container>
-        </div>
-
-        <!-- Team A Batting & Team B Bowling second inngings-->
-        <div class="team-scorecard" *ngIf="activeinnings === 'testthird'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Batting 3rd inn</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings3 }"></ng-container>
-        </div>
-
-        <div class="fall-of-wickets" *ngIf=" activeinnings === 'testthird'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings3 }"></ng-container>
-        </div>
-
-        <div class="team-scorecard" *ngIf="activeinnings === 'testthird'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings3 }"></ng-container>
-        </div>
-
-        <!-- Team B Batting & Team A Bowling second Inngings -->
-        <div class="team-scorecard" *ngIf="activeinnings === 'testfour'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Batting 4th inn</span>
-          <ng-container *ngTemplateOutlet="battingTable; context:{ batters: battingSummariesInnings4 }"></ng-container>
-        </div>
-
-        <div class="fall-of-wickets" *ngIf=" activeinnings === 'testfour'">
-          <span class="fallOfwicketsTitle">Fall Of Wickets</span>
-          <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: fallOfWicketsInnings4 }"></ng-container>
-        </div>
-
-        <div class="team-scorecard" *ngIf="activeinnings === 'testfour'">
-          <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Bowling</span>
-          <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: bowlingSummariesInnings4 }"></ng-container>
-        </div>
+      <!-- Batting -->
+      <div class="team-scorecard">
+        <span class="TeamsScoreFont">{{ inn.battingTeam }} Batting {{ inn.innNo }} Inn</span>
+        <ng-container *ngTemplateOutlet="battingTable; context:{ batters: inn.batting }"></ng-container>
       </div>
+
+      <!-- Fall of wickets -->
+      <div class="fall-of-wickets">
+        <span class="fallOfwicketsTitle">Fall Of Wickets</span>
+        <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: inn.fow }"></ng-container>
+      </div>
+
+      <!-- Bowling -->
+      <div class="team-scorecard">
+        <span class="TeamsScoreFont">{{ inn.bowlingTeam }} Bowling</span>
+        <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: inn.bowling }"></ng-container>
+      </div>
+
+    </ng-container>
+  </ng-container>
+</div>
+
       <!-- Fall of wickets -->
       <ng-template #fallOfWicketTable let-wickets="wickets">
         <div class="table-scroll">
@@ -283,12 +198,12 @@
         <!-- Team A Squad -->
         <div class="team-squad">
           <span class="TeamsScoreFont">{{ scorecardHeader.teamA }} Squad</span>
-          <ng-container *ngTemplateOutlet="squadTable; context:{ players: teamAsquad }"></ng-container>
+          <ng-container *ngTemplateOutlet="squadTable; context:{ players: teamASquad }"></ng-container>
         </div>
         <!-- Team B Squad -->
         <div class="team-squad">
           <span class="TeamsScoreFont">{{ scorecardHeader.teamB }} Squad</span>
-          <ng-container *ngTemplateOutlet="squadTable; context:{ players: teamBsquad }"></ng-container>
+          <ng-container *ngTemplateOutlet="squadTable; context:{ players: teamBSquad }"></ng-container>
         </div>
       </div>
     </div>
