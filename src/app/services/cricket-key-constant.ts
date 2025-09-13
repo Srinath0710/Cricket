@@ -26,13 +26,13 @@ export class CricketKeyConstant {
 
     }
     static default_image_url = {
-        officials: 'assets/images/umpire.png',
+        officials: 'assets/images/umpires.jpg',
         players: 'assets/images/player.jpg',
-        grounds: 'assets/images/ground2.jpg',
+        grounds: 'assets/images/ground4.png',
         clientimg: 'assets/images/client.jpg',
         teamimage: 'assets/images/team.jpg',
-        clubs: 'assets/images/Club.jpg',
-        countryimg: 'assets/images/flag.jpg',
+        clubs: 'assets/images/clubs.png',
+        countryimg: 'assets/images/country.webp',
         menimg: 'assets/images/men-default.png',
         womenimg: 'assets/images/women-default.png'
     }
