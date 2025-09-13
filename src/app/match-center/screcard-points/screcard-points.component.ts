@@ -203,7 +203,6 @@ export class ScrecardPointsComponent {
 
 ngOnChanges(changes: SimpleChanges) {
   if (changes['selectedMatch'] && this.selectedMatch) {
-    // Map points card data to scorecard top
     this.scorecardHeader = {
       competitionName: this.selectedMatch.competition_name,
       startDate: this.selectedMatch.match_start_date,
@@ -211,26 +210,28 @@ ngOnChanges(changes: SimpleChanges) {
       venue: this.selectedMatch.venue,
       teamA: this.selectedMatch.team_1_name,
       teamB: this.selectedMatch.team_2_name,
-teamASummary: Array.isArray(this.selectedMatch.team_1_summary) 
-  ? this.selectedMatch.team_1_summary.map((x: any) => {
-      const runs = x.runs ?? '';
-      const wickets = x.wickets ?? '';
-      return wickets !== '' ? `${runs}/${wickets}` : `${runs}`;
-    })
-  : this.selectedMatch.team_1_summary,
 
-teamBSummary: Array.isArray(this.selectedMatch.team_2_summary) 
-  ? this.selectedMatch.team_2_summary.map((x: any) => {
-      const runs = x.runs ?? '';
-      const wickets = x.wickets ?? '';
-      return wickets !== '' ? `${runs}/${wickets}` : `${runs}`;
-    })
-  : this.selectedMatch.team_2_summary,
+      teamASummary: Array.isArray(this.selectedMatch.team_1_summary) 
+        ? this.selectedMatch.team_1_summary.map((x: any) => ({
+            runs: x.runs ?? '',
+            wickets: x.wickets ?? '',
+            overs: x.overs ?? ''
+          }))
+        : [],
+
+      teamBSummary: Array.isArray(this.selectedMatch.team_2_summary) 
+        ? this.selectedMatch.team_2_summary.map((x: any) => ({
+            runs: x.runs ?? '',
+            wickets: x.wickets ?? '',
+            overs: x.overs ?? ''
+          }))
+        : [],
+
       result: this.selectedMatch.match_result
     };
-
   }
 }
+
 activeInnings: string = 'A0'; // default
 
 setActiveInnings(team: 'A' | 'B', index: number) {

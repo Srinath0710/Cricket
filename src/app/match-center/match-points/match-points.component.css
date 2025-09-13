@@ -17,6 +17,17 @@ body,
   padding: 10px;
   margin-left: 45px;
 }
+/* Date text (light gray) */
+.match-date {
+  color: rgb(129, 116, 116);
+  font-size: 12px;
+}
+
+/* Overs text (light gray smaller) */
+.overs-text {
+  color: rgb(129, 116, 116);
+  font-size: 12px;
+}
 
 /* ---------- Headings ---------- */
 .heading2 {
@@ -41,12 +52,16 @@ body,
   align-items: center;
   justify-content: space-between;
   background: rgb(116 214 25 / 5%);
-  padding: 6px;
+  padding-left: 5px;
   border: 2px solid;
   border-image: linear-gradient(90deg, #e36fe5, #60c3e4);
   border-image-slice: 1;
   margin-top: -17px;
+  flex-wrap: wrap;
+  /* allow wrapping on small screens */
+  gap: 10px;
 }
+
 .no-data-row {
   justify-content: center;
   text-align: center;
@@ -57,7 +72,9 @@ body,
   flex: 1;
   font-size: 12px;
   color: #444;
+  min-width: 180px;
 }
+
 .left-info .head {
   font-weight: bold;
   font-size: 14px;
@@ -67,26 +84,30 @@ body,
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .left-info .date {
   font-weight: bold;
   color: #2563eb;
   margin-bottom: 4px;
 }
+
 .left-info .series {
   font-size: 12px;
   font-weight: 600;
   color: #ff1b1b;
 }
+
 .left-info .venue {
   font-size: 12px;
   color: #666;
 }
+
 .series-venue {
   font-size: 12px;
   color: #666;
   display: flex;
-  gap: 8px; /* spacing between series & venue */
-  flex-wrap: wrap; /* allows wrapping on small screens */
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .series-venue .series {
@@ -102,33 +123,88 @@ body,
 .teams {
   flex: 2;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  gap: 70px !important;
   text-align: center;
   color: black;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-right: 170PX;
+  /* responsive */
 }
+
 .team {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
+  min-width: 120px;
 }
-.left-team {
-  justify-content: flex-end;
-}
-.right-team {
-  justify-content: flex-start;
-}
+
 .team-name {
   font-weight: bold;
   font-size: 12px;
   color: #25718a;
-} 
+}
+
 .team-score {
   text-align: center;
   position: relative;
-  top: -13px;
+  top: -5px;
+}
+
+/* ---------- VS + Result ---------- */
+/* .vs-wrapper {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 60px;
+  gap: 4px;
+} */
+
+.vs-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* VS + result vertical stack */
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80px;
+  /* equal block width */
+  gap: 6px;
+}
+
+.VS-icon {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+/* .VS-icon {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+} */
+/* .result-status {
+  text-align: center;
+  font-size: 12px;
+  color: #1d7042;
+  font-weight: 600;
+} */
+.result-status {
+  font-size: 12px;
+  color: #1d7042;
+  font-weight: 500;
+  text-align: center;
+  max-width: 250px;
+  /* adjust based on design */
+  white-space: nowrap;
+  /* force single line */
+  overflow: hidden;
+  /* hide overflow text */
+  text-overflow: ellipsis;
+  /* show ... */
 }
 
 /* ---------- Innings & Scores ---------- */
@@ -139,6 +215,7 @@ body,
   margin-top: 5px;
   gap: 0;
 }
+
 .innings-header,
 .innings-score,
 .innings-overs {
@@ -147,39 +224,30 @@ body,
   margin-bottom: 2px;
   gap: 25px;
 }
+
 .innings-col {
   min-width: 70px;
   text-align: center;
   font-size: 14px;
   font-weight: 500;
-  margin-right: 60px;
 }
-.innings-col:last-child {
-  margin-right: 0;
-}
+
 .score-text {
   color: #903370;
   font-weight: 600;
   font-size: 14px;
 }
+
 .overs-text {
   font-size: 12px;
   color: #555;
-}
-
-/* ---------- Result ---------- */
-.result-status {
-  font-size: 10px;
-  color: #1d7042;
-  position: relative;
-  top: 30px;
-  right: 31%;
 }
 
 /* ---------- Buttons ---------- */
 .right-btn {
   flex-shrink: 0;
 }
+
 .match-btn {
   background: #4b5f78;
   color: #fff;
@@ -190,7 +258,7 @@ body,
   font-weight: bold;
   cursor: pointer;
   transition: 0.2s;
-  margin-right: 45px;
+  margin-right: 5px;
 }
 
 /* ---------- Paginator ---------- */
@@ -205,6 +273,7 @@ body,
   right: 30px;
   z-index: 1000;
 }
+
 .form-actions button {
   padding: 10px 18px;
   border-radius: 6px;
@@ -216,98 +285,46 @@ body,
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* ---------- VS Icon ---------- */
-/* .VS-icon {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-.vs-center {
-  font-weight: bold;
-  font-size: 16px;
-  color: black;
-} */
-
-
-/* ---------- Match Row ---------- */
-/* .match-row {
-  display: flex;
-  align-items: center;      
-  justify-content: space-between;
-  background: rgb(116 214 25 / 5%);
-  padding: 10px 15px;
-  border: 2px solid;
-  border-image: linear-gradient(90deg, #e36fe5, #60c3e4);
-  border-image-slice: 1;
-  min-height: 120px;          
-  box-sizing: border-box;
-} */
-
-/* ---------- Left Info (fixed width) ---------- */
-/* .left-info {
-  flex: 1;
-  max-width: 220px;          
-} */
-
-/* ---------- Teams ---------- */
-.teams {
-  flex: 2;
-  display: flex;
-  justify-content: space-evenly; /* equal spacing for both sides + VS */
-  align-items: center;
-  text-align: center;
-  position: relative;
-  left: 20px;
-  position: relative;
-  left: 55px;
-}
-
-/* ---------- Each Team ---------- */
-.team {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-width: 150px;            /* fix team block size */
-}
-
-/* ---------- VS ---------- */
-.vs-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 60px;          
-}
-.VS-icon {
-  position: relative;
-  left: 0px;
-  width: 35px;
-  height: 35px;
-}
-
-/* ---------- Result (always below teams, same place) ---------- */
-.result-status {
-  text-align: center;
-  font-size: 12px;
-  color: #1d7042;
-  min-width: 180px;           /* fixed width for alignment */
-}
-.teams[_ngcontent-ng-c1183422249] {
-    flex: 2;
-    display: flex
-;
-    justify-content: space-between;
+/* ---------- Responsive Media Queries ---------- */
+@media (max-width: 992px) {
+  .match-row {
+    flex-direction: column;
     align-items: center;
-    gap: 55px !important;
-    text-align: center;
-    color: black;
+  }
+
+  .teams {
+    flex-direction: row;
+    gap: 20px;
+  }
 }
 
-.result-status[_ngcontent-ng-c1183422249] {
+@media (max-width: 768px) {
+  .teams {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .left-info {
     text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .match-btn {
+    padding: 5px 15px;
     font-size: 12px;
-    color: #1d7042;
-    min-width: 180px;
-    margin-top: -10px;
+  }
+
+  .VS-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .team-name {
+    font-size: 11px;
+  }
+
+  .score-text {
+    font-size: 12px;
+  }
 }

@@ -35,7 +35,7 @@ export class MatchPointsComponent implements OnChanges,OnInit {
   // ShowPointsForm: boolean = true;
   pointsForm: FormGroup;
 
-  pointsRows: number = 2;
+  pointsRows: number = 5;
   pointsFirst: number = 0;
 
   schedulesList: MatchSummaryModel[] = [];

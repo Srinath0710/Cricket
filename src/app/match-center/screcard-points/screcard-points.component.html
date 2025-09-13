@@ -1,43 +1,77 @@
 <!-- --SCORECARD ---->
 <div *ngIf="selectedMatch && activePage=='scorecard'" class="points-form-fullpage">
 
-  <!-- Match Header -->
+<!-- Scorecard Header (Result Page) -->
 <div class="match-center">
   <h2 class="heading2">Result</h2>
   <div class="matches-list">
     <div class="match-row">
+
+      <!-- Left Info -->
       <div class="left-info">
         <h6>
-          <div class="head">{{ scorecardHeader.competitionName }}</div>
+          <span class="head">{{ scorecardHeader.competitionName }}</span>
+          <span class="match-date">({{ scorecardHeader.startDate }})</span>
         </h6>
-        <div class="date">{{ scorecardHeader.startDate }}</div>
-        <div class="series">{{ scorecardHeader.matchType }}</div>
-        <div class="venue">{{ scorecardHeader.venue }}</div>
+        <div class="series">({{ scorecardHeader.matchType }} - {{ scorecardHeader.venue }})</div>
       </div>
+
+      <!-- Teams -->
       <div class="teams">
+
+        <!-- Team A -->
         <div class="team left-team">
-          <span class="team-name">{{ scorecardHeader.teamA }}</span>
-          <div class="team-score">{{ scorecardHeader.teamASummary }}</div>
+          <span class="team-name">{{ scorecardHeader.teamA }} Innings</span>
+          <div class="team-score">
+            <ng-container *ngIf="scorecardHeader.teamASummary?.length; else yetToBatA">
+              <div class="innings-score">
+                <span *ngFor="let inn of scorecardHeader.teamASummary" class="score-text innings-col">
+                  <span>{{ inn.runs }}</span>
+                  <span class="overs-text">({{ inn.overs }})</span>
+                </span>
+              </div>
+            </ng-container>
+            <ng-template #yetToBatA>Yet to Bat</ng-template>
+          </div>
         </div>
-        <div><img src="assets/images/game.png" width="50" height="50" /></div>
+
+        <!-- VS block -->
+        <div class="vs-wrapper">
+          <img src="assets/images/game.png" alt="VS" class="VS-icon" />
+          <div class="result-status" *ngIf="scorecardHeader.result">
+            <strong>{{ scorecardHeader.result }}</strong>
+          </div>
+        </div>
+
+        <!-- Team B -->
         <div class="team right-team">
-          <span class="team-name">{{ scorecardHeader.teamB }}</span>
-          <div class="team-score">{{ scorecardHeader.teamBSummary }}</div>
+          <span class="team-name">{{ scorecardHeader.teamB }} Innings</span>
+          <div class="team-score">
+            <ng-container *ngIf="scorecardHeader.teamBSummary?.length; else yetToBatB">
+              <div class="innings-score">
+                <span *ngFor="let inn of scorecardHeader.teamBSummary" class="score-text innings-col">
+                  <span>{{ inn.runs }}</span>
+                  <span class="overs-text">({{ inn.overs }})</span>
+                </span>
+              </div>
+            </ng-container>
+            <ng-template #yetToBatB>Yet to Bat</ng-template>
+          </div>
         </div>
-      </div>
-      <div class="sresult-status" *ngIf="scorecardHeader.result">
-        <strong>{{ scorecardHeader.result }}</strong>
+
       </div>
     </div>
   </div>
 </div>
+
+
 
   <!-- Back Button -->
   <div class="form-actions">
     <button type="button" (click)="closeScorecard()">Back</button>
   </div>
   <!-- Tabs -->
-  <h2 class="heading3">Score Details</h2>
+  <!-- <h2 class="heading3">Score Details</h2> -->
   <div class="scorecard-container">
     <div class="tabs">
       <span class="tab" (click)="activeTab='scorecard'"

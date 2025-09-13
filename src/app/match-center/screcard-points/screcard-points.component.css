@@ -1,170 +1,166 @@
+
+/* ================================================================
+   RESULT / SCORECARD SECTION CSS
+   ================================================================ */
+
 /* ---------- Common ---------- */
 body,
-.match-center-header,
-.match-center-body,
-.points-form-fullpage {
+.match-center {
   font-family: "Segoe UI", sans-serif;
 }
-/* ---------- Header ---------- */
-.match-center-header {
-  padding: 2px;
-  /* background: #615f5f; */
-  color: #fff;
-  margin-left: 30px;
-  position: sticky;
-  top: 34px;
-  z-index: 994;
+
+.match-center {
+  padding: 10px;
+  margin-left: 45px;
 }
-.heading {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 20px;
-  margin-left: 20px;
-}
+
+/* ---------- Headings ---------- */
 .heading2 {
   font-size: 18px;
   font-weight: bold;
-  margin-left: 0px;
   color: black;
-  margin-top: -35px;
-  margin-right: 0;
-  margin-bottom: 50px;
+  margin: -35px 0 50px 0;
 }
-.heading3 {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-  margin-top: -10px;
-  margin-left: 55px;
-  margin-bottom: 0px;
-}
-.heading4 {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-  margin-top: 0px;
-  margin-left: 55px;
-  margin-bottom: 0px;
-}
-/* ---------- Match Grid ---------- */
-.match-center-body {
-  padding: 16px;
-  background: #fff;
-  /* min-height: 100vh; */
-  margin-left: 30px;
-}
-.match-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  padding: 0 20px;
-}
-.match-card {
-  height: 160px;
-  background: #203c3be8;
+
+/* ---------- Matches List ---------- */
+.matches-list {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 20px;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  position: relative;
+  gap: 14px;
+  margin-top: -30px;
 }
-.match-card .card-image {
-  text-align: center;
-  margin-bottom: 8px;
-  pointer-events: none;
-}
-.match-type,
-.status,
-.points-btn {
-  position: absolute;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 4px;
-  padding: 4px 10px;
-}
-.match-type {
-  background: #4b5f78;
-  top: 12px;
-  left: 12px;
-}
-.status {
-  background: #9fdae3;
-  color: #000;
-  top: 12px;
-  right: 12px;
-  text-transform: uppercase;
-}
-.match-dates {
-  text-align: center;
-  font-size: 12px;
-  font-weight: bold;
-  position: relative;
-  bottom: 30px;
-  font-weight: bold;
-  color: wheat;
 
-}
-.points-btn {
-  bottom: 12px;
-  right: 12px;
-  background: #4b5f78;
-  color: #fff;
-  border: none;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  padding: 6px 14px;
-}
-.series-name {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 50px;
-
-}
-.series-name-container {
+/* ---------- Match Row ---------- */
+.match-row {
   display: flex;
-  justify-content: center;
-  /* center horizontally */
   align-items: center;
-  /* center vertically if needed */
-  width: 100%;
-  position: relative;
+  justify-content: space-between;
+  background: rgb(116 214 25 / 5%);
+  padding-left: 5px;
+  border: 2px solid;
+  border-image: linear-gradient(90deg, #e36fe5, #60c3e4);
+  border-image-slice: 1;
+  flex-wrap: wrap; /* responsive */
+  gap: 10px;
+  margin-top: -15px;
 }
-.series-match-counts {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
+
+/* ---------- Left Info ---------- */
+.left-info {
+  flex: 1;
+  font-size: 12px;
+  color: #444;
+  min-width: 180px;
+}
+
+.left-info .head {
+  font-weight: bold;
+  font-size: 14px;
+  color: #3c52bd;
+  margin-right: 6px;
+}
+
+.match-date {
+  color: rgb(129, 116, 116);
+  font-size: 12px;
+}
+
+.left-info .series {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff1b1b;
+  margin-top: 3px;
+}
+
+/* ---------- Teams ---------- */
+.teams {
+  flex: 2;
   display: flex;
-  gap: 6px;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align: center;
+  gap: 40px;
   flex-wrap: wrap;
 }
-.count-badge {
-  cursor: pointer;
-  background: #9fdae3;
-  color: black;
-  padding: 2px 6px;
-  font-size: 12px;
-  border-radius: 4px;
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 120px;
+}
+
+.team-name {
   font-weight: bold;
+  font-size: 12px;
+  color: #25718a;
 }
-/* ---------- Points Form Fullpage ---------- */
-.points-form-fullpage {
-  padding: 40px;
-  background: #fff;
-  /* min-height: 100vh; */
-  position: relative;
+
+.team-score {
+  text-align: center;
 }
+
+/* ---------- VS + Result ---------- */
+.vs-wrapper {
+  display: flex;
+  flex-direction: column; /* VS + result vertical stack */
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80px;
+  gap: 6px;
+}
+
+.VS-icon {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.result-status {
+  font-size: 12px;
+  color: #1d7042;
+  font-weight: 500;
+  text-align: center;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Innings & Scores ---------- */
+.innings-score {
+  display: flex;
+  justify-content: space-around;
+  gap: 25px;
+}
+
+.innings-col {
+  min-width: 70px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.score-text {
+  color: #903370;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.overs-text {
+  font-size: 12px;
+  color: #555;
+}
+
+/* ---------- Back Button ---------- */
 .form-actions {
   position: fixed;
   bottom: 20px;
   right: 30px;
   z-index: 1000;
 }
+
 .form-actions button {
   padding: 10px 18px;
   border-radius: 6px;
@@ -175,182 +171,64 @@ body,
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
-/* ---------- Fixtures & Results ---------- */
-.match-center {
-  padding: 10px;
-  /* background: #f8fafc; */
-  /* VNew_code */
-  padding-top: 0px;
-  margin-top: 0px;
-  margin-left: 45px;
+
+/* ---------- Responsive ---------- */
+@media (max-width: 992px) {
+  .match-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .teams {
+    flex-direction: row;
+    gap: 20px;
+  }
 }
-.matches-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  /* VNew_code */
-  margin-top: -30px;
-  padding: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
+
+@media (max-width: 768px) {
+  .teams {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .left-info {
+    text-align: center;
+  }
 }
-.match-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgb(116 214 25 / 5%);
-  padding: 16px;
-  border: 2px solid;
-  border-image: linear-gradient(90deg, #e36fe5, #60c3e4);
-  border-image-slice: 1;
-  margin-top: -17px;
+
+@media (max-width: 480px) {
+  .VS-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .team-name {
+    font-size: 11px;
+  }
+
+  .score-text {
+    font-size: 12px;
+  }
 }
-.left-info {
-  flex: 1;
-  font-size: 12px;
-  color: #444;
-}
-.left-info .head {
-  font-weight: bold;
-  color: green;
-  margin-bottom: 4px;
-}
-.left-info .date {
-  font-weight: bold;
-  color: #2563eb;
-  margin-bottom: 4px;
-}
-.left-info .series {
-  font-size: 12px;
-  font-weight: 600;
-  color: #6b7280;
-}
-.left-info .venue {
-  font-size: 12px;
-  color: #666;
-}
-/* ---------- Teams ---------- */
-.teams {
-  flex: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 70px;
-  text-align: center;
-  color: black;
-}
-.team {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
-  color: black;
-}
-.team img {
-  width: 30px;
-  height: 30px;
-}
-.left-team {
-  justify-content: flex-end;
-}
-.right-team {
-  justify-content: flex-start;
-}
-.right-btn {
-  flex-shrink: 0;
-}
-/* ---------- Match Button ---------- */
-.match-btn {
-  background: #4b5f78;
-  color: #fff;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-/* ---------- Result ---------- */
-.result-status {
-  font-size: 12px;
-  color: blueviolet;
-  position: relative;
-  top: 46px;
-  right: 31%;
-}
-/* ---------- Innings & Scores ---------- */
-.innings-row {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin-top: 5px;
-}
-.innings-header,
-.innings-score,
-.innings-overs {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 2px;
-}
-.innings-col {
-  min-width: 70px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-}
-/* Common score styles (applies everywhere) */
-.score-text {
-  color: #007bff;
-  font-weight: 600;
-  font-size: 14px;
-}
-.overs-text {
-  color: #555;
-  font-size: 12px;
-}
-.no-data-card {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 180px;
-  background: #f9f9f9;
-  color: #555;
-  font-weight: bold;
-  font-size: 16px;
-  border: 1px dashed #ccc;
-}
-/* VNew_code */
-.sresult-status {
-  font-size: 12px;
-  color: blueviolet;
-  position: relative;
-  top: 46px;
-  right: 35%;
-}
-/* vicky css code */
-/* -- Scorecard Container -- */
+
+/* ================================================================
+   2. SCORE DETAILS SECTION CSS
+   ================================================================ */
+/* Scorecard Container */
 .scorecard-container {
   position: relative;
-  height: 530px;
+  height: 528px;
   background: #fff;
- border: 2px solid; /* required */
-  border-image: linear-gradient(45deg, #e36fe5, #60c3e4)1;
-  border-radius: 0px;
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #e36fe5, #60c3e4) 1;
   padding: 10px;
-  /* font-family: Arial, sans-serif; */
-  margin-top: 3px;
-  margin-right: 10px;
-  margin-bottom: 0;
-  margin-left:55px;
+  margin: -8px 10px 0 55px;
 }
-/* -- Tabs -- */
+
+/* Tabs */
 .tabs {
   text-align: left;
-  padding: 0px 0;
+  margin-top: -10px;
 }
 .tab {
   display: inline-block;
@@ -364,38 +242,37 @@ body,
   color: #007bff;
   border-bottom: 3px solid #007bff;
 }
-/* -- Innings Tabs -- */
-.innings-tabs {
-  margin: 10px 0;
+
+/* Innings buttons */
+.innings-button,
+.test-innings-button {
+  display: flex;
+  gap: 20px;
+  padding: 2px 0;
 }
-.innings-btn {
-  padding: 6px 15px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
-  background: #f8f8f8;
-  cursor: pointer;
-  font-size: small;
+.innings-one,
+.innings-two {
+  border-radius: 10px;
 }
-.innings-btn.active {
-  background: #007bff;
-  color: white;
-  border: none;
+.activetab {
+  border-color: #007bff;
+  color: #007bff;
+  border-radius: 10px;
 }
-/* -- Tables -- */
+
+/* Table Scroll */
 .table-scroll {
-  max-height: 410px;
-  /* adjust as needed */
+  max-height: 440px;
   overflow-y: auto;
   overflow-x: auto;
   border: 1px solid #ddd;
   border-radius: 5px;
   width: 400px;
+  margin-top: 0px;
 }
 .scorecard-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
 }
 .scorecard-table th,
 .scorecard-table td {
@@ -406,76 +283,50 @@ body,
 }
 .scorecard-table th {
   color: #007bff;
-   position: sticky;
-  top: 0px;
+  position: sticky;
+  top: 0;
   background-color: white;
 }
-/* -- Scorecard Teams Layout -- */
-.scorecard-teams-visible,
-.squad-teams-visible {
-  display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  /* vicky code */
-  /* align-items: flex-start; */
 
-}
-.team-scorecard,
-.team-squad {
-  flex: 1;
+/* Text */
+.overs-text {
+  color: #555;
+  font-size: 12px;
 }
 .TeamsScoreFont {
   font-size: 13px;
   color: blueviolet;
 }
-/*vicky css code for test innings button  */
-.test-innings-button,
-.innings-button{
-  padding-top: 10px;
-  padding-bottom: 10px;
+
+/* Teams section */
+.scorecard-teams-visible,
+.squad-teams-visible {
   display: flex;
   gap: 20px;
+    margin-top: -3px;
+
+  justify-content: space-between;
+}
+.team-scorecard,
+.team-squad {
+  flex: 1;
 }
 
-.innings-one,
-.innings-two{
-  border-radius: 10px;
-}
-.activetab{
-  border-color: #007bff;
-  color: #007bff;
-    border-radius: 10px;
-}
-/* fall of wickets */
-.fall-of-wickets{
+/* Fall of wickets */
+.fall-of-wickets {
   flex: 1;
   font-size: 12px;
-  margin-top: 5px ;
+  margin-top: 5px;
 }
-.fall-of-wickets span{
+.fall-of-wickets span {
   color: blueviolet;
   font-size: 12px;
 }
-.fall-of-wickets .table-scroll{
+.fall-of-wickets .table-scroll {
   width: 100%;
 }
-.match-details {
-  /* background: #f8f9fa; */
-  border: 2px solid; /* required */
-  border-image: linear-gradient(45deg, #e36fe5, #60c3e4)1;
-    padding: 16px;
-  border-radius: 0px;
-  margin-top: 0px;
-  margin-left: 55px;
-  margin-right: 10px;
-    font-size: 13px;
 
-}
-.match-details .heading {
-  margin-bottom: 10px;
 
-  color: #333;
-}
 .details-table {
   width: 100%;
   border-collapse: collapse;
@@ -484,89 +335,18 @@ body,
   padding: 8px 12px;
   border-bottom: 1px solid #eee;
 }
-.total-score-display{
-  margin-top: 20px;
-}
-.match-cardpaginator-container{
-margin-top: 50px;
-}
 
 
-.partnership {
-  margin-bottom: 20px;
-} 
-
-.players {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.partnership-circle {
-  width: 120px;  
-  height: 120px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  margin: 0 auto 10px auto;
-  position: relative;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border: 8px solid #fff; /* donut effect */
-  transition: background 0.5s ease;
-}
-
-.partnership-circle span {
-  position: absolute;
-  text-align: center;
-}
-
-.partnership-info {
-  font-size: 12px;
-  color: #555;
-  text-align: center;
-}
-
-.extra-score-display{
-  margin-top: 30px;
-}
-/* .extra{
-  margin-top: 10px;
-}  */
-/* .extra-table-scroll{ */
-  /* padding-left: 20px; */
-  /* width: 500px; */
-  /* overflow-y: auto; */
-  /* overflow-x: auto; */
-  /* border: 1px solid #ddd; */
-  /* border-radius: 5px; */
-  /* height: 100px; */
-  /* margin: 20px;
-} 
-
-/* .extra-table-scroll table th,td{
-  border: 2px solid black;
-  padding: 10px;
-} */
-/* .col1{
-  width: 80px;
-}
-.col2{
-  width: 60px;
-}  */
-.extra-table table tr,.col1{
+/* Extra score display */
+.extra-table table,
+.extra-table .col1 {
   border: 1px solid #ddd;
-}
-.extra-table table{
   border-radius: 5px;
 }
 
-
- /* Dynamic code change */
+/* Dropdown */
 .col-main-dropdown {
-    width: 19.666667% !important;
+  width: 19.666667% !important;
 }
+
+
