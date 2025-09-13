@@ -21,6 +21,20 @@ import { OnChanges, SimpleChanges } from '@angular/core';
 export class ScrecardPointsComponent {
   @Input() selectedMatch: any;
   scorecardHeader: any = {};
+  battingSummariesInnings1: any = [];
+  battingSummariesInnings2: any = [];
+  battingSummariesInnings3: any = [];
+  battingSummariesInnings4: any = [];
+
+  bowlingSummariesInnings1: any = [];
+  bowlingSummariesInnings2: any = [];
+  bowlingSummariesInnings3: any = [];
+  bowlingSummariesInnings4: any = [];
+  
+  fallOfWicketsInnings1: any = [];
+  fallOfWicketsInnings2: any = [];
+  fallOfWicketsInnings3: any = [];
+  fallOfWicketsInnings4: any = [];
 
   ngOnInit(): void {
     this.loadScheduleSummarysFromMock();
@@ -39,9 +53,9 @@ export class ScrecardPointsComponent {
   teamBbowling: any[] = [];
   teamAsquad: any[] = [];
   teamBsquad: any[] = [];
-  activeinnings: string = 'one';
-  activeInnings: string = 'testfour';
-    ScheduleMatchSummary: any
+  // activeinnings: string = 'one';
+  activeinnings: string = 'testfour';
+  ScheduleMatchSummary: any
   ScheduleMatchSummaryRaw: any
   battingMatchSummary: any
   battingMatchSummaryRaw: any
@@ -115,8 +129,15 @@ export class ScrecardPointsComponent {
         strike_rate: Number(b.strike_rate),
         wicket_desc: b.wicket_desc || null
       }));
+
+
+    this.battingSummariesInnings1 = this.battingSummaryRaw.filter((b: any) => b.innings_no === "1");
+    this.battingSummariesInnings2 = this.battingSummaryRaw.filter((b: any) => b.innings_no === "2");
+    this.battingSummariesInnings3 = this.battingSummaryRaw.filter((b: any) => b.innings_no === "3");
+    this.battingSummariesInnings4 = this.battingSummaryRaw.filter((b: any) => b.innings_no === "4");
     });
   }
+
 
   /* Bowling summaries */
   loadBowlingSummariesFromMock(): void {
@@ -139,12 +160,17 @@ export class ScrecardPointsComponent {
         dot_balls: Number(b.dot_balls),
         strike_rate: b.strike_rate ? Number(b.strike_rate) : undefined
       }));
+    this.bowlingSummariesInnings1 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "1");
+    this.bowlingSummariesInnings2 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "2");
+    this.bowlingSummariesInnings3 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "3");
+    this.bowlingSummariesInnings4 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "4");
     });
   }
 
+
   /* Fall of wickets */
   loadFallOfWicketsFromMock(): void {
-    this.apiService.getMockData('assets/mock_data/fow.json').subscribe(data => {
+    this.apiService.getMockData('assets/mock_data/scorecardFlow.json').subscribe(data => {
       this.fowRaw = data;
       this.fallOfWickets = this.fowRaw.map((f: any) => new FallOfWicketModel({
         match_id: f.match_id,
@@ -157,6 +183,10 @@ export class ScrecardPointsComponent {
         player_name: f.player_name,
         wicket_desc: f.wicket_desc
       }));
+    this.fallOfWicketsInnings1 = this.fowRaw.filter((b: any) => b.innings_no === "1");
+    this.fallOfWicketsInnings2 = this.fowRaw.filter((b: any) => b.innings_no === "2");
+    this.fallOfWicketsInnings3 = this.fowRaw.filter((b: any) => b.innings_no === "3");
+    this.fallOfWicketsInnings4 = this.fowRaw.filter((b: any) => b.innings_no === "4");
     });
   }
 
@@ -181,17 +211,30 @@ ngOnChanges(changes: SimpleChanges) {
       venue: this.selectedMatch.venue,
       teamA: this.selectedMatch.team_1_name,
       teamB: this.selectedMatch.team_2_name,
-      teamASummary: Array.isArray(this.selectedMatch.team_1_summary) 
-                      ? this.selectedMatch.team_1_summary.map((x: any) => x.runs).join(' & ')
-                      : this.selectedMatch.team_1_summary, // fallback if string
-      teamBSummary: Array.isArray(this.selectedMatch.team_2_summary) 
-                      ? this.selectedMatch.team_2_summary.map((x: any) => x.runs).join(' & ')
-                      : this.selectedMatch.team_2_summary, // fallback if string
+teamASummary: Array.isArray(this.selectedMatch.team_1_summary) 
+  ? this.selectedMatch.team_1_summary.map((x: any) => {
+      const runs = x.runs ?? '';
+      const wickets = x.wickets ?? '';
+      return wickets !== '' ? `${runs}/${wickets}` : `${runs}`;
+    })
+  : this.selectedMatch.team_1_summary,
+
+teamBSummary: Array.isArray(this.selectedMatch.team_2_summary) 
+  ? this.selectedMatch.team_2_summary.map((x: any) => {
+      const runs = x.runs ?? '';
+      const wickets = x.wickets ?? '';
+      return wickets !== '' ? `${runs}/${wickets}` : `${runs}`;
+    })
+  : this.selectedMatch.team_2_summary,
       result: this.selectedMatch.match_result
     };
+
   }
 }
+activeInnings: string = 'A0'; // default
 
+setActiveInnings(team: 'A' | 'B', index: number) {
+  this.activeInnings = team + index;
 }
 
-
+}

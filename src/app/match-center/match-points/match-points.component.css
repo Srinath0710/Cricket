@@ -1,164 +1,204 @@
 /* ---------- Common ---------- */
 body,
-.match-center-header,
-.match-center-body,
-.points-form-fullpage {
+.points-form-fullpage,
+.match-center {
   font-family: "Segoe UI", sans-serif;
 }
-/* ---------- Header ---------- */
-.match-center-header {
-  padding: 2px;
-  /* background: #615f5f; */
-  color: #fff;
-  margin-left: 30px;
-  position: sticky;
-  top: 34px;
-  z-index: 994;
-}
-.heading {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 20px;
-  margin-left: 20px;
-}
-.heading2 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-left: 0px;
-  color: black;
-  margin-top: -35px;
-  margin-right: 0;
-  margin-bottom: 50px;
-}
-.heading3 {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-  margin-top: -10px;
-  margin-left: 55px;
-  margin-bottom: 0px;
-}
-.heading4 {
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-  margin-top: 0px;
-  margin-left: 55px;
-  margin-bottom: 0px;
-}
-/* ---------- Match Grid ---------- */
-.match-center-body {
-  padding: 16px;
-  background: #fff;
-  /* min-height: 100vh; */
-  margin-left: 30px;
-}
-.match-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  padding: 0 20px;
-}
-.match-card {
-  height: 160px;
-  background: #203c3be8;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 20px;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  position: relative;
-}
-.match-card .card-image {
-  text-align: center;
-  margin-bottom: 8px;
-  pointer-events: none;
-}
-.match-type,
-.status,
-.points-btn {
-  position: absolute;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 4px;
-  padding: 4px 10px;
-}
-.match-type {
-  background: #4b5f78;
-  top: 12px;
-  left: 12px;
-}
-.status {
-  background: #9fdae3;
-  color: #000;
-  top: 12px;
-  right: 12px;
-  text-transform: uppercase;
-}
-.match-dates {
-  text-align: center;
-  font-size: 12px;
-  font-weight: bold;
-  position: relative;
-  bottom: 30px;
-  font-weight: bold;
-  color: wheat;
 
-}
-.points-btn {
-  bottom: 12px;
-  right: 12px;
-  background: #4b5f78;
-  color: #fff;
-  border: none;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  padding: 6px 14px;
-}
-.series-name {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 50px;
-
-}
-.series-name-container {
-  display: flex;
-  justify-content: center;
-  /* center horizontally */
-  align-items: center;
-  /* center vertically if needed */
-  width: 100%;
-  position: relative;
-}
-.series-match-counts {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.count-badge {
-  cursor: pointer;
-  background: #9fdae3;
-  color: black;
-  padding: 2px 6px;
-  font-size: 12px;
-  border-radius: 4px;
-  font-weight: bold;
-}
-/* ---------- Points Form Fullpage ---------- */
+/* ---------- Points Form ---------- */
 .points-form-fullpage {
   padding: 40px;
   background: #fff;
-  /* min-height: 100vh; */
   position: relative;
 }
+
+/* ---------- Match Center ---------- */
+.match-center {
+  padding: 10px;
+  margin-left: 45px;
+}
+
+/* ---------- Headings ---------- */
+.heading2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+  margin: -35px 0 50px 0;
+}
+
+/* ---------- Matches List ---------- */
+.matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: -30px;
+  padding: 0;
+}
+
+/* ---------- Match Row ---------- */
+.match-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgb(116 214 25 / 5%);
+  padding: 6px;
+  border: 2px solid;
+  border-image: linear-gradient(90deg, #e36fe5, #60c3e4);
+  border-image-slice: 1;
+  margin-top: -17px;
+}
+.no-data-row {
+  justify-content: center;
+  text-align: center;
+}
+
+/* ---------- Left Info ---------- */
+.left-info {
+  flex: 1;
+  font-size: 12px;
+  color: #444;
+}
+.left-info .head {
+  font-weight: bold;
+  font-size: 14px;
+  color: #3c52bd;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.left-info .date {
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 4px;
+}
+.left-info .series {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff1b1b;
+}
+.left-info .venue {
+  font-size: 12px;
+  color: #666;
+}
+.series-venue {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  gap: 8px; /* spacing between series & venue */
+  flex-wrap: wrap; /* allows wrapping on small screens */
+}
+
+.series-venue .series {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.series-venue .venue {
+  color: #666;
+}
+
+/* ---------- Teams ---------- */
+.teams {
+  flex: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 70px !important;
+  text-align: center;
+  color: black;
+}
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.left-team {
+  justify-content: flex-end;
+}
+.right-team {
+  justify-content: flex-start;
+}
+.team-name {
+  font-weight: bold;
+  font-size: 12px;
+  color: #25718a;
+} 
+.team-score {
+  text-align: center;
+  position: relative;
+  top: -13px;
+}
+
+/* ---------- Innings & Scores ---------- */
+.innings-row {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 5px;
+  gap: 0;
+}
+.innings-header,
+.innings-score,
+.innings-overs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2px;
+  gap: 25px;
+}
+.innings-col {
+  min-width: 70px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 60px;
+}
+.innings-col:last-child {
+  margin-right: 0;
+}
+.score-text {
+  color: #903370;
+  font-weight: 600;
+  font-size: 14px;
+}
+.overs-text {
+  font-size: 12px;
+  color: #555;
+}
+
+/* ---------- Result ---------- */
+.result-status {
+  font-size: 10px;
+  color: #1d7042;
+  position: relative;
+  top: 30px;
+  right: 31%;
+}
+
+/* ---------- Buttons ---------- */
+.right-btn {
+  flex-shrink: 0;
+}
+.match-btn {
+  background: #4b5f78;
+  color: #fff;
+  padding: 7px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-right: 45px;
+}
+
+/* ---------- Paginator ---------- */
+.match-cardpaginator-container {
+  margin-top: 50px;
+}
+
+/* ---------- Form Actions ---------- */
 .form-actions {
   position: fixed;
   bottom: 20px;
@@ -175,398 +215,99 @@ body,
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
-/* ---------- Fixtures & Results ---------- */
-.match-center {
-  padding: 10px;
-  /* background: #f8fafc; */
-  /* VNew_code */
-  padding-top: 0px;
-  margin-top: 0px;
-  margin-left: 45px;
+
+/* ---------- VS Icon ---------- */
+/* .VS-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
-.matches-list {
+.vs-center {
+  font-weight: bold;
+  font-size: 16px;
+  color: black;
+} */
+
+
+/* ---------- Match Row ---------- */
+/* .match-row {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  /* VNew_code */
-  margin-top: -30px;
-  padding: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-}
-.match-row {
-  display: flex;
-  align-items: center;
+  align-items: center;      
   justify-content: space-between;
   background: rgb(116 214 25 / 5%);
-  padding: 16px;
+  padding: 10px 15px;
   border: 2px solid;
   border-image: linear-gradient(90deg, #e36fe5, #60c3e4);
   border-image-slice: 1;
-  margin-top: -17px;
-}
-.left-info {
+  min-height: 120px;          
+  box-sizing: border-box;
+} */
+
+/* ---------- Left Info (fixed width) ---------- */
+/* .left-info {
   flex: 1;
-  font-size: 12px;
-  color: #444;
-}
-.left-info .head {
-  font-weight: bold;
-  color: green;
-  margin-bottom: 4px;
-}
-.left-info .date {
-  font-weight: bold;
-  color: #2563eb;
-  margin-bottom: 4px;
-}
-.left-info .series {
-  font-size: 12px;
-  font-weight: 600;
-  color: #6b7280;
-}
-.left-info .venue {
-  font-size: 12px;
-  color: #666;
-}
+  max-width: 220px;          
+} */
+
 /* ---------- Teams ---------- */
 .teams {
   flex: 2;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly; /* equal spacing for both sides + VS */
   align-items: center;
-  gap: 70px;
   text-align: center;
-  color: black;
-}
-.team {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
-  color: black;
-}
-.team img {
-  width: 30px;
-  height: 30px;
-}
-.left-team {
-  justify-content: flex-end;
-}
-.right-team {
-  justify-content: flex-start;
-}
-.right-btn {
-  flex-shrink: 0;
-}
-/* ---------- Match Button ---------- */
-.match-btn {
-  background: #4b5f78;
-  color: #fff;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-/* ---------- Result ---------- */
-.result-status {
-  font-size: 12px;
-  color: blueviolet;
   position: relative;
-  top: 46px;
-  right: 31%;
+  left: 20px;
+  position: relative;
+  left: 55px;
 }
-/* ---------- Innings & Scores ---------- */
-.innings-row {
+
+/* ---------- Each Team ---------- */
+.team {
   display: flex;
   flex-direction: column;
-  text-align: center;
-  margin-top: 5px;
-}
-.innings-header,
-.innings-score,
-.innings-overs {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 2px;
-}
-.innings-col {
-  min-width: 70px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-}
-/* Common score styles (applies everywhere) */
-.score-text {
-  color: #007bff;
-  font-weight: 600;
-  font-size: 14px;
-}
-.overs-text {
-  color: #555;
-  font-size: 12px;
-}
-.no-data-card {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 180px;
-  background: #f9f9f9;
-  color: #555;
-  font-weight: bold;
-  font-size: 16px;
-  border: 1px dashed #ccc;
-}
-/* VNew_code */
-.sresult-status {
-  font-size: 12px;
-  color: blueviolet;
-  position: relative;
-  top: 46px;
-  right: 35%;
-}
-/* vicky css code */
-/* -- Scorecard Container -- */
-.scorecard-container {
-  position: relative;
-  height: 410px;
-  background: #fff;
- border: 2px solid; /* required */
-  border-image: linear-gradient(45deg, #e36fe5, #60c3e4)1;
-  border-radius: 0px;
-  padding: 10px;
-  /* font-family: Arial, sans-serif; */
-  margin-top: 3px;
-  margin-right: 10px;
-  margin-bottom: 0;
-  margin-left:55px;
-}
-/* -- Tabs -- */
-.tabs {
-  text-align: left;
-  padding: 0px 0;
-}
-.tab {
-  display: inline-block;
-  margin: 0 20px;
-  font-weight: 500;
-  cursor: pointer;
-  color: #555;
-  border-bottom: 3px solid transparent;
-}
-.activeTab {
-  color: #007bff;
-  border-bottom: 3px solid #007bff;
-}
-/* -- Innings Tabs -- */
-.innings-tabs {
-  margin: 10px 0;
-}
-.innings-btn {
-  padding: 6px 15px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
-  background: #f8f8f8;
-  cursor: pointer;
-  font-size: small;
-}
-.innings-btn.active {
-  background: #007bff;
-  color: white;
-  border: none;
-}
-/* -- Tables -- */
-.table-scroll {
-  max-height: 290px;
-  /* adjust as needed */
-  overflow-y: auto;
-  overflow-x: auto;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 400px;
-}
-.scorecard-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-.scorecard-table th,
-.scorecard-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-  font-size: 12px;
-}
-.scorecard-table th {
-  color: #007bff;
-   position: sticky;
-  top: 0px;
-  background-color: white;
-}
-/* -- Scorecard Teams Layout -- */
-.scorecard-teams-visible,
-.squad-teams-visible {
-  display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  /* vicky code */
-  /* align-items: flex-start; */
-
-}
-.team-scorecard,
-.team-squad {
-  flex: 1;
-}
-.TeamsScoreFont {
-  font-size: 13px;
-  color: blueviolet;
-}
-/*vicky css code for test innings button  */
-.test-innings-button,
-.innings-button{
-  padding-top: 10px;
-  padding-bottom: 10px;
-  display: flex;
-  gap: 20px;
+  justify-content: center;
+  gap: 6px;
+  min-width: 150px;            /* fix team block size */
 }
 
-.innings-one,
-.innings-two{
-  border-radius: 10px;
-}
-.activetab{
-  border-color: #007bff;
-  color: #007bff;
-    border-radius: 10px;
-}
-/* fall of wickets */
-.fall-of-wickets{
-  flex: 1;
-  font-size: 12px;
-  margin-top: 5px ;
-}
-.fall-of-wickets span{
-  color: blueviolet;
-  font-size: 12px;
-}
-.fall-of-wickets .table-scroll{
-  width: 100%;
-}
-.match-details {
-  /* background: #f8f9fa; */
-  border: 2px solid; /* required */
-  border-image: linear-gradient(45deg, #e36fe5, #60c3e4)1;
-    padding: 16px;
-  border-radius: 0px;
-  margin-top: 0px;
-  margin-left: 55px;
-  margin-right: 10px;
-    font-size: 13px;
-
-}
-.match-details .heading {
-  margin-bottom: 10px;
-
-  color: #333;
-}
-.details-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.details-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
-}
-.total-score-display{
-  margin-top: 20px;
-}
-.match-cardpaginator-container{
-margin-top: 50px;
-}
-
-
-.partnership {
-  margin-bottom: 20px;
-} 
-
-.players {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.partnership-circle {
-  width: 120px;  
-  height: 120px;
-  border-radius: 50%;
+/* ---------- VS ---------- */
+.vs-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  margin: 0 auto 10px auto;
+  flex: 0 0 60px;          
+}
+.VS-icon {
   position: relative;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border: 8px solid #fff; /* donut effect */
-  transition: background 0.5s ease;
+  left: 0px;
+  width: 35px;
+  height: 35px;
 }
 
-.partnership-circle span {
-  position: absolute;
+/* ---------- Result (always below teams, same place) ---------- */
+.result-status {
   text-align: center;
-}
-
-.partnership-info {
   font-size: 12px;
-  color: #555;
-  text-align: center;
+  color: #1d7042;
+  min-width: 180px;           /* fixed width for alignment */
+}
+.teams[_ngcontent-ng-c1183422249] {
+    flex: 2;
+    display: flex
+;
+    justify-content: space-between;
+    align-items: center;
+    gap: 55px !important;
+    text-align: center;
+    color: black;
 }
 
-.extra-score-display{
-  margin-top: 30px;
-}
-/* .extra{
-  margin-top: 10px;
-}  */
-/* .extra-table-scroll{ */
-  /* padding-left: 20px; */
-  /* width: 500px; */
-  /* overflow-y: auto; */
-  /* overflow-x: auto; */
-  /* border: 1px solid #ddd; */
-  /* border-radius: 5px; */
-  /* height: 100px; */
-  /* margin: 20px;
-} 
-
-/* .extra-table-scroll table th,td{
-  border: 2px solid black;
-  padding: 10px;
-} */
-/* .col1{
-  width: 80px;
-}
-.col2{
-  width: 60px;
-}  */
-.extra-table table tr,.col1{
-  border: 1px solid #ddd;
-}
-.extra-table table{
-  border-radius: 5px;
-}
-
-
- /* Dynamic code change */
-.col-main-dropdown {
-    width: 19.666667% !important;
+.result-status[_ngcontent-ng-c1183422249] {
+    text-align: center;
+    font-size: 12px;
+    color: #1d7042;
+    min-width: 180px;
+    margin-top: -10px;
 }

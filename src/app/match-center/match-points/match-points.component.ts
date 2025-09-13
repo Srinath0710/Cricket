@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PaginatorModule } from 'primeng/paginator';
@@ -26,12 +26,13 @@ interface InningsData {
   templateUrl: './match-points.component.html',
   styleUrl: './match-points.component.css'
 })
-export class MatchPointsComponent implements OnChanges {
+export class MatchPointsComponent implements OnChanges,OnInit {
 
   @Input() competitionId: number | 0 = 0;
   @Input() selectedMatchType: string | null = null;
+  @Output() hideMatches= new EventEmitter<boolean>();
 
-  ShowPointsForm: boolean = true;
+  // ShowPointsForm: boolean = true;
   pointsForm: FormGroup;
 
   pointsRows: number = 2;
@@ -47,6 +48,11 @@ export class MatchPointsComponent implements OnChanges {
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.pointsForm = this.fb.group({});
+  }
+  ngOnInit(){
+    console.log(this.activePage)
+          this.loadMatchSummarysFromMock();
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -129,10 +135,8 @@ export class MatchPointsComponent implements OnChanges {
     if (lowered.includes('won') || lowered.includes('draw')) return 'Completed';
     return 'Live';
   }
-
-  closePointsForm(): void {
-    this.ShowPointsForm = false;
-    this.changeTab('matches');
+closePointsForm(): void {
+    this.hideMatches.emit(false); // send value to parent
   }
 
   changeTab(page: string) {
@@ -142,6 +146,23 @@ export class MatchPointsComponent implements OnChanges {
 openScorecard(match: any) {
   this.selectedMatch = match;
   this.activePage = 'scorecard';
+}
+getInningsSequence(match: any) {
+  const sequence: { team: number, runs: string, overs: string }[] = [];
+
+  if (match.team_1_summary) {
+    match.team_1_summary.forEach((inn: any, i: number) => {
+      sequence.push({ team: 1, runs: inn.runs, overs: inn.overs });
+    });
+  }
+
+  if (match.team_2_summary) {
+    match.team_2_summary.forEach((inn: any, i: number) => {
+      sequence.push({ team: 2, runs: inn.runs, overs: inn.overs });
+    });
+  }
+
+  return sequence;
 }
 
 }

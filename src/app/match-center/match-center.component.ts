@@ -82,7 +82,7 @@ export class MatchCenterComponent implements OnInit {
   Season: SeasonModel[] = [];
 
   /*--- Points form  -- */
-  ShowPointsForm: boolean = false;
+   ShowPointsForm: boolean = false;
   pointsForm: FormGroup;
   activePage: string = 'matches';
   isShowPage: boolean = true;
@@ -201,18 +201,23 @@ export class MatchCenterComponent implements OnInit {
   showPointsForm(competitionId: number, matchType?: string): void {
     this.competitionId = competitionId;
     this.selectedMatchType = matchType || null;
-    this.ShowPointsForm = true;
+    // this.ShowPointsForm = true;
+        console.log('POINSjhfu')
+
     this.pointsForm.reset();
     this.changeTab('points');
   }
 
 
-  closePointsForm(): void {
-    this.ShowPointsForm = false;
-    this.selectedMatchType = null;
-    this.changeTab('matches');
-  }
-  
+  closePointsForm(event: boolean): void {
+  console.log('Parent: hideMatches emitted ->', event);
+    // this.ShowPointsForm = event;
+
+  this.selectedMatchType = null;
+  this.changeTab('matches');
+  // You can also set ShowPointsForm = false if needed
+  // this.ShowPointsForm = event;
+}
 
   /*--- Helper to check whether any points data exists for a series-- */
   hasPoints(competitionId: number): boolean {

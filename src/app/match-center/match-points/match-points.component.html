@@ -1,4 +1,4 @@
-<div *ngIf="ShowPointsForm && activePage === 'points'" class="points-form-fullpage">
+<div *ngIf=" activePage === 'points'" class="points-form-fullpage">
   <form [formGroup]="pointsForm">
     <div class="match-center">
       <h2 class="heading2">Fixtures & Results</h2>
@@ -11,11 +11,12 @@
             <!-- Left Info -->
             <div class="left-info">
               <h6>
-                <div class="head">{{ match.competition_name }}</div>
+                <span div class="head">{{ match.competition_name }}</span> <span style="color: black">({{match.match_start_date }})</span>
+
+                <!-- <div class="head">{{ match.competition_name }} {{ match.match_start_date }}</div> -->
               </h6>
-              <div class="date">{{ match.match_start_date }}</div>
-              <div class="series">{{ match.comp_type }}</div>
-              <div class="venue">{{ match.venue }}</div>
+
+              <div class="series">({{ match.comp_type }}-{{ match.venue }})</div>
             </div>
 
             <!-- Teams -->
@@ -23,67 +24,47 @@
 
               <!-- Team 1 -->
               <div class="team left-team">
-                <span class="team-name">{{ match.team_1_name }}</span>
+                <span class="team-name">{{ match.team_1_name }} Innings</span>
                 <img [src]="" />
                 <div class="team-score">
                   <ng-container *ngIf="match.team_1_summary?.length; else yetToBatA">
                     <div class="innings-row">
-                      <div class="innings-header">
-                        <span *ngFor="let inn of match.team_1_summary; let i = index" class="innings-col">
-                          Inn {{ i + 1 }}
-                        </span>
-                      </div>
                       <div class="innings-score">
                         <span *ngFor="let inn of match.team_1_summary" class="score-text innings-col">
-                          {{ inn.runs }}
+                          <span>{{ inn.runs }}</span> <span style="color: black">({{ inn.overs }})</span>
                         </span>
                       </div>
-                      <div class="innings-overs">
-                        <span *ngFor="let inn of match.team_1_summary" class="overs-text innings-col">
-                          ({{ inn.overs }})
-                        </span>
-                      </div>
+
                     </div>
                   </ng-container>
                   <ng-template #yetToBatA>Yet to Bat</ng-template>
                 </div>
               </div>
               <!-- Game Icon -->
-              <div>
-                <span><img src="assets/images/game.png" width="50" height="50"></span>
+              <div class="vs-wrapper vs-center">
+                <img src="assets/images/game.png" alt="VS" class="VS-icon">
               </div>
-
               <!-- Team 2 -->
-
               <div class="team right-team">
+                <span class="team-name">{{ match.team_2_name }} Innings</span>
+                <img [src]="" />
                 <div class="team-score">
                   <ng-container *ngIf="match.team_2_summary?.length; else yetToBatB">
                     <div class="innings-row">
-                      <div class="innings-header">
-                        <span *ngFor="let inn of match.team_2_summary; let i = index" class="innings-col">
-                          Inn {{ i + 1 }}
-                        </span>
-                      </div>
+
                       <div class="innings-score">
                         <span *ngFor="let inn of match.team_2_summary" class="score-text innings-col">
-                          {{ inn.runs }}
+                          <span>{{ inn.runs }}</span> <span style="color: black">({{ inn.overs }})</span>
+
                         </span>
                       </div>
-                      <div class="innings-overs">
-                        <span *ngFor="let inn of match.team_2_summary" class="overs-text innings-col">
-                          ({{ inn.overs }})
-                        </span>
-                      </div>
+
                     </div>
                   </ng-container>
                   <ng-template #yetToBatB>Yet to Bat</ng-template>
                 </div>
-                <img [src]="" />
-                <span class="team-name">{{ match.team_2_name }}</span>
               </div>
-
             </div>
-
             <!-- Match Result -->
             <div class="result-status" *ngIf="match.match_result">
               <strong>{{ match.match_result }}</strong>
@@ -91,7 +72,7 @@
 
             <!-- Match Centre Button -->
             <div class="right-btn">
-              <button class="match-btn" (click)="openScorecard(match)">Match Centre →</button>
+              <button class="match-btn" (click)="openScorecard(match)">Score</button>
             </div>
 
           </div>
@@ -127,6 +108,6 @@
 <div *ngIf="activePage === 'scorecard'">
   <app-screcard-points [selectedMatch]="selectedMatch"></app-screcard-points>
   <div class="form-actions">
-    <button type="button" (click)="changeTab('matches')">Back</button>
+    <button type="button"  (click)="changeTab('points')">Back</button>
   </div>
 </div>

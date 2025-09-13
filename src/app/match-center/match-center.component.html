@@ -1,5 +1,5 @@
 <!-- --Match Center Header ---->
-<div class="row match-center-header" *ngIf="!ShowPointsForm && activePage == 'matches'">
+<div class="row match-center-header" *ngIf="activePage == 'matches'">
   <!-- Left: Title -->
   <div class="col-4">
     <h2 class="heading">Match Center</h2>
@@ -47,7 +47,7 @@
   </div>
 </div>
 <!-- --Match Cards Grid ---->
-<div *ngIf="!ShowPointsForm && activePage =='matches'" class="row match-center-body">
+<div *ngIf="activePage =='matches'" class="row match-center-body">
   <div class="col-12 match-grid">
     <!-- If filtered matches exist -->
     <ng-container *ngIf="paginatedMatches.length > 0; else noData">
@@ -100,8 +100,7 @@
 
 
 <div *ngIf="activePage === 'points'">
-  <app-match-points [competitionId]="competitionId" [selectedMatchType]="selectedMatchType"></app-match-points>
-  <div class="form-actions">
-   <button type="button" (click)="closePointsForm()">Back</button>
-    </div>
+  <app-match-points
+    [competitionId]="competitionId"  [selectedMatchType]="selectedMatchType" (hideMatches)="closePointsForm($event)">
+  </app-match-points>
 </div>

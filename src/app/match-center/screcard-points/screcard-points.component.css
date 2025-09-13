@@ -335,7 +335,7 @@ body,
 /* -- Scorecard Container -- */
 .scorecard-container {
   position: relative;
-  height: 410px;
+  height: 530px;
   background: #fff;
  border: 2px solid; /* required */
   border-image: linear-gradient(45deg, #e36fe5, #60c3e4)1;
@@ -384,7 +384,7 @@ body,
 }
 /* -- Tables -- */
 .table-scroll {
-  max-height: 290px;
+  max-height: 410px;
   /* adjust as needed */
   overflow-y: auto;
   overflow-x: auto;
