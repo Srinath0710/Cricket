@@ -447,3 +447,15 @@
   margin-bottom: 0px;
   font-size: 13px;
 }
+
+.import-btn {
+  background-color: #5b6b8f;
+  color: white;
+  border: none;
+  padding: 0px 9px;
+  cursor: pointer;
+  margin: 7px;
+  height: 36px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}

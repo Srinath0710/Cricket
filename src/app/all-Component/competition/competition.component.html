@@ -10,6 +10,9 @@
               Competitions
               <div class="">: {{ totalRecords }}</div>
             </div>
+            <button class="import-btn" (click)="importCompetiton()">
+              <i class="pi pi-upload"></i> Import
+            </button>
             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="client_id" (ngModelChange)="loadCompetitions()" placeholder="Client Id" [filter]="true"
@@ -58,7 +61,14 @@
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="showDialog()"> <i
                     class="fas fa-plus"></i> Create</button>
+                <!-- <button class="btn btn-import">
+                  <i class="pi pi-upload"></i> Import
+                </button> -->
               </div>
+              <br>
+              <!-- <button class="new-button p-button-text" (click)="importCompetiton()">
+                <i class="pi pi-upload"></i> Import
+              </button> -->
 
             </div>
           </div>
@@ -496,8 +506,8 @@
             <div class="popup-container">
               <div class="top-bar" style="    padding: 6px 50px;">
                 <div class="view-name">{{ selectedcompitition?.competition_name | uppercase }}</div>
-                <button class="popup-close" pTooltip="Close" tooltipPosition="right"
-                  (click)="visibleDialog = false" aria-label="Close popup">✖</button>
+                <button class="popup-close" pTooltip="Close" tooltipPosition="right" (click)="visibleDialog = false"
+                  aria-label="Close popup">✖</button>
               </div>
               <section class="popup-section">
                 <h2 class="section-title">Competition Details</h2>
@@ -621,7 +631,7 @@
                 <div class="d-flex flex-wrap gap-2">
                   <button *ngIf="activeTab !== 'matches'" class="new-button p-button-text"
                     (click)="UpdateFromParent()">Update</button>
-                    <!-- <button *ngIf="activeTab !== 'teams'" class="new-button p-button-text new-button">+ Import</button> -->
+                  <!-- <button *ngIf="activeTab !== 'teams'" class="new-button p-button-text new-button">+ Import</button> -->
                   <button *ngIf="activeTab === 'matches' && !showNewMatchForm"
                     class="new-button p-button-text new-button  " (click)="UpdateFromParent()">
                     + Match

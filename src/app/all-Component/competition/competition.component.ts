@@ -673,4 +673,65 @@ export class CompetitionComponent implements OnInit {
     this.loadCompetitions();
     this.clear();
   }
+
+  importCompetiton() {
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      competition_id: this.competitionData.competition_id.toString(),
+      page_no: this.first.toString(),
+      records: this.rows.toString()
+    };
+
+    this.spinnerService.raiseDataEmitterEvent('on');
+
+    this.apiService.post(this.urlConstant.importcompetitionlist, params).subscribe(
+      (res: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.log('Import Response:', res);
+
+        if (res?.status_code === this.statusConstants.success && res?.status) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Import Successful',
+            life: 500,
+            detail: res.message || 'Teams imported successfully'
+          });
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.error('Import Error:', err);
+
+        if (err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg) {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err);
+        }
+      }
+    );
+  }
+
 }
+
+
+
+
+
+// applyFilters() {
+//   this.filteredCompititionList = this.compititionList.filter(comp => {
+//     const statusMatch = !this.filterStatus.length || this.filterStatus.includes(comp.record_status);
+//     const matchTypeMatch = !this.filterMatchType.length || this.filterMatchType.includes(comp.tour_type);
+//     const categoryMatch = !this.filterCategory.length || this.filterCategory.includes(comp.format);
+
+//     return statusMatch && matchTypeMatch && categoryMatch;
+//   });
+
+//   this.totalRecords = this.filteredCompititionList.length;
+//   this.first = 1; // reset pagination
+//   this.showFilters = true;
+//   this.loadCompetitions();
+// }
