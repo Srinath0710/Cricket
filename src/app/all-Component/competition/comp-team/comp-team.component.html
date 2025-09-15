@@ -1,4 +1,8 @@
 <div class="container">
+  <button class="import-btn" (click)="importCompetitionTeam()">
+    <i class="pi pi-upload"></i>
+    Import
+  </button>
   <div class="row mb-3">
     <div class="col-6">
       <p-table #dt1 [value]="sourceTeams" [paginator]="true" selectionMode="multiple"
@@ -46,7 +50,7 @@
                   <img *ngIf="team.profile_img" [src]="team.profile_img" class="player-img image-border"
                     (error)="handleImageError($event, default_img)" />
                 </span>
-                <span class="person-name padding-grid-center groundname" >
+                <span class="person-name padding-grid-center groundname">
                   <strong (click)="onViewteam(team.team_id)">{{ team.team_name }}</strong>
                 </span>
                 <span>

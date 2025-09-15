@@ -616,7 +616,7 @@ export class TeamsComponent implements OnInit {
       myFormData.append('imageFile', this.filedata);
       myFormData.append('client_id', this.client_id.toString());
       myFormData.append('file_id', team_id);
-      myFormData.append('upload_type', 'teams');
+      myFormData.append('upload_type', 'team');
       myFormData.append('user_id', this.user_id?.toString());
       this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
         (res) => {

@@ -141,7 +141,7 @@
                     <img class="player-img" *ngIf="player.profile_image!=null  && player.profile_image!=''"
                       [src]="player.profile_image" (error)="handleImageError($event, default_img)">
                   </span>
-                  <span class="person-name padding-grid-center groundname" >
+                  <span class="person-name padding-grid-center groundname">
                     <strong (click)="onViewPlayer(player.player_id)">{{ player.display_name }}</strong>
                   </span>
                   <span>
@@ -295,9 +295,9 @@
         <div class="mb-3 d-flex align-items-center comp-grid">
           <div>
             <span class="person-image-team-player">
-              <img class="player-img Child-image" *ngIf="!selectedPlayer?.profile_url" [src]="default_img">
+              <img class="player-img Child-image" *ngIf="!selectedPlayer?.profile_image" [src]="default_img">
 
-              <img class="player-img Child-image" *ngIf="selectedPlayer?.profile_url" [src]="selectedPlayer.profile_url"
+              <img class="player-img Child-image" *ngIf="selectedPlayer?.profile_image" [src]="selectedPlayer.profile_image"
                 (error)="handleImageError($event, default_img)">
             </span>
           </div>

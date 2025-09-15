@@ -149,7 +149,7 @@ export class CompPlayerComponent implements OnInit {
       competition_id: ['', []],
       jersey_number: ['', [Validators.required]],
       scorecard_name: ['', [Validators.required]],
-      profile_url: [null],
+      profile_url: [''],
       user_id: ['', []],
       team_id: ['', []],
       display_name: [''],
@@ -289,6 +289,7 @@ export class CompPlayerComponent implements OnInit {
       console.error('No team selected for update!');
       return;
     }
+
     const params: any = {
       client_id: this.CompetitionData.client_id.toString(),
       user_id: this.user_id.toString(),
@@ -297,11 +298,17 @@ export class CompPlayerComponent implements OnInit {
       player_id: this.selectedPlayer.player_id?.toString(),
       scorecard_name: this.ManagePlayerForm.get('scorecard_name')?.value || '',
       jersey_number: this.ManagePlayerForm.get('jersey_number')?.value || '',
-      // profile_img: this.profileImages || this.selectedPlayer?.profile_img || '',
-      profile_url: this.ManagePlayerForm.get('profile_url')?.value || this.selectedPlayer?.profile_img || ''
+      // ❌ WRONG: profile_url is still "C:\\fakepath..."
+      profile_url: this.profileImages || this.selectedPlayer?.profile_url || '',
     };
 
+
+    // params.profile_url = this.profileImages
+    //   ? this.profileImages   
+    //   : this.selectedPlayer?.profile_img || ''; 
+
     params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
+
     this.apiService.post(this.urlConstant.compplayerupdate, params).subscribe(
       (res: any) => {
         this.gridLoad();
@@ -316,8 +323,10 @@ export class CompPlayerComponent implements OnInit {
         }
         this.spinnerService.raiseDataEmitterEvent('off');
         this.failedToast(err.error);
-      })
+      }
+    );
   }
+
   showEditPopup(player: any) {
     this.selectedPlayer = player;
     this.ManagePlayerForm.patchValue({
@@ -515,12 +524,12 @@ export class CompPlayerComponent implements OnInit {
     }
 
     if (file) {
-      const fileSizeKB = file.size / 500;
+      const fileSizeKB = file.size / 1024;
       if (fileSizeKB > maxSizeKB) {
         this.imageSizeError = 'Max.size is 500KB';
         this.imagePreview = null;
         this.selectedImage = null;
-        this.filedata = null; this.ManagePlayerForm.get('profile_url')?.reset();
+        this.filedata = this.ManagePlayerForm.get('profile_url')?.reset();
         return;
       }
 
@@ -672,7 +681,7 @@ export class CompPlayerComponent implements OnInit {
           if (res.url) {
             const player = this.targetPlayer.find(p => p.player_id === player_id);
             if (player) {
-              player.profile_image = res.url;
+              player.profile_url = res.url;
             }
             this.addCallBack(res);
           } else {
@@ -760,6 +769,7 @@ export class CompPlayerComponent implements OnInit {
       this.selectedPlayer.profile_image = null;
     }
   }
+
 
 
 }

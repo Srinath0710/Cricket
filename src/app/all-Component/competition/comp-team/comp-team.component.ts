@@ -141,7 +141,7 @@ export class CompTeamComponent implements OnInit {
             profile_url: val.profile_url
               ? (val.profile_url.startsWith('http')
                 ? val.profile_url + '?' + Math.random()
-                : val.profile_url) // keep base64 intact
+                : val.profile_url)
               : (existing?.profile_url || this.default_img),
 
           };
@@ -364,8 +364,8 @@ export class CompTeamComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     const maxSizeKB = 500;
 
-    if (this.ManageTeamsForm.value.team_profile !== null && this.ManageTeamsForm.value.team_profile !== '') {
-      this.profileImages = null;
+    if (this.ManageTeamsForm.value.profile_url !== null && this.ManageTeamsForm.value.profile_url !== '') {
+      this.profileImages = '';
     }
 
     if (file) {
@@ -375,7 +375,7 @@ export class CompTeamComponent implements OnInit {
         this.imagePreview = null;
         this.selectedImage = null;
         this.filedata = null;
-        this.ManageTeamsForm.get('team_profile')?.reset();
+        this.ManageTeamsForm.get('profile_url')?.reset();
         return;
       }
 
@@ -429,20 +429,9 @@ export class CompTeamComponent implements OnInit {
       myFormData.append('file_id', team_id);
       myFormData.append('team_id', team_id);
       myFormData.append('upload_type', 'team');
-      this.uploadImgService.post(this.urlConstant.compTeamsUpdate, myFormData).subscribe((res: any) => {
+      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe((res: any) => {
         if (res.status_code == this.statusConstants.success) {
           if (res.url != null && res.url != '') {
-            // Update the selected team profile image immediately
-            // this.selectedTeam.profile_url = res.url + '?' + Math.random();
-
-            // Also update the grid list so UI refreshes instantly
-            this.targetTeams = this.targetTeams.map((team: any) => {
-              if (team.team_id === this.selectedTeam.team_id) {
-                return { ...team, profile_url: this.selectedTeam.profile_url };
-              }
-              return team;
-            });
-
             this.addCallBack(res);
           } else {
             this.failedToast(res);
@@ -450,7 +439,15 @@ export class CompTeamComponent implements OnInit {
         } else {
           this.failedToast(res);
         }
-      });
+      },
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+
+          } else {
+            this.failedToast(err.error);
+          }
+        });
     }
   }
 
@@ -475,7 +472,7 @@ export class CompTeamComponent implements OnInit {
       .catch((error) => {
       });
   }
-  
+
   imageLoaded() {
     console.log('Image loaded');
   }
@@ -585,4 +582,58 @@ export class CompTeamComponent implements OnInit {
     this.successToast(res);
     this.gridLoad();
   }
+
+  importCompetitionTeam() {
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.client_id?.toString(),
+      competition_id: this.CompetitionData.competition_id?.toString(),   // destination competition
+      src_competition_id: this['src_competition_id']?.toString(), // source competition
+      team_list: this['team_list']?.toString(),
+      page_no: this.first.toString(),
+      records: this.rows.toString()
+    };
+
+    this.spinnerService.raiseDataEmitterEvent('on');
+
+
+    this.apiService.post(this.urlConstant.importcompetitionlist, params).subscribe(
+      (res: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.log('Import Response:', res);
+
+        if (res?.status_code === this.statusConstants.success && res?.status) {
+          this['messageService'].add({
+            severity: 'success',
+            summary: 'Import Successful',
+            life: 500,
+            detail: res.message || 'Teams imported successfully'
+          });
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.error('Import Error:', err);
+
+        if (err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg) {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err);
+        }
+      }
+    );
+  }
+
+
+  // onImageUpload(event: any) {
+  //   const file = event.files[0];
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     this.uploadedImage = reader.result;
+  //   };
+  //   reader.readAsDataURL(file);
+  // }
 }

@@ -675,6 +675,7 @@ export class CompetitionComponent implements OnInit {
   }
 
   importCompetiton() {
+    // this.loadCompetitions();
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
