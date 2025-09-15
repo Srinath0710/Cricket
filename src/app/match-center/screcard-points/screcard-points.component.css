@@ -262,7 +262,7 @@ body,
 }
 
 /* Table Scroll */
-.table-scroll {
+/* .table-scroll {
   max-height: 440px;
   overflow-y: auto;
   overflow-x: auto;
@@ -270,7 +270,7 @@ body,
   border-radius: 5px;
   width: 400px;
   margin-top: 0px;
-}
+} */
 .scorecard-table {
   width: 100%;
   border-collapse: collapse;
@@ -323,9 +323,9 @@ body,
   color: blueviolet;
   font-size: 12px;
 }
-.fall-of-wickets .table-scroll {
+/* .fall-of-wickets .table-scroll {
   width: 100%;
-}
+} */
 
 
 .details-table {
@@ -349,5 +349,42 @@ body,
 .col-main-dropdown {
   width: 19.666667% !important;
 }
+/* Alternate row colors */
+.scorecard-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* light grey for even rows */
+}
+
+.scorecard-table tr:nth-child(odd) {
+  background-color: #ffffff; /* white for odd rows */
+}
 
 
+/* Hide scrollbar normally */
+.table-scroll {
+  max-height: 440px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 400px;
+  margin-top: 0px;
+
+  /* Hide scrollbar until hover */
+  scrollbar-width: none; /* Firefox */
+}
+.table-scroll::-webkit-scrollbar {
+  width: 6px; /* scrollbar width */
+  background: transparent; /* fully hidden */
+}
+
+/* Show scrollbar only on hover */
+.table-scroll:hover {
+  scrollbar-width: thin; /* Firefox */
+}
+.table-scroll:hover::-webkit-scrollbar {
+  background: #ccc; /* track color */
+}
+.table-scroll:hover::-webkit-scrollbar-thumb {
+  background: #888; /* thumb color */
+  border-radius: 4px;
+}
