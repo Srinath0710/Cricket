@@ -1,7 +1,6 @@
-
-/* ================================================================
+/* ==========
    RESULT / SCORECARD SECTION CSS
-   ================================================================ */
+ ========= */
 
 /* ---------- Common ---------- */
 body,
@@ -40,7 +39,8 @@ body,
   border: 2px solid;
   border-image: linear-gradient(90deg, #e36fe5, #60c3e4);
   border-image-slice: 1;
-  flex-wrap: wrap; /* responsive */
+  flex-wrap: wrap;
+  /* responsive */
   gap: 10px;
   margin-top: -15px;
 }
@@ -105,7 +105,8 @@ body,
 /* ---------- VS + Result ---------- */
 .vs-wrapper {
   display: flex;
-  flex-direction: column; /* VS + result vertical stack */
+  flex-direction: column;
+  /* VS + result vertical stack */
   align-items: center;
   justify-content: center;
   flex: 0 0 80px;
@@ -212,9 +213,9 @@ body,
   }
 }
 
-/* ================================================================
+/* ======
    2. SCORE DETAILS SECTION CSS
-   ================================================================ */
+   ========= */
 /* Scorecard Container */
 .scorecard-container {
   position: relative;
@@ -231,6 +232,7 @@ body,
   text-align: left;
   margin-top: -10px;
 }
+
 .tab {
   display: inline-block;
   margin: 0 20px;
@@ -239,6 +241,7 @@ body,
   color: #555;
   border-bottom: 3px solid transparent;
 }
+
 .activeTab {
   color: #007bff;
   border-bottom: 3px solid #007bff;
@@ -251,37 +254,32 @@ body,
   gap: 20px;
   padding: 2px 0;
 }
+
 .innings-one,
 .innings-two {
   border-radius: 10px;
 }
+
 .activetab {
   border-color: #007bff;
   color: #007bff;
   border-radius: 10px;
 }
 
-/* Table Scroll */
-/* .table-scroll {
-  max-height: 440px;
-  overflow-y: auto;
-  overflow-x: auto;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 400px;
-  margin-top: 0px;
-} */
+
 .scorecard-table {
   width: 100%;
   border-collapse: collapse;
 }
+
 .scorecard-table th,
 .scorecard-table td {
-  padding: 5px 10px;
+  padding: 2px 10px;
   border-bottom: 1px solid #eee;
   text-align: left;
   font-size: 11px;
 }
+
 .scorecard-table th {
   color: #007bff;
   position: sticky;
@@ -294,6 +292,7 @@ body,
   color: #555;
   font-size: 12px;
 }
+
 .TeamsScoreFont {
   font-size: 13px;
   color: blueviolet;
@@ -304,10 +303,11 @@ body,
 .squad-teams-visible {
   display: flex;
   gap: 20px;
-    margin-top: -3px;
+  margin-top: -3px;
 
   justify-content: space-between;
 }
+
 .team-scorecard,
 .team-squad {
   flex: 1;
@@ -319,10 +319,12 @@ body,
   font-size: 12px;
   margin-top: 5px;
 }
+
 .fall-of-wickets span {
   color: blueviolet;
   font-size: 12px;
 }
+
 /* .fall-of-wickets .table-scroll {
   width: 100%;
 } */
@@ -332,6 +334,7 @@ body,
   width: 100%;
   border-collapse: collapse;
 }
+
 .details-table td {
   padding: 8px 12px;
   border-bottom: 1px solid #eee;
@@ -349,19 +352,22 @@ body,
 .col-main-dropdown {
   width: 19.666667% !important;
 }
+
 /* Alternate row colors */
 .scorecard-table tr:nth-child(even) {
-  background-color: #f9f9f9; /* light grey for even rows */
+  background-color: #f9f9f9;
+  /* light grey for even rows */
 }
 
 .scorecard-table tr:nth-child(odd) {
-  background-color: #ffffff; /* white for odd rows */
+  background-color: #ffffff;
+  /* white for odd rows */
 }
 
 
 /* Hide scrollbar normally */
 .table-scroll {
-  max-height: 440px;
+  max-height: 460px;
   overflow-y: auto;
   overflow-x: auto;
   border: 1px solid #ddd;
@@ -370,21 +376,72 @@ body,
   margin-top: 0px;
 
   /* Hide scrollbar until hover */
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .table-scroll::-webkit-scrollbar {
-  width: 6px; /* scrollbar width */
-  background: transparent; /* fully hidden */
+  width: 6px;
+  /* scrollbar width */
+  background: transparent;
+  /* fully hidden */
 }
 
 /* Show scrollbar only on hover */
 .table-scroll:hover {
-  scrollbar-width: thin; /* Firefox */
+  scrollbar-width: thin;
+  /* Firefox */
 }
+
 .table-scroll:hover::-webkit-scrollbar {
-  background: #ccc; /* track color */
+  background: #ccc;
+  /* track color */
 }
+
 .table-scroll:hover::-webkit-scrollbar-thumb {
-  background: #888; /* thumb color */
+  background: #888;
+  /* thumb color */
   border-radius: 4px;
+}
+
+
+
+
+.total-result {
+  margin-top: 15px;
+}
+
+.total-table {
+  
+  margin-left: 1px;
+  width: 30%;
+  border-collapse: collapse;
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.total-table th,
+.total-table td {
+  border: 1px solid #ccc;
+  padding: 0px 14.8px;
+  font-size: 12px;
+}
+
+/* Special styling */
+.total-heading {
+  color: #007bff;
+  background: #f2f2f2;
+  text-align: left;
+}
+
+.total-value {
+  /* font-weight: small; */
+  color: #000;
+  text-align: center;
+}
+
+.extras-heading {
+  color: #007bff;
+  background: #fafafa;
+  font-weight: small;
 }
