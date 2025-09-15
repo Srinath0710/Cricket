@@ -244,7 +244,7 @@ body,
 
 .activeTab {
   color: #007bff;
-  border-bottom: 3px solid #007bff;
+  border-bottom: 1px solid #007bff;
 }
 
 /* Innings buttons */
@@ -294,7 +294,7 @@ body,
 }
 
 .TeamsScoreFont {
-  font-size: 13px;
+  font-size: 15px;
   color: blueviolet;
 }
 
@@ -311,6 +311,7 @@ body,
 .team-scorecard,
 .team-squad {
   flex: 1;
+  margin-top: 5px;
 }
 
 /* Fall of wickets */
@@ -355,7 +356,7 @@ body,
 
 /* Alternate row colors */
 .scorecard-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f1f5f9;
   /* light grey for even rows */
 }
 
@@ -373,7 +374,7 @@ body,
   border: 1px solid #ddd;
   border-radius: 5px;
   width: 400px;
-  margin-top: 0px;
+  margin-top: 3px;
 
   /* Hide scrollbar until hover */
   scrollbar-width: none;
@@ -444,4 +445,32 @@ body,
   color: #007bff;
   background: #fafafa;
   font-weight: small;
+}
+
+
+
+button {
+    cursor: pointer;
+    padding: 0px;
+    font-size: 14px;
+    /* width: 300px; */
+}
+
+
+
+
+.extras-values {
+  font-size: 15px;
+  
+}
+
+.extras-label {
+  color: #007bff;  /* Blue for Extras, W, NB, P, B, LB */
+  font-size: 15px;
+  /* font-weight: 400; */
+}
+
+.extras-number {
+  font-size: 14px;
+  color: black; /* Numbers stay black */
 }
