@@ -57,3 +57,17 @@
   font-size: 13px;
   margin-left: 915px;
 }
+
+::ng-deep .p-paginator {
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+  justify-content: center !important;
+}
+
+::ng-deep .p-paginator .p-paginator-pages {
+  flex-wrap: nowrap !important;
+}
+
+::ng-deep .p-paginator .p-dropdown {
+  min-width: 70px !important;
+}

@@ -2,3 +2,17 @@
     background-color: #f4f5ff !important;
     color: black !important;
 }
+
+::ng-deep .p-paginator {
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+  justify-content: center !important;
+}
+
+::ng-deep .p-paginator .p-paginator-pages {
+  flex-wrap: nowrap !important;
+}
+
+::ng-deep .p-paginator .p-dropdown {
+  min-width: 70px !important;
+}
