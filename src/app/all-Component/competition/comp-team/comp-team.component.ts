@@ -204,7 +204,13 @@ export class CompTeamComponent implements OnInit {
         this.failedToast(err.error);
       })
   }
-
+  // updateRecords(){
+  //   if(this.filedata!=null && this.filedata!=''){
+  //     this.profileImgAppend(this.selectedTeam.team_id);
+  //   }else{
+  //     this.updateTeam();
+  //   }
+  // }
   updateTeam(): void {
     this.showCropperModal = false;
     if (!this.selectedTeam) {
@@ -212,6 +218,19 @@ export class CompTeamComponent implements OnInit {
       return;
     }
 
+    if (this.filedata) {
+      this.profileImgAppend(this.selectedTeam.team_id);
+    } else {
+      this.updateTeamsRecords(this.ManageTeamsForm.get('profile_url')?.value || '');
+    }
+
+
+    // this.filedata = null;
+    // this.profileImages = this.updateTeam.country_image + '?' + Math.random();
+    // this.convertUrlToBase64(editRecord.country_image + '?' + Math.random());
+  }
+
+  updateTeamsRecords(url?: string): void {
     const params: any = {
       user_id: this.user_id.toString(),
       client_id: this.CompetitionData.client_id.toString(),
@@ -220,7 +239,7 @@ export class CompTeamComponent implements OnInit {
       team_id: this.selectedTeam.team_id?.toString(),
       scorecard_name: this.ManageTeamsForm.get('scorecard_name')?.value || '',
       sponser_name: this.ManageTeamsForm.get('sponser_name')?.value || '',
-      profile_url: this.ManageTeamsForm.get('profile_url')?.value || '',
+      profile_url: url || '',
     };
 
     this.apiService.post(this.urlConstant.compTeamsUpdate, params).subscribe(
@@ -249,12 +268,7 @@ export class CompTeamComponent implements OnInit {
         this.failedToast(err.error);
       }
     );
-    // this.filedata = null;
-    // this.profileImages = this.updateTeam.country_image + '?' + Math.random();
-    // this.convertUrlToBase64(editRecord.country_image + '?' + Math.random());
   }
-
-
   successToast(data: any) {
     this.toastService.successToast({ message: data.message })
   }
@@ -365,7 +379,7 @@ export class CompTeamComponent implements OnInit {
     const maxSizeKB = 500;
 
     if (this.ManageTeamsForm.value.profile_url !== null && this.ManageTeamsForm.value.profile_url !== '') {
-      this.profileImages = '';
+      this.profileImages = null;
     }
 
     if (file) {
@@ -427,12 +441,13 @@ export class CompTeamComponent implements OnInit {
       myFormData.append('client_id', this.CompetitionData.client_id.toString());
       myFormData.append('user_id', this.user_id?.toString());
       myFormData.append('file_id', team_id);
-      myFormData.append('team_id', team_id);
-      myFormData.append('upload_type', 'team');
-      this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe((res: any) => {
+      myFormData.append('team_id', '');
+      myFormData.append('competition_id', this.CompetitionData.competition_id.toString());
+      myFormData.append('upload_type', 'teams');
+      this.uploadImgService.post(this.urlConstant.uploadCompetitionProfile, myFormData).subscribe((res) => {
         if (res.status_code == this.statusConstants.success) {
           if (res.url != null && res.url != '') {
-            this.addCallBack(res);
+            this.updateTeamsRecords(res.url);
           } else {
             this.failedToast(res);
           }

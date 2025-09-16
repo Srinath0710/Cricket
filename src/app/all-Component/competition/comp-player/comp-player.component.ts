@@ -285,33 +285,43 @@ export class CompPlayerComponent implements OnInit {
     this.toastService.failedToast({ message: data.message })
   }
   updateplayer(): void {
+    this.showCropperModal = false;
     if (!this.selectedPlayer) {
-      console.error('No team selected for update!');
+      console.error('No player selected for update!');
       return;
     }
 
+    if (this.filedata) {
+      this.profileImgAppend(this.selectedPlayer.player_id);
+    } else {
+      this.updatePlayersRecords(this.ManagePlayerForm.get('profile_url')?.value || '');
+    }
+  }
+
+  updatePlayersRecords(url?: string): void {
     const params: any = {
       client_id: this.CompetitionData.client_id.toString(),
       user_id: this.user_id.toString(),
       team_id: this.teamID?.toString(),
       competition_id: this.CompetitionData.competition_id.toString(),
       player_id: this.selectedPlayer.player_id?.toString(),
+      file_id: this.selectedPlayer.player_id?.toString(),
       scorecard_name: this.ManagePlayerForm.get('scorecard_name')?.value || '',
       jersey_number: this.ManagePlayerForm.get('jersey_number')?.value || '',
-      // ❌ WRONG: profile_url is still "C:\\fakepath..."
-      profile_url: this.profileImages || this.selectedPlayer?.profile_url || '',
+      profile_url: url || '',
     };
-
-
-    // params.profile_url = this.profileImages
-    //   ? this.profileImages   
-    //   : this.selectedPlayer?.profile_img || ''; 
-
-    params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',').toString();
+    params.player_list = this.targetPlayer.map((p: any) => p.player_id).join(',');
 
     this.apiService.post(this.urlConstant.compplayerupdate, params).subscribe(
       (res: any) => {
+        // if (res.data?.profile_url) {
+        //   const newUrl = res.data.profile_url;
+        //   this.selectedPlayer.profile_url = newUrl.startsWith('http')
+        //     ? newUrl + '?' + Math.random()
+        //     : newUrl;
+        // }
         this.gridLoad();
+        // this.successToast(res);
         this.closeEditPopup();
       },
       (err: any) => {
@@ -327,6 +337,7 @@ export class CompPlayerComponent implements OnInit {
     );
   }
 
+
   showEditPopup(player: any) {
     this.selectedPlayer = player;
     this.ManagePlayerForm.patchValue({
@@ -334,8 +345,8 @@ export class CompPlayerComponent implements OnInit {
       team_id: player.team_id || '',
       scorecard_name: player.scorecard_name || '',
       jersey_number: player.jersey_number || '',
-      // profile_img: player.profile_image || '',
-      profile_url: player.profile_url || '',
+      profile_img: player.profile_image || '',
+      // profile_url: player.profile_url || '',
       team_name: player.team_name || '',
       display_name: player.player_name || player.display_name,
     });
@@ -655,35 +666,22 @@ export class CompPlayerComponent implements OnInit {
   }
 
   profileImgAppend(player_id: any) {
-    if (!this.filedata) return;
+    // if (!this.filedata) return;
 
     const myFormData = new FormData();
-    let fileToUpload: File | Blob | null = null;
+    if (this.filedata != null && this.filedata != '') {
+      myFormData.append('imageFile', this.filedata);
+      myFormData.append('client_id', this.CompetitionData.client_id.toString());
+      myFormData.append('file_id', player_id);
+      myFormData.append('team_id', this.teamID?.toString());
+      myFormData.append('competition_id', this.CompetitionData.competition_id.toString());
+      myFormData.append('upload_type', 'players');
+      myFormData.append('user_id', this.user_id?.toString());
 
-    if (this.filedata instanceof File || this.filedata instanceof Blob) {
-      fileToUpload = this.filedata;
-    } else if (typeof this.filedata === 'string' && this.filedata.startsWith('data:')) {
-      fileToUpload = this.base64ToBinary(this.filedata);
-    }
-
-    if (!fileToUpload) return;
-
-    myFormData.append('file', fileToUpload);
-    myFormData.append('client_id', this.CompetitionData.client_id.toString());
-    myFormData.append('file_id', player_id);
-    myFormData.append('player_id', player_id);
-    myFormData.append('upload_type', 'players');
-    myFormData.append('user_id', this.user_id?.toString());
-
-    this.uploadImgService.post(this.urlConstant.uploadprofile, myFormData).subscribe(
-      (res) => {
+      this.uploadImgService.post(this.urlConstant.uploadCompetitionProfile, myFormData).subscribe((res) => {
         if (res.status_code == this.statusConstants.success) {
-          if (res.url) {
-            const player = this.targetPlayer.find(p => p.player_id === player_id);
-            if (player) {
-              player.profile_url = res.url;
-            }
-            this.addCallBack(res);
+          if (res.url != null && res.url != '') {
+            this.updatePlayersRecords(res.url);
           } else {
             this.failedToast(res);
           }
@@ -691,17 +689,15 @@ export class CompPlayerComponent implements OnInit {
           this.failedToast(res);
         }
       },
-      (err: any) => {
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-        ) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err.error);
-        }
-      }
-    );
+        (err: any) => {
+          if (err.status_code === this.statusConstants.refresh && err.error.message === this.statusConstants.refresh_msg) {
+            this.apiService.RefreshToken();
+
+          } else {
+            this.failedToast(err.error);
+          }
+        });
+    }
   }
 
 

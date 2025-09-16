@@ -1,194 +1,197 @@
 export class URLCONSTANT {
-  
-      uploadprofile="Global/upload_profile"
 
-      /*Country List*/
-      getCountryDropdown = "Country/get_country_dropdown"
-      addCountry = "Country/add_country"
-      editCountry = "Country/edit_country"
-      updateCountry = "Country/update_country"
-      viewCountry = "Country/view_country"
-      activeCountry = "Country/activate_country"
-      deactiveCountry = "Country/deactivate_country"
-      getCountryList = "Country/get_country_list"
+     uploadprofile = "Global/upload_profile"
+     uploadCompetitionProfile = "Global/upload_competition_profile"
 
-      /*TEAM List*/
-      getTeamList = "Teams/get_teams_list"
-      activeTeam = "Teams/activate_team  "
-      deactiveTeam = "Teams/deactivate_team"
-      dropdownTeam = "Teams/get_teams_dropdown"
-      editTeam = "Teams/edit_team"
-      updateTeam = "Teams/update_team"
-      addTeam = "Teams/add_team"
-      teamclubdropdown = "Teams/get_teams_dropdown"
+
+     /*Country List*/
+     getCountryDropdown = "Country/get_country_dropdown"
+     addCountry = "Country/add_country"
+     editCountry = "Country/edit_country"
+     updateCountry = "Country/update_country"
+     viewCountry = "Country/view_country"
+     activeCountry = "Country/activate_country"
+     deactiveCountry = "Country/deactivate_country"
+     getCountryList = "Country/get_country_list"
+
+     /*TEAM List*/
+     getTeamList = "Teams/get_teams_list"
+     activeTeam = "Teams/activate_team  "
+     deactiveTeam = "Teams/deactivate_team"
+     dropdownTeam = "Teams/get_teams_dropdown"
+     editTeam = "Teams/edit_team"
+     updateTeam = "Teams/update_team"
+     addTeam = "Teams/add_team"
+     teamclubdropdown = "Teams/get_teams_dropdown"
      //  teamcountrydropdown = "Global/get_countries"
-      viewgroundTeams = "Teams/view_team"
-      profileteam="Teams/teams_profile_update"
+     viewgroundTeams = "Teams/view_team"
+     profileteam = "Teams/teams_profile_update"
 
 
 
-      /*PLAYERS REGISTRATION */
+     /*PLAYERS REGISTRATION */
 
-      playerdropdown = "Player/get_player_dropdown"
-      getplayerlist = "Player/get_player_list"
-      addplayer = "Player/add_player"
-      updateplayer = "Player/update_player"
-      editplayer = "Player/edit_player"
-      activeplayer = "Player/activate_player"
-      deactiveplayer = "Player/deactivate_player"
-      duplicateplayer = "Player/dupcheck_player"
-      nationalityplayer = "Country/get_country_dropdown"
-      playerclubdropdown = "Teams/get_teams_dropdown"
-      playerpersonalupadate = "Player/update_player_personal"
-      playersPersonalEdit = "Player/edit_player_personal"
-      playerspersonaldropdown = "Official/get_official_dropdown"
-      playersprofile='Player/player_profile_update'
-      viewgroundPlayers = "Player/view_player"
-
-
-      // Official  List 
-      dropdownofficial = "Official/get_official_dropdown"
-      officiallist = "Official/get_official_list"
-      addofficial = "Official/add_official"
-      editofficial = "Official/edit_official"
-      updateOfficial = "Official/update_Official"
-      activateofficial = "Official/activate_official"
-      deactivateofficial = "Official/deactivate_official"
-      profileofficial = "Official/official_profile_update"
-      clientdropdown = "Client/get_client_dropdown"
-      officialclubdropdown = "Official/get_official_dropdown"
-      officialprofileupadate = "Official/official_profile_update"
-      officialpersonalupadate = "Official/update_official_personal"
-      officialpersonaledit = "Official/edit_official_personal"
-      officialpersonaldropdown = "Official/get_official_dropdown"
+     playerdropdown = "Player/get_player_dropdown"
+     getplayerlist = "Player/get_player_list"
+     addplayer = "Player/add_player"
+     updateplayer = "Player/update_player"
+     editplayer = "Player/edit_player"
+     activeplayer = "Player/activate_player"
+     deactiveplayer = "Player/deactivate_player"
+     duplicateplayer = "Player/dupcheck_player"
+     nationalityplayer = "Country/get_country_dropdown"
+     playerclubdropdown = "Teams/get_teams_dropdown"
+     playerpersonalupadate = "Player/update_player_personal"
+     playersPersonalEdit = "Player/edit_player_personal"
+     playerspersonaldropdown = "Official/get_official_dropdown"
+     playersprofile = 'Player/player_profile_update'
+     viewgroundPlayers = "Player/view_player"
 
 
-      /*State List*/
-      getStateList = "State/get_state_list"
-      addState = "State/add_state"
-      updateState = "State/update_state"
-      activateState = "State/activate_state"
-      deactivateState = "State/deactivate_state"
-
-      /* Global API */
-      countryLookups = "Global/get_countries"
-      getStatesByCountry = "Global/get_state_by_country"
-      getcitylookups = "Global/get_city_by_state"
-
-
-      /*Seasons List*/
-      getSeasons = "Season/get_seasons"
-      addSeason = "Season/add_season"
-      updateSeason = "Season/update_season"
-      editSeason = "Season/edit_season"
-      activateSeason = "Season/activate_season"
-      deactivateSeason = "Season/deactivate_season"
-
-      //    city
-      getCityList = "City/get_city_list"
-      addCity = "City/add_city"
-      updateCity = "City/update_city"
-      activecity = "City/activate_city"
-      deactiveCity = "City/deactivate_city"
-      getcountry = "Global/get_countries"
-      getstate = "Global/get_state_by_country"
-      CountryDropdown = "Global/get_countries"
-
-      /*Grounds List*/
-      getGroundList = "Ground/get_ground_list"
-      addGround = "Ground/add_ground"
-      editGround = "Ground/edit_ground"
-      viewGround = "Ground/view_ground"
-      updateGround = "Ground/update_ground"
-      activateGround = "Ground/activate_ground"
-      deactivateGround = "Ground/deactivate_ground"
-      profileGround = "Ground/update_ground_photo"
-
-      groundUserClient = "User/get_user_client_list"
-      groundclubdropdown = "Ground/get_ground_dropdown"
+     // Official  List 
+     dropdownofficial = "Official/get_official_dropdown"
+     officiallist = "Official/get_official_list"
+     addofficial = "Official/add_official"
+     editofficial = "Official/edit_official"
+     updateOfficial = "Official/update_Official"
+     activateofficial = "Official/activate_official"
+     deactivateofficial = "Official/deactivate_official"
+     profileofficial = "Official/official_profile_update"
+     clientdropdown = "Client/get_client_dropdown"
+     officialclubdropdown = "Official/get_official_dropdown"
+     officialprofileupadate = "Official/official_profile_update"
+     officialpersonalupadate = "Official/update_official_personal"
+     officialpersonaledit = "Official/edit_official_personal"
+     officialpersonaldropdown = "Official/get_official_dropdown"
 
 
+     /*State List*/
+     getStateList = "State/get_state_list"
+     addState = "State/add_state"
+     updateState = "State/update_state"
+     activateState = "State/activate_state"
+     deactivateState = "State/deactivate_state"
 
-      /*competition */
+     /* Global API */
+     countryLookups = "Global/get_countries"
+     getStatesByCountry = "Global/get_state_by_country"
+     getcitylookups = "Global/get_city_by_state"
 
 
-      getCompetitionList = 'Competition/get_competition_list'
-      createCompetition = 'Competition/add_competition'
-      updateCompetition = 'Competition/update_competition'
-      toggleCompetitionStatus = 'Competition/toggle_status'
-      dropdownlookups = 'Competition/get_competition_dropdown'
-      editcompetition = 'Competition/edit_competition'
-      activecompetition = 'Competition/activate_competition'
-      deactivecompetition = 'Competition/deactivate_competition'
- 
-      compTeamsList = 'Competition/get_competition_teams'
-      compTeamsUpdate = 'Competition/update_competition_teams'
-      compTeamadd = 'Competition/add_competition_teams'
-      compOfficialList = 'Competition/get_competition_officials'
-      compOfficialupdate = 'Competition/add_competition_officials'
-      compgroundList = 'Competition/get_competition_grounds'
-      compgroundupdate = 'Competition/add_competition_grounds'
-      compplayerlist = 'Competition/get_competition_players'
-      compplayeradd = 'Competition/add_competition_players'
-      compplayerupdate = 'Competition/update_competition_players'
-      importcompetitionlist = 'Competition/get_competition_list_for_import'
-      importcompteamlist = 'Competition/get_team_list_for_import'
+     /*Seasons List*/
+     getSeasons = "Season/get_seasons"
+     addSeason = "Season/add_season"
+     updateSeason = "Season/update_season"
+     editSeason = "Season/edit_season"
+     activateSeason = "Season/activate_season"
+     deactivateSeason = "Season/deactivate_season"
 
-      /*   FIXTURE */
-      fixturedropdown = 'Fixture/get_fixtures_dropdown'
-      updatefixture = 'Fixture/update_fixtures'
-      addfixture = 'Fixture/add_fixtures'
-      editfixture = 'Fixture/edit_fixtures'
-      getfixture = 'Fixture/get_fixtures'
-      activefixture = 'Fixture/activate_fixtures'
-      deactivefixture = 'Fixture/deactivate_fixtures'
+     //    city
+     getCityList = "City/get_city_list"
+     addCity = "City/add_city"
+     updateCity = "City/update_city"
+     activecity = "City/activate_city"
+     deactiveCity = "City/deactivate_city"
+     getcountry = "Global/get_countries"
+     getstate = "Global/get_state_by_country"
+     CountryDropdown = "Global/get_countries"
 
-      /* USERS LIST */
-      getRoleList = 'User/get_role_list'
-      getMenuPermissionsList = 'User/get_menu_permissions'
-      updateMenuPermissionsList = 'User/update_menu_permissions'
-      updateRoleList = 'User/update_role'
-      createRoleList = 'User/create_role'
-      activeRole = 'User/activate_role'
-      deactivateRole = 'User/deactivate_role'
+     /*Grounds List*/
+     getGroundList = "Ground/get_ground_list"
+     addGround = "Ground/add_ground"
+     editGround = "Ground/edit_ground"
+     viewGround = "Ground/view_ground"
+     updateGround = "Ground/update_ground"
+     activateGround = "Ground/activate_ground"
+     deactivateGround = "Ground/deactivate_ground"
+     profileGround = "Ground/update_ground_photo"
 
-      /*   Client List */
-      createclient = 'Client/add_client'
-      updateclient = 'Client/update_client'
-      editclient = 'Client/edit_client'
-      activeClient = 'Client/activate_client'
-      deactiveClient = 'Client/deactivate_client'
-      getclientList = 'Client/get_client_list'
-      viewclient = 'Client/view_client'
-      lookupdropdown = 'Client/get_client_dropdown'
-      profileclient = "Client/update_client_profile"
+     groundUserClient = "User/get_user_client_list"
+     groundclubdropdown = "Ground/get_ground_dropdown"
 
-      /* Club List */
-      Clubdropdown = 'Club/get_club_dropdown'
-      getClubList = 'Club/get_club_list'
-      addClub = 'Club/add_club'
-      updateClub = 'Club/update_club'
-      editClub = 'Club/edit_club'
-      activateClub = 'Club/activate_club'
-      deactivateClub = 'Club/deactivate_club'
-      profileclub = "Club/club_profile_update"
 
-          /* Menu List*/
-     getMenuList ='Menu/get_menu_list'
-     getMenudropdown='Menu/get_menu_dropdown'
-     addMenus='Menu/add_menu'
-     editMenu='Menu/edit_menu'
-     updateMenu='Menu/update_menu'
-     activateMenu='Menu/activate_menu'
-     deactivateMenu='Menu/deactivate_menu'
-     endpointMenulist='Menu/get_endpoint_list'
-     addendpoint='Menu/add_endpoint'
-     menunameDropdown='Menu/get_endpoint_dropdown'
-     activateEndpoint='Menu/activate_endpoint'
-     deactivateEndpoint='Menu/deactivate_endpoint'
-     updateendpoint='Menu/update_endpoint'
-     endpointdropdown='Menu/get_endpoint_dropdown'
-     
+
+     /*competition */
+
+
+     getCompetitionList = 'Competition/get_competition_list'
+     createCompetition = 'Competition/add_competition'
+     updateCompetition = 'Competition/update_competition'
+     toggleCompetitionStatus = 'Competition/toggle_status'
+     dropdownlookups = 'Competition/get_competition_dropdown'
+     editcompetition = 'Competition/edit_competition'
+     activecompetition = 'Competition/activate_competition'
+     deactivecompetition = 'Competition/deactivate_competition'
+
+     compTeamsList = 'Competition/get_competition_teams'
+     compTeamsUpdate = 'Competition/update_competition_teams'
+     compTeamadd = 'Competition/add_competition_teams'
+     compOfficialList = 'Competition/get_competition_officials'
+     compOfficialupdate = 'Competition/add_competition_officials'
+     compgroundList = 'Competition/get_competition_grounds'
+     compgroundupdate = 'Competition/add_competition_grounds'
+     compplayerlist = 'Competition/get_competition_players'
+     compplayeradd = 'Competition/add_competition_players'
+     compplayerupdate = 'Competition/update_competition_players'
+     importcompetitionlist = 'Competition/get_competition_list_for_import'
+     importcompteamlist = 'Competition/get_team_list_for_import'
+     //  uploadCompProfile = 'Competition/upload_competition_profile'
+
+     /*   FIXTURE */
+     fixturedropdown = 'Fixture/get_fixtures_dropdown'
+     updatefixture = 'Fixture/update_fixtures'
+     addfixture = 'Fixture/add_fixtures'
+     editfixture = 'Fixture/edit_fixtures'
+     getfixture = 'Fixture/get_fixtures'
+     activefixture = 'Fixture/activate_fixtures'
+     deactivefixture = 'Fixture/deactivate_fixtures'
+
+     /* USERS LIST */
+     getRoleList = 'User/get_role_list'
+     getMenuPermissionsList = 'User/get_menu_permissions'
+     updateMenuPermissionsList = 'User/update_menu_permissions'
+     updateRoleList = 'User/update_role'
+     createRoleList = 'User/create_role'
+     activeRole = 'User/activate_role'
+     deactivateRole = 'User/deactivate_role'
+
+     /*   Client List */
+     createclient = 'Client/add_client'
+     updateclient = 'Client/update_client'
+     editclient = 'Client/edit_client'
+     activeClient = 'Client/activate_client'
+     deactiveClient = 'Client/deactivate_client'
+     getclientList = 'Client/get_client_list'
+     viewclient = 'Client/view_client'
+     lookupdropdown = 'Client/get_client_dropdown'
+     profileclient = "Client/update_client_profile"
+
+     /* Club List */
+     Clubdropdown = 'Club/get_club_dropdown'
+     getClubList = 'Club/get_club_list'
+     addClub = 'Club/add_club'
+     updateClub = 'Club/update_club'
+     editClub = 'Club/edit_club'
+     activateClub = 'Club/activate_club'
+     deactivateClub = 'Club/deactivate_club'
+     profileclub = "Club/club_profile_update"
+
+     /* Menu List*/
+     getMenuList = 'Menu/get_menu_list'
+     getMenudropdown = 'Menu/get_menu_dropdown'
+     addMenus = 'Menu/add_menu'
+     editMenu = 'Menu/edit_menu'
+     updateMenu = 'Menu/update_menu'
+     activateMenu = 'Menu/activate_menu'
+     deactivateMenu = 'Menu/deactivate_menu'
+     endpointMenulist = 'Menu/get_endpoint_list'
+     addendpoint = 'Menu/add_endpoint'
+     menunameDropdown = 'Menu/get_endpoint_dropdown'
+     activateEndpoint = 'Menu/activate_endpoint'
+     deactivateEndpoint = 'Menu/deactivate_endpoint'
+     updateendpoint = 'Menu/update_endpoint'
+     endpointdropdown = 'Menu/get_endpoint_dropdown'
+
 
      /* Users List */
 
