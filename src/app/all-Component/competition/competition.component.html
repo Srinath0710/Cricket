@@ -10,9 +10,9 @@
               Competitions
               <div class="">: {{ totalRecords }}</div>
             </div>
-            <button class="import-btn" (click)="importCompetiton()">
+            <!-- <button class="import-btn" (click)="importCompetiton()">
               <i class="pi pi-upload"></i> Import
-            </button>
+            </button> -->
             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="client_id" (ngModelChange)="loadCompetitions()" placeholder="Client Id" [filter]="true"
@@ -47,6 +47,7 @@
                     (keypress)="blockQuotesOnly($event)" (input)="sanitizeQuotesOnly('competition_name', $event)">
                 </div>
 
+
                 <button type="button" class="clear-button" (click)="clear()"> Clear </button>
 
               </form>
@@ -58,17 +59,57 @@
                 </button>
               </div>
 
+              <div class="popup-container">
+                <!-- Import Competition Dialog -->
+                <p-dialog header="Import Competition" [(visible)]="importDialogVisible" [modal]="true"
+                  [style]="{ width: '750px', height: '300px', 'border-radius': '1px' }" [closable]="true">
+
+                  <!-- Top Left: Select All Checkbox -->
+                  <div class="select-btn">
+                    <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll()" binary="true"
+                      inputId="selectAll">
+                    </p-checkbox>
+                    <label for="selectAll" class="ml-2"> All</label>
+                  </div>
+
+                  <!-- Your popup content (list/table/etc.) goes here -->
+                  <div>
+                    <!-- Example table -->
+                    <p-table [value]="filteredCompititionList" [paginator]="true" [rows]="5">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th>Name</th>
+                          <th>Match Type</th>
+                          <th>Category</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-row>
+                        <tr>
+                          <td>{{ row.name }}</td>
+                          <td>{{ row.match_type }}</td>
+                          <td>{{ row.category }}</td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+
+                  <ng-template pTemplate="footer">
+                    <p-button label="Cancel" (click)="importDialogVisible=false"></p-button>
+                    <p-button label="Import" (click)="confirmImport()"></p-button>
+                  </ng-template>
+                </p-dialog>
+
+              </div>
+              <button class="import-btn" (click)="importCompetiton()">
+                <i class="pi pi-upload"></i> Import
+              </button>
+
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="showDialog()"> <i
                     class="fas fa-plus"></i> Create</button>
-                <!-- <button class="btn btn-import">
-                  <i class="pi pi-upload"></i> Import
-                </button> -->
+
               </div>
-              <br>
-              <!-- <button class="new-button p-button-text" (click)="importCompetiton()">
-                <i class="pi pi-upload"></i> Import
-              </button> -->
+
 
             </div>
           </div>

@@ -25,6 +25,8 @@ import { Drawer } from 'primeng/drawer';
 import { TooltipModule } from 'primeng/tooltip';
 import { SpinnerService } from '../../services/Spinner/spinner.service';
 import { ToastService } from '../../services/toast.service';
+import { CheckboxModule } from 'primeng/checkbox';
+
 
 interface Competition {
   competition_id: number;
@@ -99,7 +101,8 @@ export interface ManageDataItem {
     CompPlayerComponent,
     CompMatchComponent,
     Drawer,
-    TooltipModule
+    TooltipModule,
+    CheckboxModule
 
   ],
   providers: [
@@ -157,6 +160,10 @@ export class CompetitionComponent implements OnInit {
   Actionflag = CricketKeyConstant.action_flag;
   default_img = CricketKeyConstant.default_image_url.teamimage;
   isEditOnce = false;
+
+  importDialogVisible: boolean = false;
+  showPopup: boolean = false;
+  selectAllChecked: boolean = false;
 
   filterChoosed = {
     tour_format_list: [],
@@ -675,35 +682,30 @@ export class CompetitionComponent implements OnInit {
   }
 
   importCompetiton() {
-    // this.loadCompetitions();
+    this.importDialogVisible = true;
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
-      competition_id: this.competitionData.competition_id.toString(),
+      competition_id: this.competitionData.competition_id?.toString(),
       page_no: this.first.toString(),
       records: this.rows.toString()
     };
 
-    this.spinnerService.raiseDataEmitterEvent('on');
+    this.spinnerService.raiseDataEmitterEvent('off');
+    console.log('Import Params:', params);
 
     this.apiService.post(this.urlConstant.importcompetitionlist, params).subscribe(
       (res: any) => {
-        this.spinnerService.raiseDataEmitterEvent('off');
+        // this.spinnerService.raiseDataEmitterEvent('off');
         console.log('Import Response:', res);
 
         if (res?.status_code === this.statusConstants.success && res?.status) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Import Successful',
-            life: 500,
-            detail: res.message || 'Teams imported successfully'
-          });
-        } else {
-          this.failedToast(res);
+          // this.successToast(res);
+          // this.loadCompetitions();
         }
       },
       (err: any) => {
-        this.spinnerService.raiseDataEmitterEvent('off');
+        // this.spinnerService.raiseDataEmitterEvent('off');
         console.error('Import Error:', err);
 
         if (err.status_code === this.statusConstants.refresh &&
@@ -716,23 +718,25 @@ export class CompetitionComponent implements OnInit {
     );
   }
 
+  confirmImport() {
+    // this.importCompetiton();
+    this.loadCompetitions();
+    this.importDialogVisible = false;
+    this.successToast({ message: 'Competition imported' });
+  }
+
+
+  toggleSelectAll() {
+    if (this.selectAllChecked) {
+      // this.filterChoosed.tour_format_list = this.filterTourformatList.map(item => item.config_id);
+      // this.filterChoosed.match_type = this.tourtypeList.map(item => item.config_id);
+      // this.filterChoosed.category = ['League', 'Knockout', 'Friendly', 'Tournament'];
+    } else {
+      this.filterChoosed.tour_format_list = [];
+      this.filterChoosed.match_type = [];
+      this.filterChoosed.category = [];
+      // this.loadCompetitions();
+    }
+  }
+
 }
-
-
-
-
-
-// applyFilters() {
-//   this.filteredCompititionList = this.compititionList.filter(comp => {
-//     const statusMatch = !this.filterStatus.length || this.filterStatus.includes(comp.record_status);
-//     const matchTypeMatch = !this.filterMatchType.length || this.filterMatchType.includes(comp.tour_type);
-//     const categoryMatch = !this.filterCategory.length || this.filterCategory.includes(comp.format);
-
-//     return statusMatch && matchTypeMatch && categoryMatch;
-//   });
-
-//   this.totalRecords = this.filteredCompititionList.length;
-//   this.first = 1; // reset pagination
-//   this.showFilters = true;
-//   this.loadCompetitions();
-// }

@@ -602,8 +602,8 @@ export class CompTeamComponent implements OnInit {
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.client_id?.toString(),
-      competition_id: this.CompetitionData.competition_id?.toString(),   // destination competition
-      src_competition_id: this['src_competition_id']?.toString(), // source competition
+      competition_id: this.CompetitionData.competition_id?.toString(),
+      src_competition_id: this['src_competition_id']?.toString(),
       team_list: this['team_list']?.toString(),
       page_no: this.first.toString(),
       records: this.rows.toString()
@@ -617,16 +617,16 @@ export class CompTeamComponent implements OnInit {
         this.spinnerService.raiseDataEmitterEvent('off');
         console.log('Import Response:', res);
 
-        if (res?.status_code === this.statusConstants.success && res?.status) {
-          this['messageService'].add({
-            severity: 'success',
-            summary: 'Import Successful',
-            life: 500,
-            detail: res.message || 'Teams imported successfully'
-          });
-        } else {
-          this.failedToast(res);
-        }
+        // if (res?.status_code === this.statusConstants.success && res?.status) {
+        //   this['messageService'].add({
+        //     severity: 'success',
+        //     summary: 'Import Successful',
+        //     life: 500,
+        //     detail: res.message || 'Teams imported successfully'
+        //   });
+        // } else {
+        //   this.failedToast(res);
+        // }
       },
       (err: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');

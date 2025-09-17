@@ -455,7 +455,40 @@
   padding: 0px 9px;
   cursor: pointer;
   margin: 7px;
-  height: 36px;
-  margin-bottom: 4px;
+  height: 31px;
+  margin-bottom: 7px;
   font-size: 13px;
 }
+
+/* .popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+} */
+
+.select-btn {
+  /* background-color: #3F51B5; */
+  /* color: white; */
+  border: none;
+  padding: 0px 9px;
+  cursor: pointer;
+  margin: 1px;
+  height: 24px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  padding-right: 93%;
+  /* border-radius: 1px; */
+}
+
+/* .popup-box {
+  width: 750px;
+  height: 300px;
+  border-radius: 1px;
+} */

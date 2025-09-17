@@ -297,8 +297,8 @@
             <span class="person-image-team-player">
               <img class="player-img Child-image" *ngIf="!selectedPlayer?.profile_image" [src]="default_img">
 
-              <img class="player-img Child-image" *ngIf="selectedPlayer?.profile_image" [src]="selectedPlayer.profile_image"
-                (error)="handleImageError($event, default_img)">
+              <img class="player-img Child-image" *ngIf="selectedPlayer?.profile_image"
+                [src]="selectedPlayer.profile_image" (error)="handleImageError($event, default_img)">
             </span>
           </div>
           <div class="ms-2 fw-bold fs-6">

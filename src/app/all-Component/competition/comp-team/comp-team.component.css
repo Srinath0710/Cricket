@@ -52,10 +52,11 @@
   padding: 0px 9px;
   cursor: pointer;
   margin: -50px;
-  height: 36px;
+  height: 32px;
   margin-bottom: 4px;
   font-size: 13px;
-  margin-left: 915px;
+  margin-left: 751px;
+  margin-top: -41px;
 }
 
 ::ng-deep .p-paginator {
