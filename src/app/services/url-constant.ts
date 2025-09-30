@@ -135,6 +135,8 @@ export class URLCONSTANT {
      compplayerupdate = 'Competition/update_competition_players'
      importcompetitionlist = 'Competition/get_competition_list_for_import'
      importcompteamlist = 'Competition/get_team_list_for_import'
+     importgetcompteamlist = 'Competition/import_competition_teams'
+     importcompplayerlist = 'Competition/get_player_list_for_import'
      //  uploadCompProfile = 'Competition/upload_competition_profile'
 
      /*   FIXTURE */

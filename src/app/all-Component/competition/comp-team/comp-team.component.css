@@ -49,15 +49,25 @@
   background-color: #5b6b8f;
   color: white;
   border: none;
-  padding: 0px 9px;
+  padding: 4px 12px;
   cursor: pointer;
-  margin: -50px;
-  height: 32px;
-  margin-bottom: 4px;
+  height: 31px;
   font-size: 13px;
-  margin-left: 751px;
-  margin-top: -41px;
+  /* border-radius: 4px; */
+  margin: -40px -40px 4px 751px;
+  border-radius: 1px;
+  /* your old positioning */
 }
+
+/* Override margins on small screens */
+@media (max-width: 768px) {
+  .import-btn {
+    margin: 8px 0 0 0;
+    /* reset margins */
+    align-self: flex-end;
+  }
+}
+
 
 ::ng-deep .p-paginator {
   flex-wrap: nowrap !important;
@@ -71,4 +81,41 @@
 
 ::ng-deep .p-paginator .p-dropdown {
   min-width: 70px !important;
+}
+
+.p-confirm-dialog-custom .icon-success {
+  color: #4CAF50;
+  font-size: 21px;
+}
+
+::ng-deep .import-popup {
+  /* border: 3px solid #007ad9; */
+  border-radius: 1px;
+}
+
+:host ::ng-deep .import-team-table .checkbox-col {
+  text-align: center;
+  width: 100px;
+  vertical-align: middle;
+  padding: 6px;
+}
+
+:host ::ng-deep .import-team-table .checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+:host ::ng-deep .import-team-table .p-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.import-team-table .p-datatable-thead>tr>th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8f9fa;
 }

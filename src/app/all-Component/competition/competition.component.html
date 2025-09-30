@@ -16,8 +16,7 @@
             <div class="col-md-2 d-flex align-items-center gap-3 dropdown-right me-2">
               <p-dropdown [options]="clientData" *ngIf="isClientShow" optionLabel="client_name" optionValue="client_id"
                 [(ngModel)]="client_id" (ngModelChange)="loadCompetitions()" placeholder="Client Id" [filter]="true"
-                appendTo="body" class=" w-100 
-                     drop-error header-drop">
+                appendTo="body" class=" w-100 drop-error header-drop">
 
                 <ng-template let-Client pTemplate="item">
                   <div class="country-item">
@@ -59,50 +58,73 @@
                 </button>
               </div>
 
-              <div class="popup-container">
-                <!-- Import Competition Dialog -->
-                <p-dialog header="Import Competition" [(visible)]="importDialogVisible" [modal]="true"
-                  [style]="{ width: '750px', height: '300px', 'border-radius': '1px' }" [closable]="true">
+              <!-- <div class="popup-container"> -->
+              <!-- Import Competition Dialog -->
+              <p-dialog [(visible)]="importDialogVisible" [modal]="true"
+                [style]="{ width: '800px', height: '300px', 'border-radius': '1px' }" [closable]="true">
 
-                  <!-- Top Left: Select All Checkbox -->
-                  <div class="select-btn">
-                    <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll()" binary="true"
-                      inputId="selectAll">
-                    </p-checkbox>
-                    <label for="selectAll" class="ml-2"> All</label>
+                <ng-template pTemplate="header">
+                  <div class="flex items-center gap-2">
+                    <i class="pi pi-upload"></i>
+                    <span class="font-bold text-lg">Import Competition</span>
+                    <!-- <h3>Import Competition</h3> -->
                   </div>
+                </ng-template>
 
-                  <!-- Your popup content (list/table/etc.) goes here -->
-                  <div>
-                    <!-- Example table -->
-                    <p-table [value]="filteredCompititionList" [paginator]="true" [rows]="5">
-                      <ng-template pTemplate="header">
-                        <tr>
-                          <th>Name</th>
-                          <th>Match Type</th>
-                          <th>Category</th>
-                        </tr>
-                      </ng-template>
-                      <ng-template pTemplate="body" let-row>
-                        <tr>
-                          <td>{{ row.name }}</td>
-                          <td>{{ row.match_type }}</td>
-                          <td>{{ row.category }}</td>
-                        </tr>
-                      </ng-template>
-                    </p-table>
+                <div class="row mb-1">
+                  <div class="col-md-3">
+                    <div class="d-flex align-items-center gap-3">
+                      <!-- All Checkbox -->
+                      <div class="select-btn d-flex align-items-center">
+                        <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll()" binary="true"
+                          inputId="selectAllAll">
+                        </p-checkbox>
+                        <label for="selectAllAll" class="ml-2">All</label>
+                      </div>
+
+                      <!-- Competition Checkbox -->
+                      <div class="select-btn d-flex align-items-center">
+                        <p-checkbox [(ngModel)]="selectAllChecked" binary="true" inputId="selectCompetition">
+                        </p-checkbox>
+                        <label for="selectCompetition" class="ml-2">Competition</label>
+                      </div>
+                    </div>
                   </div>
+                  <!-- <p-table [value]="filteredCompititionList" [paginator]="true" [rows]="5" [responsive]="true"
+                    [style]="{ 'min-width': '50rem' }" [scrollable]="true" scrollHeight="200px">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Name</th>
+                        <th>Match Type</th>
+                        <th>Category</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                      <tr>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.match_type }}</td>
+                        <td>{{ row.category }}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table> -->
+                </div>
 
-                  <ng-template pTemplate="footer">
+
+
+                <ng-template pTemplate="footer">
+                  <div class="flex justify-end gap-2">
                     <p-button label="Cancel" (click)="importDialogVisible=false"></p-button>
                     <p-button label="Import" (click)="confirmImport()"></p-button>
-                  </ng-template>
-                </p-dialog>
+                  </div>
+                </ng-template>
 
-              </div>
-              <button class="import-btn" (click)="importCompetiton()">
-                <i class="pi pi-upload"></i> Import
-              </button>
+              </p-dialog>
+
+
+              <!-- </div> -->
+              <!-- <button class="import-btn" (click)="importCompetiton()">
+                <i class="fa-solid fa-upload"></i> Import
+              </button> -->
 
               <div class="card flex justify-center">
                 <button *ngIf="!ShowForm" class="new-button p-button-text" (click)="showDialog()"> <i

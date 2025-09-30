@@ -17,6 +17,8 @@ import { Dialog } from "primeng/dialog";
 import { UploadImgService } from '../../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { profile } from 'console';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ChangeDetectorRef } from '@angular/core';
 interface Team {
   team_id: number;
   team_name: string;
@@ -33,7 +35,8 @@ interface Team {
     ToastModule,
     Tooltip,
     Dialog,
-    ImageCropperComponent
+    ImageCropperComponent,
+    CheckboxModule
   ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
@@ -127,6 +130,10 @@ export class CompPlayerComponent implements OnInit {
   men_img = CricketKeyConstant.default_image_url.menimg;
   women_img = CricketKeyConstant.default_image_url.womenimg;
 
+  importDialogVisisble: boolean = false;
+  selectAllChecked: boolean = false;
+  ngZone: any;
+
 
   constructor(
     private apiService: ApiService,
@@ -137,7 +144,8 @@ export class CompPlayerComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private spinnerService: SpinnerService,
     private toastService: ToastService,
-    private uploadImgService: UploadImgService
+    private uploadImgService: UploadImgService,
+    private cd: ChangeDetectorRef
 
   ) { }
   ngOnInit() {
@@ -766,6 +774,55 @@ export class CompPlayerComponent implements OnInit {
     }
   }
 
+  openImportDialog() {
+    this.importDialogVisisble = true;
+  }
+
+  importCompetitionPlayersList(event?: any) {
+    const pageNo = event ? Math.floor(event.first / event.rows) + 1 : Math.floor(this.first / this.rows) + 1;
+    const pageSize = event ? event.rows : this.rows;
+
+    const params: any = {
+      client_id: this.CompetitionData.client_id?.toString(),
+      user_id: this.user_id?.toString(),
+      competition_id: this.CompetitionData.competition_id?.toString(),
+      team_id: this.teamID?.toString(),
+      page_no: pageNo.toString(),
+      records: pageSize.toString()
+    };
+
+    this.apiService.post(this.urlConstant.importcompplayerlist, params).subscribe(
+      (res: any) => {
+        console.log('Import API response:', res.data);
+        this.ImportData = [...(res.data.all_players ?? [])];
+        this.targetProducts = [...(res.data.selected_players ?? [])];
+        this.ImportMappingData = [...(res.data.import_mapping ?? [])];
+        this.totalData = res.data.total_records ?? 0;
+        this.importDialogVisisble = true;
+        this.cd.detectChanges();
+      },
+      (err: any) => {
+        this.failedToast(err.error);
+      }
+    );
+
+  }
 
 
+  toggleSelectAll(): void {
+    if (this.selectAllChecked) {
+      this.targetProducts = [...this.ImportData];
+    } else {
+      this.targetProducts = [];
+    }
+  }
+
+  onCancelImport() {
+    this.importDialogVisisble = false;
+    this.selectAllChecked = false;
+  }
+
+  onClearImport() {
+    this.selectAllChecked = false;
+  }
 }

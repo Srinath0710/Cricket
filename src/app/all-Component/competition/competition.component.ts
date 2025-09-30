@@ -164,6 +164,7 @@ export class CompetitionComponent implements OnInit {
   importDialogVisible: boolean = false;
   showPopup: boolean = false;
   selectAllChecked: boolean = false;
+  importCompetitionList: any[] = [];
 
   filterChoosed = {
     tour_format_list: [],
@@ -202,6 +203,7 @@ export class CompetitionComponent implements OnInit {
   };
   isClientShow: boolean = false;
   paginatedList: Competition[] = [];
+  importCompetitions: any = [];
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -690,32 +692,19 @@ export class CompetitionComponent implements OnInit {
       page_no: this.first.toString(),
       records: this.rows.toString()
     };
-
-    this.spinnerService.raiseDataEmitterEvent('off');
-    console.log('Import Params:', params);
-
-    this.apiService.post(this.urlConstant.importcompetitionlist, params).subscribe(
-      (res: any) => {
-        // this.spinnerService.raiseDataEmitterEvent('off');
-        console.log('Import Response:', res);
-
-        if (res?.status_code === this.statusConstants.success && res?.status) {
-          // this.successToast(res);
-          // this.loadCompetitions();
+    this.apiService.post(this.urlConstant.getCompetitionList, params).subscribe({
+      next: (res: any) => {
+        if (res.status) {
+          this.importCompetitionList = res.data.competitions; // <-- Corrected line
+        } else {
+          this.importCompetitionList = []; // <-- Corrected property
         }
       },
-      (err: any) => {
-        // this.spinnerService.raiseDataEmitterEvent('off');
-        console.error('Import Error:', err);
-
-        if (err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg) {
-          this.apiService.RefreshToken();
-        } else {
-          this.failedToast(err);
-        }
+      error: (err) => {
+        console.error('Error fetching competitions:', err);
+        this.importCompetitionList = []; // <-- Corrected property
       }
-    );
+    });
   }
 
   confirmImport() {
@@ -732,9 +721,9 @@ export class CompetitionComponent implements OnInit {
       // this.filterChoosed.match_type = this.tourtypeList.map(item => item.config_id);
       // this.filterChoosed.category = ['League', 'Knockout', 'Friendly', 'Tournament'];
     } else {
-      this.filterChoosed.tour_format_list = [];
-      this.filterChoosed.match_type = [];
-      this.filterChoosed.category = [];
+      // this.filterChoosed.tour_format_list = [];
+      // this.filterChoosed.match_type = [];
+      // this.filterChoosed.category = [];
       // this.loadCompetitions();
     }
   }

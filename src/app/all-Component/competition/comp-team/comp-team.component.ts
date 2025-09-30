@@ -15,6 +15,8 @@ import { ToastService } from '../../../services/toast.service';
 import { DialogModule } from 'primeng/dialog';
 import { UploadImgService } from '../../../Profile_Img_service/upload-img.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ConfirmDialogModule, ConfirmDialogStyle } from 'primeng/confirmdialog';
 @Component({
   selector: 'app-comp-team',
   imports: [
@@ -26,7 +28,9 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
     TableModule,
     TooltipModule,
     DialogModule,
-    ImageCropperComponent
+    ImageCropperComponent,
+    CheckboxModule,
+    ConfirmDialogModule
 
   ],
   templateUrl: './comp-team.component.html',
@@ -47,8 +51,9 @@ export class CompTeamComponent implements OnInit {
   @ViewChild('dt2') dt2: Table | undefined;
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
   @Output() TeamUpdate = new EventEmitter<void>();
-  client_id: number = 0;
+  // client_id: number = 0;
   user_id: number = Number(localStorage.getItem('user_id'));
+  client_id: number = Number(localStorage.getItem('client_id'));
   team_id: any;
   public compTeamsList = [];
   public ManageTeamsForm!: FormGroup;
@@ -56,6 +61,7 @@ export class CompTeamComponent implements OnInit {
   selectedTeam: any = null;
   default_img = CricketKeyConstant.default_image_url.teamimage;
   statusConstants = CricketKeyConstant.status_code;
+  conditionConstants = CricketKeyConstant.condition_key;
   teams: any[] = []
   popUpTeamList: any[] = [];
   targetTeams: any[] = [];
@@ -87,6 +93,13 @@ export class CompTeamComponent implements OnInit {
   imageBase64: any = null;
   showCropperModal: boolean = false;
   croppedImage: any;
+
+  importDialogVisisble: boolean = false;
+  src_competition_id: number | null = null;
+  team_list: any[] = [];
+  selectAllChecked: boolean = false;
+  importCompetitionTeams: any[] = [];
+
 
 
   constructor(
@@ -599,56 +612,138 @@ export class CompTeamComponent implements OnInit {
   }
 
   importCompetitionTeam() {
+    this.importDialogVisisble = true;
+
     const params = {
       user_id: this.user_id?.toString(),
-      client_id: this.client_id?.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
       competition_id: this.CompetitionData.competition_id?.toString(),
-      src_competition_id: this['src_competition_id']?.toString(),
-      team_list: this['team_list']?.toString(),
-      page_no: this.first.toString(),
+      src_competition_id: this.CompetitionData.competition_id?.toString(),
+      team_id: this.team_id?.toString(),
+      page_no: (Math.floor(this.first / this.rows) + 1).toString(),
       records: this.rows.toString()
     };
 
     this.spinnerService.raiseDataEmitterEvent('on');
 
-
-    this.apiService.post(this.urlConstant.importcompetitionlist, params).subscribe(
+    this.apiService.post(this.urlConstant.importcompteamlist, params).subscribe(
       (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
-        console.log('Import Response:', res);
+        console.log('Import API response:', res?.data);
 
-        // if (res?.status_code === this.statusConstants.success && res?.status) {
-        //   this['messageService'].add({
-        //     severity: 'success',
-        //     summary: 'Import Successful',
-        //     life: 500,
-        //     detail: res.message || 'Teams imported successfully'
-        //   });
-        // } else {
-        //   this.failedToast(res);
-        // }
+        if (Array.isArray(res?.data?.teams)) {
+          this.importCompetitionTeams = res.data.teams;
+        } else {
+          this.importCompetitionTeams = [];
+        }
       },
       (err: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         console.error('Import Error:', err);
 
-        if (err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg) {
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
           this.apiService.RefreshToken();
         } else {
           this.failedToast(err);
         }
       }
     );
+
+  }
+
+  importCompetitionTeamsList() {
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
+      competition_id: this.CompetitionData.competition_id?.toString(),
+      src_competition_id: this.src_competition_id?.toString(),
+      team_list: this.team_list,
+      page_no: (Math.floor(this.first / this.rows) + 1).toString(),
+      records: this.rows.toString()
+    };
+
+    this.spinnerService.raiseDataEmitterEvent('on');
+
+    this.apiService.post(this.urlConstant.importgetcompteamlist, params).subscribe(
+      (res: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.successToast(res);
+        this.importDialogVisisble = false;
+        this.gridLoad();
+      },
+      (err: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        if (
+          err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg
+        ) {
+          this.apiService.RefreshToken();
+        } else {
+          this.failedToast(err);
+        }
+      }
+    );
+    this.importDialogVisisble = false;
+  }
+
+  toggleSelectAll() {
+    if (this.importCompetitionTeams?.length) {
+      this.importCompetitionTeams.forEach(team => (team.selected = this.selectAllChecked));
+    }
+  }
+
+  clearSelection() {
+    this.selectAllChecked = false;
+    if (this.importCompetitionTeams?.length) {
+      this.importCompetitionTeams.forEach(team => (team.selected = false));
+    }
+    this.team_list = [];
   }
 
 
-  // onImageUpload(event: any) {
-  //   const file = event.files[0];
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     this.uploadedImage = reader.result;
-  //   };
-  //   reader.readAsDataURL(file);
+  // confirmImport() {
+  //   const message = `Are you sure you want to proceed?`;
+  //   this.confirmationService.confirm({
+  //     header: '',
+  //     message: `
+  //     <div class="custom-confirm-content">
+  //       <i class="pi pi-download warning-icon icon-success"></i>
+  //       <div class="warning">Import</div>
+  //       <div class="message-text">${message}</div>
+  //     </div>
+  //   `,
+  //     acceptLabel: 'Yes',
+  //     rejectLabel: 'No',
+  //     accept: () => {
+  //       this.importCompetitionTeamsList();
+  //     },
+  //     reject: () => { }
+  //   });
   // }
+
+  confirmImport() {
+    const selectedTeams = this.importCompetitionTeams
+      .filter(team => team.selected)
+      .map(team => team.team_id || team.id);
+
+    if (!selectedTeams.length) {
+      this.failedToast("Please select at least one team to import");
+      return;
+    }
+
+    this.team_list = selectedTeams;
+
+    this.importCompetitionTeamsList();
+  }
+
+
+
+  CancelImportDialog() {
+    this.importDialogVisisble = false;
+    this.clearSelection();
+  }
+
 }
