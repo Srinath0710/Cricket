@@ -1,25 +1,29 @@
-<button class="import-btn" (click)="openImportDialog()">
+<button class="import-btn" (click)="importCompetitionPlayersList()">
   <i class="fa-solid fa-upload"></i>
   Import
 </button>
 <div class="team-body">
   <!-- <div class="card flex justify-center"> -->
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
-    [style]="{ width: '50vw', height: '60vh', 'border-radius': '6px' }" [dismissableMask]="true">
-    <div class="card flex justify-center" style="border-radius: 1px;">
+    [style]="{ width: '50vw', height: '60vh', 'border-radius': '1px' }" [dismissableMask]="true">
+
+    <div class="card flex justify-center mb-3" style="border-radius: 1px;">
       <h3>Import Competition Players</h3>
     </div>
 
-    <p-table [value]="ImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true" [rows]="10">
+    <p-table [value]="ImportData" [(ngModel)]="targetProducts" [paginator]="true" [rows]="5"
+      [rowsPerPageOptions]="[5,10,20]" [showCurrentPageReport]="false">
+
       <ng-template pTemplate="header">
         <tr>
-          <th style="width:3rem">
+          <th>
             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
           </th>
           <th>Player Name</th>
           <th>Team</th>
         </tr>
       </ng-template>
+
       <ng-template pTemplate="body" let-player>
         <tr [pSelectableRow]="player">
           <td>
@@ -30,7 +34,6 @@
         </tr>
       </ng-template>
 
-      <!-- Empty message -->
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="3" class="text-center p-3">No Players Found</td>
@@ -40,14 +43,20 @@
 
     <div class="row mt-4 sticky-footer-buttons">
       <div class="col-12 text-end">
-        <button type="button" class="submit-btn margin-right save-button"
-          (click)="importCompetitionPlayersList()">Import</button>
-        <button type="button" class="custom-cancel-btn submit-btn margin-right" (click)="onClearImport()">Clear</button>
-        <button type="button" class="custom-cancel-btn submit-btn margin-right"
-          (click)="onCancelImport()">Cancel</button>
+        <button type="button" class="submit-btn margin-right save-button" (click)="importCompetitionPlayersList()">
+          Import
+        </button>
+        <button type="button" class="custom-cancel-btn submit-btn margin-right" (click)="onClearImport()">
+          Clear
+        </button>
+        <button type="button" class="custom-cancel-btn submit-btn margin-right" (click)="onCancelImport()">
+          Cancel
+        </button>
       </div>
     </div>
   </p-dialog>
+
+
   <!-- </div> -->
   <div class="team-container">
     <div class="team-list">
