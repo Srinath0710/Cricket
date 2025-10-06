@@ -82,8 +82,8 @@ export class CompPlayerComponent implements OnInit {
   player_id: any;
   user_id: number = Number(localStorage.getItem('user_id'));
   ImportMappingData: any;
-  targetProducts: any;
-  ImportData: any;
+  targetProducts: any[] = [];
+  ImportData: any[] = [];
   rows: number = 10;
   totalData: any = 0;
   pageData: number = 0;

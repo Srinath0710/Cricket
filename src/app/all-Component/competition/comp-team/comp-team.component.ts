@@ -612,7 +612,7 @@ export class CompTeamComponent implements OnInit {
   }
 
   importCompetitionTeam(srcCompetitionId?: number) {
-    // Set source competition ID
+    // Set source competition ID (default to current if not passed)
     this.src_competition_id = srcCompetitionId ?? this.CompetitionData.competition_id;
 
     // Clear previous team list
@@ -651,14 +651,22 @@ export class CompTeamComponent implements OnInit {
   }
 
 
-
   importCompetitionTeamsList() {
+    const selectedTeams = this.importCompetitionTeams
+      .filter(team => team.selected)
+      .map(team => team.team_id);
+
+    if (!selectedTeams.length) {
+      this.failedToast("Please select at least one team to import");
+      return;
+    }
+
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.CompetitionData.client_id?.toString(),
-      competition_id: this.CompetitionData.competition_id?.toString(),
-      src_competition_id: this.CompetitionData.competition_id?.toString(), // ✅ fixed
-      team_list: this.team_list, // must contain team_id[]
+      competition_id: this.CompetitionData.competition_id?.toString(),  // target competition
+      src_competition_id: this.src_competition_id?.toString(),          // <-- use the stored source competition ID
+      team_list: selectedTeams.join(','),
       page_no: (Math.floor(this.first / this.rows) + 1).toString(),
       records: this.rows.toString()
     };
@@ -669,15 +677,13 @@ export class CompTeamComponent implements OnInit {
       (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         this.successToast(res);
-        this.importDialogVisisble = false; // ✅ close only after success
+        this.importDialogVisisble = false;
         this.gridLoad();
       },
       (err: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
-        if (
-          err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg
-        ) {
+        if (err.status_code === this.statusConstants.refresh &&
+          err.error.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
           this.failedToast(err);
