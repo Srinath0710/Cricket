@@ -218,7 +218,7 @@
   min-width: 70px !important;
 }
 
-.import-btn {
+/* .import-btn {
   background-color: #5b6b8f;
   color: white;
   border: none;
@@ -229,7 +229,7 @@
   border-radius: 1px;
   margin: -54px -22px 1px 78%;
   margin-top: -7px;
-}
+} */
 
 :host ::ng-deep .team-header {
   display: flex;
@@ -258,4 +258,29 @@
 
 .checkbox-input {
   border-radius: 1px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.import-btn {
+  background-color: #5b6b8f;
+  color: white;
+  border: none;
+  padding: -0.5rem 1.2rem;
+  font-size: 13px !important;
+  /* font-weight: 500; */
+  border-radius: 1px;
+  cursor: pointer;
+  margin-top: -39px;
+  margin-right: -792px;
+  height: 31px;
+  width: 81px;
+}
+
+.import-btn:hover {
+  background-color: #16a34a;
 }

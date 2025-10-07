@@ -1,7 +1,9 @@
-<button class="import-btn" (click)="openImportDialog()">
-  <i class="fa-solid fa-upload"></i>
-  Import
-</button>
+<div class="toolbar mb-3 flex justify-content-center">
+  <button class="import-btn" (click)="openImportDialog()">
+    <i class="fa-solid fa-upload"></i>
+    Import
+  </button>
+</div>
 <div class="team-body">
   <!-- <div class="card flex justify-center"> -->
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
