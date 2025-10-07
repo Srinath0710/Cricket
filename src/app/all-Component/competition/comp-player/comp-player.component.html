@@ -1,4 +1,4 @@
-<button class="import-btn" (click)="importCompetitionPlayersList()">
+<button class="import-btn" (click)="openImportDialog()">
   <i class="fa-solid fa-upload"></i>
   Import
 </button>
@@ -11,16 +11,29 @@
       <h3>Import Competition Players</h3>
     </div>
 
-    <p-table [value]="ImportData" [(ngModel)]="targetProducts" [paginator]="true" [rows]="5"
-      [rowsPerPageOptions]="[5,10,20]" [showCurrentPageReport]="false">
-
+    <p-table [value]="ImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true" [rows]="5"
+      [rowsPerPageOptions]="[5, 10, 20]" [showCurrentPageReport]="false" (onPage)="importCompetitionPlayersList($event)"
+      [totalRecords]="totalData" [lazy]="true">
       <ng-template pTemplate="header">
         <tr>
           <th>
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            <p-checkbox [(ngModel)]="selectAllAll" (onChange)="toggleSelectAll('all')" binary="true"
+              inputId="selectAllAll" [styleClass]="'checkbox-input'"></p-checkbox>
+            <label for="selectAllAll" class="ml-1">All</label>
           </th>
-          <th>Player Name</th>
-          <th>Team</th>
+
+          <th>
+            <!-- <p-checkbox [(ngModel)]="selectAllPlayer" (onChange)="toggleSelectAll('player')" binary="true"
+              inputId="selectAllPlayers"></p-checkbox> -->
+            <label for="selectAllPlayers" class="ml-1">Player Name</label>
+          </th>
+
+          <th>
+            <!-- <p-checkbox [(ngModel)]="selectAllTeam" (onChange)="toggleSelectAll('team')" binary="true"
+              inputId="selectAllTeams"></p-checkbox> -->
+            <label for="selectAllTeams" class="ml-1">Team Name</label>
+          </th>
+
         </tr>
       </ng-template>
 
@@ -41,6 +54,7 @@
       </ng-template>
     </p-table>
 
+
     <div class="row mt-4 sticky-footer-buttons">
       <div class="col-12 text-end">
         <button type="button" class="submit-btn margin-right save-button" (click)="importCompetitionPlayersList()">
@@ -55,6 +69,7 @@
       </div>
     </div>
   </p-dialog>
+
 
 
   <!-- </div> -->

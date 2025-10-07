@@ -133,6 +133,13 @@ export class CompPlayerComponent implements OnInit {
   importDialogVisisble: boolean = false;
   selectAllChecked: boolean = false;
   ngZone: any;
+  teamFilterOptions: any[] = [];
+  selectedTeamFilter: string | null = null;
+  allPlayersData: any[] = [];
+  showTeamFilter: boolean = false;
+  selectAllAll: boolean = false;
+  selectAllPlayer: boolean = false;
+  selectAllTeam: boolean = false;
 
 
   constructor(
@@ -774,65 +781,124 @@ export class CompPlayerComponent implements OnInit {
     }
   }
 
-  // openImportDialog() {
-  //   this.importDialogVisisble = true;
-  // }
+
 
   importCompetitionPlayersList(event?: any) {
-    const pageNo = event ? Math.floor(event.first / event.rows) + 1 : Math.floor(this.first / this.rows) + 1;
-    const pageSize = event ? event.rows : this.rows;
+    const pageNo = event ? Math.floor(event.first / event.rows) + 1 : 1;
+    const pageSize = event ? event.rows : 5;
+
+    if (!this.CompetitionData || this.teamID === null) {
+      console.log('Competition!');
+      return;
+    }
 
     const params: any = {
-      client_id: this.CompetitionData?.client_id?.toString(),
+
       user_id: this.user_id?.toString(),
-      competition_id: this.CompetitionData?.competition_id?.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
+      competition_id: this.CompetitionData.competition_id?.toString(),
       team_id: this.teamID?.toString(),
       page_no: pageNo.toString(),
-      records: pageSize.toString()
+      records: pageSize.toString(),
     };
 
     this.apiService.post(this.urlConstant.importcompplayerlist, params).subscribe(
       (res: any) => {
-        console.log('Import API response:', res);
-        const players = res?.data?.player_list || res?.data?.all_players || [];
+        const players = res?.data?.player_list || [];
         const selectedPlayers = res?.data?.selected_players || [];
-        const importMap = res?.data?.import_mapping || [];
-        this.ImportData = players.map((p: any) => ({
+
+        this.allPlayersData = players.map((p: any) => ({
           player_id: p.player_id ?? p.id ?? '',
           player_name: p.player_name ?? p.name ?? p.full_name ?? 'N/A',
-          team_name: p.team_name ?? p.team ?? 'N/A'
+          team_name: p.team_name ?? p.team ?? 'Unknown Team',
         }));
-
+        this.ImportData = [...this.allPlayersData];
         this.targetProducts = [...selectedPlayers];
-        this.ImportMappingData = [...importMap];
+
         this.totalData = res?.data?.total_records ?? this.ImportData.length;
+
         this.importDialogVisisble = true;
         this.cd.detectChanges();
       },
       (err: any) => {
-        this.failedToast(err.error);
+        this.ImportData = [];
       }
     );
+  }
 
+  onTeamFilterChange(event: any) {
+    const selectedTeam = event?.value ?? null;
+    this.selectedTeamFilter = selectedTeam;
 
+    if (selectedTeam) {
+      this.ImportData = this.allPlayersData.filter(
+        (p) => (p.team_name ?? '').trim() === selectedTeam.trim()
+      );
+    } else {
+      this.ImportData = [...this.allPlayersData];
+    }
+    // this.cd.detectChanges();
+  }
+
+  openImportDialog() {
+    this.importDialogVisisble = true;
+    this.importCompetitionPlayersList();
+  }
+
+  toggleSelectAll(type: string): void {
+    let selectedPlayers: any[] = [];
+
+    if (this.selectAllAll) {
+      selectedPlayers = [...this.ImportData];
+    }
+    if (this.selectAllPlayer) {
+      this.ImportData.forEach(player => {
+        if (!selectedPlayers.some(p => p.player_id === player.player_id)) {
+          selectedPlayers.push(player);
+        }
+      });
+    }
+
+    if (this.selectAllTeam) {
+      this.ImportData.forEach(player => {
+        if (!selectedPlayers.some(p => p.player_id === player.player_id)) {
+          selectedPlayers.push(player);
+        }
+      });
+    }
+    if (!this.selectAllAll && !this.selectAllPlayer && !this.selectAllTeam) {
+      selectedPlayers = [];
+    }
+    this.targetProducts = selectedPlayers;
   }
 
 
-
-  // toggleSelectAll(): void {
-  //   if (this.selectAllChecked) {
-  //     this.targetProducts = [...this.ImportData];
-  //   } else {
-  //     this.targetProducts = [];
-  //   }
-  // }
 
   onCancelImport() {
     this.importDialogVisisble = false;
-    this.selectAllChecked = false;
+
+    // reset all checkbox states
+    this.selectAllAll = false;
+    this.selectAllPlayer = false;
+    this.selectAllTeam = false;
+
+    // clear selected rows
+    this.targetProducts = [];
   }
 
   onClearImport() {
-    this.selectAllChecked = false;
+    // reset all checkbox states
+    this.selectAllAll = false;
+    this.selectAllPlayer = false;
+    this.selectAllTeam = false;
+
+    // clear selected rows
+    this.targetProducts = [];
   }
+
+
+  toggleTeamFilter() {
+    this.showTeamFilter = !this.showTeamFilter;
+  }
+
 }
