@@ -251,8 +251,7 @@
 :host ::ng-deep .p-dropdown.team-filter-dropdown {
   width: 8rem !important;
   font-size: 0.85rem !important;
-  /* margin-top: 0.1rem !important; */
-  margin-left: 0.9rem !important;
+  margin-left: 4.9rem !important;
   border-radius: 1px;
 }
 
@@ -272,7 +271,7 @@
   border: none;
   padding: -0.5rem 1.2rem;
   font-size: 13px !important;
-  /* font-weight: 500; */
+  /* position: fixed; */
   border-radius: 1px;
   cursor: pointer;
   margin-top: -39px;
@@ -281,6 +280,57 @@
   width: 81px;
 }
 
-.import-btn:hover {
-  background-color: #16a34a;
+/* :host ::ng-deep .import-team-table .checkbox-col {
+  text-align: center;
+  width: 100px;
+  vertical-align: middle;
+  padding: 6px;
+}
+
+:host ::ng-deep .import-team-table .checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+:host ::ng-deep .import-team-table .p-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+.import-team-table .p-datatable-thead>tr>th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8f9fa;
+}
+
+.team-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.team-filter-dropdown {
+  width: 120px !important;
+  font-size: 13px !important;
+}
+
+:host ::ng-deep .team-filter-dropdown .p-dropdown {
+  height: 32px !important;
+  line-height: 30px !important;
+}
+
+.filter-icon {
+  font-size: 1rem;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.filter-icon:hover {
+  color: #007bff;
 }
