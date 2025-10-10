@@ -811,18 +811,43 @@ export class CompPlayerComponent implements OnInit {
 
     this.apiService.post(this.urlConstant.importcompplayerlist, params).subscribe({
       next: (res: any) => {
+        console.log('Raw API Response:', res); // Debug log
+
+        // Check the actual structure of the response
         const teams = res?.data?.teams ?? [];
+
+        // Debug: Log what we're receiving
+        console.log('Teams data:', teams);
+
+        // Improved mapping with better fallbacks
         this.ImportData = teams
           .filter((t: any) => t.competition_id === this.CompetitionData.competition_id)
-          .map((t: any) => ({
-            team_id: t.team_id ?? '',
-            team_name: t.team_name ?? 'Unknown Team',
-            player_id: t.player_id ?? '',
-            player_name: t.player_name ?? 'Unknown Player',
-            competition_id: t.competition_id ?? '',
-          }));
+          .map((t: any) => {
+            // Check what data is actually available
+            console.log('Team player data:', t);
+
+            return {
+              team_id: t.team_id ?? '',
+              team_name: t.team_name ?? 'Unknown Team',
+              player_id: t.player_id ?? t.id ?? '', // Try multiple possible ID fields
+              player_name: t.player_name ?? t.name ?? t.full_name ?? 'Unknown Player',
+              competition_id: t.competition_id ?? '',
+              // Add any other fields you might need
+              profile_image: t.profile_image ?? 'assets/images/player.jpg'
+            };
+          });
+
+        console.log('Mapped ImportData:', this.ImportData);
+
+        this.targetProducts = [...this.ImportData];
 
         this.teamDropdownList = this.getUniqueTeams(this.ImportData);
+        this.selectedPlayersRaw = res.data.selected_players ?? [];
+        this.allPlayersRaw = res.data.all_players ?? [];
+
+        console.log('targetPlayers:', this.targetProducts);
+
+        this.setDefaultImages(this.ImportData);
         this.applyTeamFilter();
 
         // ✅ Re-check if all current page players are selected
@@ -842,7 +867,17 @@ export class CompPlayerComponent implements OnInit {
     });
   }
 
-  // 🆕 Add this helper method
+  applyTeamFilter() {
+    if (this.selectedTeamId) {
+      this.filteredImportData = this.ImportData.filter(
+        (item) => item.team_id === this.selectedTeamId
+      );
+    } else {
+      this.filteredImportData = [...this.ImportData];
+    }
+  }
+
+
   updateSelectAllStatus() {
     if (!this.filteredImportData || this.filteredImportData.length === 0) {
       this.selectAllChecked = false;
@@ -882,15 +917,15 @@ export class CompPlayerComponent implements OnInit {
     this.showTeamFilterDropdown = false;
   }
 
-  applyTeamFilter() {
-    if (this.selectedTeamId) {
-      this.filteredImportData = this.ImportData.filter(
-        (item) => item.team_id === this.selectedTeamId
-      );
-    } else {
-      this.filteredImportData = [...this.ImportData];
-    }
-  }
+  // applyTeamFilter() {
+  //   if (this.selectedTeamId) {
+  //     this.filteredImportData = this.ImportData.filter(
+  //       (item) => item.team_id === this.selectedTeamId
+  //     );
+  //   } else {
+  //     this.filteredImportData = [...this.ImportData];
+  //   }
+  // }
 
 
   toggleSelectAll(type: string) {
