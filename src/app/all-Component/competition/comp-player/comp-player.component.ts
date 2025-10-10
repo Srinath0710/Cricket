@@ -19,6 +19,8 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { profile } from 'console';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ChangeDetectorRef } from '@angular/core';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ConfirmDialogModule, ConfirmDialogStyle } from 'primeng/confirmdialog';
 interface Team {
   team_id: number;
   team_name: string;
@@ -36,7 +38,9 @@ interface Team {
     Tooltip,
     Dialog,
     ImageCropperComponent,
-    CheckboxModule
+    CheckboxModule,
+    OverlayPanelModule,
+    ConfirmDialogModule
   ],
   templateUrl: './comp-player.component.html',
   styleUrl: './comp-player.component.css',
@@ -799,6 +803,7 @@ export class CompPlayerComponent implements OnInit {
       user_id: String(this.user_id ?? ''),
       client_id: String(this.CompetitionData.client_id ?? ''),
       competition_id: String(this.CompetitionData.competition_id ?? ''),
+      team_id: this.selectedTeamId?.toString() ?? '',
       page_no: String(pageNo),
       records: String(pageSize),
     };
@@ -806,29 +811,39 @@ export class CompPlayerComponent implements OnInit {
     this.apiService.post(this.urlConstant.importcompplayerlist, params).subscribe({
       next: (res: any) => {
         const teams = res?.data?.teams ?? [];
-        console.log('✅ Teams:', teams);
-        // console.log('✅ Players:', this.players);
+        this.ImportData = teams
+          .filter((t: any) => t.competition_id === this.CompetitionData.competition_id)
+          .map((t: any) => ({
+            team_id: t.team_id ?? '',
+            team_name: t.team_name ?? 'Unknown Team',
+            player_id: t.player_id ?? '',
+            player_name: t.player_name ?? 'Unknown Player',
+            competition_id: t.competition_id ?? '',
+            selected: false,
+            teamSelected: false,
+          }));
 
-        this.ImportData = teams.map((t: any) => ({
-          team_id: t.team_id ?? '',
-          team_name: t.team_name ?? 'Unknown Team',
-          player_name: t.player_name ?? 'Unknown Player',
-          competition_id: t.competition_id ?? '',
-        }));
 
-        const uniqueTeams = this.getUniqueTeams(this.ImportData);
-        this.teamDropdownList = uniqueTeams;
+        this.teamDropdownList = this.getUniqueTeams(this.ImportData);
+
 
         this.applyTeamFilter();
+
+
+        this.selectAllChecked = false;
+        this.targetProducts = [];
+        this.importDialogVisisble = false;
 
         this.totalData = this.filteredImportData.length;
         this.importDialogVisisble = true;
         this.cd.detectChanges();
       },
       error: (err) => {
-        console.error('❌ Error fetching team list:', err);
+        console.error('Error fetching players:', err);
         this.ImportData = [];
         this.filteredImportData = [];
+        this.teamDropdownList = [];
+        this.targetProducts = [];
         this.totalData = 0;
       },
     });
@@ -901,7 +916,7 @@ export class CompPlayerComponent implements OnInit {
 
 
   onClearImport() {
-
+    this.selectAllChecked = false;
     this.selectAllAll = false;
     this.selectAllPlayer = false;
     this.selectAllTeam = false;
@@ -910,7 +925,15 @@ export class CompPlayerComponent implements OnInit {
     this.targetProducts = [];
 
     this.selectedTeamId = '';
-    this.filteredImportData = [...this.ImportData];
+    this.filteredImportData = this.ImportData.map(item => ({
+      ...item,
+      selected: false
+    }));
+
+    this.ImportData = this.ImportData.map(item => ({
+      ...item,
+      selected: false
+    }));
   }
 
 

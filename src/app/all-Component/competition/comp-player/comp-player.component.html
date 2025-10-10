@@ -4,6 +4,8 @@
     Import
   </button>
 </div>
+<!-- <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
+  [styleClass]="'p-confirm-dialog-custom'" appendTo="body"></p-confirmDialog> -->
 <div class="team-body">
   <!-- <div class="card flex justify-center"> -->
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
@@ -16,8 +18,8 @@
     <ng-template pTemplate="content">
       <p-table [value]="filteredImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true"
         [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" [showCurrentPageReport]="false"
-        (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" [lazy]="true" scrollable="true"
-        scrollHeight="400px" styleClass="import-team-table">
+        (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" scrollable="true"
+        scrollHeight="400px">
 
         <ng-template pTemplate="header">
           <tr>
@@ -34,9 +36,9 @@
                 <label class="font-bold mr-2">Team Name</label>
                 <i class="pi pi-filter filter-icon" (click)="onTeamFilterChange($event)" pTooltip="Filter Teams"></i>
               </div>
-              <p-dropdown [options]="teamDropdownList" optionLabel="team_name" optionValue="team_id"
+              <!-- <p-dropdown [options]="teamDropdownList" optionLabel="team_name" optionValue="team_id"
                 [(ngModel)]="selectedTeamId" placeholder="Teams" (onChange)="onTeamFilterChange($event)"
-                styleClass="team-filter-dropdown"></p-dropdown>
+                styleClass="team-filter-dropdown"></p-dropdown> -->
             </th>
             <th>Player Name</th>
           </tr>
@@ -73,7 +75,7 @@
     </div>
   </p-dialog>
 
-  
+
   <!-- </div> -->
   <div class="team-container">
     <div class="team-list">

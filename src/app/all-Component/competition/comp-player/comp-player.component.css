@@ -262,23 +262,54 @@
 .toolbar {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 1rem;
+  width: 100%;
+  position: relative;
 }
 
 .import-btn {
   background-color: #5b6b8f;
-  color: white;
+  /* Customize as needed */
+  color: #fff;
+  padding: 0.6rem 1.2rem;
   border: none;
-  padding: -0.5rem 1.2rem;
-  font-size: 13px !important;
-  /* position: fixed; */
-  border-radius: 1px;
+  border-radius: 6px;
+  font-size: 1rem;
   cursor: pointer;
-  margin-top: -39px;
-  margin-right: -792px;
-  height: 31px;
-  width: 81px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background-color 0.3s ease;
 }
+
+.import-btn:hover {
+  background-color: #5b6b8f;
+}
+
+.import-btn i {
+  font-size: 13px;
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 768px),
+(max-width: 1024px),
+(max-width: 1440px) {
+  .toolbar {
+    justify-content: center;
+  }
+
+  .import-btn {
+    font-size: 13px !important;
+    padding: 0.6rem 0.8rem;
+    margin-top: -47px;
+    margin-right: -790px;
+    height: 31px;
+    border-radius: 1px;
+    width: 85px;
+  }
+}
+
 
 /* :host ::ng-deep .import-team-table .checkbox-col {
   text-align: center;
