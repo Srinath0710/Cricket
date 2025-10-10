@@ -19,7 +19,7 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { profile } from 'console';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ChangeDetectorRef } from '@angular/core';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+// import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ConfirmDialogModule, ConfirmDialogStyle } from 'primeng/confirmdialog';
 interface Team {
   team_id: number;
@@ -39,7 +39,7 @@ interface Team {
     Dialog,
     ImageCropperComponent,
     CheckboxModule,
-    OverlayPanelModule,
+    // OverlayPanelModule,
     ConfirmDialogModule
   ],
   templateUrl: './comp-player.component.html',
@@ -147,6 +147,7 @@ export class CompPlayerComponent implements OnInit {
 
   filteredImportData: any[] = [];
   teamDropdownList: any[] = [];
+  showTeamFilterDropdown: boolean = false;
 
 
   constructor(
@@ -803,7 +804,7 @@ export class CompPlayerComponent implements OnInit {
       user_id: String(this.user_id ?? ''),
       client_id: String(this.CompetitionData.client_id ?? ''),
       competition_id: String(this.CompetitionData.competition_id ?? ''),
-      team_id: this.selectedTeamId?.toString() ?? '',
+      team_id: this.teamID?.toString(),
       page_no: String(pageNo),
       records: String(pageSize),
     };
@@ -819,23 +820,15 @@ export class CompPlayerComponent implements OnInit {
             player_id: t.player_id ?? '',
             player_name: t.player_name ?? 'Unknown Player',
             competition_id: t.competition_id ?? '',
-            selected: false,
-            teamSelected: false,
           }));
 
-
         this.teamDropdownList = this.getUniqueTeams(this.ImportData);
-
-
         this.applyTeamFilter();
 
-
-        this.selectAllChecked = false;
-        this.targetProducts = [];
-        this.importDialogVisisble = false;
+        // ✅ Re-check if all current page players are selected
+        this.updateSelectAllStatus();
 
         this.totalData = this.filteredImportData.length;
-        this.importDialogVisisble = true;
         this.cd.detectChanges();
       },
       error: (err) => {
@@ -848,6 +841,21 @@ export class CompPlayerComponent implements OnInit {
       },
     });
   }
+
+  // 🆕 Add this helper method
+  updateSelectAllStatus() {
+    if (!this.filteredImportData || this.filteredImportData.length === 0) {
+      this.selectAllChecked = false;
+      return;
+    }
+
+    const allSelected = this.filteredImportData.every(player =>
+      this.targetProducts.some((selected: any) => selected.player_id === player.player_id)
+    );
+
+    this.selectAllChecked = allSelected;
+  }
+
 
 
   openImportDialog() {
@@ -865,18 +873,25 @@ export class CompPlayerComponent implements OnInit {
     return Array.from(unique.values());
   }
 
+  toggleTeamFilterDropdown() {
+    this.showTeamFilterDropdown = !this.showTeamFilterDropdown;
+  }
+
   onTeamFilterChange(event: any) {
     this.applyTeamFilter();
+    this.showTeamFilterDropdown = false;
   }
 
   applyTeamFilter() {
     if (this.selectedTeamId) {
       this.filteredImportData = this.ImportData.filter(
-        (item) => item.team_id === this.selectedTeamId);
+        (item) => item.team_id === this.selectedTeamId
+      );
     } else {
       this.filteredImportData = [...this.ImportData];
     }
   }
+
 
   toggleSelectAll(type: string) {
     let selectedPlayers: any[] = [];

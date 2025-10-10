@@ -9,7 +9,7 @@
 <div class="team-body">
   <!-- <div class="card flex justify-center"> -->
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
-    [style]="{ width: '60vw', height: '74vh', 'border-radius': '6px' }" [dismissableMask]="true">
+    [style]="{ width: '60vw', height: '74vh', 'border-radius': '1px' }" [dismissableMask]="true">
 
     <div class="card flex justify-center mb-3" style="border-radius: 1px;">
       <h3>Import Competition Players</h3>
@@ -17,29 +17,34 @@
 
     <ng-template pTemplate="content">
       <p-table [value]="filteredImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true"
-        [rows]="10" [rowsPerPageOptions]="[5, 10, 20]" [showCurrentPageReport]="false"
-        (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" scrollable="true"
-        scrollHeight="400px">
+        [rows]="5" [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false"
+        (onRowSelect)="updateSelectAllStatus()" (onRowUnselect)="updateSelectAllStatus()"
+        (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" scrollable="true">
 
         <ng-template pTemplate="header">
           <tr>
             <th class="checkbox-col">
-              <div class="checkbox-wrapper">
-                <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')" binary="true"
-                  inputId="selectAllAll" [styleClass]="'checkbox-input'"></p-checkbox>
-                <label for="selectAllAll" class="ml-1">All</label>
-              </div>
+              <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')" binary="true"
+                inputId="selectAllAll" [styleClass]="'checkbox-input'"></p-checkbox>
+              <label for="selectAllAll" class="ml-1">All</label>
             </th>
 
             <th>
               <div class="flex align-items-center justify-content-between">
                 <label class="font-bold mr-2">Team Name</label>
-                <i class="pi pi-filter filter-icon" (click)="onTeamFilterChange($event)" pTooltip="Filter Teams"></i>
+                <i class="pi pi-filter filter-icon cursor-pointer" pTooltip="Filter Teams"
+                  (click)="toggleTeamFilterDropdown()"></i>
               </div>
-              <!-- <p-dropdown [options]="teamDropdownList" optionLabel="team_name" optionValue="team_id"
-                [(ngModel)]="selectedTeamId" placeholder="Teams" (onChange)="onTeamFilterChange($event)"
-                styleClass="team-filter-dropdown"></p-dropdown> -->
+
+              <div *ngIf="showTeamFilterDropdown" class="team-dropdown-container mt-1">
+                <p-dropdown [options]="teamDropdownList" optionLabel="team_name" optionValue="team_id"
+                  [(ngModel)]="selectedTeamId" placeholder="Select Team" (onChange)="onTeamFilterChange($event)"
+                  [style]="{ 'border-radius': '1px' }">
+                </p-dropdown>
+              </div>
+
             </th>
+
             <th>Player Name</th>
           </tr>
         </ng-template>
@@ -74,6 +79,7 @@
       </div>
     </div>
   </p-dialog>
+
 
 
   <!-- </div> -->
