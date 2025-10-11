@@ -293,24 +293,28 @@
   margin-bottom: -2px;
 }
 
-/* Responsive adjustments for different screen sizes */
-@media (max-width: 768px),
-(max-width: 1024px),
-(max-width: 1440px) {
-  .toolbar {
-    justify-content: center;
-  }
-
-  .import-btn {
-    font-size: 13px !important;
-    padding: 0.6rem 0.8rem;
-    margin-top: -47px;
-    margin-right: -790px;
-    height: 31px;
-    border-radius: 1px;
-    width: 85px;
-  }
+.import-btn {
+  font-size: 12px !important;
+  padding: 0.6rem 0.8rem;
+  height: 31px;
+  border-radius: 1px;
+  width: 85px;
+  position: absolute;
+  top: -55px;
+  right: 188px;
+  z-index: 10;
 }
+
+.import-btn:hover {
+  background-color: #1d4072 !important;
+  color: #fff !important;
+}
+
+/* Ensure the parent container is position: relative */
+.header-container {
+  position: relative;
+}
+
 
 
 /* :host ::ng-deep .import-team-table .checkbox-col {
