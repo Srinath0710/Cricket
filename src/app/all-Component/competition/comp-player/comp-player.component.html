@@ -9,7 +9,7 @@
 <div class="team-body">
   <!-- <div class="card flex justify-center"> -->
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
-    [style]="{ width: '60vw', height: '74vh', 'border-radius': '1px' }" [dismissableMask]="true">
+    [style]="{ width: '60vw', height: '81vh', 'border-radius': '1px' }" [dismissableMask]="true">
 
     <div class="card flex justify-center mb-3" style="border-radius: 1px;">
       <h3>Import Competition Players</h3>
@@ -17,15 +17,15 @@
 
     <ng-template pTemplate="content">
       <p-table [value]="filteredImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true"
-        [rows]="5" [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false"
-        (onRowSelect)="updateSelectAllStatus()" (onRowUnselect)="updateSelectAllStatus()"
+        [rows]="10" [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false"
+        (onRowSelect)="updateSelectAllStatus()" (onRowUnselect)="updateSelectAllStatus()" 
         (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" scrollable="true">
 
         <ng-template pTemplate="header">
           <tr>
             <th class="checkbox-col">
               <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')" binary="true"
-                inputId="selectAllAll" [styleClass]="'checkbox-input'"></p-checkbox>
+                inputId="selectAllAll"></p-checkbox>
               <label for="selectAllAll" class="ml-1">All</label>
             </th>
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, input } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ApiService } from '../../../services/api.service';
 import { CricketKeyConstant } from '../../../services/cricket-key-constant';
@@ -57,7 +57,7 @@ interface Team {
 export class CompPlayerComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
-  @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
+  readonly CompetitionData = input<ManageDataItem>({ competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 });
   @Output() PlayerUpdated = new EventEmitter<void>();
   client_id: number = 0;
   default_img = CricketKeyConstant.default_image_url.players;
@@ -193,9 +193,9 @@ export class CompPlayerComponent implements OnInit {
   gridLoad(applyFilters: boolean = false) {
     this.spinnerService.raiseDataEmitterEvent('on');
     const params: any = {};
-    params.client_id = this.CompetitionData.client_id.toString();
+    params.client_id = this.CompetitionData().client_id.toString();
     params.user_id = this.user_id.toString();
-    params.competition_id = this.CompetitionData.competition_id.toString();
+    params.competition_id = this.CompetitionData().competition_id.toString();
     params.search_text = this.sourceSearchKeyword.toString(),
       params.page_no = this.first.toString(),
       params.records = this.rows.toString()
@@ -280,9 +280,9 @@ export class CompPlayerComponent implements OnInit {
   }
   addplayer() {
     const params: any = {};
-    params.client_id = this.CompetitionData.client_id.toString();
+    params.client_id = this.CompetitionData().client_id.toString();
     params.user_id = this.user_id.toString();
-    params.competition_id = this.CompetitionData.competition_id.toString();
+    params.competition_id = this.CompetitionData().competition_id.toString();
     params.team_id = this.teamID?.toString();
     params.player_id = this.player_id?.toString();
     params.player_list = this.targetPlayer.map((players: any) => players.player_id).join(',');
@@ -323,10 +323,10 @@ export class CompPlayerComponent implements OnInit {
 
   updatePlayersRecords(url?: string): void {
     const params: any = {
-      client_id: this.CompetitionData.client_id.toString(),
+      client_id: this.CompetitionData().client_id.toString(),
       user_id: this.user_id.toString(),
       team_id: this.teamID?.toString(),
-      competition_id: this.CompetitionData.competition_id.toString(),
+      competition_id: this.CompetitionData().competition_id.toString(),
       player_id: this.selectedPlayer.player_id?.toString(),
       file_id: this.selectedPlayer.player_id?.toString(),
       scorecard_name: this.ManagePlayerForm.get('scorecard_name')?.value || '',
@@ -501,7 +501,7 @@ export class CompPlayerComponent implements OnInit {
   onViewPlayer(playersid: number) {
     const params = {
       player_id: playersid.toString(),
-      client_id: this.CompetitionData.client_id?.toString(),
+      client_id: this.CompetitionData().client_id?.toString(),
       user_id: String(this.user_id)
     };
 
@@ -694,10 +694,11 @@ export class CompPlayerComponent implements OnInit {
     const myFormData = new FormData();
     if (this.filedata != null && this.filedata != '') {
       myFormData.append('imageFile', this.filedata);
-      myFormData.append('client_id', this.CompetitionData.client_id.toString());
+      const CompetitionData = this.CompetitionData();
+      myFormData.append('client_id', CompetitionData.client_id.toString());
       myFormData.append('file_id', player_id);
       myFormData.append('team_id', this.teamID?.toString());
-      myFormData.append('competition_id', this.CompetitionData.competition_id.toString());
+      myFormData.append('competition_id', CompetitionData.competition_id.toString());
       myFormData.append('upload_type', 'players');
       myFormData.append('user_id', this.user_id?.toString());
 
@@ -795,62 +796,49 @@ export class CompPlayerComponent implements OnInit {
     const pageNo = event ? Math.floor(event.first / event.rows) + 1 : 1;
     const pageSize = event ? event.rows : 5;
 
-    if (!this.CompetitionData) {
+    const CompetitionData = this.CompetitionData();
+    if (!CompetitionData) {
       console.warn('Competition not selected!');
       return;
     }
 
     const params = {
       user_id: String(this.user_id ?? ''),
-      client_id: String(this.CompetitionData.client_id ?? ''),
-      competition_id: String(this.CompetitionData.competition_id ?? ''),
+      client_id: String(CompetitionData.client_id ?? ''),
+      competition_id: String(CompetitionData.competition_id ?? ''),
       team_id: this.teamID?.toString(),
       page_no: String(pageNo),
       records: String(pageSize),
+
+      selected_players: this.targetProducts?.map((p: any) => ({
+        player_id: p.player_id,
+        team_id: p.team_id
+      })) ?? []
     };
+
+    console.log('Params sent to API:', params);
 
     this.apiService.post(this.urlConstant.importcompplayerlist, params).subscribe({
       next: (res: any) => {
-        console.log('Raw API Response:', res); // Debug log
-
-        // Check the actual structure of the response
         const teams = res?.data?.teams ?? [];
 
-        // Debug: Log what we're receiving
-        console.log('Teams data:', teams);
-
-        // Improved mapping with better fallbacks
         this.ImportData = teams
-          .filter((t: any) => t.competition_id === this.CompetitionData.competition_id)
-          .map((t: any) => {
-            // Check what data is actually available
-            console.log('Team player data:', t);
+          .filter((t: any) => t.competition_id === this.CompetitionData().competition_id)
+          .map((t: any) => ({
+            team_id: t.team_id ?? '',
+            team_name: t.team_name ?? 'Unknown Team',
+            player_id: t.player_id ?? '',
+            player_name: t.player_name ?? 'Unknown Player',
+            competition_id: t.competition_id ?? '',
+          }));
 
-            return {
-              team_id: t.team_id ?? '',
-              team_name: t.team_name ?? 'Unknown Team',
-              player_id: t.player_id ?? t.id ?? '', // Try multiple possible ID fields
-              player_name: t.player_name ?? t.name ?? t.full_name ?? 'Unknown Player',
-              competition_id: t.competition_id ?? '',
-              // Add any other fields you might need
-              profile_image: t.profile_image ?? 'assets/images/player.jpg'
-            };
-          });
-
-        console.log('Mapped ImportData:', this.ImportData);
-
-        this.targetProducts = [...this.ImportData];
-
+        this.targetPlayer = [...this.ImportData];
         this.teamDropdownList = this.getUniqueTeams(this.ImportData);
         this.selectedPlayersRaw = res.data.selected_players ?? [];
         this.allPlayersRaw = res.data.all_players ?? [];
 
-        console.log('targetPlayers:', this.targetProducts);
-
         this.setDefaultImages(this.ImportData);
         this.applyTeamFilter();
-
-        // ✅ Re-check if all current page players are selected
         this.updateSelectAllStatus();
 
         this.totalData = this.filteredImportData.length;
@@ -867,6 +855,7 @@ export class CompPlayerComponent implements OnInit {
     });
   }
 
+
   applyTeamFilter() {
     if (this.selectedTeamId) {
       this.filteredImportData = this.ImportData.filter(
@@ -879,16 +868,9 @@ export class CompPlayerComponent implements OnInit {
 
 
   updateSelectAllStatus() {
-    if (!this.filteredImportData || this.filteredImportData.length === 0) {
-      this.selectAllChecked = false;
-      return;
-    }
-
-    const allSelected = this.filteredImportData.every(player =>
-      this.targetProducts.some((selected: any) => selected.player_id === player.player_id)
-    );
-
-    this.selectAllChecked = allSelected;
+    const totalVisible = this.filteredImportData?.length || 0;
+    const selectedCount = this.targetProducts?.length || 0;
+    this.selectAllChecked = totalVisible > 0 && selectedCount === totalVisible;
   }
 
 
@@ -929,24 +911,15 @@ export class CompPlayerComponent implements OnInit {
 
 
   toggleSelectAll(type: string) {
-    let selectedPlayers: any[] = [];
-
     if (type === 'all') {
       if (this.selectAllChecked) {
-        selectedPlayers = [...this.ImportData];
-        this.selectAllPlayer = true;
-        this.selectAllTeam = true;
+        this.targetProducts = [...this.filteredImportData];
       } else {
-        selectedPlayers = [];
-        this.selectAllPlayer = false;
-        this.selectAllTeam = false;
+        this.targetProducts = [];
       }
     }
 
-    this.targetProducts = selectedPlayers;
   }
-
-
 
 
   onCancelImport() {
