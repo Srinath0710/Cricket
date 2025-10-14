@@ -611,22 +611,19 @@ export class CompTeamComponent implements OnInit {
     this.gridLoad();
   }
 
-  importCompetitionTeam(srcCompetitionId?: number) {
-    // Set source competition ID (default to current if not passed)
-    this.src_competition_id = srcCompetitionId ?? this.CompetitionData.competition_id;
-
-    // Clear previous team list
+  importCompetitionTeam(srcCompetitionId: number) {
+    this.src_competition_id = srcCompetitionId;
     this.importCompetitionTeams = [];
     this.selectAllChecked = false;
 
-    // Open popup
+
     this.importDialogVisisble = true;
 
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.CompetitionData.client_id?.toString(),
-      competition_id: this.CompetitionData.competition_id?.toString(), // target competition
-      src_competition_id: this.src_competition_id?.toString(),        // source competition
+      competition_id: this.CompetitionData.competition_id?.toString(),
+      src_competition_id: this.src_competition_id?.toString(),
       page_no: (Math.floor(this.first / this.rows) + 1).toString(),
       records: this.rows.toString()
     };
@@ -637,7 +634,9 @@ export class CompTeamComponent implements OnInit {
       (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         if (Array.isArray(res?.data?.teams)) {
-          this.importCompetitionTeams = res.data.teams;
+          this.importCompetitionTeams = res.data.teams.map((team: any) => ({
+            ...team, selected: false
+          }));
         } else {
           this.importCompetitionTeams = [];
         }
@@ -664,8 +663,8 @@ export class CompTeamComponent implements OnInit {
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.CompetitionData.client_id?.toString(),
-      competition_id: this.CompetitionData.competition_id?.toString(),  // target competition
-      src_competition_id: this.src_competition_id?.toString(),          // <-- use the stored source competition ID
+      competition_id: this.CompetitionData.competition_id?.toString(),
+      src_competition_id: this.src_competition_id?.toString(),
       team_list: selectedTeams.join(','),
       page_no: (Math.floor(this.first / this.rows) + 1).toString(),
       records: this.rows.toString()

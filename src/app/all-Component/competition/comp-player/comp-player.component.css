@@ -260,14 +260,14 @@
   border-radius: 1px;
 }
 
-.toolbar {
+/* .toolbar {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 1rem;
   width: 100%;
   position: relative;
-}
+} */
 
 .import-btn {
   background-color: #5b6b8f;
@@ -305,37 +305,10 @@
   z-index: 10;
 }
 
-.import-btn:hover {
-  background-color: #1d4072 !important;
-  color: #fff !important;
-}
-
-/* Ensure the parent container is position: relative */
 .header-container {
   position: relative;
 }
 
-
-
-/* :host ::ng-deep .import-team-table .checkbox-col {
-  text-align: center;
-  width: 100px;
-  vertical-align: middle;
-  padding: 6px;
-}
-
-:host ::ng-deep .import-team-table .checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-:host ::ng-deep .import-team-table .p-checkbox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
 
 .import-team-table .p-datatable-thead>tr>th {
   position: sticky;

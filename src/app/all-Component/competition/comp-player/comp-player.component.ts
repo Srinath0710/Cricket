@@ -790,7 +790,13 @@ export class CompPlayerComponent implements OnInit {
     }
   }
 
-
+  getTeamNameMap(teams: any[]): { [key: string]: string } {
+    const teamMap: { [key: string]: string } = {};
+    for (const team of teams) {
+      teamMap[team.team_id] = team.team_name;
+    }
+    return teamMap;
+  }
 
   importCompetitionPlayersList(event?: any) {
     const pageNo = event ? Math.floor(event.first / event.rows) + 1 : 1;
@@ -809,9 +815,11 @@ export class CompPlayerComponent implements OnInit {
       team_id: this.teamID?.toString(),
       page_no: String(pageNo),
       records: String(pageSize),
-
-      selected_players: this.targetProducts?.map((p: any) => ({
+      selected_players: this.targetPlayer?.map((p: any) => ({
         player_id: p.player_id,
+        player_name: p.player_name,
+        profile_image: p.profile_image,
+        // team_name: p.team_name,
         team_id: p.team_id
       })) ?? []
     };
@@ -823,25 +831,19 @@ export class CompPlayerComponent implements OnInit {
         const teams = res?.data?.teams ?? [];
 
         this.ImportData = teams
-          .filter((t: any) => t.competition_id === this.CompetitionData().competition_id)
-          .map((t: any) => ({
-            team_id: t.team_id ?? '',
-            team_name: t.team_name ?? 'Unknown Team',
-            player_id: t.player_id ?? '',
-            player_name: t.player_name ?? 'Unknown Player',
-            competition_id: t.competition_id ?? '',
+          .map((team: any) => ({
+            player_id: team.team_id,
+            team_id: team.team_id,
+            team_name: team.team_name,
+            player_name: team.player_name,
           }));
 
-        this.targetPlayer = [...this.ImportData];
-        this.teamDropdownList = this.getUniqueTeams(this.ImportData);
-        this.selectedPlayersRaw = res.data.selected_players ?? [];
-        this.allPlayersRaw = res.data.all_players ?? [];
-
-        this.setDefaultImages(this.ImportData);
+        this.teamDropdownList = this.getUniqueTeams(teams);
         this.applyTeamFilter();
         this.updateSelectAllStatus();
 
         this.totalData = this.filteredImportData.length;
+
         this.cd.detectChanges();
       },
       error: (err) => {

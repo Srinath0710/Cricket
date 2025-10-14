@@ -1,4 +1,4 @@
-<div class="toolbar mb-3 flex justify-content-center">
+<div class="header-container mb-3 flex justify-content-center">
   <button class="import-btn" (click)="openImportDialog()">
     <i class="fa-solid fa-upload"></i>
     Import
@@ -17,7 +17,7 @@
 
     <ng-template pTemplate="content">
       <p-table [value]="filteredImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true"
-        [rows]="10" [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false"
+        [rows]="5" [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false"
         (onRowSelect)="updateSelectAllStatus()" (onRowUnselect)="updateSelectAllStatus()" 
         (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" scrollable="true">
 

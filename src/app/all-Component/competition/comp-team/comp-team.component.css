@@ -47,26 +47,37 @@
 
 .import-btn {
   background-color: #5b6b8f;
-  color: white;
+  color: #fff;
+  padding: 0.6rem 0.8rem;
   border: none;
-  padding: 4px 12px;
-  cursor: pointer;
-  height: 31px;
-  font-size: 13px;
-  /* border-radius: 4px; */
-  margin: -40px -40px 4px 751px;
   border-radius: 1px;
-  /* your old positioning */
+  font-size: 12px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 31px;
+  width: 85px;
+  position: relative;
+  top: -39px;
+  right: -30px;
+  margin-left: 59%;
 }
 
-/* Override margins on small screens */
-@media (max-width: 768px) {
-  .import-btn {
-    margin: 8px 0 0 0;
-    /* reset margins */
-    align-self: flex-end;
-  }
+.import-btn:hover {
+  background-color: #5b6b8f;
 }
+
+.import-btn i {
+  font-size: 11px;
+  margin-bottom: -2px;
+}
+
+.header-container {
+  position: relative;
+}
+
+
 
 
 ::ng-deep .p-paginator {
