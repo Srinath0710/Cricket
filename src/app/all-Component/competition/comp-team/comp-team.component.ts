@@ -17,6 +17,7 @@ import { UploadImgService } from '../../../Profile_Img_service/upload-img.servic
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDialogModule, ConfirmDialogStyle } from 'primeng/confirmdialog';
+import { DropdownModule } from 'primeng/dropdown';
 @Component({
   selector: 'app-comp-team',
   imports: [
@@ -30,7 +31,8 @@ import { ConfirmDialogModule, ConfirmDialogStyle } from 'primeng/confirmdialog';
     DialogModule,
     ImageCropperComponent,
     CheckboxModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DropdownModule
 
   ],
   templateUrl: './comp-team.component.html',
@@ -46,7 +48,6 @@ import { ConfirmDialogModule, ConfirmDialogStyle } from 'primeng/confirmdialog';
 
 })
 export class CompTeamComponent implements OnInit {
-  [x: string]: any;
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
   @Input() CompetitionData: ManageDataItem = { competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 };
@@ -98,8 +99,9 @@ export class CompTeamComponent implements OnInit {
   src_competition_id: number | null = null;
   team_list: any;
   selectAllChecked: boolean = false;
+  importCompetitionList: any[] = [];
   importCompetitionTeams: any[] = [];
-
+  selectedCompetitionId: string | null = null;
 
 
   constructor(
@@ -611,19 +613,18 @@ export class CompTeamComponent implements OnInit {
     this.gridLoad();
   }
 
+  // Existing method, just confirming the logic is solid
   importCompetitionTeam(srcCompetitionId: number) {
     this.src_competition_id = srcCompetitionId;
-    this.importCompetitionTeams = [];
+    this.importCompetitionTeams = []; // Clears the previous list
     this.selectAllChecked = false;
 
-
-    this.importDialogVisisble = true;
 
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.CompetitionData.client_id?.toString(),
       competition_id: this.CompetitionData.competition_id?.toString(),
-      src_competition_id: this.src_competition_id?.toString(),
+      src_competition_id: this.src_competition_id?.toString(), // This is the key
       page_no: (Math.floor(this.first / this.rows) + 1).toString(),
       records: this.rows.toString()
     };
@@ -634,6 +635,7 @@ export class CompTeamComponent implements OnInit {
       (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         if (Array.isArray(res?.data?.teams)) {
+          // *** This is where the new data is assigned ***
           this.importCompetitionTeams = res.data.teams.map((team: any) => ({
             ...team, selected: false
           }));
@@ -644,7 +646,8 @@ export class CompTeamComponent implements OnInit {
       (err: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         console.error('Import Error:', err);
-        this.failedToast(err);
+        // This toast is important for debugging if the API call fails
+        this.failedToast(err.error || { message: 'Failed to load teams.' });
       }
     );
   }
@@ -704,28 +707,10 @@ export class CompTeamComponent implements OnInit {
       this.importCompetitionTeams.forEach(team => (team.selected = false));
     }
     this.team_list = [];
+    this.selectedCompetitionId = null;
+    this.importCompetitionTeams = [];
   }
 
-
-  // confirmImport() {
-  //   const message = `Are you sure you want to proceed?`;
-  //   this.confirmationService.confirm({
-  //     header: '',
-  //     message: `
-  //     <div class="custom-confirm-content">
-  //       <i class="pi pi-download warning-icon icon-success"></i>
-  //       <div class="warning">Import</div>
-  //       <div class="message-text">${message}</div>
-  //     </div>
-  //   `,
-  //     acceptLabel: 'Yes',
-  //     rejectLabel: 'No',
-  //     accept: () => {
-  //       this.importCompetitionTeamsList();
-  //     },
-  //     reject: () => { }
-  //   });
-  // }
 
   confirmImport() {
     const selectedTeams = this.importCompetitionTeams
@@ -747,6 +732,61 @@ export class CompTeamComponent implements OnInit {
   CancelImportDialog() {
     this.importDialogVisisble = false;
     this.clearSelection();
+  }
+
+  importDialog() {
+    this.importDialogVisisble = true;
+    this.clearSelection();
+    this.importCompetiton();
+  }
+
+  importCompetiton() {
+    this.importDialogVisisble = true;
+    this.clearSelection();
+
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.CompetitionData.client_id?.toString(),
+      competition_id: this.CompetitionData.competition_id.toString(),
+      team_id: this.team_id?.toString(),
+      page_no: (Math.floor(this.first / this.rows) + 1).toString(),
+      records: this.rows.toString()
+    };
+
+    this.spinnerService.raiseDataEmitterEvent('on');
+
+    this.apiService.post(this.urlConstant.importcompetitionlist, params).subscribe(
+      (res: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+
+        const competitions = Array.isArray(res?.data?.competitions)
+          ? res.data.competitions
+          : Array.isArray(res.data)
+            ? res.data
+            : [];
+
+        this.importCompetitionList = competitions.map((comp: any) => ({
+          label: comp.competition_name,
+          value: comp.competition_id
+        }));
+
+        this.importCompetitionList.unshift({ label: 'None', value: null });
+        this.selectedCompetitionId = null;
+      },
+      (err: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast({ message: 'Failed to load competitions.' });
+      }
+    );
+  }
+
+  onCompetitionChange(event: any) {
+    this.selectedCompetitionId = event.value;
+    this.importCompetitionTeams = [];
+
+    if (this.selectedCompetitionId) {
+      this.importCompetitionTeam(Number(this.selectedCompetitionId));
+    }
   }
 
 }

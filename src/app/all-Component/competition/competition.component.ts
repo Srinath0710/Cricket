@@ -165,6 +165,7 @@ export class CompetitionComponent implements OnInit {
   showPopup: boolean = false;
   selectAllChecked: boolean = false;
   importCompetitionList: any[] = [];
+  srcCompetitionId: number | null = null;
 
   filterChoosed = {
     tour_format_list: [],
