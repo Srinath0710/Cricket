@@ -616,15 +616,15 @@ export class CompTeamComponent implements OnInit {
   // Existing method, just confirming the logic is solid
   importCompetitionTeam(srcCompetitionId: number) {
     this.src_competition_id = srcCompetitionId;
-    this.importCompetitionTeams = []; // Clears the previous list
+    this.importCompetitionTeams = [];
     this.selectAllChecked = false;
 
 
     const params = {
       user_id: this.user_id?.toString(),
       client_id: this.CompetitionData.client_id?.toString(),
-      competition_id: this.CompetitionData.competition_id?.toString(),
-      src_competition_id: this.src_competition_id?.toString(), // This is the key
+      competition_id: this.selectedCompetitionId?.toString(),
+      team_id: this.team_id?.toString(),
       page_no: (Math.floor(this.first / this.rows) + 1).toString(),
       records: this.rows.toString()
     };
@@ -635,7 +635,6 @@ export class CompTeamComponent implements OnInit {
       (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         if (Array.isArray(res?.data?.teams)) {
-          // *** This is where the new data is assigned ***
           this.importCompetitionTeams = res.data.teams.map((team: any) => ({
             ...team, selected: false
           }));
@@ -781,12 +780,24 @@ export class CompTeamComponent implements OnInit {
   }
 
   onCompetitionChange(event: any) {
-    this.selectedCompetitionId = event.value;
-    this.importCompetitionTeams = [];
+    console.log('Competition Change Event:', event);
 
+    // ✅ In PrimeNG v18+, p-select emits the selected value directly
+    this.selectedCompetitionId = event;
+
+    console.log('Selected Competition ID:', this.selectedCompetitionId);
+
+    // Reset
+    this.importCompetitionTeams = [];
+    this.selectAllChecked = false;
+
+    // Call API if valid
     if (this.selectedCompetitionId) {
       this.importCompetitionTeam(Number(this.selectedCompetitionId));
+    } else {
+      console.warn('Competition not selected properly.');
     }
   }
+
 
 }
