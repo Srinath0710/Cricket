@@ -9,51 +9,56 @@
     [styleClass]="'p-confirm-dialog-custom'" appendTo="body"></p-confirmDialog>
   <!-- <div class="card flex justify-center"> -->
   <p-dialog header="Import Competition Teams" [(visible)]="importDialogVisisble" [modal]="true"
-    [style]="{ width: '50vw', height: '80vh', 'border-radius': '6px' }" [dismissableMask]="true"
+    [style]="{ width: '50vw', height: '90vh', 'border-radius': '1px' }" [dismissableMask]="true"
     [styleClass]="'import-popup'">
 
     <div class="card flex justify-center" style="border-radius: 1px;">
       <h4>Import Competition</h4>
     </div>
 
+    <!-- <br> -->
+
     <ng-template pTemplate="content">
       <div class="mb-3">
         <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
           placeholder="Select Competition" optionLabel="label" optionValue="value"
-          (onChange)="onCompetitionChange($event.value)">
+          (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px'}">
         </p-dropdown>
 
       </div>
 
-      <p-table [value]="importCompetitionTeams" *ngIf="importCompetitionTeams?.length; else noData" scrollable="true"
-        scrollHeight="400px" styleClass="import-team-table">
+      <div style="height: 400px; overflow-y: auto;">
 
-        <ng-template pTemplate="header">
-          <tr>
-            <th class="checkbox-col">
-              <div class="checkbox-wrapper">
-                <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll()" binary="true"></p-checkbox>
-                <br>
-                <label class="ml-1">All</label>
-              </div>
-            </th>
-            <th>Team Name</th>
-            <!-- <th>Competition Name</th> -->
-          </tr>
-        </ng-template>
+        <p-table [value]="importCompetitionTeams" *ngIf="importCompetitionTeams?.length; else noData"
+          [scrollable]="true" scrollHeight="900px" styleClass="import-team-table">
 
-        <ng-template pTemplate="body" let-team>
-          <tr>
-            <td class="checkbox-col">
-              <div class="checkbox-wrapper">
-                <p-checkbox [(ngModel)]="team.selected" binary="true"></p-checkbox>
-              </div>
-            </td>
-            <td>{{ team.team_name || team.teamName }}</td>
-            <!-- <td>{{ team.competition_name }}</td> -->
-          </tr>
-        </ng-template>
-      </p-table>
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="checkbox-col">
+                <div class="checkbox-wrapper">
+                  <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll()" binary="true"></p-checkbox>
+                  <br>
+                  <label class="ml-1">All</label>
+                </div>
+              </th>
+              <th>Team Name</th>
+              <!-- <th>Competition Name</th> -->
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-team>
+            <tr>
+              <td class="checkbox-col">
+                <div class="checkbox-wrapper">
+                  <p-checkbox [(ngModel)]="team.selected" binary="true"></p-checkbox>
+                </div>
+              </td>
+              <td>{{ team.team_name || team.teamName }}</td>
+              <!-- <td>{{ team.competition_name }}</td> -->
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
 
       <ng-template #noData>
         <p class="text-center p-3">No teams found for this competition</p>

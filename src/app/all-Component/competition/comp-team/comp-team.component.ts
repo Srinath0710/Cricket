@@ -613,7 +613,6 @@ export class CompTeamComponent implements OnInit {
     this.gridLoad();
   }
 
-  // Existing method, just confirming the logic is solid
   importCompetitionTeam(srcCompetitionId: number) {
     this.src_competition_id = srcCompetitionId;
     this.importCompetitionTeams = [];
@@ -653,12 +652,17 @@ export class CompTeamComponent implements OnInit {
 
 
   importCompetitionTeamsList() {
+    if (!this.src_competition_id) {
+      this.failedToast({ message: 'Please select a source competition first.' });
+      return;
+    }
+
     const selectedTeams = this.importCompetitionTeams
       .filter(team => team.selected)
       .map(team => team.team_id);
 
     if (!selectedTeams.length) {
-      this.failedToast("Please select at least one team to import");
+      this.failedToast({ message: 'Please select at least one team to import' });
       return;
     }
 
@@ -668,18 +672,39 @@ export class CompTeamComponent implements OnInit {
       competition_id: this.CompetitionData.competition_id?.toString(),
       src_competition_id: this.src_competition_id?.toString(),
       team_list: selectedTeams.join(','),
-      page_no: (Math.floor(this.first / this.rows) + 1).toString(),
-      records: this.rows.toString()
+      // page_no: (Math.floor(this.first / this.rows) + 1).toString(),
+      // records: this.rows.toString()
+      page_no: '0',
+      records: '0'
     };
+
+    console.log('Import Params:', params);
 
     this.spinnerService.raiseDataEmitterEvent('on');
 
     this.apiService.post(this.urlConstant.importgetcompteamlist, params).subscribe(
       (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
-        this.successToast(res);
-        this.importDialogVisisble = false;
-        this.gridLoad();
+        if (res.status_code === this.statusConstants.success) {
+          this.successToast(res);
+
+          if (Array.isArray(res.data?.teams)) {
+            res.data.teams.forEach((team: any) => {
+              if (!this.targetTeams.some(t => t.team_id === team.team_id)) {
+                this.targetTeams.push({
+                  ...team,
+                  profile_url: team.profile_url || this.default_img,
+                  selected: false
+                });
+              }
+            });
+          }
+
+          this.importDialogVisisble = false;
+          this.clearSelection();
+        } else {
+          this.failedToast(res);
+        }
       },
       (err: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
@@ -692,7 +717,6 @@ export class CompTeamComponent implements OnInit {
       }
     );
   }
-
 
   toggleSelectAll() {
     if (this.importCompetitionTeams?.length) {
