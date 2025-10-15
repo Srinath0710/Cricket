@@ -12,20 +12,28 @@
     [style]="{ width: '50vw', height: '90vh', 'border-radius': '1px' }" [dismissableMask]="true"
     [styleClass]="'import-popup'">
 
-    <div class="card flex justify-center" style="border-radius: 1px;">
-      <h4>Import Competition</h4>
+    <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px;">
+      <h4 class="m-0">Import Competition Team</h4>
+      <div style="flex-shrink: 0; margin-left: 10px;">
+        <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
+          placeholder="Select Competition" optionLabel="label" optionValue="value"
+          (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px', 'min-width': '350px' }">
+        </p-dropdown>
+      </div>
     </div>
+
+
 
     <!-- <br> -->
 
     <ng-template pTemplate="content">
-      <div class="mb-3">
+      <!-- <div class="mb-3">
         <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
           placeholder="Select Competition" optionLabel="label" optionValue="value"
           (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px'}">
         </p-dropdown>
 
-      </div>
+      </div> -->
 
       <div style="height: 400px; overflow-y: auto;">
 

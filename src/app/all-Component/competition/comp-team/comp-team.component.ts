@@ -102,6 +102,7 @@ export class CompTeamComponent implements OnInit {
   importCompetitionList: any[] = [];
   importCompetitionTeams: any[] = [];
   selectedCompetitionId: string | null = null;
+  showDropdown: boolean = false;
 
 
   constructor(
@@ -672,34 +673,20 @@ export class CompTeamComponent implements OnInit {
       competition_id: this.CompetitionData.competition_id?.toString(),
       src_competition_id: this.src_competition_id?.toString(),
       team_list: selectedTeams.join(','),
-      // page_no: (Math.floor(this.first / this.rows) + 1).toString(),
-      // records: this.rows.toString()
       page_no: '0',
       records: '0'
     };
 
     console.log('Import Params:', params);
-
     this.spinnerService.raiseDataEmitterEvent('on');
 
     this.apiService.post(this.urlConstant.importgetcompteamlist, params).subscribe(
       (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
+        console.log('Import response:', res);
         if (res.status_code === this.statusConstants.success) {
           this.successToast(res);
-
-          if (Array.isArray(res.data?.teams)) {
-            res.data.teams.forEach((team: any) => {
-              if (!this.targetTeams.some(t => t.team_id === team.team_id)) {
-                this.targetTeams.push({
-                  ...team,
-                  profile_url: team.profile_url || this.default_img,
-                  selected: false
-                });
-              }
-            });
-          }
-
+          this.gridLoad();
           this.importDialogVisisble = false;
           this.clearSelection();
         } else {
@@ -708,15 +695,17 @@ export class CompTeamComponent implements OnInit {
       },
       (err: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
+        console.error('Import error:', err);
         if (err.status_code === this.statusConstants.refresh &&
-          err.error.message === this.statusConstants.refresh_msg) {
+          err.error?.message === this.statusConstants.refresh_msg) {
           this.apiService.RefreshToken();
         } else {
-          this.failedToast(err);
+          this.failedToast(err.error || { message: 'Failed to import teams.' });
         }
       }
     );
   }
+
 
   toggleSelectAll() {
     if (this.importCompetitionTeams?.length) {
@@ -748,6 +737,7 @@ export class CompTeamComponent implements OnInit {
     this.team_list = selectedTeams.join(',');
 
     this.importCompetitionTeamsList();
+    this.gridLoad();
   }
 
 
@@ -822,6 +812,7 @@ export class CompTeamComponent implements OnInit {
       console.warn('Competition not selected properly.');
     }
   }
+  
 
 
 }
