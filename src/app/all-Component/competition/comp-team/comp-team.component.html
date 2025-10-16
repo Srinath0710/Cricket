@@ -1,4 +1,4 @@
-<div class="header-container mb-2">
+<div class="header-container mb-3">
   <button class="import-btn" (click)="importDialog()">
     <i class="fa-solid fa-upload"></i>
     Import
@@ -22,21 +22,10 @@
       </div>
     </div>
 
-
-
-    <!-- <br> -->
-
     <ng-template pTemplate="content">
-      <!-- <div class="mb-3">
-        <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
-          placeholder="Select Competition" optionLabel="label" optionValue="value"
-          (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px'}">
-        </p-dropdown>
-
-      </div> -->
-
       <div style="height: 400px; overflow-y: auto;">
 
+        <!-- Table with teams -->
         <p-table [value]="importCompetitionTeams" *ngIf="importCompetitionTeams?.length; else noData"
           [scrollable]="true" scrollHeight="900px" styleClass="import-team-table">
 
@@ -50,7 +39,6 @@
                 </div>
               </th>
               <th>Team Name</th>
-              <!-- <th>Competition Name</th> -->
             </tr>
           </ng-template>
 
@@ -62,12 +50,24 @@
                 </div>
               </td>
               <td>{{ team.team_name || team.teamName }}</td>
-              <!-- <td>{{ team.competition_name }}</td> -->
             </tr>
           </ng-template>
+
         </p-table>
+
+        <!-- Conditional messages handled directly in HTML -->
+        <p class="text-center p-3" *ngIf="!selectedCompetitionId">
+          No data found
+        </p>
+
+        <p class="text-center p-3"
+          *ngIf="selectedCompetitionId && importCompetitionTeams?.length && !importCompetitionList?.length">
+          No players found in this team and competition
+        </p>
+
       </div>
 
+      <!-- No teams for competition -->
       <ng-template #noData>
         <p class="text-center p-3">No teams found for this competition</p>
       </ng-template>
@@ -82,7 +82,9 @@
           (click)="CancelImportDialog()">Cancel</button>
       </div>
     </div>
+
   </p-dialog>
+
 
 
   <!-- </div> -->

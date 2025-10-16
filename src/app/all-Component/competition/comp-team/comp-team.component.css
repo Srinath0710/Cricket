@@ -45,27 +45,26 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.header-container {
+  position: relative;
+}
+
 .import-btn {
   background-color: #5b6b8f;
   color: #fff;
-  padding: 0.6rem 0.8rem;
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 1px;
-  font-size: 12px !important;
+  border-radius: 6px;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  height: 31px;
-  width: 85px;
-  position: relative;
-  top: -39px;
-  right: -240px;
-  margin-left: 59%;
+  transition: background-color 0.3s ease;
 }
 
 .import-btn:hover {
-  background-color: #5b6b8f;
+  background-color: #4a5c7a;
 }
 
 .import-btn i {
@@ -73,12 +72,17 @@
   margin-bottom: -2px;
 }
 
-.header-container {
-  position: relative;
+.import-btn {
+  font-size: 12px !important;
+  padding: 0.6rem 0.8rem;
+  height: 31px;
+  border-radius: 1px;
+  width: 85px;
+  position: absolute;
+  top: -55px;
+  right: 188px;
+  z-index: 10;
 }
-
-
-
 
 ::ng-deep .p-paginator {
   flex-wrap: nowrap !important;

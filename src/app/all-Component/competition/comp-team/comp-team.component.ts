@@ -809,7 +809,7 @@ export class CompTeamComponent implements OnInit {
       console.warn('Competition not selected properly.');
     }
   }
-  
+
 
 
 }
