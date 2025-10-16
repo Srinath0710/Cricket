@@ -29,7 +29,7 @@ export class CricketKeyConstant {
         officials: 'assets/images/umpires.jpg',
         players: 'assets/images/player.jpg',
         grounds: 'assets/images/ground4.png',
-        clientimg: 'assets/images/client.jpg',
+        clientimg: 'assets/images/clients.webp',
         teamimage: 'assets/images/team.jpg',
         clubs: 'assets/images/clubs.png',
         countryimg: 'assets/images/country.webp',
