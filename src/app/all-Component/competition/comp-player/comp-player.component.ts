@@ -148,6 +148,11 @@ export class CompPlayerComponent implements OnInit {
   filteredImportData: any[] = [];
   teamDropdownList: any[] = [];
   showTeamFilterDropdown: boolean = false;
+  importCompetitionList: any[] = [];
+  importCompetitionTeams: any[] = [];
+  src_competition_id: number | null = null;
+  selectedCompetitionId: string | null = null;
+  teamsDropdownVisible: boolean = false;
 
 
   constructor(
@@ -790,83 +795,111 @@ export class CompPlayerComponent implements OnInit {
     }
   }
 
-  getTeamNameMap(teams: any[]): { [key: string]: string } {
-    const teamMap: { [key: string]: string } = {};
-    for (const team of teams) {
-      teamMap[team.team_id] = team.team_name;
-    }
-    return teamMap;
-  }
-
   importCompetitionPlayersList(event?: any) {
     const pageNo = event ? Math.floor(event.first / event.rows) + 1 : 1;
-    const pageSize = event ? event.rows : 5;
-
-    const CompetitionData = this.CompetitionData();
-    if (!CompetitionData) {
-      console.warn('Competition not selected!');
+    const pageSize = event ? event.rows : 10;
+    if (!this.selectedCompetitionId || !this.selectedTeamId) {
+      console.warn('Competition ID or Team ID not selected');
+      this.ImportData = [];
+      this.filteredImportData = [];
+      this.totalData = 0;
       return;
     }
 
+    const CompetitionData = this.CompetitionData();
+    if (!CompetitionData) return;
+
     const params = {
-      user_id: String(this.user_id ?? ''),
-      client_id: String(CompetitionData.client_id ?? ''),
-      competition_id: String(CompetitionData.competition_id ?? ''),
-      team_id: this.teamID?.toString(),
+      user_id: String(this.user_id),
+      client_id: String(CompetitionData.client_id),
+      competition_id: String(this.selectedCompetitionId),
+      team_id: String(this.selectedTeamId),
       page_no: String(pageNo),
-      records: String(pageSize),
-      selected_players: this.targetPlayer?.map((p: any) => ({
-        player_id: p.player_id,
-        player_name: p.player_name,
-        profile_image: p.profile_image,
-        // team_name: p.team_name,
-        team_id: p.team_id
-      })) ?? []
+      records: String(pageSize)
     };
 
-    console.log('Params sent to API:', params);
+    this.spinnerService.raiseDataEmitterEvent('on');
 
     this.apiService.post(this.urlConstant.importcompplayerlist, params).subscribe({
       next: (res: any) => {
-        const teams = res?.data?.teams ?? [];
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.log('Import Players Response:', res);
+        const players = res?.data?.players ||
+          res?.data?.all_players ||
+          res?.players ||
+          res?.data ||
+          [];
 
-        this.ImportData = teams
-          .map((team: any) => ({
-            player_id: team.team_id,
-            team_id: team.team_id,
-            team_name: team.team_name,
-            player_name: team.player_name,
-          }));
+        console.log('Players found:', players.length);
 
-        this.teamDropdownList = this.getUniqueTeams(teams);
-        this.applyTeamFilter();
+        // Pre-select based on existing targetPlayer
+        this.ImportData = players.map((player: any) => ({
+          ...player,
+          selected: this.targetPlayer?.some(tp => tp.player_id === player.player_id)
+        }));
+
+        this.filteredImportData = [...this.ImportData];
+        this.targetProducts = this.ImportData.filter(p => p.selected);
+
+        // Set total records for pagination
+        this.totalData = res?.data?.total_records || players.length;
+
         this.updateSelectAllStatus();
-
-        this.totalData = this.filteredImportData.length;
-
         this.cd.detectChanges();
       },
       error: (err) => {
-        console.error('Error fetching players:', err);
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.error('Error fetching import players:', err);
         this.ImportData = [];
         this.filteredImportData = [];
-        this.teamDropdownList = [];
         this.targetProducts = [];
         this.totalData = 0;
-      },
+        this.failedToast({ message: 'Failed to fetch players.' });
+      }
     });
   }
 
 
-  applyTeamFilter() {
-    if (this.selectedTeamId) {
-      this.filteredImportData = this.ImportData.filter(
-        (item) => item.team_id === this.selectedTeamId
-      );
-    } else {
-      this.filteredImportData = [...this.ImportData];
+
+  importCompetitionPlayers() {
+    if (!this.selectedCompetitionId || !this.selectedTeamId) {
+      this.failedToast({ message: 'Please select a competition and team to import from.' });
+      return;
     }
+
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.CompetitionData().client_id?.toString(),
+      competition_id: this.CompetitionData().competition_id?.toString(),
+      team_id: this.teamID?.toString(),
+      src_competition_id: this.selectedCompetitionId?.toString(),
+      src_team_id: this.selectedTeamId?.toString(),
+      player_list: this.targetProducts?.map(p => p.player_id).join(',') || ''
+    };
+
+    this.spinnerService.raiseDataEmitterEvent('on');
+
+    this.apiService.post(this.urlConstant.importgetcompplayerlist, params).subscribe(
+      (res: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+
+        if (res.status_code === this.statusConstants.success) {
+          this.successToast(res);
+          this.gridLoad();
+          this.importDialogVisisble = false;
+          this.onClearImport();
+        } else {
+          this.failedToast(res);
+        }
+      },
+      (err: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast(err.error || { message: 'Failed to import players.' });
+      }
+    );
   }
+
+
 
 
   updateSelectAllStatus() {
@@ -875,42 +908,17 @@ export class CompPlayerComponent implements OnInit {
     this.selectAllChecked = totalVisible > 0 && selectedCount === totalVisible;
   }
 
-
-
   openImportDialog() {
     this.importDialogVisisble = true;
-    this.importCompetitionPlayersList();
+    this.selectedCompetitionId = null;
+    this.selectedTeamId = '';
+    this.ImportData = [];
+    this.filteredImportData = [];
+    this.targetProducts = [];
+    this.importCompetiton();
+
+    this.cd.detectChanges();
   }
-
-  getUniqueTeams(data: any[]): any[] {
-    const unique = new Map();
-    data.forEach((d) => {
-      if (!unique.has(d.team_id)) {
-        unique.set(d.team_id, { team_id: d.team_id, team_name: d.team_name });
-      }
-    });
-    return Array.from(unique.values());
-  }
-
-  toggleTeamFilterDropdown() {
-    this.showTeamFilterDropdown = !this.showTeamFilterDropdown;
-  }
-
-  onTeamFilterChange(event: any) {
-    this.applyTeamFilter();
-    this.showTeamFilterDropdown = false;
-  }
-
-  // applyTeamFilter() {
-  //   if (this.selectedTeamId) {
-  //     this.filteredImportData = this.ImportData.filter(
-  //       (item) => item.team_id === this.selectedTeamId
-  //     );
-  //   } else {
-  //     this.filteredImportData = [...this.ImportData];
-  //   }
-  // }
-
 
   toggleSelectAll(type: string) {
     if (type === 'all') {
@@ -920,7 +928,6 @@ export class CompPlayerComponent implements OnInit {
         this.targetProducts = [];
       }
     }
-
   }
 
 
@@ -945,6 +952,7 @@ export class CompPlayerComponent implements OnInit {
     this.selectAllAll = false;
     this.selectAllPlayer = false;
     this.selectAllTeam = false;
+    this.selectedCompetitionId = null;
 
 
     this.targetProducts = [];
@@ -961,6 +969,122 @@ export class CompPlayerComponent implements OnInit {
     }));
   }
 
+
+  importCompetiton() {
+    this.importDialogVisisble = true;
+
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.CompetitionData().client_id?.toString(),
+      competition_id: this.CompetitionData().competition_id.toString(),
+      team_id: this.teamID?.toString(),
+      page_no: (Math.floor(this.first / this.rows) + 1).toString(),
+      records: this.rows.toString()
+    };
+
+    this.spinnerService.raiseDataEmitterEvent('on');
+
+    this.apiService.post(this.urlConstant.importcompetitionlist, params).subscribe(
+      (res: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+
+        const competitions = Array.isArray(res?.data?.competitions)
+          ? res.data.competitions
+          : Array.isArray(res.data)
+            ? res.data
+            : [];
+
+        this.importCompetitionList = competitions.map((comp: any) => ({
+          label: comp.competition_name,
+          value: comp.competition_id
+        }));
+
+        this.importCompetitionList.unshift({ label: 'None', value: null });
+        this.selectedCompetitionId = null;
+      },
+      (err: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        this.failedToast({ message: 'Failed to load competitions.' });
+      }
+    );
+  }
+
+  importCompetitionTeam(srcCompetitionId: number, callback?: Function) {
+    this.src_competition_id = srcCompetitionId;
+    this.importCompetitionTeams = [];
+    this.teamDropdownList = [];
+    this.selectAllChecked = false;
+
+    const params = {
+      user_id: this.user_id?.toString(),
+      client_id: this.CompetitionData().client_id?.toString(),
+      competition_id: this.selectedCompetitionId?.toString(),
+      team_id: this.teamID?.toString(),
+      page_no: (Math.floor(this.first / this.rows) + 1).toString(),
+      records: this.rows.toString()
+    };
+
+    this.spinnerService.raiseDataEmitterEvent('on');
+
+    this.apiService.post(this.urlConstant.importcompteamlist, params).subscribe(
+      (res: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+
+        if (Array.isArray(res?.data?.teams)) {
+          this.importCompetitionTeams = res.data.teams.map((team: any) => ({
+            ...team,
+            selected: false
+          }));
+
+          this.teamDropdownList = this.importCompetitionTeams.map((t: any) => ({
+            label: t.team_name,
+            value: t.team_id
+          }));
+        } else {
+          this.importCompetitionTeams = [];
+          this.teamDropdownList = [];
+        }
+
+        if (callback) callback();
+      },
+      (err: any) => {
+        this.spinnerService.raiseDataEmitterEvent('off');
+        console.error('Import Error:', err);
+        this.failedToast(err.error || { message: 'Failed to load teams.' });
+      }
+    );
+  }
+
+
+
+  onCompetitionChange(event: any) {
+    this.selectedCompetitionId = event;
+
+    this.importCompetitionTeams = [];
+    this.importCompetitionPlayersList();
+    this.selectAllChecked = false;
+
+    if (this.selectedCompetitionId) {
+      this.importCompetitionTeam(Number(this.selectedCompetitionId));
+    }
+    else {
+      this.teamsDropdownVisible = false;
+      this.importCompetitionTeams = [];
+      this.teamDropdownList = [];
+    }
+  }
+
+  onTeamChange(event: any) {
+    this.selectedTeamId = event;
+    console.log('Team selected:', this.selectedTeamId);
+    this.first = 0;
+    if (this.selectedTeamId) {
+      this.importCompetitionPlayersList();
+    } else {
+      this.ImportData = [];
+      this.filteredImportData = [];
+    }
+  }
 
 
   // toggleTeamFilter() {

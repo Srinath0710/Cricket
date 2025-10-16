@@ -4,21 +4,30 @@
     Import
   </button>
 </div>
-<!-- <p-confirmDialog [style]="{width: '320px'}" [baseZIndex]="10000" [draggable]="false"
-  [styleClass]="'p-confirm-dialog-custom'" appendTo="body"></p-confirmDialog> -->
 <div class="team-body">
   <!-- <div class="card flex justify-center"> -->
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
     [style]="{ width: '60vw', height: '81vh', 'border-radius': '1px' }" [dismissableMask]="true">
 
-    <div class="card flex justify-center mb-3" style="border-radius: 1px;">
-      <h3>Import Competition Players</h3>
+    <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px;">
+      <h4 class="m-0">Import Competition Players</h4>
+      <div style="flex-shrink: 0; margin-left: 10px;">
+        <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
+          placeholder="Select Competition" optionLabel="label" optionValue="value"
+          (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px', 'min-width': '300px' }">
+        </p-dropdown>
+        <br>
+        <p-dropdown [options]="teamDropdownList" [(ngModel)]="selectedTeamId" placeholder="Select Team"
+          optionLabel="label" optionValue="value" (onChange)="onTeamChange($event.value)"
+          [style]="{ 'border-radius': '1px', 'min-width': '250px' }">
+        </p-dropdown>
+      </div>
     </div>
 
     <ng-template pTemplate="content">
       <p-table [value]="filteredImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true"
         [rows]="5" [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false"
-        (onRowSelect)="updateSelectAllStatus()" (onRowUnselect)="updateSelectAllStatus()" 
+        (onRowSelect)="updateSelectAllStatus()" (onRowUnselect)="updateSelectAllStatus()"
         (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" scrollable="true">
 
         <ng-template pTemplate="header">
@@ -29,22 +38,18 @@
               <label for="selectAllAll" class="ml-1">All</label>
             </th>
 
-            <th>
-              <div class="flex align-items-center justify-content-between">
+            <!-- <div class="flex align-items-center justify-content-between">
                 <label class="font-bold mr-2">Team Name</label>
                 <i class="pi pi-filter filter-icon cursor-pointer" pTooltip="Filter Teams"
                   (click)="toggleTeamFilterDropdown()"></i>
-              </div>
+              </div> -->
 
-              <div *ngIf="showTeamFilterDropdown" class="team-dropdown-container mt-1">
-                <p-dropdown [options]="teamDropdownList" optionLabel="team_name" optionValue="team_id"
-                  [(ngModel)]="selectedTeamId" placeholder="Select Team" (onChange)="onTeamFilterChange($event)"
-                  [style]="{ 'border-radius': '1px' }">
-                </p-dropdown>
-              </div>
-
-            </th>
-
+            <div *ngIf="showTeamFilterDropdown" class="team-dropdown-container mt-1">
+              <!-- <p-dropdown [options]="teamDropdownList" optionLabel="team_name" optionValue="team_id"
+                [(ngModel)]="selectedTeamId" placeholder="Select Team" (onChange)="onTeamFilterChange($event)"
+                [style]="{ 'border-radius': '1px' }">
+              </p-dropdown> -->
+            </div>
             <th>Player Name</th>
           </tr>
         </ng-template>
@@ -52,14 +57,14 @@
         <ng-template pTemplate="body" let-player>
           <tr [pSelectableRow]="player">
             <td><p-tableCheckbox [value]="player"></p-tableCheckbox></td>
-            <td>{{ player.team_name || '-' }}</td>
+            <!-- <td>{{ player.team_name || '-' }}</td> -->
             <td>{{ player.player_name || '-' }}</td>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="3" class="text-center p-3">No Players Found</td>
+            <td colspan="3" class="text-center p-3">No Players Found in this Teams</td>
           </tr>
         </ng-template>
       </p-table>
@@ -67,7 +72,7 @@
 
     <div class="row mt-4 sticky-footer-buttons">
       <div class="col-12 text-end">
-        <button type="button" class="submit-btn margin-right save-button" (click)="importCompetitionPlayersList()">
+        <button type="button" class="submit-btn margin-right save-button" (click)="importCompetitionPlayers()">
           Import
         </button>
         <button type="button" class="custom-cancel-btn submit-btn margin-right" (click)="onClearImport()">

@@ -796,16 +796,13 @@ export class CompTeamComponent implements OnInit {
   onCompetitionChange(event: any) {
     console.log('Competition Change Event:', event);
 
-    // ✅ In PrimeNG v18+, p-select emits the selected value directly
     this.selectedCompetitionId = event;
 
     console.log('Selected Competition ID:', this.selectedCompetitionId);
 
-    // Reset
     this.importCompetitionTeams = [];
     this.selectAllChecked = false;
 
-    // Call API if valid
     if (this.selectedCompetitionId) {
       this.importCompetitionTeam(Number(this.selectedCompetitionId));
     } else {
