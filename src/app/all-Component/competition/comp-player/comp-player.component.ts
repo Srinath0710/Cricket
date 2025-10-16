@@ -832,7 +832,6 @@ export class CompPlayerComponent implements OnInit {
 
         console.log('Players found:', players.length);
 
-        // Pre-select based on existing targetPlayer
         this.ImportData = players.map((player: any) => ({
           ...player,
           selected: this.targetPlayer?.some(tp => tp.player_id === player.player_id)
@@ -841,11 +840,10 @@ export class CompPlayerComponent implements OnInit {
         this.filteredImportData = [...this.ImportData];
         this.targetProducts = this.ImportData.filter(p => p.selected);
 
-        // Set total records for pagination
         this.totalData = res?.data?.total_records || players.length;
 
         this.updateSelectAllStatus();
-        this.cd.detectChanges();
+        // this.cd.detectChanges();
       },
       error: (err) => {
         this.spinnerService.raiseDataEmitterEvent('off');

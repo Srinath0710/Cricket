@@ -25,10 +25,10 @@
     </div>
 
     <ng-template pTemplate="content">
-      <p-table [value]="filteredImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true"
-        [rows]="5" [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false"
-        (onRowSelect)="updateSelectAllStatus()" (onRowUnselect)="updateSelectAllStatus()"
-        (onPage)="importCompetitionPlayersList($event)" [totalRecords]="totalData" scrollable="true">
+      <p-table [value]="ImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true" [rows]="5"
+        [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false" (onRowSelect)="updateSelectAllStatus()"
+        (onRowUnselect)="updateSelectAllStatus()" (onPage)="importCompetitionPlayersList($event)"
+        [totalRecords]="totalData" scrollable="true">
 
         <ng-template pTemplate="header">
           <tr>
@@ -37,19 +37,6 @@
                 inputId="selectAllAll"></p-checkbox>
               <label for="selectAllAll" class="ml-1">All</label>
             </th>
-
-            <!-- <div class="flex align-items-center justify-content-between">
-                <label class="font-bold mr-2">Team Name</label>
-                <i class="pi pi-filter filter-icon cursor-pointer" pTooltip="Filter Teams"
-                  (click)="toggleTeamFilterDropdown()"></i>
-              </div> -->
-
-            <div *ngIf="showTeamFilterDropdown" class="team-dropdown-container mt-1">
-              <!-- <p-dropdown [options]="teamDropdownList" optionLabel="team_name" optionValue="team_id"
-                [(ngModel)]="selectedTeamId" placeholder="Select Team" (onChange)="onTeamFilterChange($event)"
-                [style]="{ 'border-radius': '1px' }">
-              </p-dropdown> -->
-            </div>
             <th>Player Name</th>
           </tr>
         </ng-template>
@@ -57,17 +44,17 @@
         <ng-template pTemplate="body" let-player>
           <tr [pSelectableRow]="player">
             <td><p-tableCheckbox [value]="player"></p-tableCheckbox></td>
-            <!-- <td>{{ player.team_name || '-' }}</td> -->
             <td>{{ player.player_name || '-' }}</td>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="3" class="text-center p-3">No Players Found in this Teams</td>
+            <td colspan="3" class="text-center p-3">No Players Found in this Team</td>
           </tr>
         </ng-template>
       </p-table>
+
     </ng-template>
 
     <div class="row mt-4 sticky-footer-buttons">
