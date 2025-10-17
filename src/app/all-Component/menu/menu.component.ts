@@ -699,8 +699,9 @@ export class MenuComponent implements OnInit {
   }
   clear() {
     this.searchKeyword = '';
-    // this.dt.clear();          
-    this.gridLoad();
+    this.dt?.clear(); 
+    this.first = 1;  
+    this.gridLoad(); 
   }
   cancelImage() {
     this.previewUrl = null;

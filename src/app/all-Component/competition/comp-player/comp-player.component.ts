@@ -448,12 +448,10 @@ export class CompPlayerComponent implements OnInit {
     // this.showFilters = false;
   }
   applyFilters() {
-    // ✅ Source filter (via API)
     if (this.showSourceFilters) {
       this.gridLoad(true);
     }
 
-    // ✅ Target filter (local filtering)
     if (this.showTargetFilters) {
       this.targetPlayer = this.targetPlayer.filter(player =>
         (this.filterPlayerType ? player.player_role === this.filterPlayerType : true) &&
@@ -472,20 +470,12 @@ export class CompPlayerComponent implements OnInit {
 
 
   clearFilters() {
-    // this.filterStatus = '';
     this.filterPlayerType = '';
     this.filterGenderType = '';
     this.filterBatType = '';
     this.filterBowlType = '';
     this.searchKeyword = '';
     this.first = 1;
-    // this.gridLoad();
-    // this.msgService.add({
-    //   severity: 'info',
-    //   summary: 'Filters Cleared',
-    //   data: { image: 'assets/images/default-logo.png' },
-    //   detail: 'Filters has been Cleared'
-    // });
   }
 
   CancelFilters() {
@@ -798,6 +788,7 @@ export class CompPlayerComponent implements OnInit {
   importCompetitionPlayersList(event?: any) {
     const pageNo = event ? Math.floor(event.first / event.rows) + 1 : 1;
     const pageSize = event ? event.rows : 10;
+
     if (!this.selectedCompetitionId || !this.selectedTeamId) {
       console.warn('Competition ID or Team ID not selected');
       this.ImportData = [];
@@ -823,39 +814,38 @@ export class CompPlayerComponent implements OnInit {
     this.apiService.post(this.urlConstant.importcompplayerlist, params).subscribe({
       next: (res: any) => {
         this.spinnerService.raiseDataEmitterEvent('off');
-        console.log('Import Players Response:', res);
+
         const players = res?.data?.players ||
           res?.data?.all_players ||
           res?.players ||
           res?.data ||
           [];
 
-        console.log('Players found:', players.length);
-
+        // 🔹 Keep previous selections
         this.ImportData = players.map((player: any) => ({
           ...player,
-          selected: this.targetPlayer?.some(tp => tp.player_id === player.player_id)
+          selected: this.targetProducts.some(
+            (p) => p.player_id === player.player_id
+          ),
         }));
 
         this.filteredImportData = [...this.ImportData];
-        this.targetProducts = this.ImportData.filter(p => p.selected);
-
         this.totalData = res?.data?.total_records || players.length;
 
+        // 🔹 Recalculate select all status for this page
         this.updateSelectAllStatus();
-        // this.cd.detectChanges();
       },
       error: (err) => {
         this.spinnerService.raiseDataEmitterEvent('off');
         console.error('Error fetching import players:', err);
         this.ImportData = [];
         this.filteredImportData = [];
-        this.targetProducts = [];
-        this.totalData = 0;
         this.failedToast({ message: 'Failed to fetch players.' });
       }
     });
   }
+
+
 
 
 
@@ -931,15 +921,10 @@ export class CompPlayerComponent implements OnInit {
 
   onCancelImport() {
     this.importDialogVisisble = false;
-
-
     this.selectAllAll = false;
     this.selectAllPlayer = false;
     this.selectAllTeam = false;
-
-
     this.targetProducts = [];
-
     this.selectedTeamId = '';
     this.filteredImportData = [...this.ImportData];
   }
@@ -952,20 +937,13 @@ export class CompPlayerComponent implements OnInit {
     this.selectAllTeam = false;
     this.selectedCompetitionId = null;
 
-
-    this.targetProducts = [];
-
     this.selectedTeamId = '';
-    this.filteredImportData = this.ImportData.map(item => ({
-      ...item,
-      selected: false
-    }));
-
-    this.ImportData = this.ImportData.map(item => ({
-      ...item,
-      selected: false
-    }));
+    this.targetProducts = [];
+    this.ImportData = [];
+    this.filteredImportData = [];
+    this.totalData = 0;
   }
+
 
 
   importCompetiton() {
