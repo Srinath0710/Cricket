@@ -538,8 +538,8 @@ formSetValue() {
   setDefaultValue(this.bowlingstyle, 'bowling_style_id', '');
   setDefaultValue(this.bowlingtype, 'bowling_type_id', '');
   setDefaultValue(this.genderSelect, 'gender_id', 'men');
+  setDefaultValue(this.profileImages, 'profile_image', 'men');
 
-  // Set default image based on the selected gender
   // const genderId = this.playerRegistrationform.get('gender_id')?.value;
   // if (genderId) {
   //   const gender = this.genderSelect.find(g => g.config_id === genderId);
@@ -706,7 +706,8 @@ formSetValue() {
           if (res.data !== null && this.filedata != null) {
             this.profileImgAppend(res.data.players[0].player_id);
           } else {
-            this.addCallBack(res)
+            this.addCallBack(res);
+            this.gridLoad();
           }
         } else {
           this.failedToast(res)
