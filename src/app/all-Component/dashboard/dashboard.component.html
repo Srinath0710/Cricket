@@ -5,54 +5,64 @@
                 <div class="card-body">
                     <div class="page-header main-page-header d-flex align-items-center justify-content-between">
                         <div class="main-page-title page-title playerbackground">
-                            <i class="fa-solid fa-grip" aria-hidden="true"></i>
+                            <i class="pi pi-home" aria-hidden="true"></i>
                             Dashboard
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="row gy-3">
-                <div class="col-md-6">
-                    <div class="card table-box align-items-center">
-                        <div class="card-body">
-                            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-                                <div class="main-page-title page-title playerbackground">
-                                    <p>Total Matches</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card table-box align-items-center">
-                        <div class="card-body">
-                            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-                                <div class="main-page-title page-title playerbackground">
-                                    <p>Total Players</p>
-                                </div>
-                            </div>
+                            <div class="totalrecord">: {{ totalData }}</div>
+                            <!-- </div> -->
+                             <div class="card flex justify-center">
+                                <!-- <button *ngIf=""></button> -->
+                                 <p-dropdown></p-dropdown>
+                             </div>
                         </div>
                     </div>
                 </div>
                 <br>
-                <div class="col-md-6">
-                    <div class="card table-box align-items-center">
-                        <div class="card-body">
-                            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-                                <div class="main-page-title page-title playerbackground">
-                                    <p>Wins</p>
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <div class="card table-box align-items-center">
+                            <div class="card-body">
+                                <div
+                                    class="page-header main-page-header d-flex align-items-center justify-content-between">
+                                    <div class="main-page-title page-title playerbackground">
+                                        <p>Total Matches</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card table-box align-items-center">
-                        <div class="card-body">
-                            <div class="page-header main-page-header d-flex align-items-center justify-content-between">
-                                <div class="main-page-title page-title playerbackground">
-                                    <p>Loss</p>
+                    <div class="col-md-6">
+                        <div class="card table-box align-items-center">
+                            <div class="card-body">
+                                <div
+                                    class="page-header main-page-header d-flex align-items-center justify-content-between">
+                                    <div class="main-page-title page-title playerbackground">
+                                        <p>Total Players</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-md-6">
+                        <div class="card table-box align-items-center">
+                            <div class="card-body">
+                                <div
+                                    class="page-header main-page-header d-flex align-items-center justify-content-between">
+                                    <div class="main-page-title page-title playerbackground">
+                                        <p>Wins</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card table-box align-items-center">
+                            <div class="card-body">
+                                <div
+                                    class="page-header main-page-header d-flex align-items-center justify-content-between">
+                                    <div class="main-page-title page-title playerbackground">
+                                        <p>Loss</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

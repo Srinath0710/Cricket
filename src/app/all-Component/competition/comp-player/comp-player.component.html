@@ -9,8 +9,8 @@
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
     [style]="{ width: '60vw', height: '90vh', 'border-radius': '1px' }" [dismissableMask]="true">
 
-    <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px;">
-      <h4 class="m-0">Import Competition Players</h4>
+    <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px; font-weight: 700;">
+      <h4 class="m-0">Import Players</h4>
       <div style="flex-shrink: 0; margin-left: 10px;">
         <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
           placeholder="Select Competition" optionLabel="label" optionValue="value"
@@ -32,14 +32,30 @@
 
         <ng-template pTemplate="header">
           <tr>
-            <th class="checkbox-col">
-              <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')" binary="true"
-                inputId="selectAllAll"></p-checkbox>
-              <label for="selectAllAll" class="ml-1">All</label>
+            <th style="width: 120px;">
+              <div class="checkbox-align">
+                <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')" binary="true"
+                  inputId="selectAllAll"></p-checkbox>
+                <label for="selectAllAll">All</label>
+              </div>
             </th>
             <th>Player Name</th>
           </tr>
         </ng-template>
+
+        <ng-template pTemplate="body" let-player>
+          <tr [pSelectableRow]="player">
+            <td>
+              <div class="checkbox-align">
+                <p-tableCheckbox [value]="player"></p-tableCheckbox>
+              </div>
+            </td>
+            <td>{{ player.player_name || '-' }}</td>
+          </tr>
+        </ng-template>
+
+
+
 
         <ng-template pTemplate="body" let-player>
           <tr [pSelectableRow]="player">
