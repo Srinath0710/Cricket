@@ -319,19 +319,20 @@
   position: relative;
 }
 
+/* :host ::ng-deep .import-team-table .p-paginator {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;
+  overflow: visible !important;
+} */
+
 :host ::ng-deep .import-team-table .p-paginator {
   position: sticky;
   bottom: 0;
   background: #fff;
   z-index: 10;
   overflow: visible !important;
-}
-
-.import-team-table .p-datatable-thead>tr>th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: #f8f9fa;
 }
 
 .team-header-container {
@@ -364,7 +365,6 @@
   overflow: visible;
 }
 
-/* General column alignment */
 :host ::ng-deep .import-team-table .checkbox-col {
   text-align: center;
   width: 100px;
@@ -372,25 +372,21 @@
   padding: 8px;
 }
 
-/* Wrapper to center header checkbox and label */
 :host ::ng-deep .import-team-table .checkbox-wrapper {
   display: flex;
   flex-direction: column;
-  /* Places label below the checkbox */
   align-items: center;
   justify-content: center;
   height: 100%;
   gap: 4px;
 }
 
-/* Label styling */
 :host ::ng-deep .import-team-table .checkbox-label {
   font-size: 13px;
   font-weight: 500;
   text-align: center;
 }
 
-/* Center checkboxes in body rows */
 :host ::ng-deep .import-team-table .checkbox-cell {
   text-align: center;
   vertical-align: middle;
@@ -402,7 +398,6 @@
   justify-content: center;
 }
 
-/* Optional: make checkbox look clean */
 :host ::ng-deep .p-checkbox .p-checkbox-box {
   width: 20px;
   height: 20px;
@@ -419,3 +414,4 @@
 :host ::ng-deep .p-checkbox:hover .p-checkbox-box {
   border-color: #007ad9;
 }
+

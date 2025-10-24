@@ -11,31 +11,40 @@
 
     <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px;">
       <h4 class="m-0">Import Players</h4>
-      <div style="flex-shrink: 0; margin-left: 10px;">
+      <div style="flex-shrink: 0; margin-left: 10px; display: flex; flex-direction: column; gap: 12px;">
         <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
           placeholder="Select Competition" optionLabel="label" optionValue="value"
           (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px', 'min-width': '300px' }">
         </p-dropdown>
-        <br>
-        <p-dropdown [options]="teamDropdownList" [(ngModel)]="selectedTeamId" placeholder="Select Team"
-          optionLabel="label" optionValue="value" (onChange)="onTeamChange($event.value)"
+
+        <p-dropdown *ngIf="teamsDropdownVisible" [options]="teamDropdownList" [(ngModel)]="selectedTeamId"
+          placeholder="Select Team" optionLabel="label" optionValue="value" (onChange)="onTeamChange($event.value)"
           [style]="{ 'border-radius': '1px', 'min-width': '250px' }">
         </p-dropdown>
       </div>
     </div>
 
     <ng-template pTemplate="content">
-      <p-table [value]="ImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true" [rows]="5"
+      <div *ngIf="!selectedCompetitionId" class="text-center p-3">
+        Please select a competition
+      </div>
+
+      <div *ngIf="selectedCompetitionId && teamsDropdownVisible && !selectedTeamId" class="text-center p-3">
+        Please select a team
+      </div>
+
+      <p-table *ngIf="selectedCompetitionId && (!teamsDropdownVisible || selectedTeamId)" #importPlayersTable
+        [value]="ImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true" [rows]="5"
         [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false" (onRowSelect)="updateSelectAllStatus()"
         (onRowUnselect)="updateSelectAllStatus()" (onPage)="importCompetitionPlayersList($event)"
         [totalRecords]="totalData" [scrollable]="false" class="import-team-table">
+
         <ng-template pTemplate="header">
           <tr>
             <th class="checkbox-col">
               <div class="checkbox-wrapper">
                 <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')"
                   binary="true"></p-checkbox>
-                <span class="checkbox-label">All</span>
               </div>
             </th>
             <th>Team Name</th>
@@ -59,7 +68,6 @@
       </p-table>
     </ng-template>
 
-
     <div class="row mt-4 sticky-footer-buttons">
       <div class="col-12 text-end">
         <button type="button" class="submit-btn margin-right save-button" (click)="importCompetitionPlayers()">
@@ -74,7 +82,6 @@
       </div>
     </div>
   </p-dialog>
-
 
 
   <!-- </div> -->

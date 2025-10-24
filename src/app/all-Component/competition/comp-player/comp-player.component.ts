@@ -57,6 +57,7 @@ interface Team {
 export class CompPlayerComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   @ViewChild('dt2') dt2: Table | undefined;
+  @ViewChild('importPlayersTable') importPlayersTable!: Table;
   readonly CompetitionData = input<ManageDataItem>({ competition_id: 0, name: '', match_type: '', gender: '', age_category: '', start_date: '', end_date: '', tour_type: '', trophy_name: '', client_id: 0 });
   @Output() PlayerUpdated = new EventEmitter<void>();
   client_id: number = 0;
@@ -919,16 +920,6 @@ export class CompPlayerComponent implements OnInit {
   }
 
 
-  onCancelImport() {
-    this.importDialogVisisble = false;
-    this.selectAllAll = false;
-    this.selectAllPlayer = false;
-    this.selectAllTeam = false;
-    this.targetProducts = [];
-    this.selectedTeamId = '';
-    this.filteredImportData = [...this.ImportData];
-  }
-
   onClearImport() {
     this.selectAllChecked = false;
     this.selectAllAll = false;
@@ -943,7 +934,29 @@ export class CompPlayerComponent implements OnInit {
     this.ImportData = [];
     this.filteredImportData = [];
     this.totalData = 0;
+    this.first = 0;
+    this.rows = 10;
+    if (this.importPlayersTable) {
+      this.importPlayersTable.reset();
+    }
   }
+
+
+  onCancelImport() {
+    this.importDialogVisisble = false;
+    this.selectAllAll = false;
+    this.selectAllPlayer = false;
+    this.selectAllTeam = false;
+    this.targetProducts = [];
+    this.selectedTeamId = '';
+    this.filteredImportData = [...this.ImportData];
+    this.first = 0;
+    this.rows = 10;
+    if (this.importPlayersTable) {
+      this.importPlayersTable.reset();
+    }
+  }
+
 
 
   importCompetiton() {
@@ -1035,20 +1048,20 @@ export class CompPlayerComponent implements OnInit {
 
   onCompetitionChange(event: any) {
     this.selectedCompetitionId = event;
-
     this.importCompetitionTeams = [];
     this.importCompetitionPlayersList();
     this.selectAllChecked = false;
 
     if (this.selectedCompetitionId) {
+      this.teamsDropdownVisible = true;
       this.importCompetitionTeam(Number(this.selectedCompetitionId));
-    }
-    else {
+    } else {
       this.teamsDropdownVisible = false;
       this.importCompetitionTeams = [];
       this.teamDropdownList = [];
     }
   }
+
 
   onTeamChange(event: any) {
     this.selectedTeamId = event;
@@ -1061,10 +1074,5 @@ export class CompPlayerComponent implements OnInit {
       this.filteredImportData = [];
     }
   }
-
-
-  // toggleTeamFilter() {
-  //   this.showTeamFilter = !this.showTeamFilter;
-  // }
 
 }
