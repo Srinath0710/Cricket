@@ -12,6 +12,7 @@
           <h6>
             <span class="head">{{ scorecardHeader.competitionName }}</span>
             <span class="match-date">({{ scorecardHeader.startDate }})</span>
+            <span class="match-end-date">-({{ scorecardHeader.endDate }})</span>
           </h6>
           <div class="series">({{ scorecardHeader.matchType }} - {{ scorecardHeader.venue }})</div>
         </div>
@@ -58,7 +59,6 @@
               <ng-template #yetToBatB>Yet to Bat</ng-template>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -80,10 +80,11 @@
 
     <!-- Dynamic innings buttons for both teams Non test Match -->
     <div class="innings-button" *ngIf="scorecardHeader.matchType !== 'Multiday' && activeTab==='scorecard'">
-      <button *ngFor="let inn of getAllInnings(); let i = index" (click)="setActiveInnings(inn.team, inn.index)"
+<button *ngFor="let inn of getAllInnings()"
+        (click)="setActiveInnings(inn.team, inn.index)"
         [ngClass]="{ activetab: activeInnings === inn.team + inn.index }">
-        {{ inn.teamName }} Inn {{ inn.index + 1 }} {{ inn.summary }}
-      </button>
+  {{ inn.teamName }} Inn {{ inn.index + 1 }}  {{ inn.display }}
+</button>
     </div>
 
     <!-- Test match innings buttons -->
@@ -102,29 +103,45 @@
 
     <!-- Scorecard Tab -->
     <div *ngIf="activeTab==='scorecard'">
-
       <!-- Scorecard tables for both teams visible by default -->
       <div class="scorecard-teams-visible" *ngIf="scorecardHeader?.type !== 'Upcoming'">
         <ng-container *ngFor="let inn of getInningsData()">
           <ng-container *ngIf="scorecardHeader.matchType !== 'Multiday' && activeInnings === inn.key">
             <!-- T20 & ODI match -->
             <!-- Batting -->
-            <div class="team-scorecard">
+            <!-- <div class="team-scorecard">
               <span class="TeamsScoreFont">{{ inn.battingTeam }} Batting</span>
+              <ng-container *ngTemplateOutlet="battingTable; context:{ batters: inn.batting }"></ng-container>
+            </div> -->
+
+            <div class="team-scorecard">
+              <span class="TeamsScoreFont">Batting ==></span>
+                  <ng-container 
+                    *ngTemplateOutlet="extrasTable; context:{ extras: getExtrasForInningsByNumber(inn.innNo) }">
+                  </ng-container>
               <ng-container *ngTemplateOutlet="battingTable; context:{ batters: inn.batting }"></ng-container>
             </div>
 
             <!-- Fall of wickets -->
-            <div class="fall-of-wickets">
+            <!-- <div class="fall-of-wickets">
               <span class="fallOfwicketsTitle">Fall Of Wickets</span>
+              <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: inn.fow }"></ng-container>
+            </div> -->
+
+                        <div class="team-scorecard">
+              <span class="TeamsScoreFont">Fall Of Wickets</span>
               <ng-container *ngTemplateOutlet="fallOfWicketTable; context:{ wickets: inn.fow }"></ng-container>
             </div>
 
             <!-- Bowling -->
-            <div class="team-scorecard">
+            <!-- <div class="team-scorecard">
               <span class="TeamsScoreFont">
                 {{ inn.battingTeam === scorecardHeader.teamA ? scorecardHeader.teamB : scorecardHeader.teamA }} Bowling
               </span>
+              <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: inn.bowling }"></ng-container>
+            </div> -->
+             <div class="team-scorecard">
+              <span class="TeamsScoreFont">Bowling</span>
               <ng-container *ngTemplateOutlet="bowlingTable; context:{ bowlers: inn.bowling }"></ng-container>
             </div>
 
@@ -132,11 +149,9 @@
         </ng-container>
       </div>
 
-
       <!--Test Match Inngings  -->
       <div class="scorecard-teams-visible"
         *ngIf="scorecardHeader?.type !== 'Upcoming' && scorecardHeader?.matchType === 'Multiday'">
-
         <ng-container *ngFor="let inn of getTestInningsData()">
           <ng-container *ngIf="activeinnings === inn.key">
 
@@ -147,17 +162,9 @@
       </div> -->
             <div class="team-scorecard">
               <span class="TeamsScoreFont">Batting ==></span>
-              <span class="extras-values">
-                [<span class="extras-label">Extras</span>
-                <span class="extras-number">=25</span> -(
-                <span class="extras-label">WD</span>-<span class="extras-number">10</span>,
-                <span class="extras-label">NB</span>-<span class="extras-number">2</span>,
-                <span class="extras-label">P</span>-<span class="extras-number">0</span>,
-                <span class="extras-label">B</span>-<span class="extras-number">1</span>,
-                <span class="extras-label">LB</span>-<span class="extras-number">2</span>
-                )]
-              </span>
-              <div class="extras-static"></div>
+                  <ng-container 
+                    *ngTemplateOutlet="extrasTable; context:{ extras: getExtrasForInningsByNumber(inn.innNo) }">
+                  </ng-container>
               <ng-container *ngTemplateOutlet="battingTable; context:{ batters: inn.batting }"></ng-container>
             </div>
 
@@ -209,9 +216,20 @@
           </table>
         </div>
       </ng-template>
-
-
     </div>
+     
+    <!--extras  Resuable block -->
+    <ng-template #extrasTable let-extras="extras">
+        [<span class="extras-label">Extras-</span>
+        <span class="extras-number">{{ extras.total }}</span> =(
+        <span class="extras-label">WD</span>-<span class="extras-number">{{ extras.wide }}</span>,
+        <span class="extras-label">NB</span>-<span class="extras-number">{{ extras.noBall }}</span>,
+        <span class="extras-label">P</span>-<span class="extras-number">{{ extras.penalty }}</span>,
+        <span class="extras-label">B</span>-<span class="extras-number">{{ extras.bye }}</span>,
+        <span class="extras-label">LB</span>-<span class="extras-number">{{ extras.legBye }}</span>
+        )]
+    </ng-template>
+
     <!-- Squad Tab -->
     <div *ngIf="activeTab==='squad'">
       <!-- Show Both Teams' Squads by default -->
@@ -230,21 +248,26 @@
     </div>
     <!-- Reusable Squad Table Template -->
     <ng-template #squadTable let-players="players">
-      <div class="table-scroll">
-        <table class="scorecard-table">
-          <thead>
-            <tr>
-              <th>Player</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let player of players">
-              <td>{{ player }}</td>
-            </tr>
-          </tbody>
-        </table>
+  <div class="squad-list">
+    <div class="squad-row" *ngFor="let player of players">
+      <img class="player-img" src="assets/images/unknown.jpeg" alt="img" />
+      <div class="player-info">
+        <span class="player-name">{{ player.player_name }}</span>
+        <span class="role">
+          <span *ngIf="player.is_captain==='1'">(C)</span>
+          <span *ngIf="player.is_wk==='1'">(WK)</span>
+          <span *ngIf="player.is_sub==='1'">(Sub)</span>
+        </span>
       </div>
-    </ng-template>
+      <div class="role-icons">
+        <img *ngIf="player.is_batter==='1'" src="assets/images/clr-bat.png" alt="Bat" />
+        <img *ngIf="player.is_bowler==='1'" src="assets/images/Ball.jpeg" alt="Ball" />
+        <img *ngIf="player.is_wk==='1'" src="assets/images/clr-glove-3.jpeg" alt="WK" />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
     <!-- Videos Tab -->
     <div *ngIf="activeTab==='videos'">
       <p>Videos Not Available Right now.....</p>
@@ -253,38 +276,6 @@
   <!-- Match Details (ONLY SHOW ON SCORECARD) -->
 
 </div>
-
-<!-- --Reusable Team Block ---->
-<ng-template #teamBlock let-team="team" let-side="side">
-  <div class="team" [ngClass]="side+'-team'">
-    <span class="team-name">{{ team }}</span>
-    <img [src]="team.logo" />
-    <div class="team-score">
-      <ng-container *ngIf="selectedMatch.matchType==='Multiday'; else normalScore">
-        <div class="innings-row">
-          <div class="innings-header">
-            <span *ngFor="let inn of team.innings; let i=index" class="innings-col">Inn {{ i+1 }}</span>
-          </div>
-          <div class="innings-score">
-            <span *ngFor="let inn of team.innings" class="score-text innings-col">{{ inn.split('(')[0].trim() }}</span>
-          </div>
-          <div class="innings-overs">
-            <span *ngFor="let inn of team.innings" class="overs-text innings-col">
-              ({{ inn.split('(')[1] ? inn.split('(')[1].replace(')','') : '' }})
-            </span>
-          </div>
-        </div>
-      </ng-container>
-      <ng-template #normalScore>
-        <ng-container *ngIf="team.score; else yetToBat">
-          <span class="score-text">{{ team.score.split(' ')[0] }}</span><br>
-          <small class="overs-text">{{ team.score.split(' ')[1] || '' }}</small>
-        </ng-container>
-        <ng-template #yetToBat>{{ team.score || 'Yet to Bat' }}</ng-template>
-      </ng-template>
-    </div>
-  </div>
-</ng-template>
 
 <!-- --Reusable Batting Table ---->
 <ng-template #battingTable let-batters="batters">

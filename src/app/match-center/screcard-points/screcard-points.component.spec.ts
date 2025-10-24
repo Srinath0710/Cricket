@@ -16,7 +16,7 @@ describe('ScrecardPointsComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
+ 
   it('should create', () => {
     expect(component).toBeTruthy();
   });

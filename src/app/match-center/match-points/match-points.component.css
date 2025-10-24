@@ -18,7 +18,7 @@ body,
   margin-left: 45px;
 }
 /* Date text (light gray) */
-.match-date {
+.match-date, .match-end-date {
   color: rgb(129, 116, 116);
   font-size: 12px;
 }

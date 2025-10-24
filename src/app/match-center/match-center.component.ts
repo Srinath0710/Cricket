@@ -108,6 +108,7 @@ export class MatchCenterComponent implements OnInit {
       this.ageGroups = [{ label: 'All Age Groups', value: null }, ...this.filters.filter(f => f.config_key === 'age_category').map(f => ({ label: f.config_value, value: f.config_value }))];
       this.teamFormats = [{ label: 'All Team Formats', value: null }, ...this.filters.filter(f => f.config_key === 'team_format').map(f => ({ label: f.config_value, value: f.config_value }))];
       this.matchTypes = [{ label: 'All Match Types', value: null }, ...this.filters.filter(f => f.config_key === 'comp_type').map(f => ({ label: f.config_value, value: f.config_value }))];
+      this.statuses = [{ label: 'All Statuses', value: null }, ...this.filters.filter(f => f.config_key === 'status').map(f => ({ label: f.config_value, value: f.config_value }))];
     });
   }
 
@@ -152,16 +153,16 @@ export class MatchCenterComponent implements OnInit {
 
 
   // API/JSON la varra status values normalize panra function
-  private normalizeStatus(status: string | null | undefined): string {
-    if (!status) return 'Upcoming';  // status illa → Upcoming
+  // private normalizeStatus(status: string | null | undefined): string {
+  //   if (!status) return 'Upcoming';  // status illa → Upcoming
 
-    switch (status.toLowerCase()) {
-      case 'completed': return 'Completed';   // completed ah irundha
-      case 'inprogress': return 'inprogress';       // inprogress ah irundha
-      case 'upcoming': return 'Upcoming';     // upcoming ah irundha
-      default: return 'Upcoming';             // vera yedhum na Upcoming
-    }
-  }
+  //   switch (status.toLowerCase()) {
+  //     case 'completed': return 'Completed';   // completed ah irundha
+  //     case 'inprogress': return 'inprogress';       // inprogress ah irundha
+  //     case 'upcoming': return 'Upcoming';     // upcoming ah irundha
+  //     default: return 'Upcoming';             // vera yedhum na Upcoming
+  //   }
+  // }
 
   /*---Filtered match-cards computed property (applies all selected filters)-- */
   get filteredMatches(): CompetitionModel[] {
@@ -174,10 +175,8 @@ export class MatchCenterComponent implements OnInit {
     );
   }
 
-
-
+  /*--- Pagination change handler -- */
   onPageChange(event: any): void {
-    ``
     // event has { first, rows } from p-paginator
     this.first = event.first;
     this.rows = event.rows;
@@ -187,8 +186,7 @@ export class MatchCenterComponent implements OnInit {
     return this.filteredMatches.slice(this.first, this.first + this.rows);
   }
 
-
-
+  /*--- Points pagination change handler -- */
   onPointsPageChange(event: any): void {
     this.pointsFirst = event.first;
     this.pointsRows = event.rows;
@@ -202,12 +200,10 @@ export class MatchCenterComponent implements OnInit {
     this.competitionId = competitionId;
     this.selectedMatchType = matchType || null;
     // this.ShowPointsForm = true;
-        console.log('POINSjhfu')
-
+        // console.log('POINSjhfu')
     this.pointsForm.reset();
     this.changeTab('points');
   }
-
 
   closePointsForm(event: boolean): void {
   console.log('Parent: hideMatches emitted ->', event);
@@ -224,10 +220,8 @@ export class MatchCenterComponent implements OnInit {
     return this.matchespoints.some(match => match.competition_id === competitionId);
   }
 
-
   /*---Count match types in a series (returns object like { 'T20': 2, 'ODI': 1 })-- */
   // Add this new method inside your MatchCenterComponent class
-
   getMatchTypeCounts(competitionId: number): { [key: string]: number } {
     const counts: { [key: string]: number } = {};
     this.matchSummaryRaw
@@ -251,7 +245,4 @@ export class MatchCenterComponent implements OnInit {
     // illati → Live
     return 'inprogress';
   }
-
-
-
 }

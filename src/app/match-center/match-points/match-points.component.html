@@ -13,9 +13,8 @@
               <h6>
                 <span class="head">{{ match.competition_name }}</span>
                 <span class="match-date">({{ match.match_start_date }})</span>
+                <span class="match-end-date">-({{ match.match_end_date }})</span>
               </h6>
-
-
 
               <div class="series">({{ match.comp_type }}-{{ match.venue }})</div>
             </div>
@@ -35,7 +34,6 @@
                         <span class="overs-text">({{ inn.overs }})</span>
                       </span>
                     </div>
-
                   </ng-container>
                   <ng-template #yetToBatA>Yet to Bat</ng-template>
                 </div>
@@ -63,8 +61,6 @@
                           <span class="overs-text">({{ inn.overs }})</span>
                         </span>
                       </div>
-
-
                     </div>
                   </ng-container>
                   <ng-template #yetToBatB>Yet to Bat</ng-template>
@@ -80,7 +76,6 @@
             <div class="right-btn">
               <button class="match-btn" (click)="openScorecard(match)">Score</button>
             </div>
-
           </div>
         </ng-container>
 
@@ -90,7 +85,6 @@
             <p>No matches found for this competition and type.</p>
           </div>
         </ng-template>
-
       </div>
 
       <!-- Pagination -->
@@ -99,14 +93,12 @@
           [rowsPerPageOptions]="[5, 10, 15]" (onPageChange)="onPointsPageChange($event)">
         </p-paginator>
       </div>
-
     </div>
 
     <!-- Back Button -->
     <div class="form-actions">
       <button type="button" (click)="closePointsForm()">Back</button>
     </div>
-
   </form>
 </div>
 

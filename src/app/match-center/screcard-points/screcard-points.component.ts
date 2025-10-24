@@ -47,9 +47,8 @@ export class ScrecardPointsComponent {
     this.loadBattingSummariesFromMock();
     this.loadBowlingSummariesFromMock();
     this.loadFallOfWicketsFromMock();
+    this.loadSquadsFromMock();
     this.loadSeasonsFromMock();
-
-
   }
   /*--- Scorecard UI -- */
   showScorecard = false;
@@ -72,6 +71,8 @@ export class ScrecardPointsComponent {
   bowlingSummaryRaw: any;
   bowlingSummaries: any;
   fowRaw: any;
+  squadRaw: any;
+  squadList: any;
   fallOfWickets: any;
   seasonsRaw: any;
   Season: any;
@@ -85,20 +86,16 @@ export class ScrecardPointsComponent {
     this.showScorecard = true;
   }
 
-
   closeScorecard(): void {
     this.showScorecard = false;
     this.changeTab('points');
-
   }
-
-
 
   /* Schedules */
   loadScheduleSummarysFromMock(): void {
     this.apiService.getMockData('assets/mock_data/schedules.json').subscribe(data => {
       this.ScheduleMatchSummaryRaw = data;
-      this.ScheduleMatchSummary = this.battingMatchSummaryRaw.map((s: any) => new ScheduleModel({
+      this.ScheduleMatchSummary = this.ScheduleMatchSummaryRaw.map((s: any) => new ScheduleModel({
         match_id: s.match_id,
         competition_name: s.competition_name,
         team_1_name: s.team_1_name,
@@ -163,37 +160,20 @@ export class ScrecardPointsComponent {
         bdry_four: Number(b.bdry_four),
         bdry_six: Number(b.bdry_six),
         dot_balls: Number(b.dot_balls),
-        strike_rate: b.strike_rate ? Number(b.strike_rate) : undefined
+        strike_rate: b.strike_rate ? Number(b.strike_rate) : undefined,
+        wide: Number(b.wide) || 0,
+        noball: Number(b.noball) || 0,
+        leg_bye: Number(b.leg_bye) || 0,
+        bye: Number(b.bye) || 0 ,
+        penalty: Number(b.penalty) || 0 ,
+        extra: Number(b.extra) || 0
       }));
       this.bowlingSummariesInnings1 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "1");
       this.bowlingSummariesInnings2 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "2");
       this.bowlingSummariesInnings3 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "3");
       this.bowlingSummariesInnings4 = this.bowlingSummaryRaw.filter((b: any) => b.innings_no === "4");
-
-      // Generate squads from batting and bowling summaries
-      this.teamASquad = [
-        ...this.battingSummaryRaw
-          .filter((b: { batting_team: any; }) => b.batting_team === this.selectedMatch?.team_1_name)
-          .map((b: { player_name: any; }) => b.player_name),
-        ...this.bowlingSummaryRaw
-          .filter((b: { bowling_team: any; }) => b.bowling_team === this.selectedMatch?.team_1_name)
-          .map((b: { player_name: any; }) => b.player_name)
-      ];
-      this.teamBSquad = [
-        ...this.battingSummaryRaw
-          .filter((b: { batting_team: any; }) => b.batting_team === this.selectedMatch?.team_2_name)
-          .map((b: { player_name: any; }) => b.player_name),
-        ...this.bowlingSummaryRaw
-          .filter((b: { bowling_team: any; }) => b.bowling_team === this.selectedMatch?.team_2_name)
-          .map((b: { player_name: any; }) => b.player_name)
-      ];
-      this.teamASquad = Array.from(new Set(this.teamASquad));
-      this.teamBSquad = Array.from(new Set(this.teamBSquad));
-      // end Generate squads from batting and bowling summaries
     });
   }
-
-
 
   /* Fall of wickets */
   loadFallOfWicketsFromMock(): void {
@@ -217,10 +197,39 @@ export class ScrecardPointsComponent {
     });
   }
 
+
+  loadSquadsFromMock(): void {
+    this.apiService.getMockData('assets/mock_data/scorecard_squad.json').subscribe(data => {
+      this.squadRaw = data || [];
+      this.squadList = this.squadRaw.map((s: any) =>  ({
+        player_id: s.player_id,
+        player_name: s.player_name,
+        team_name: s.team_name,
+        is_captain: s.is_captain || '0',
+        is_wk: s.is_wk || '0',
+        is_sub: s.is_sub || '0',
+        competition_id: s.competition_id || null,
+        match_id: s.match_id || null,
+        playing_order: s.playing_order ? Number(s.playing_order) : null,
+        is_batter : s.is_batter || '0',
+        is_bowler : s.is_bowler || '0'
+      }));
+         // ✅ extract unique teams (first = Team A, second = Team B)
+    const uniqueTeams = [...new Set(this.squadList.map((p: { team_name: any; }) => p.team_name))];
+
+    if (uniqueTeams.length >= 2) {
+      this.teamASquad = this.squadList.filter((p: { team_name: unknown; }) => p.team_name === uniqueTeams[0]);
+      this.teamBSquad = this.squadList.filter((p: { team_name: unknown; }) => p.team_name === uniqueTeams[1]);
+    }
+    });
+  }
+
+
+
   /* Seasons */
   loadSeasonsFromMock(): void {
     this.apiService.getMockData('assets/mock_data/seasons.json').subscribe(data => {
-      this.seasonsRaw = data;
+      this.seasonsRaw = data || [];
       this.Season = this.seasonsRaw.map((s: any) => new SeasonModel(s));
     });
   }
@@ -230,7 +239,6 @@ export class ScrecardPointsComponent {
 
 ngOnChanges(changes: SimpleChanges) {
   if (changes['selectedMatch'] && this.selectedMatch) {
-
     // Map detailed summary for header
     const teamADetails = Array.isArray(this.selectedMatch.team_1_summary) ? 
       this.selectedMatch.team_1_summary.map((x: any) => ({
@@ -253,6 +261,7 @@ ngOnChanges(changes: SimpleChanges) {
     this.scorecardHeader = {
       competitionName: this.selectedMatch.competition_name,
       startDate: this.selectedMatch.match_start_date,
+      endDate: this.selectedMatch.match_end_date,
       matchType: this.selectedMatch.comp_type,
       venue: this.selectedMatch.venue,
       teamA: this.selectedMatch.team_1_name,
@@ -272,7 +281,6 @@ ngOnChanges(changes: SimpleChanges) {
     this.activeInnings = team + index;
   }
 
-
   // code Reduce dundancy for innings buttons and data mapping
   // Test match innings buttons
   get inningsList() {
@@ -290,19 +298,19 @@ ngOnChanges(changes: SimpleChanges) {
   getAllInnings() {
     if (!this.scorecardHeader) return [];
 
-    const teamAInnings = this.scorecardHeader.teamASummary.map((s: any, i: number) => ({
-      team: 'A',
-      teamName: this.scorecardHeader.teamA,
-      index: i,
-      summary: s
-    }));
+  const teamAInnings = this.scorecardHeader.teamASummary.map((s: any, i: number) => ({
+    team: 'A',
+    teamName: this.scorecardHeader.teamA,
+    index: i,
+    display: `${s.runs}${s.wickets} (${s.overs})`
+  }));
 
-    const teamBInnings = this.scorecardHeader.teamBSummary.map((s: any, i: number) => ({
-      team: 'B',
-      teamName: this.scorecardHeader.teamB,
-      index: i,
-      summary: s
-    }));
+  const teamBInnings = this.scorecardHeader.teamBSummary.map((s: any, i: number) => ({
+    team: 'B',
+    teamName: this.scorecardHeader.teamB,
+    index: i,
+    display: `${s.runs}${s.wickets} (${s.overs})`
+  }));
 
     return [...teamAInnings, ...teamBInnings];
   }
@@ -313,26 +321,55 @@ ngOnChanges(changes: SimpleChanges) {
 
     // Map activeInnings key to corresponding data
     return [
-      { key: 'A0', battingTeam: this.scorecardHeader.teamA, batting: this.battingSummariesInnings1, bowling: this.bowlingSummariesInnings1, fow: this.fallOfWicketsInnings1 },
-      { key: 'B0', battingTeam: this.scorecardHeader.teamB, batting: this.battingSummariesInnings2, bowling: this.bowlingSummariesInnings2, fow: this.fallOfWicketsInnings2 },
-      { key: 'A1', battingTeam: this.scorecardHeader.teamA, batting: this.battingSummariesInnings3, bowling: this.bowlingSummariesInnings3, fow: this.fallOfWicketsInnings3 },
-      { key: 'B1', battingTeam: this.scorecardHeader.teamB, batting: this.battingSummariesInnings4, bowling: this.bowlingSummariesInnings4, fow: this.fallOfWicketsInnings4 }
+      { key: 'A0', battingTeam: this.scorecardHeader.teamA, batting: this.battingSummariesInnings1, bowling: this.bowlingSummariesInnings1, fow: this.fallOfWicketsInnings1,innNo: 1 },
+      { key: 'B0', battingTeam: this.scorecardHeader.teamB, batting: this.battingSummariesInnings2, bowling: this.bowlingSummariesInnings2, fow: this.fallOfWicketsInnings2,innNo: 2 },
+      { key: 'A1', battingTeam: this.scorecardHeader.teamA, batting: this.battingSummariesInnings3, bowling: this.bowlingSummariesInnings3, fow: this.fallOfWicketsInnings3,innNo: 3 },
+      { key: 'B1', battingTeam: this.scorecardHeader.teamB, batting: this.battingSummariesInnings4, bowling: this.bowlingSummariesInnings4, fow: this.fallOfWicketsInnings4,innNo: 4 },
     ];
   }
 
   // Test match innings data
-  getTestInningsData() {
-    if (!this.scorecardHeader) return [];
+getTestInningsData() {
+  if (!this.scorecardHeader) return [];
 
-    return [
-      { key: 'testone', battingTeam: this.scorecardHeader.teamA, bowlingTeam: this.scorecardHeader.teamB, innNo: '1st', batting: this.battingSummariesInnings1, bowling: this.bowlingSummariesInnings1, fow: this.fallOfWicketsInnings1 },
-      { key: 'testtwo', battingTeam: this.scorecardHeader.teamB, bowlingTeam: this.scorecardHeader.teamA, innNo: '2nd', batting: this.battingSummariesInnings2, bowling: this.bowlingSummariesInnings2, fow: this.fallOfWicketsInnings2 },
-      { key: 'testthird', battingTeam: this.scorecardHeader.teamA, bowlingTeam: this.scorecardHeader.teamB, innNo: '3rd', batting: this.battingSummariesInnings3, bowling: this.bowlingSummariesInnings3, fow: this.fallOfWicketsInnings3 },
-      { key: 'testfour', battingTeam: this.scorecardHeader.teamB, bowlingTeam: this.scorecardHeader.teamA, innNo: '4th', batting: this.battingSummariesInnings4, bowling: this.bowlingSummariesInnings4, fow: this.fallOfWicketsInnings4 },
-    ];
+  return [
+    { key: 'testone', battingTeam: this.scorecardHeader.teamA, bowlingTeam: this.scorecardHeader.teamB, innNo: 1, batting: this.battingSummariesInnings1, bowling: this.bowlingSummariesInnings1, fow: this.fallOfWicketsInnings1 },
+    { key: 'testtwo', battingTeam: this.scorecardHeader.teamB, bowlingTeam: this.scorecardHeader.teamA, innNo: 2, batting: this.battingSummariesInnings2, bowling: this.bowlingSummariesInnings2, fow: this.fallOfWicketsInnings2 },
+    { key: 'testthird', battingTeam: this.scorecardHeader.teamA, bowlingTeam: this.scorecardHeader.teamB, innNo: 3, batting: this.battingSummariesInnings3, bowling: this.bowlingSummariesInnings3, fow: this.fallOfWicketsInnings3 },
+    { key: 'testfour', battingTeam: this.scorecardHeader.teamB, bowlingTeam: this.scorecardHeader.teamA, innNo: 4, batting: this.battingSummariesInnings4, bowling: this.bowlingSummariesInnings4, fow: this.fallOfWicketsInnings4 },
+  ];
+}
+
+getExtrasForInnings(bowling: any[]) {
+  if (!bowling || bowling.length === 0) {
+    return { wide: 0, noBall: 0, bye: 0, legBye: 0, penalty: 0, total: 0 };
   }
 
+  const extras = bowling.reduce(
+    (acc, b) => {
+      acc.wide += b.wide || 0;
+      acc.noBall += b.noBall || 0;
+      acc.bye += b.bye || 0;
+      acc.legBye += b.legBye || 0;
+      acc.penalty += b.penalty || 0;
+      return acc;
+    },
+    { wide: 0, noBall: 0, bye: 0, legBye: 0, penalty: 0 }
+  );
 
+  extras.total = extras.wide + extras.noBall + extras.bye + extras.legBye + extras.penalty;
+  return extras;
+}
 
+getExtrasForInningsByNumber(innNo: number) {
+  if (!this.bowlingSummaries || !Array.isArray(this.bowlingSummaries)) {
+    return []; // return empty result instead of crashing
+  }
+
+  const filtered = this.bowlingSummaries.filter(
+    (b: { innings_no: number }) => b.innings_no === innNo);
+
+  return this.getExtrasForInnings(filtered || []);
+}
 
 }

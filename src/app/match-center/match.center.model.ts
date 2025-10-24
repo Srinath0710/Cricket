@@ -1,3 +1,5 @@
+import e from "express";
+
 //Filter Model
 export class FilterMatchModel {
   config_value: string;
@@ -9,6 +11,7 @@ export class FilterMatchModel {
     this.config_value = item.config_value || '';
     this.config_key = item.config_key || '';
     this.parent_config_id = item.parent_config_id ? Number(item.parent_config_id) : undefined;
+    this.matchType = item.matchType || null;
   }
 }
 
@@ -102,7 +105,6 @@ export class MatchSummaryModel {
     this.team_1_name = item.team_1_name || '';
   }
 }
-
 
 // Scedule Model
 export class ScheduleModel {
@@ -205,6 +207,13 @@ export class BowlingSummaryModel {
   maidens: number;
   player_name: string;
   runs: number;
+  // New fields for extras
+  wide: number;
+  noball: number;
+  leg_bye: number;
+  bye: number;
+  penalty: number;
+  extra: number;
 
   constructor(item: Partial<BowlingSummaryModel> = {}) {
     this.dot_balls = item.dot_balls ? Number(item.dot_balls) : 0;
@@ -224,6 +233,12 @@ export class BowlingSummaryModel {
     this.maidens = item.maidens ? Number(item.maidens) : 0;
     this.player_name = item.player_name || '';
     this.runs = item.runs ? Number(item.runs) : 0;
+    this.wide = item.wide ? Number(item.wide) : 0;
+    this.noball = item.noball ? Number(item.noball) : 0;
+    this.leg_bye = item.leg_bye ? Number(item.leg_bye) : 0;
+    this.bye = item.bye ? Number(item.bye) : 0;
+    this.penalty = item.penalty ? Number(item.penalty) : 0;
+    this.extra = item.extra ? Number(item.extra) : 0;
   }
 }
 
@@ -255,6 +270,36 @@ export class FallOfWicketModel {
     this.over_value = item.over_value ? Number(item.over_value) : 0;
   }
 }
+
+//Squad Model
+export class SquadModel {
+  player_id: number;
+  is_captain: string;
+  is_wk: string;
+  is_sub: string;
+  team_name: string;
+  player_name: string;
+  competition_id: number;
+  playing_order: number;
+  match_id: number;
+  is_batter: string;
+  is_bowler: string; // Optional property to indicate if the player is currently batting
+
+  constructor(item: Partial<SquadModel> = {}) {
+    this.player_id = item.player_id ? Number(item.player_id) : 0;
+    this.is_captain = item.is_captain || '0';
+    this.is_wk = item.is_wk || '0';
+    this.is_sub = item.is_sub || '0';
+    this.team_name = item.team_name || '';
+    this.player_name = item.player_name || '';
+    this.competition_id = item.competition_id ? Number(item.competition_id) : 0;
+    this.playing_order = item.playing_order ? Number(item.playing_order) : 0;
+    this.match_id = item.match_id ? Number(item.match_id) : 0;
+    this.is_batter = item.is_batter || '0';
+    this.is_bowler = item.is_bowler || '0';
+  }
+}
+
 
 //Season Model
 export class SeasonModel {

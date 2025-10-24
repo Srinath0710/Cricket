@@ -52,7 +52,6 @@ export class MatchPointsComponent implements OnChanges,OnInit {
   ngOnInit(){
     console.log(this.activePage)
           this.loadMatchSummarysFromMock();
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -88,7 +87,6 @@ export class MatchPointsComponent implements OnChanges,OnInit {
         age_category: s.age_category,
         competition_id: s.competition_id
       }));
-
 
       this.applyFilters();
     });
