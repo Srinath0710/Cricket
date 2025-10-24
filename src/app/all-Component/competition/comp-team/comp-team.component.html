@@ -13,14 +13,15 @@
     [styleClass]="'import-popup'">
 
     <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px;">
-      <h4 class="m-0">Import Competition Team</h4>
-      <div style="flex-shrink: 0; margin-left: 10px;">
+      <h4 class="m-0 import-header">IMPORT TEAM</h4>
+      <div style="flex-shrink: 0; margin-left: 30px;">
         <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
           placeholder="Select Competition" optionLabel="label" optionValue="value"
-          (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px', 'min-width': '350px' }">
+          (onChange)="onCompetitionChange($event.value)" [style]="{ 'border-radius': '1px', 'min-width': '100px' }">
         </p-dropdown>
       </div>
     </div>
+
 
     <ng-template pTemplate="content">
       <div style="height: 400px; overflow-y: auto;">
@@ -56,9 +57,9 @@
         </p-table>
 
         <!-- Conditional messages handled directly in HTML -->
-        <p class="text-center p-3" *ngIf="!selectedCompetitionId">
+        <!-- <p class="text-center p-3" *ngIf="!selectedCompetitionId">
           No data found
-        </p>
+        </p> -->
 
         <p class="text-center p-3"
           *ngIf="selectedCompetitionId && importCompetitionTeams?.length && !importCompetitionList?.length">

@@ -205,19 +205,29 @@
 }
 
 ::ng-deep .p-paginator {
+  display: flex !important;
   flex-wrap: nowrap !important;
-  /* overflow-y: auto; */
-  overflow-x: visible !important;
   justify-content: center !important;
+  align-items: center !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  gap: 0.5rem !important;
+  padding: 0.25rem 0 !important;
 }
 
 ::ng-deep .p-paginator .p-paginator-pages {
+  display: flex !important;
   flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
 }
 
-::ng-deep .p-paginator .p-dropdown {
-  min-width: 70px !important;
+::ng-deep .p-paginator .p-paginator-element {
+  min-width: 36px !important;
+  text-align: center !important;
 }
+
 
 /* .import-btn {
   background-color: #5b6b8f;
@@ -309,6 +319,13 @@
   position: relative;
 }
 
+:host ::ng-deep .import-team-table .p-paginator {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;
+  overflow: visible !important;
+}
 
 .import-team-table .p-datatable-thead>tr>th {
   position: sticky;
@@ -347,14 +364,46 @@
   overflow: visible;
 }
 
-::ng-deep .p-datatable thead th .p-checkbox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+/* General column alignment */
+:host ::ng-deep .import-team-table .checkbox-col {
+  text-align: center;
+  width: 100px;
+  vertical-align: middle;
+  padding: 8px;
 }
 
-::ng-deep .p-datatable thead th .p-checkbox .p-checkbox-box {
+/* Wrapper to center header checkbox and label */
+:host ::ng-deep .import-team-table .checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* Places label below the checkbox */
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 4px;
+}
+
+/* Label styling */
+:host ::ng-deep .import-team-table .checkbox-label {
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Center checkboxes in body rows */
+:host ::ng-deep .import-team-table .checkbox-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .import-team-table .checkbox-cell .p-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optional: make checkbox look clean */
+:host ::ng-deep .p-checkbox .p-checkbox-box {
   width: 20px;
   height: 20px;
   border-radius: 4px;
@@ -362,34 +411,11 @@
   transition: all 0.2s ease;
 }
 
-::ng-deep .p-datatable thead th .p-checkbox .p-checkbox-box.p-highlight {
+:host ::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
   background-color: #007ad9;
   border-color: #007ad9;
 }
 
-::ng-deep .p-datatable thead th .p-checkbox:hover .p-checkbox-box {
+:host ::ng-deep .p-checkbox:hover .p-checkbox-box {
   border-color: #007ad9;
-}
-
-.checkbox-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.checkbox-align {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 100%;
-  margin-right: 10px;
-}
-
-:host ::ng-deep .p-checkbox,
-:host ::ng-deep .p-selection-column .p-checkbox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

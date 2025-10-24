@@ -64,7 +64,7 @@ export class CompPlayerComponent implements OnInit {
   teamsDropDown: any;
   initilized: boolean = false;
   selectedTeamData: any;
-  selectedTeamId: string = '';
+  selectedTeamId: string | null = null;
   isEditPopupVisible = false;
   public ManagePlayerForm!: FormGroup<any>;
   statusConstants = CricketKeyConstant.status_code;
@@ -929,21 +929,21 @@ export class CompPlayerComponent implements OnInit {
     this.filteredImportData = [...this.ImportData];
   }
 
-
   onClearImport() {
     this.selectAllChecked = false;
     this.selectAllAll = false;
     this.selectAllPlayer = false;
     this.selectAllTeam = false;
     this.selectedCompetitionId = null;
-
-    this.selectedTeamId = '';
+    this.selectedTeamId = null;
+    this.teamsDropdownVisible = false;
+    this.importCompetitionTeams = [];
+    this.teamDropdownList = [];
     this.targetProducts = [];
     this.ImportData = [];
     this.filteredImportData = [];
     this.totalData = 0;
   }
-
 
 
   importCompetiton() {

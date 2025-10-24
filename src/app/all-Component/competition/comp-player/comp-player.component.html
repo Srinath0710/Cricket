@@ -9,7 +9,7 @@
   <p-dialog header="Import Players" [(visible)]="importDialogVisisble" [modal]="true"
     [style]="{ width: '60vw', height: '90vh', 'border-radius': '1px' }" [dismissableMask]="true">
 
-    <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px; font-weight: 700;">
+    <div class="card flex flex-row justify-between items-center p-3" style="border-radius: 1px;">
       <h4 class="m-0">Import Players</h4>
       <div style="flex-shrink: 0; margin-left: 10px;">
         <p-dropdown [options]="importCompetitionList" [(ngModel)]="selectedCompetitionId"
@@ -28,50 +28,37 @@
       <p-table [value]="ImportData" [(selection)]="targetProducts" dataKey="player_id" [paginator]="true" [rows]="5"
         [rowsPerPageOptions]="[5, 10]" [showCurrentPageReport]="false" (onRowSelect)="updateSelectAllStatus()"
         (onRowUnselect)="updateSelectAllStatus()" (onPage)="importCompetitionPlayersList($event)"
-        [totalRecords]="totalData" scrollable="true">
-
+        [totalRecords]="totalData" [scrollable]="false" class="import-team-table">
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 120px;">
-              <div class="checkbox-align">
-                <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')" binary="true"
-                  inputId="selectAllAll"></p-checkbox>
-                <label for="selectAllAll">All</label>
+            <th class="checkbox-col">
+              <div class="checkbox-wrapper">
+                <p-checkbox [(ngModel)]="selectAllChecked" (onChange)="toggleSelectAll('all')"
+                  binary="true"></p-checkbox>
+                <span class="checkbox-label">All</span>
               </div>
             </th>
-            <th>Player Name</th>
+            <th>Team Name</th>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="body" let-player>
           <tr [pSelectableRow]="player">
-            <td>
-              <div class="checkbox-align">
-                <p-tableCheckbox [value]="player"></p-tableCheckbox>
-              </div>
+            <td class="checkbox-cell">
+              <p-tableCheckbox [value]="player"></p-tableCheckbox>
             </td>
-            <td>{{ player.player_name || '-' }}</td>
-          </tr>
-        </ng-template>
-
-
-
-
-        <ng-template pTemplate="body" let-player>
-          <tr [pSelectableRow]="player">
-            <td><p-tableCheckbox [value]="player"></p-tableCheckbox></td>
             <td>{{ player.player_name || '-' }}</td>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="3" class="text-center p-3">No Players Found in this Team</td>
+            <td colspan="2" class="text-center p-3">No Players Found in this Team</td>
           </tr>
         </ng-template>
       </p-table>
-
     </ng-template>
+
 
     <div class="row mt-4 sticky-footer-buttons">
       <div class="col-12 text-end">
